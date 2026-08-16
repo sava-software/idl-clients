@@ -244,6 +244,53 @@ final class Token2022InstructionsTests {
     }
   }
 
+  /// The same bound, on the generated decoder rather than this hand-written one.
+  ///
+  /// The two tests above pin `Token2022Instructions`, which is one file. This pins the shape the
+  /// generator emits for every instruction it produces — since 2026-08-15 `read(Instruction)`
+  /// delegates to `read(instruction.copyData(), 0)`, where it used to pass `data(), offset()` and
+  /// discard `len()`. `copyData()` returns exactly this instruction's bytes, so a length prefix
+  /// claiming more than the instruction holds runs off the end of the copy and is rejected by
+  /// `SerDeUtil.readLen`, instead of being served out of the shared transaction buffer.
+  ///
+  /// `Token2022Program` stands in for the other generated clients because it is the one whose
+  /// wire format this class already encodes independently: the assertion that the generated
+  /// decoder returns the *same* answer embedded as standalone is only meaningful because the
+  /// standalone answer is separately known to be right.
+  @Test
+  void theGeneratedDecoderIsBoundedByTheInstructionNotTheTransaction() {
+    final byte[] payload = Base64.getDecoder().decode("3ekxLbXK3MgBAwAAAFQzMw==");
+    final byte[] secret = "SECRET-NEIGHBOUR-INSTRUCTION-DATA".getBytes(StandardCharsets.UTF_8);
+
+    // An honest instruction sliced out of a larger buffer still decodes, and decodes identically.
+    final byte[] shared = new byte[7 + payload.length + secret.length];
+    System.arraycopy(payload, 0, shared, 7, payload.length);
+    System.arraycopy(secret, 0, shared, 7 + payload.length, secret.length);
+    final var embedded = Token2022Program.UpdateTokenMetadataFieldIxData.read(
+        Instruction.createInstruction(INVOKED_PROGRAM, List.of(), shared, 7, payload.length));
+    final var standalone = Token2022Program.UpdateTokenMetadataFieldIxData.read(payload, 0);
+    assertEquals(standalone.value(), embedded.value());
+    assertEquals(standalone.field().ordinal(), embedded.field().ordinal());
+    assertEquals("T33", embedded.value(), "the bound must not truncate an honest payload");
+
+    // The same layout with the value prefix raised from 3 to 32, so it reaches into the neighbour.
+    final byte[] hostile = shared.clone();
+    hostile[7 + 9] = 32;
+    final var ix = Instruction.createInstruction(INVOKED_PROGRAM, List.of(), hostile, 7, payload.length);
+    // RuntimeException, not Throwable: it must be catchable. An oversized prefix that sized an
+    // array before checking would raise OutOfMemoryError, which is an Error and would fail here.
+    assertThrows(RuntimeException.class,
+        () -> Token2022Program.UpdateTokenMetadataFieldIxData.read(ix));
+
+    // Naming what must not happen: before the bound, this returned "T33SECRET-NEIGHBOUR-INSTRUCTI"
+    // as a successfully parsed metadata value, with nothing thrown.
+    final var leaked = Token2022Program.UpdateTokenMetadataFieldIxData.read(hostile, 7);
+    assertNotNull(leaked, "the unbounded overload still reads the whole array it was handed");
+    assertTrue(leaked.value().startsWith("T33SECRET"),
+        "sanity: the neighbour really is reachable without the instruction bound, which is the "
+            + "thing read(Instruction) now prevents");
+  }
+
   /// Every truncation of a valid payload is rejected, and only the exact length parses.
   ///
   /// `RuntimeException` rather than a specific type on purpose. Only two shapes are worth an
