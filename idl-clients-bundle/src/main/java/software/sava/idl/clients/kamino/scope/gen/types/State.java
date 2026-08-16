@@ -87,13 +87,13 @@ public record State(PublicKey msolMint,
     final var rentExemptForTokenAcc = getInt64LE(_data, i);
     i += 8;
     final var rewardFee = Fee.read(_data, i);
-    i += rewardFee.l();
+    i += 4;
     final var stakeSystem = StakeSystem.read(_data, i);
-    i += stakeSystem.l();
+    i += 114;
     final var validatorSystem = ValidatorSystem.read(_data, i);
-    i += validatorSystem.l();
+    i += 121;
     final var liqPool = LiqPool.read(_data, i);
-    i += liqPool.l();
+    i += 111;
     final var availableReserveBalance = getInt64LE(_data, i);
     i += 8;
     final var msolSupply = getInt64LE(_data, i);

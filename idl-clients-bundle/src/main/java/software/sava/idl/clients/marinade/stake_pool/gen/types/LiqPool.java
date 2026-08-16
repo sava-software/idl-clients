@@ -64,11 +64,11 @@ public record LiqPool(PublicKey lpMint,
     final var lpLiquidityTarget = getInt64LE(_data, i);
     i += 8;
     final var lpMaxFee = Fee.read(_data, i);
-    i += lpMaxFee.l();
+    i += 4;
     final var lpMinFee = Fee.read(_data, i);
-    i += lpMinFee.l();
+    i += 4;
     final var treasuryCut = Fee.read(_data, i);
-    i += treasuryCut.l();
+    i += 4;
     final var lpSupply = getInt64LE(_data, i);
     i += 8;
     final var lentFromSolLeg = getInt64LE(_data, i);

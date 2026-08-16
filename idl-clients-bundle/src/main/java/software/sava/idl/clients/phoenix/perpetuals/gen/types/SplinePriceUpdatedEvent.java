@@ -58,7 +58,7 @@ public record SplinePriceUpdatedEvent(Discriminator discriminator,
     final var market = readPubKey(_data, i);
     i += 32;
     final var symbol = Symbol.read(_data, i);
-    i += symbol.l();
+    i += 16;
     final var priceInTicks = getInt64LE(_data, i);
     i += 8;
     final var userUpdateSlot = getInt64LE(_data, i);

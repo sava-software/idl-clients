@@ -25,11 +25,11 @@ public record TickRegionParams(Ticks startOffset,
     }
     int i = _offset;
     final var startOffset = Ticks.read(_data, i);
-    i += startOffset.l();
+    i += 8;
     final var endOffset = Ticks.read(_data, i);
-    i += endOffset.l();
+    i += 8;
     final var density = BaseLotsPerTick.read(_data, i);
-    i += density.l();
+    i += 8;
     final var lifespan = getInt64LE(_data, i);
     return new TickRegionParams(startOffset,
                                 endOffset,

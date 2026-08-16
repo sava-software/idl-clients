@@ -50,7 +50,7 @@ public record StakedSettingsEditConfig(PublicKey oracle,
     } else {
       ++i;
       assetWeightInit = WrappedI80F48.read(_data, i);
-      i += assetWeightInit.l();
+      i += 16;
     }
     final WrappedI80F48 assetWeightMaint;
     if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -59,7 +59,7 @@ public record StakedSettingsEditConfig(PublicKey oracle,
     } else {
       ++i;
       assetWeightMaint = WrappedI80F48.read(_data, i);
-      i += assetWeightMaint.l();
+      i += 16;
     }
     final OptionalLong depositLimit;
     if (SerDeUtil.isAbsent(1, _data, i)) {

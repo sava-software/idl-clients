@@ -348,7 +348,7 @@ public final class OfferbookProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final var offerParams = NftCollateralOfferParams.read(_data, i);
-      i += offerParams.l();
+      i += 21;
       final var collateral = NftCollateralAsset.read(_data, i);
       return new CreateNftCollateralOfferIxData(discriminator, offerParams, collateral);
     }
@@ -475,7 +475,7 @@ public final class OfferbookProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final var offerParams = NftPrincipalOfferParams.read(_data, i);
-      i += offerParams.l();
+      i += 21;
       final var collateral = NftCollateral.read(_data, i);
       return new CreateNftPrincipalOfferIxData(discriminator, offerParams, collateral);
     }

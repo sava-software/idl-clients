@@ -150,7 +150,7 @@ public record Vault(PublicKey _address,
     final var maxOraclePriceUsd = getInt64LE(_data, i);
     i += 8;
     final var status = VaultStatus.read(_data, i);
-    i += status.l();
+    i += 1;
     final var padding1 = new byte[7];
     i += SerDeUtil.readArray(padding1, _data, i);
     final var bump = _data[i] & 0xFF;

@@ -36,7 +36,7 @@ public sealed interface OrderTrigger extends RustEnum permits
       }
       int i = _offset;
       final var threshold = WrappedI80F48.read(_data, i);
-      i += threshold.l();
+      i += 16;
       final var maxSlippage = Integer.toUnsignedLong(getInt32LE(_data, i));
       return new StopLoss(threshold, maxSlippage);
     }
@@ -75,7 +75,7 @@ public sealed interface OrderTrigger extends RustEnum permits
       }
       int i = _offset;
       final var threshold = WrappedI80F48.read(_data, i);
-      i += threshold.l();
+      i += 16;
       final var maxSlippage = Integer.toUnsignedLong(getInt32LE(_data, i));
       return new TakeProfit(threshold, maxSlippage);
     }
@@ -117,9 +117,9 @@ public sealed interface OrderTrigger extends RustEnum permits
       }
       int i = _offset;
       final var stopLoss = WrappedI80F48.read(_data, i);
-      i += stopLoss.l();
+      i += 16;
       final var takeProfit = WrappedI80F48.read(_data, i);
-      i += takeProfit.l();
+      i += 16;
       final var maxSlippage = Integer.toUnsignedLong(getInt32LE(_data, i));
       return new Both(stopLoss, takeProfit, maxSlippage);
     }

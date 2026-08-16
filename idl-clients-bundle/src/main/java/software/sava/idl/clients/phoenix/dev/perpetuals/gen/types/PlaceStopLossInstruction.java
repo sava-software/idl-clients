@@ -37,9 +37,9 @@ public record PlaceStopLossInstruction(long triggerPrice,
     final var tradeSize = getInt64LE(_data, i);
     i += 8;
     final var tradeSide = Side.read(_data, i);
-    i += tradeSide.l();
+    i += 1;
     final var executionDirection = Direction.read(_data, i);
-    i += executionDirection.l();
+    i += 1;
     final var orderKind = StopLossOrderKind.read(_data, i);
     return new PlaceStopLossInstruction(triggerPrice,
                                         executionPrice,

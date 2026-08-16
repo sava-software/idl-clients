@@ -121,9 +121,9 @@ public record Governor(PublicKey _address,
     final var smartWallet = readPubKey(_data, i);
     i += 32;
     final var params = GovernanceParameters.read(_data, i);
-    i += params.l();
+    i += 32;
     final var votingReward = VotingReward.read(_data, i);
-    i += votingReward.l();
+    i += 72;
     final var buffers = new BigInteger[32];
     SerDeUtil.readU128Array(buffers, _data, i);
     return new Governor(_address,

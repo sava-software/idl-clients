@@ -43,7 +43,7 @@ public record ConfigMarinadeParams(Fee rewardsFee,
     } else {
       ++i;
       rewardsFee = Fee.read(_data, i);
-      i += rewardsFee.l();
+      i += 4;
     }
     final OptionalLong slotsForStakeDelta;
     if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -115,7 +115,7 @@ public record ConfigMarinadeParams(Fee rewardsFee,
     } else {
       ++i;
       delayedUnstakeFee = FeeCents.read(_data, i);
-      i += delayedUnstakeFee.l();
+      i += 4;
     }
     final FeeCents withdrawStakeAccountFee;
     if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -124,7 +124,7 @@ public record ConfigMarinadeParams(Fee rewardsFee,
     } else {
       ++i;
       withdrawStakeAccountFee = FeeCents.read(_data, i);
-      i += withdrawStakeAccountFee.l();
+      i += 4;
     }
     final Fee maxStakeMovedPerEpoch;
     if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -133,7 +133,7 @@ public record ConfigMarinadeParams(Fee rewardsFee,
     } else {
       ++i;
       maxStakeMovedPerEpoch = Fee.read(_data, i);
-      i += maxStakeMovedPerEpoch.l();
+      i += 4;
     }
     final FeeCents depositSolFee;
     if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -142,7 +142,7 @@ public record ConfigMarinadeParams(Fee rewardsFee,
     } else {
       ++i;
       depositSolFee = FeeCents.read(_data, i);
-      i += depositSolFee.l();
+      i += 4;
     }
     final FeeCents depositStakeAccountFee;
     if (SerDeUtil.isAbsent(1, _data, i)) {

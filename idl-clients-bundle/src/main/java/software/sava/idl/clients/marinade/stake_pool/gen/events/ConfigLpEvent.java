@@ -38,7 +38,7 @@ public record ConfigLpEvent(Discriminator discriminator,
     } else {
       ++i;
       minFeeChange = FeeValueChange.read(_data, i);
-      i += minFeeChange.l();
+      i += 8;
     }
     final FeeValueChange maxFeeChange;
     if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -47,7 +47,7 @@ public record ConfigLpEvent(Discriminator discriminator,
     } else {
       ++i;
       maxFeeChange = FeeValueChange.read(_data, i);
-      i += maxFeeChange.l();
+      i += 8;
     }
     final U64ValueChange liquidityTargetChange;
     if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -56,7 +56,7 @@ public record ConfigLpEvent(Discriminator discriminator,
     } else {
       ++i;
       liquidityTargetChange = U64ValueChange.read(_data, i);
-      i += liquidityTargetChange.l();
+      i += 16;
     }
     final FeeValueChange treasuryCutChange;
     if (SerDeUtil.isAbsent(1, _data, i)) {

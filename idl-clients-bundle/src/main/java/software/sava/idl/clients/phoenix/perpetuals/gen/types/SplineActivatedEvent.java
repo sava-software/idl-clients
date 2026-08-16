@@ -53,7 +53,7 @@ public record SplineActivatedEvent(Discriminator discriminator,
     final var market = readPubKey(_data, i);
     i += 32;
     final var symbol = Symbol.read(_data, i);
-    i += symbol.l();
+    i += 16;
     final var midPrice = getInt64LE(_data, i);
     return new SplineActivatedEvent(discriminator,
                                     trader,

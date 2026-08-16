@@ -46,7 +46,7 @@ public record WithdrawStateTransitionEvent(Discriminator discriminator,
     final var trader = readPubKey(_data, i);
     i += 32;
     final var amount = QuoteLots.read(_data, i);
-    i += amount.l();
+    i += 8;
     final var fromState = _data[i] & 0xFF;
     ++i;
     final var toState = _data[i] & 0xFF;

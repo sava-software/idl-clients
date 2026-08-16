@@ -66,11 +66,11 @@ public record Balance(int active,
     final var pad0 = new byte[4];
     i += SerDeUtil.readArray(pad0, _data, i);
     final var assetShares = WrappedI80F48.read(_data, i);
-    i += assetShares.l();
+    i += 16;
     final var liabilityShares = WrappedI80F48.read(_data, i);
-    i += liabilityShares.l();
+    i += 16;
     final var emissionsOutstanding = WrappedI80F48.read(_data, i);
-    i += emissionsOutstanding.l();
+    i += 16;
     final var lastUpdate = getInt64LE(_data, i);
     i += 8;
     final var padding = new long[1];

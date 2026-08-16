@@ -246,7 +246,7 @@ public record MarginfiGroup(PublicKey _address,
     final var groupFlags = getInt64LE(_data, i);
     i += 8;
     final var feeStateCache = FeeStateCache.read(_data, i);
-    i += feeStateCache.l();
+    i += 72;
     final var banks = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var pad0 = new byte[6];
@@ -260,9 +260,9 @@ public record MarginfiGroup(PublicKey _address,
     final var delegateEmissionsAdmin = readPubKey(_data, i);
     i += 32;
     final var panicStateCache = PanicStateCache.read(_data, i);
-    i += panicStateCache.l();
+    i += 24;
     final var deleverageWithdrawWindowCache = WithdrawWindowCache.read(_data, i);
-    i += deleverageWithdrawWindowCache.l();
+    i += 16;
     final var riskAdmin = readPubKey(_data, i);
     i += 32;
     final var metadataAdmin = readPubKey(_data, i);
@@ -274,7 +274,7 @@ public record MarginfiGroup(PublicKey _address,
     final var padding = new byte[8];
     i += SerDeUtil.readArray(padding, _data, i);
     final var rateLimiter = GroupRateLimiter.read(_data, i);
-    i += rateLimiter.l();
+    i += 80;
     final var rateLimiterLastAdminUpdateSlot = getInt64LE(_data, i);
     i += 8;
     final var rateLimiterLastAdminUpdateSeq = getInt64LE(_data, i);

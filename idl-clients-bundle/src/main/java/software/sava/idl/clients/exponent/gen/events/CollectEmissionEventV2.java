@@ -61,7 +61,7 @@ public record CollectEmissionEventV2(Discriminator discriminator,
     final var unixTimestamp = getInt64LE(_data, i);
     i += 8;
     final var userInterest = YieldTokenTracker.read(_data, i);
-    i += userInterest.l();
+    i += 40;
     final var userEmissions = SerDeUtil.readVector(4, YieldTokenTracker.class, YieldTokenTracker::read, _data, i);
     return new CollectEmissionEventV2(discriminator,
                                       user,

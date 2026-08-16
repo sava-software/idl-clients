@@ -37,7 +37,7 @@ public record PlacePositionConditionalOrderInstruction(long assetId,
     } else {
       ++i;
       greaterTriggerOrder = TriggerOrderParams.read(_data, i);
-      i += greaterTriggerOrder.l();
+      i += 19;
     }
     final TriggerOrderParams lessTriggerOrder;
     if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -46,7 +46,7 @@ public record PlacePositionConditionalOrderInstruction(long assetId,
     } else {
       ++i;
       lessTriggerOrder = TriggerOrderParams.read(_data, i);
-      i += lessTriggerOrder.l();
+      i += 19;
     }
     final OptionalLong sizeBaseLots;
     if (SerDeUtil.isAbsent(1, _data, i)) {

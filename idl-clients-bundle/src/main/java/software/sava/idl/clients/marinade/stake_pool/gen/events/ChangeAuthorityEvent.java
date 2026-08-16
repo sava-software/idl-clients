@@ -38,7 +38,7 @@ public record ChangeAuthorityEvent(Discriminator discriminator,
     } else {
       ++i;
       adminChange = PubkeyValueChange.read(_data, i);
-      i += adminChange.l();
+      i += 64;
     }
     final PubkeyValueChange validatorManagerChange;
     if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -47,7 +47,7 @@ public record ChangeAuthorityEvent(Discriminator discriminator,
     } else {
       ++i;
       validatorManagerChange = PubkeyValueChange.read(_data, i);
-      i += validatorManagerChange.l();
+      i += 64;
     }
     final PubkeyValueChange operationalSolAccountChange;
     if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -56,7 +56,7 @@ public record ChangeAuthorityEvent(Discriminator discriminator,
     } else {
       ++i;
       operationalSolAccountChange = PubkeyValueChange.read(_data, i);
-      i += operationalSolAccountChange.l();
+      i += 64;
     }
     final PubkeyValueChange treasuryMsolAccountChange;
     if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -65,7 +65,7 @@ public record ChangeAuthorityEvent(Discriminator discriminator,
     } else {
       ++i;
       treasuryMsolAccountChange = PubkeyValueChange.read(_data, i);
-      i += treasuryMsolAccountChange.l();
+      i += 64;
     }
     final PubkeyValueChange pauseAuthorityChange;
     if (SerDeUtil.isAbsent(1, _data, i)) {

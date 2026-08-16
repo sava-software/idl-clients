@@ -141,9 +141,9 @@ public record Loan(PublicKey _address,
     final var offer = readPubKey(_data, i);
     i += 32;
     final var status = LoanStatus.read(_data, i);
-    i += status.l();
+    i += 1;
     final var loanType = LoanType.read(_data, i);
-    i += loanType.l();
+    i += 1;
     final var padding = new byte[6];
     i += SerDeUtil.readArray(padding, _data, i);
     final var fillIndex = getInt64LE(_data, i);

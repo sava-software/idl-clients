@@ -65,7 +65,7 @@ public record TradePtEvent(Discriminator discriminator,
     final var feeSy = getInt64LE(_data, i);
     i += 8;
     final var syExchangeRate = Number.read(_data, i);
-    i += syExchangeRate.l();
+    i += 32;
     final var timestamp = getInt64LE(_data, i);
     return new TradePtEvent(discriminator,
                             trader,

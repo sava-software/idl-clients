@@ -28,9 +28,9 @@ public record LiquidationParams(PublicKey assetMint,
     final var assetMint = readPubKey(_data, i);
     i += 32;
     final var liquidationSize = BaseLots.read(_data, i);
-    i += liquidationSize.l();
+    i += 8;
     final var liquidationPrice = Ticks.read(_data, i);
-    i += liquidationPrice.l();
+    i += 8;
     final var fillOrKill = _data[i] == 1;
     return new LiquidationParams(assetMint,
                                  liquidationSize,

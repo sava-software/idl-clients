@@ -59,7 +59,7 @@ public record Edition(PublicKey _address,
     }
     int i = _offset;
     final var key = Key.read(_data, i);
-    i += key.l();
+    i += 1;
     final var parent = readPubKey(_data, i);
     i += 32;
     final var edition = getInt64LE(_data, i);

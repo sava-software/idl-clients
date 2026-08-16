@@ -198,13 +198,13 @@ public record FeeStateV2(PublicKey _address,
     final var padding0 = new byte[3];
     i += SerDeUtil.readArray(padding0, _data, i);
     final var liquidationMaxFee = WrappedI80F48.read(_data, i);
-    i += liquidationMaxFee.l();
+    i += 16;
     final var programFeeFixed = WrappedI80F48.read(_data, i);
-    i += programFeeFixed.l();
+    i += 16;
     final var programFeeRate = WrappedI80F48.read(_data, i);
-    i += programFeeRate.l();
+    i += 16;
     final var panicState = PanicState.read(_data, i);
-    i += panicState.l();
+    i += 32;
     final var placeholder1 = getInt64LE(_data, i);
     i += 8;
     final var liquidationFlatSolFee = Integer.toUnsignedLong(getInt32LE(_data, i));
@@ -212,7 +212,7 @@ public record FeeStateV2(PublicKey _address,
     final var orderInitFlatSolFee = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var orderExecutionMaxFee = WrappedI80F48.read(_data, i);
-    i += orderExecutionMaxFee.l();
+    i += 16;
     final var pauseDelegateAdmin = readPubKey(_data, i);
     i += 32;
     final var padding1 = new byte[256];

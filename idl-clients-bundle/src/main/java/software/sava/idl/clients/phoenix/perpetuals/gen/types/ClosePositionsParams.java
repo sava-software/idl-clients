@@ -27,7 +27,7 @@ public record ClosePositionsParams(long assetId,
     final var assetId = getInt64LE(_data, i);
     i += 8;
     final var amount = BaseLots.read(_data, i);
-    i += amount.l();
+    i += 8;
     final QuoteLots atLossCloseValue;
     if (SerDeUtil.isAbsent(1, _data, i)) {
       atLossCloseValue = null;
@@ -35,7 +35,7 @@ public record ClosePositionsParams(long assetId,
     } else {
       ++i;
       atLossCloseValue = QuoteLots.read(_data, i);
-      i += atLossCloseValue.l();
+      i += 8;
     }
     final QuoteLots inProfitCloseValue;
     if (SerDeUtil.isAbsent(1, _data, i)) {

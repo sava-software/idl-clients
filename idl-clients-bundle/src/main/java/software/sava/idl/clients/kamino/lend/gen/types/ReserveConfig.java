@@ -216,9 +216,9 @@ public record ReserveConfig(int status,
     final var deleveragingThresholdDecreaseBpsPerDay = getInt64LE(_data, i);
     i += 8;
     final var fees = ReserveFees.read(_data, i);
-    i += fees.l();
+    i += 24;
     final var borrowRateCurve = BorrowRateCurve.read(_data, i);
-    i += borrowRateCurve.l();
+    i += 88;
     final var borrowFactorPct = getInt64LE(_data, i);
     i += 8;
     final var depositLimit = getInt64LE(_data, i);
@@ -226,11 +226,11 @@ public record ReserveConfig(int status,
     final var borrowLimit = getInt64LE(_data, i);
     i += 8;
     final var tokenInfo = TokenInfo.read(_data, i);
-    i += tokenInfo.l();
+    i += 384;
     final var depositWithdrawalCap = WithdrawalCaps.read(_data, i);
-    i += depositWithdrawalCap.l();
+    i += 32;
     final var debtWithdrawalCap = WithdrawalCaps.read(_data, i);
-    i += debtWithdrawalCap.l();
+    i += 32;
     final var elevationGroups = new byte[20];
     i += SerDeUtil.readArray(elevationGroups, _data, i);
     final var disableUsageAsCollOutsideEmode = _data[i] & 0xFF;

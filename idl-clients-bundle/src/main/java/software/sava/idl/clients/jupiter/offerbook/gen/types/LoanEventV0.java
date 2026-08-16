@@ -66,7 +66,7 @@ public record LoanEventV0(PublicKey lender,
     final var offer = readPubKey(_data, i);
     i += 32;
     final var status = LoanStatus.read(_data, i);
-    i += status.l();
+    i += 1;
     final var fillIndex = getInt64LE(_data, i);
     i += 8;
     final var principal = EventAsset.read(_data, i);

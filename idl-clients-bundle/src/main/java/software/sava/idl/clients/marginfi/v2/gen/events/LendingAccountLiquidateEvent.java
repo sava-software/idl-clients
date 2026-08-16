@@ -54,7 +54,7 @@ public record LendingAccountLiquidateEvent(Discriminator discriminator,
     final var liquidateePostHealth = getFloat64LE(_data, i);
     i += 8;
     final var preBalances = LiquidationBalances.read(_data, i);
-    i += preBalances.l();
+    i += 32;
     final var postBalances = LiquidationBalances.read(_data, i);
     return new LendingAccountLiquidateEvent(discriminator,
                                             header,

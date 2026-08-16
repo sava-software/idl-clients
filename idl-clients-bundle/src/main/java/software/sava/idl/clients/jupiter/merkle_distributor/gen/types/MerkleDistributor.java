@@ -279,7 +279,7 @@ public record MerkleDistributor(PublicKey _address,
     final var padding0 = new byte[3];
     i += SerDeUtil.readArray(padding0, _data, i);
     final var airdropBonus = AirdropBonus.read(_data, i);
-    i += airdropBonus.l();
+    i += 24;
     final var padding2 = new BigInteger[5];
     SerDeUtil.readU128Array(padding2, _data, i);
     return new MerkleDistributor(_address,

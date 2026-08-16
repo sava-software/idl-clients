@@ -92,7 +92,7 @@ public record StripEvent(Discriminator discriminator,
     final var amountPyOut = getInt64LE(_data, i);
     i += 8;
     final var syExchangeRate = Number.read(_data, i);
-    i += syExchangeRate.l();
+    i += 32;
     final var totalSyInEscrow = getInt64LE(_data, i);
     i += 8;
     final var ptSupply = getInt64LE(_data, i);
@@ -100,7 +100,7 @@ public record StripEvent(Discriminator discriminator,
     final var ytBalance = getInt64LE(_data, i);
     i += 8;
     final var allTimeHighSyExchangeRate = Number.read(_data, i);
-    i += allTimeHighSyExchangeRate.l();
+    i += 32;
     final var syForPt = getInt64LE(_data, i);
     i += 8;
     final var unixTimestamp = getInt64LE(_data, i);

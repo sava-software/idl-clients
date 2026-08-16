@@ -90,9 +90,9 @@ public record MergeEvent(Discriminator discriminator,
     final var amountSyOut = getInt64LE(_data, i);
     i += 8;
     final var syExchangeRate = Number.read(_data, i);
-    i += syExchangeRate.l();
+    i += 32;
     final var ptRedemptionRate = Number.read(_data, i);
-    i += ptRedemptionRate.l();
+    i += 32;
     final var totalSyInEscrow = getInt64LE(_data, i);
     i += 8;
     final var ptSupply = getInt64LE(_data, i);

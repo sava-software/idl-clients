@@ -61,7 +61,7 @@ public record SplinePositionLimitsConfigUpdatedEvent(Discriminator discriminator
     final var market = readPubKey(_data, i);
     i += 32;
     final var symbol = Symbol.read(_data, i);
-    i += symbol.l();
+    i += 16;
     final PositionSizeLimit maxPositionSize;
     if (SerDeUtil.isAbsent(1, _data, i)) {
       maxPositionSize = null;

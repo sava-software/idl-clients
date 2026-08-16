@@ -151,9 +151,9 @@ public record StakedSettings(PublicKey _address,
     final var oracle = readPubKey(_data, i);
     i += 32;
     final var assetWeightInit = WrappedI80F48.read(_data, i);
-    i += assetWeightInit.l();
+    i += 16;
     final var assetWeightMaint = WrappedI80F48.read(_data, i);
-    i += assetWeightMaint.l();
+    i += 16;
     final var depositLimit = getInt64LE(_data, i);
     i += 8;
     final var totalAssetValueInitLimit = getInt64LE(_data, i);
@@ -161,7 +161,7 @@ public record StakedSettings(PublicKey _address,
     final var oracleMaxAge = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var riskTier = RiskTier.read(_data, i);
-    i += riskTier.l();
+    i += 1;
     final var pad0 = new byte[5];
     i += SerDeUtil.readArray(pad0, _data, i);
     final var flags = getInt64LE(_data, i);

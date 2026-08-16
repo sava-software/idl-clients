@@ -62,7 +62,7 @@ public sealed interface StakeState extends RustEnum permits
       }
       int i = _offset;
       final var _Meta = Meta.read(_data, i);
-      i += _Meta.l();
+      i += 120;
       final var _Stake = Stake.read(_data, i);
       return new stake(_Meta, _Stake);
     }

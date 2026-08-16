@@ -53,25 +53,25 @@ public record OrderFilledEvent(Discriminator discriminator,
     final var orderSequenceNumber = getInt64LE(_data, i);
     i += 8;
     final var side = Side.read(_data, i);
-    i += side.l();
+    i += 1;
     final var price = Ticks.read(_data, i);
-    i += price.l();
+    i += 8;
     final var baseLotsFilled = BaseLots.read(_data, i);
-    i += baseLotsFilled.l();
+    i += 8;
     final var quoteLotsFilled = QuoteLots.read(_data, i);
-    i += quoteLotsFilled.l();
+    i += 8;
     final var quantityRemaining = BaseLots.read(_data, i);
-    i += quantityRemaining.l();
+    i += 8;
     final var maker = readPubKey(_data, i);
     i += 32;
     final var makerFeeRate = SignedFeeRateMicro.read(_data, i);
-    i += makerFeeRate.l();
+    i += 4;
     final var makerBaseLotPosition = SignedBaseLots.read(_data, i);
-    i += makerBaseLotPosition.l();
+    i += 8;
     final var makerVirtualQuoteLotPosition = SignedQuoteLots.read(_data, i);
-    i += makerVirtualQuoteLotPosition.l();
+    i += 8;
     final var makerQuoteLotCollateral = SignedQuoteLots.read(_data, i);
-    i += makerQuoteLotCollateral.l();
+    i += 8;
     final var makerCumulativeFundingSnapshot = SignedQuoteLotsPerBaseLot.read(_data, i);
     return new OrderFilledEvent(discriminator,
                                 orderSequenceNumber,

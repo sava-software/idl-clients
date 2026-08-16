@@ -149,7 +149,7 @@ public record Proposal(PublicKey _address,
     final var queuedTransaction = readPubKey(_data, i);
     i += 32;
     final var votingReward = VotingReward.read(_data, i);
-    i += votingReward.l();
+    i += 72;
     final var totalClaimedReward = getInt64LE(_data, i);
     i += 8;
     final var proposalType = _data[i] & 0xFF;

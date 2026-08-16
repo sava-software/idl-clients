@@ -239,7 +239,7 @@ public record Obligation(PublicKey _address,
     final var tag = getInt64LE(_data, i);
     i += 8;
     final var lastUpdate = LastUpdate.read(_data, i);
-    i += lastUpdate.l();
+    i += 16;
     final var lendingMarket = readPubKey(_data, i);
     i += 32;
     final var owner = readPubKey(_data, i);
@@ -289,7 +289,7 @@ public record Obligation(PublicKey _address,
     final var obligationOrders = new ObligationOrder[2];
     i += SerDeUtil.readArray(obligationOrders, ObligationOrder::read, _data, i);
     final var headBorrowOrder = BorrowOrder.read(_data, i);
-    i += headBorrowOrder.l();
+    i += 160;
     final var pendingOwner = readPubKey(_data, i);
     i += 32;
     final var tailBorrowOrders = new BorrowOrder[2];

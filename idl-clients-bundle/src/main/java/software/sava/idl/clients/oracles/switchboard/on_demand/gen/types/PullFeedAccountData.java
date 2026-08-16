@@ -221,7 +221,7 @@ public record PullFeedAccountData(PublicKey _address,
     final var reserved1 = new byte[32];
     i += SerDeUtil.readArray(reserved1, _data, i);
     final var result = CurrentResult.read(_data, i);
-    i += result.l();
+    i += 128;
     final var maxStaleness = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var padding2 = new byte[12];

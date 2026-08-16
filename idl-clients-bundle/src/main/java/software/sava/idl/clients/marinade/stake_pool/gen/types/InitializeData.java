@@ -48,9 +48,9 @@ public record InitializeData(PublicKey adminAuthority,
     final var minStake = getInt64LE(_data, i);
     i += 8;
     final var rewardsFee = Fee.read(_data, i);
-    i += rewardsFee.l();
+    i += 4;
     final var liqPool = LiqPoolInitializeData.read(_data, i);
-    i += liqPool.l();
+    i += 20;
     final var additionalStakeRecordSpace = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var additionalValidatorRecordSpace = Integer.toUnsignedLong(getInt32LE(_data, i));

@@ -38,7 +38,7 @@ public record EditionMarkerV2(PublicKey _address, Key key, byte[] ledger) implem
     }
     int i = _offset;
     final var key = Key.read(_data, i);
-    i += key.l();
+    i += 1;
     final var ledger = SerDeUtil.readbyteVector(4, _data, i);
     return new EditionMarkerV2(_address, key, ledger);
   }

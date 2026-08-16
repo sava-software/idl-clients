@@ -20,7 +20,7 @@ public record Stake(Delegation delegation, long creditsObserved) implements SerD
     }
     int i = _offset;
     final var delegation = Delegation.read(_data, i);
-    i += delegation.l();
+    i += 64;
     final var creditsObserved = getInt64LE(_data, i);
     return new Stake(delegation, creditsObserved);
   }

@@ -45,9 +45,9 @@ public record LiquidationTransferSummaryEvent(Discriminator discriminator,
     final var totalTransfers = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var liquidateeCollateralChange = SignedQuoteLots.read(_data, i);
-    i += liquidateeCollateralChange.l();
+    i += 8;
     final var liquidatorCollateralChange = SignedQuoteLots.read(_data, i);
-    i += liquidatorCollateralChange.l();
+    i += 8;
     final var haircutCollected = QuoteLots.read(_data, i);
     return new LiquidationTransferSummaryEvent(discriminator,
                                                liquidatee,

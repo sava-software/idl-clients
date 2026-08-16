@@ -29,7 +29,7 @@ public record OperateDexDebtAmounts(OperateDexAmounts amounts, BigInteger newDeb
     } else {
       ++i;
       amounts = OperateDexAmounts.read(_data, i);
-      i += amounts.l();
+      i += 48;
     }
     final BigInteger newDebt;
     if (SerDeUtil.isAbsent(1, _data, i)) {

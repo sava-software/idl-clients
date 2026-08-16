@@ -141,7 +141,7 @@ public record OracleAccountData(PublicKey _address,
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var enclave = Quote.read(_data, i);
-    i += enclave.l();
+    i += 3432;
     final var authority = readPubKey(_data, i);
     i += 32;
     final var queue = readPubKey(_data, i);

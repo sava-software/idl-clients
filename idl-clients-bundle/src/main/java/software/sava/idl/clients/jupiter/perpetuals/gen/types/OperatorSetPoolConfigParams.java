@@ -30,9 +30,9 @@ public record OperatorSetPoolConfigParams(Fees fees,
     }
     int i = _offset;
     final var fees = Fees.read(_data, i);
-    i += fees.l();
+    i += 72;
     final var limit = Limit.read(_data, i);
-    i += limit.l();
+    i += 40;
     final var maxRequestExecutionSec = getInt64LE(_data, i);
     i += 8;
     final var maxTriggerPriceDiffBps = getInt64LE(_data, i);

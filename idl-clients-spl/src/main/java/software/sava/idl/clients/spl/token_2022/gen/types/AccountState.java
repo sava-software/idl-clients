@@ -2,6 +2,7 @@
 package software.sava.idl.clients.spl.token_2022.gen.types;
 
 import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 public enum AccountState implements SerDe {
 
@@ -10,7 +11,7 @@ public enum AccountState implements SerDe {
   frozen;
 
   public static AccountState read(final byte[] _data, final int _offset) {
-    return AccountState.values()[_data[_offset] & 0xFF];
+    return SerDeUtil.read(1, AccountState.values(), _data, _offset);
   }
 
   @Override

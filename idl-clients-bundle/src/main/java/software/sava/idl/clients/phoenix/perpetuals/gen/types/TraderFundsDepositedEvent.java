@@ -46,11 +46,11 @@ public record TraderFundsDepositedEvent(Discriminator discriminator,
     final var authority = readPubKey(_data, i);
     i += 32;
     final var amount = QuoteLots.read(_data, i);
-    i += amount.l();
+    i += 8;
     final var traderFlags = TraderCapabilityFlags.read(_data, i);
-    i += traderFlags.l();
+    i += 4;
     final var newCollateralBalance = SignedQuoteLots.read(_data, i);
-    i += newCollateralBalance.l();
+    i += 8;
     final var traderSequenceNumber = getInt64LE(_data, i);
     i += 8;
     final var prevSequenceNumberSlot = getInt64LE(_data, i);

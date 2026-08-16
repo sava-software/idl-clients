@@ -3,6 +3,7 @@ package software.sava.idl.clients.spl.token_2022.gen.types;
 
 import software.sava.core.encoding.ByteUtil;
 import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 /// Extensions that can be applied to mints or accounts.  Mint extensions must
 /// only be applied to mint accounts, and account extensions must only be
@@ -77,7 +78,7 @@ public enum ExtensionType implements SerDe {
   permissionedBurn;
 
   public static ExtensionType read(final byte[] _data, final int _offset) {
-    return ExtensionType.values()[Short.toUnsignedInt(ByteUtil.getInt16LE(_data, _offset))];
+    return SerDeUtil.read(2, ExtensionType.values(), _data, _offset);
   }
 
   @Override

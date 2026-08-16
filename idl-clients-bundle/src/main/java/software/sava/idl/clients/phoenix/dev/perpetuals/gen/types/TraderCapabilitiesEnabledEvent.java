@@ -41,9 +41,9 @@ public record TraderCapabilitiesEnabledEvent(Discriminator discriminator,
     final var authority = readPubKey(_data, i);
     i += 32;
     final var previousFlags = TraderCapabilityFlags.read(_data, i);
-    i += previousFlags.l();
+    i += 4;
     final var newFlags = TraderCapabilityFlags.read(_data, i);
-    i += newFlags.l();
+    i += 4;
     final var globalTraderIndex = Integer.toUnsignedLong(getInt32LE(_data, i));
     return new TraderCapabilitiesEnabledEvent(discriminator,
                                               trader,

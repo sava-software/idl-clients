@@ -80,7 +80,7 @@ public record BaseAssetV1(PublicKey _address,
 
     int i = _offset;
     final var key = Key.read(_data, i);
-    i += key.l();
+    i += 1;
     final var owner = readPubKey(_data, i);
     i += 32;
     final var updateAuthority = UpdateAuthority.read(_data, i);

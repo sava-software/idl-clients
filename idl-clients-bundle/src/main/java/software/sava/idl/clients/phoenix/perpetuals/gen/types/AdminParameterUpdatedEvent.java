@@ -42,7 +42,7 @@ public record AdminParameterUpdatedEvent(Discriminator discriminator,
     } else {
       ++i;
       assetSymbol = Symbol.read(_data, i);
-      i += assetSymbol.l();
+      i += 16;
     }
     final OptionalLong assetId;
     if (SerDeUtil.isAbsent(1, _data, i)) {

@@ -30,7 +30,7 @@ public record MarketEmission(PublicKey tokenEscrow,
     final var tokenEscrow = readPubKey(_data, i);
     i += 32;
     final var lpShareIndex = Number.read(_data, i);
-    i += lpShareIndex.l();
+    i += 32;
     final var lastSeenStaged = getInt64LE(_data, i);
     return new MarketEmission(tokenEscrow, lpShareIndex, lastSeenStaged);
   }

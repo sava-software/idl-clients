@@ -59,7 +59,7 @@ public record UseAuthorityRecord(PublicKey _address,
     }
     int i = _offset;
     final var key = Key.read(_data, i);
-    i += key.l();
+    i += 1;
     final var allowedUses = getInt64LE(_data, i);
     i += 8;
     final var bump = _data[i] & 0xFF;

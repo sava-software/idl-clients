@@ -24,7 +24,7 @@ public record CreateEscrowRequestParams(EscrowParticipantMetadata participantMet
     }
     int i = _offset;
     final var participantMetadata = EscrowParticipantMetadata.read(_data, i);
-    i += participantMetadata.l();
+    i += 4;
     final OptionalLong lastValidSlot;
     if (SerDeUtil.isAbsent(1, _data, i)) {
       lastValidSlot = OptionalLong.empty();

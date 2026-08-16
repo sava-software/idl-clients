@@ -51,7 +51,7 @@ public record BankConfigOpt(WrappedI80F48 assetWeightInit,
     } else {
       ++i;
       assetWeightInit = WrappedI80F48.read(_data, i);
-      i += assetWeightInit.l();
+      i += 16;
     }
     final WrappedI80F48 assetWeightMaint;
     if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -60,7 +60,7 @@ public record BankConfigOpt(WrappedI80F48 assetWeightInit,
     } else {
       ++i;
       assetWeightMaint = WrappedI80F48.read(_data, i);
-      i += assetWeightMaint.l();
+      i += 16;
     }
     final WrappedI80F48 liabilityWeightInit;
     if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -69,7 +69,7 @@ public record BankConfigOpt(WrappedI80F48 assetWeightInit,
     } else {
       ++i;
       liabilityWeightInit = WrappedI80F48.read(_data, i);
-      i += liabilityWeightInit.l();
+      i += 16;
     }
     final WrappedI80F48 liabilityWeightMaint;
     if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -78,7 +78,7 @@ public record BankConfigOpt(WrappedI80F48 assetWeightInit,
     } else {
       ++i;
       liabilityWeightMaint = WrappedI80F48.read(_data, i);
-      i += liabilityWeightMaint.l();
+      i += 16;
     }
     final OptionalLong depositLimit;
     if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -105,7 +105,7 @@ public record BankConfigOpt(WrappedI80F48 assetWeightInit,
     } else {
       ++i;
       operationalState = BankOperationalState.read(_data, i);
-      i += operationalState.l();
+      i += 1;
     }
     final InterestRateConfigOpt interestRateConfig;
     if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -123,7 +123,7 @@ public record BankConfigOpt(WrappedI80F48 assetWeightInit,
     } else {
       ++i;
       riskTier = RiskTier.read(_data, i);
-      i += riskTier.l();
+      i += 1;
     }
     final OptionalInt assetTag;
     if (SerDeUtil.isAbsent(1, _data, i)) {

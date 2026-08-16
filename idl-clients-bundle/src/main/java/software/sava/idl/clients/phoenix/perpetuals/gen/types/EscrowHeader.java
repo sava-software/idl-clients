@@ -89,7 +89,7 @@ public record EscrowHeader(PublicKey _address,
     final var funderKey = readPubKey(_data, i);
     i += 32;
     final var sequenceNumber = SequenceNumber.read(_data, i);
-    i += sequenceNumber.l();
+    i += 16;
     final var len = getInt64LE(_data, i);
     i += 8;
     final var capacity = getInt64LE(_data, i);

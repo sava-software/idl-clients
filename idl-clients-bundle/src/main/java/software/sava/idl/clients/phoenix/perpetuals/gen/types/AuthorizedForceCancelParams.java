@@ -18,7 +18,7 @@ public record AuthorizedForceCancelParams(BaseLots remainingBidBaseLots, BaseLot
     }
     int i = _offset;
     final var remainingBidBaseLots = BaseLots.read(_data, i);
-    i += remainingBidBaseLots.l();
+    i += 8;
     final var remainingAskBaseLots = BaseLots.read(_data, i);
     return new AuthorizedForceCancelParams(remainingBidBaseLots, remainingAskBaseLots);
   }

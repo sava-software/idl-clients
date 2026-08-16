@@ -358,7 +358,7 @@ public record FarmState(PublicKey _address,
     final var globalConfig = readPubKey(_data, i);
     i += 32;
     final var token = TokenInfo.read(_data, i);
-    i += token.l();
+    i += 120;
     final var rewardInfos = new RewardInfo[10];
     i += SerDeUtil.readArray(rewardInfos, RewardInfo::read, _data, i);
     final var numRewardTokens = getInt64LE(_data, i);

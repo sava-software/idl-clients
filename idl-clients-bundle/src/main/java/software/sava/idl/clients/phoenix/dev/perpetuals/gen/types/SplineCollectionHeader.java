@@ -91,9 +91,9 @@ public record SplineCollectionHeader(PublicKey _address,
     final var market = readPubKey(_data, i);
     i += 32;
     final var assetSymbol = Symbol.read(_data, i);
-    i += assetSymbol.l();
+    i += 16;
     final var sequenceNumber = SequenceNumber.read(_data, i);
-    i += sequenceNumber.l();
+    i += 16;
     final var numSplines = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var numActive = Integer.toUnsignedLong(getInt32LE(_data, i));

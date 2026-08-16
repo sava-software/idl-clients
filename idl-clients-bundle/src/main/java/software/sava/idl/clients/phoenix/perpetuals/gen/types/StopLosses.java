@@ -101,7 +101,7 @@ public record StopLosses(PublicKey _address,
     final var initialized = getInt64LE(_data, i);
     i += 8;
     final var sequenceNumber = SequenceNumber.read(_data, i);
-    i += sequenceNumber.l();
+    i += 16;
     final var fundingKey = readPubKey(_data, i);
     i += 32;
     final var traderKey = readPubKey(_data, i);

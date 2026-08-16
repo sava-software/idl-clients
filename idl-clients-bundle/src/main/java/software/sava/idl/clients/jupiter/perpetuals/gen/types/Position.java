@@ -167,7 +167,7 @@ public record Position(PublicKey _address,
     final var updateTime = getInt64LE(_data, i);
     i += 8;
     final var side = Side.read(_data, i);
-    i += side.l();
+    i += 1;
     final var price = getInt64LE(_data, i);
     i += 8;
     final var sizeUsd = getInt64LE(_data, i);

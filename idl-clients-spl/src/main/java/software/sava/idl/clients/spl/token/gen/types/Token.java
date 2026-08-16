@@ -146,7 +146,7 @@ public record Token(PublicKey _address,
       i += 32;
     }
     final var state = AccountState.read(_data, i);
-    i += state.l();
+    i += 1;
     final OptionalLong isNative;
     if (SerDeUtil.isAbsent(4, _data, i)) {
       isNative = OptionalLong.empty();

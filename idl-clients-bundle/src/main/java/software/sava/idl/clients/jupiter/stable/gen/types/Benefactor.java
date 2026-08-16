@@ -100,7 +100,7 @@ public record Benefactor(PublicKey _address,
     final var authority = readPubKey(_data, i);
     i += 32;
     final var status = BenefactorStatus.read(_data, i);
-    i += status.l();
+    i += 1;
     final var padding0 = new byte[7];
     i += SerDeUtil.readArray(padding0, _data, i);
     final var mintFeeRate = Short.toUnsignedInt(getInt16LE(_data, i));

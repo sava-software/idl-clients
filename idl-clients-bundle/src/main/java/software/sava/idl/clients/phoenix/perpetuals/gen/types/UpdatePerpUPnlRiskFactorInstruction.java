@@ -18,7 +18,7 @@ public record UpdatePerpUPnlRiskFactorInstruction(Symbol perpAssetSymbol, UPnlRi
     }
     int i = _offset;
     final var perpAssetSymbol = Symbol.read(_data, i);
-    i += perpAssetSymbol.l();
+    i += 16;
     final var upnlRiskFactor = UPnlRiskFactor.read(_data, i);
     return new UpdatePerpUPnlRiskFactorInstruction(perpAssetSymbol, upnlRiskFactor);
   }

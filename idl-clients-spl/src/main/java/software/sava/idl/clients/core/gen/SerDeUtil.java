@@ -2977,11 +2977,27 @@ public final class SerDeUtil {
 
   // SerDe
 
+  /// Returns null for an ordinal that names no variant. Programs add variants over time —
+  /// Token-2022's ExtensionType is the standing example — so an ordinal past the end usually
+  /// means this client was generated before the program grew, not that the account is corrupt.
+  /// Whether that matters is the caller's call: the variant may be one they have no interest
+  /// in. Indexing straight into the array took that decision away with an
+  /// ArrayIndexOutOfBoundsException naming neither the type nor the value.
   public static <E extends java.lang.Enum<?>> E read(final int bytes,
                                                      final E[] values,
                                                      final byte[] data,
                                                      final int offset) {
-    return values[val(bytes, data, offset)];
+    final int ordinal;
+    try {
+      ordinal = val(bytes, data, offset);
+    } catch (final ArithmeticException tooWideForAnInt) {
+      // An eight byte ordinal past Integer.MAX_VALUE names no variant of anything — there is
+      // no array it could index — so it is the same answer as any other out of range value,
+      // not a separate failure mode. Without this the contract would hold for every width but
+      // one.
+      return null;
+    }
+    return ordinal < 0 || ordinal >= values.length ? null : values[ordinal];
   }
 
   public static <T extends SerDe> int readArray(final T[] result,

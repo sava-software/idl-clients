@@ -42,9 +42,9 @@ public record StakedSettingsConfig(PublicKey oracle,
     final var oracle = readPubKey(_data, i);
     i += 32;
     final var assetWeightInit = WrappedI80F48.read(_data, i);
-    i += assetWeightInit.l();
+    i += 16;
     final var assetWeightMaint = WrappedI80F48.read(_data, i);
-    i += assetWeightMaint.l();
+    i += 16;
     final var depositLimit = getInt64LE(_data, i);
     i += 8;
     final var totalAssetValueInitLimit = getInt64LE(_data, i);

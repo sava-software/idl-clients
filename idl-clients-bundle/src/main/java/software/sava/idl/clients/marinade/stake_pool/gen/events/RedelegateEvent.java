@@ -113,7 +113,7 @@ public record RedelegateEvent(Discriminator discriminator,
     } else {
       ++i;
       splitStakeAccount = SplitStakeAccountInfo.read(_data, i);
-      i += splitStakeAccount.l();
+      i += 36;
     }
     final var redelegateStakeIndex = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;

@@ -62,7 +62,7 @@ public record PriceUpdateV2(PublicKey _address,
     final var verificationLevel = VerificationLevel.read(_data, i);
     i += verificationLevel.l();
     final var priceMessage = PriceFeedMessage.read(_data, i);
-    i += priceMessage.l();
+    i += 84;
     final var postedSlot = getInt64LE(_data, i);
     return new PriceUpdateV2(_address,
                              discriminator,

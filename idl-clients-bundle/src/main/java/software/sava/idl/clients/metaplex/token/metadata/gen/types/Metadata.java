@@ -64,7 +64,7 @@ public record Metadata(PublicKey _address,
     }
     int i = _offset;
     final var key = Key.read(_data, i);
-    i += key.l();
+    i += 1;
     final var updateAuthority = readPubKey(_data, i);
     i += 32;
     final var mint = readPubKey(_data, i);
@@ -91,7 +91,7 @@ public record Metadata(PublicKey _address,
     } else {
       ++i;
       tokenStandard = TokenStandard.read(_data, i);
-      i += tokenStandard.l();
+      i += 1;
     }
     final Collection collection;
     if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -100,7 +100,7 @@ public record Metadata(PublicKey _address,
     } else {
       ++i;
       collection = Collection.read(_data, i);
-      i += collection.l();
+      i += 33;
     }
     final Uses uses;
     if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -109,7 +109,7 @@ public record Metadata(PublicKey _address,
     } else {
       ++i;
       uses = Uses.read(_data, i);
-      i += uses.l();
+      i += 17;
     }
     final CollectionDetails collectionDetails;
     if (SerDeUtil.isAbsent(1, _data, i)) {

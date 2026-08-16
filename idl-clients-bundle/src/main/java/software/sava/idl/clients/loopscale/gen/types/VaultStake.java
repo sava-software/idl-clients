@@ -132,7 +132,7 @@ public record VaultStake(PublicKey _address,
     final var amount = getInt64LE(_data, i);
     i += 8;
     final var duration = Duration.read(_data, i);
-    i += duration.l();
+    i += 5;
     final var startTime = getInt64LE(_data, i);
     i += 8;
     final var endTime = getInt64LE(_data, i);

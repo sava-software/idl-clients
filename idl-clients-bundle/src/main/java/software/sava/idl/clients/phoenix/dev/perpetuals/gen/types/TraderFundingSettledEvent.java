@@ -41,13 +41,13 @@ public record TraderFundingSettledEvent(Discriminator discriminator,
     final var trader = readPubKey(_data, i);
     i += 32;
     final var assetSymbol = Symbol.read(_data, i);
-    i += assetSymbol.l();
+    i += 16;
     final var assetId = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var fundingPayment = SignedQuoteLots.read(_data, i);
-    i += fundingPayment.l();
+    i += 8;
     final var cumulativeFundingSnapshot = SignedQuoteLotsPerBaseLot.read(_data, i);
-    i += cumulativeFundingSnapshot.l();
+    i += 8;
     final var newCollateralBalance = SignedQuoteLots.read(_data, i);
     return new TraderFundingSettledEvent(discriminator,
                                          trader,

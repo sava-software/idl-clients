@@ -137,7 +137,7 @@ public record SpendingLimit(PublicKey _address,
     final var amount = getInt64LE(_data, i);
     i += 8;
     final var period = Period.read(_data, i);
-    i += period.l();
+    i += 1;
     final var remainingAmount = getInt64LE(_data, i);
     i += 8;
     final var lastReset = getInt64LE(_data, i);

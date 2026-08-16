@@ -99,11 +99,11 @@ public record MarketInformation(PublicKey _address,
     final var assetData = new AssetData[200];
     i += SerDeUtil.readArray(assetData, AssetData::read, _data, i);
     final var borrowCaps = PrincipalCaps.read(_data, i);
-    i += borrowCaps.l();
+    i += 24;
     final var withdrawCaps = PrincipalCaps.read(_data, i);
-    i += withdrawCaps.l();
+    i += 24;
     final var supplyCaps = PrincipalCaps.read(_data, i);
-    i += supplyCaps.l();
+    i += 24;
     final var version = _data[i] & 0xFF;
     return new MarketInformation(_address,
                                  discriminator,

@@ -123,7 +123,7 @@ public record Reserve(PublicKey _address,
     final var version = getInt64LE(_data, i);
     i += 8;
     final var lastUpdate = LastUpdate.read(_data, i);
-    i += lastUpdate.l();
+    i += 16;
     final var lendingMarket = readPubKey(_data, i);
     i += 32;
     final var farmCollateral = readPubKey(_data, i);
@@ -131,15 +131,15 @@ public record Reserve(PublicKey _address,
     final var farmDebt = readPubKey(_data, i);
     i += 32;
     final var liquidity = ReserveLiquidity.read(_data, i);
-    i += liquidity.l();
+    i += 1232;
     final var reserveLiquidityPadding = new long[150];
     i += SerDeUtil.readArray(reserveLiquidityPadding, _data, i);
     final var collateral = ReserveCollateral.read(_data, i);
-    i += collateral.l();
+    i += 1096;
     final var reserveCollateralPadding = new long[150];
     i += SerDeUtil.readArray(reserveCollateralPadding, _data, i);
     final var config = ReserveConfig.read(_data, i);
-    i += config.l();
+    i += 952;
     final var configPadding = new long[112];
     i += SerDeUtil.readArray(configPadding, _data, i);
     final var borrowedAmountOutsideElevationGroup = getInt64LE(_data, i);
@@ -147,7 +147,7 @@ public record Reserve(PublicKey _address,
     final var borrowedAmountsAgainstThisReserveInElevationGroups = new long[32];
     i += SerDeUtil.readArray(borrowedAmountsAgainstThisReserveInElevationGroups, _data, i);
     final var withdrawQueue = WithdrawQueue.read(_data, i);
-    i += withdrawQueue.l();
+    i += 24;
     final var padding = new long[204];
     SerDeUtil.readArray(padding, _data, i);
     return new Reserve(_address,

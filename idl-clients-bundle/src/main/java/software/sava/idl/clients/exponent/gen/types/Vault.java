@@ -282,11 +282,11 @@ public record Vault(PublicKey _address,
     final var signerBump = new byte[1];
     i += SerDeUtil.readArray(signerBump, _data, i);
     final var lastSeenSyExchangeRate = Number.read(_data, i);
-    i += lastSeenSyExchangeRate.l();
+    i += 32;
     final var allTimeHighSyExchangeRate = Number.read(_data, i);
-    i += allTimeHighSyExchangeRate.l();
+    i += 32;
     final var finalSyExchangeRate = Number.read(_data, i);
-    i += finalSyExchangeRate.l();
+    i += 32;
     final var totalSyInEscrow = getInt64LE(_data, i);
     i += 8;
     final var syForPt = getInt64LE(_data, i);
@@ -312,7 +312,7 @@ public record Vault(PublicKey _address,
     final var cpiAccounts = CpiAccounts.read(_data, i);
     i += cpiAccounts.l();
     final var claimLimits = ClaimLimits.read(_data, i);
-    i += claimLimits.l();
+    i += 24;
     final var maxPySupply = getInt64LE(_data, i);
     return new Vault(_address,
                      discriminator,

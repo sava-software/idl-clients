@@ -75,7 +75,7 @@ public record UpdateActiveEvent(Discriminator discriminator,
     final var validatorVote = readPubKey(_data, i);
     i += 32;
     final var delegationChange = U64ValueChange.read(_data, i);
-    i += delegationChange.l();
+    i += 16;
     final OptionalLong delegationGrowthMsolFees;
     if (SerDeUtil.isAbsent(1, _data, i)) {
       delegationGrowthMsolFees = OptionalLong.empty();
@@ -101,9 +101,9 @@ public record UpdateActiveEvent(Discriminator discriminator,
     final var totalActiveBalance = getInt64LE(_data, i);
     i += 8;
     final var msolPriceChange = U64ValueChange.read(_data, i);
-    i += msolPriceChange.l();
+    i += 16;
     final var rewardFeeUsed = Fee.read(_data, i);
-    i += rewardFeeUsed.l();
+    i += 4;
     final var totalVirtualStakedLamports = getInt64LE(_data, i);
     i += 8;
     final var msolSupply = getInt64LE(_data, i);

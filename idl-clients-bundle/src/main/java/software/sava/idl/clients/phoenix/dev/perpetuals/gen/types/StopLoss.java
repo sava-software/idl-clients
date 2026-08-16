@@ -45,11 +45,11 @@ public record StopLoss(long sequenceNumber,
     final var sequenceNumber = getInt64LE(_data, i);
     i += 8;
     final var triggerPrice = Ticks.read(_data, i);
-    i += triggerPrice.l();
+    i += 8;
     final var executionPrice = Ticks.read(_data, i);
-    i += executionPrice.l();
+    i += 8;
     final var tradeSize = BaseLots.read(_data, i);
-    i += tradeSize.l();
+    i += 8;
     final var slot = getInt64LE(_data, i);
     i += 8;
     final var positionSequenceNumber = _data[i] & 0xFF;

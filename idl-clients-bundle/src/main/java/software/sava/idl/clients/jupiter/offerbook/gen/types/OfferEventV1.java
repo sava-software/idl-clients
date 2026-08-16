@@ -60,9 +60,9 @@ public record OfferEventV1(PublicKey creator,
     final var creator = readPubKey(_data, i);
     i += 32;
     final var side = OfferSide.read(_data, i);
-    i += side.l();
+    i += 1;
     final var status = OfferStatus.read(_data, i);
-    i += status.l();
+    i += 1;
     final var principal = EventAsset.read(_data, i);
     i += principal.l();
     final var collateral = EventAsset.read(_data, i);

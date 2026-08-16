@@ -50,7 +50,7 @@ public record StopLossExecutedEvent(Discriminator discriminator,
     final var assetId = getInt64LE(_data, i);
     i += 8;
     final var executionDirection = Direction.read(_data, i);
-    i += executionDirection.l();
+    i += 1;
     final var orderSequenceNumber = getInt64LE(_data, i);
     return new StopLossExecutedEvent(discriminator,
                                      trader,

@@ -19,7 +19,7 @@ public record OraclePriceUpdate(Symbol perpAssetId,
     }
     int i = _offset;
     final var perpAssetId = Symbol.read(_data, i);
-    i += perpAssetId.l();
+    i += 16;
     final Price newExchangePerpPrice;
     if (SerDeUtil.isAbsent(1, _data, i)) {
       newExchangePerpPrice = null;
@@ -27,7 +27,7 @@ public record OraclePriceUpdate(Symbol perpAssetId,
     } else {
       ++i;
       newExchangePerpPrice = Price.read(_data, i);
-      i += newExchangePerpPrice.l();
+      i += 9;
     }
     final var newExchangeSpotPrice = Price.read(_data, i);
     return new OraclePriceUpdate(perpAssetId, newExchangePerpPrice, newExchangeSpotPrice);

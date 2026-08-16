@@ -139,7 +139,7 @@ public record AgPriceFeed(PublicKey _address,
     final var timestamp = getInt64LE(_data, i);
     i += 8;
     final var config = Config.read(_data, i);
-    i += config.l();
+    i += 16;
     final var bump = _data[i] & 0xFF;
     ++i;
     final var pythLazerFeed = readPubKey(_data, i);

@@ -24,7 +24,7 @@ public record MarketClosedEvent(Discriminator discriminator, MarketStatus previo
     final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var previousMarketStatus = MarketStatus.read(_data, i);
-    i += previousMarketStatus.l();
+    i += 1;
     final var finalizedMarkPrice = Ticks.read(_data, i);
     return new MarketClosedEvent(discriminator, previousMarketStatus, finalizedMarkPrice);
   }

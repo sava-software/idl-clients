@@ -87,9 +87,9 @@ public record LiquidUnstakeEvent(Discriminator discriminator,
     final var lpLiquidityTarget = getInt64LE(_data, i);
     i += 8;
     final var lpMaxFee = Fee.read(_data, i);
-    i += lpMaxFee.l();
+    i += 4;
     final var lpMinFee = Fee.read(_data, i);
-    i += lpMinFee.l();
+    i += 4;
     final var treasuryCut = Fee.read(_data, i);
     return new LiquidUnstakeEvent(discriminator,
                                   state,

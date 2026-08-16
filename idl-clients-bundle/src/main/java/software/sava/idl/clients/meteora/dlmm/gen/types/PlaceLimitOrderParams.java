@@ -30,7 +30,7 @@ public record PlaceLimitOrderParams(boolean isAskSide,
     } else {
       ++i;
       relativeBin = RelativeBin.read(_data, i);
-      i += relativeBin.l();
+      i += 8;
     }
     final var bins = SerDeUtil.readVector(4, BinLimitOrderAmount.class, BinLimitOrderAmount::read, _data, i);
     return new PlaceLimitOrderParams(isAskSide,

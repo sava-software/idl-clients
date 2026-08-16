@@ -28,7 +28,7 @@ public record FundingParametersUpdatedEvent(Discriminator discriminator,
     final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var symbol = Symbol.read(_data, i);
-    i += symbol.l();
+    i += 16;
     final FundingRateUnitInSeconds newFundingIntervalSeconds;
     if (SerDeUtil.isAbsent(1, _data, i)) {
       newFundingIntervalSeconds = null;
@@ -36,7 +36,7 @@ public record FundingParametersUpdatedEvent(Discriminator discriminator,
     } else {
       ++i;
       newFundingIntervalSeconds = FundingRateUnitInSeconds.read(_data, i);
-      i += newFundingIntervalSeconds.l();
+      i += 8;
     }
     final FundingRateUnitInSeconds newFundingPeriodSeconds;
     if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -45,7 +45,7 @@ public record FundingParametersUpdatedEvent(Discriminator discriminator,
     } else {
       ++i;
       newFundingPeriodSeconds = FundingRateUnitInSeconds.read(_data, i);
-      i += newFundingPeriodSeconds.l();
+      i += 8;
     }
     final SignedQuoteLotsPerBaseLot newMaxFundingRate;
     if (SerDeUtil.isAbsent(1, _data, i)) {

@@ -35,9 +35,9 @@ public record Delegation(PublicKey voterPubkey,
     final var stake = getInt64LE(_data, i);
     i += 8;
     final var activationEpoch = Epoch.read(_data, i);
-    i += activationEpoch.l();
+    i += 8;
     final var deactivationEpoch = Epoch.read(_data, i);
-    i += deactivationEpoch.l();
+    i += 8;
     final var reserved = new byte[8];
     SerDeUtil.readArray(reserved, _data, i);
     return new Delegation(voterPubkey,

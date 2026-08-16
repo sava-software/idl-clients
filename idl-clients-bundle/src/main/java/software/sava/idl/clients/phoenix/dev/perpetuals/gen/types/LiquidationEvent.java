@@ -49,13 +49,13 @@ public record LiquidationEvent(Discriminator discriminator,
     final var assetId = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var liquidationSize = BaseLots.read(_data, i);
-    i += liquidationSize.l();
+    i += 8;
     final var markPrice = Ticks.read(_data, i);
-    i += markPrice.l();
+    i += 8;
     final var baseLotsFilled = BaseLots.read(_data, i);
-    i += baseLotsFilled.l();
+    i += 8;
     final var quoteLotsFilled = QuoteLots.read(_data, i);
-    i += quoteLotsFilled.l();
+    i += 8;
     final var positionClosed = _data[i] == 1;
     return new LiquidationEvent(discriminator,
                                 liquidator,

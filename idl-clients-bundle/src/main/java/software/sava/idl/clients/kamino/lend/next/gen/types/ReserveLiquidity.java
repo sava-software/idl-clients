@@ -90,7 +90,7 @@ public record ReserveLiquidity(PublicKey mintPubkey,
     final var borrowLimitCrossedTimestamp = getInt64LE(_data, i);
     i += 8;
     final var cumulativeBorrowRateBsf = BigFractionBytes.read(_data, i);
-    i += cumulativeBorrowRateBsf.l();
+    i += 48;
     final var accumulatedProtocolFeesSf = getUInt128LE(_data, i);
     i += 16;
     final var accumulatedReferrerFeesSf = getUInt128LE(_data, i);

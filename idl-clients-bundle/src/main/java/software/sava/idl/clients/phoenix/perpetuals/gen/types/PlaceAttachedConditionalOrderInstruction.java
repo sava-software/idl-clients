@@ -23,7 +23,7 @@ public record PlaceAttachedConditionalOrderInstruction(FIFOOrderId orderId,
     }
     int i = _offset;
     final var orderId = FIFOOrderId.read(_data, i);
-    i += orderId.l();
+    i += 16;
     final var assetId = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final TriggerOrderParams greaterTriggerOrder;
@@ -33,7 +33,7 @@ public record PlaceAttachedConditionalOrderInstruction(FIFOOrderId orderId,
     } else {
       ++i;
       greaterTriggerOrder = TriggerOrderParams.read(_data, i);
-      i += greaterTriggerOrder.l();
+      i += 19;
     }
     final TriggerOrderParams lessTriggerOrder;
     if (SerDeUtil.isAbsent(1, _data, i)) {

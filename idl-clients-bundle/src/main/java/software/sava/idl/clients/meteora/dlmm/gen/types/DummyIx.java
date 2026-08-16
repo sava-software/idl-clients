@@ -25,15 +25,15 @@ public record DummyIx(PairStatus pairStatus,
     }
     int i = _offset;
     final var pairStatus = PairStatus.read(_data, i);
-    i += pairStatus.l();
+    i += 1;
     final var pairType = PairType.read(_data, i);
-    i += pairType.l();
+    i += 1;
     final var activationType = ActivationType.read(_data, i);
-    i += activationType.l();
+    i += 1;
     final var tokenProgramFlag = TokenProgramFlags.read(_data, i);
-    i += tokenProgramFlag.l();
+    i += 1;
     final var resizeSide = ResizeSide.read(_data, i);
-    i += resizeSide.l();
+    i += 1;
     final var rounding = Rounding.read(_data, i);
     return new DummyIx(pairStatus,
                        pairType,

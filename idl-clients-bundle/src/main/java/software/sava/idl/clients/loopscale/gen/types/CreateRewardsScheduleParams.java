@@ -29,7 +29,7 @@ public record CreateRewardsScheduleParams(PodDecimal totalWeightedStakeSupply,
     }
     int i = _offset;
     final var totalWeightedStakeSupply = PodDecimal.read(_data, i);
-    i += totalWeightedStakeSupply.l();
+    i += 24;
     final var rewardStartTime = getInt64LE(_data, i);
     i += 8;
     final var rewardEndTime = getInt64LE(_data, i);

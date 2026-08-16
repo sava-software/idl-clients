@@ -58,7 +58,7 @@ public record Perpetuals(PublicKey _address,
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var permissions = Permissions.read(_data, i);
-    i += permissions.l();
+    i += 7;
     final var pools = SerDeUtil.readPublicKeyVector(4, _data, i);
     i += SerDeUtil.lenVector(4, pools);
     final var admin = readPubKey(_data, i);

@@ -24,7 +24,7 @@ public record YieldTokenTracker(Number lastSeenIndex, long staged) implements Se
     }
     int i = _offset;
     final var lastSeenIndex = Number.read(_data, i);
-    i += lastSeenIndex.l();
+    i += 32;
     final var staged = getInt64LE(_data, i);
     return new YieldTokenTracker(lastSeenIndex, staged);
   }

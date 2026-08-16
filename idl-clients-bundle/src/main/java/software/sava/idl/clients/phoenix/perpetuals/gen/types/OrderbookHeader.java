@@ -148,25 +148,25 @@ public record OrderbookHeader(PublicKey _address,
     final var padding0 = new byte[6];
     i += SerDeUtil.readArray(padding0, _data, i);
     final var sequenceNumber = SequenceNumber.read(_data, i);
-    i += sequenceNumber.l();
+    i += 16;
     final var assetId = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var assetIdPadding = new byte[4];
     i += SerDeUtil.readArray(assetIdPadding, _data, i);
     final var assetSymbol = Symbol.read(_data, i);
-    i += assetSymbol.l();
+    i += 16;
     final var tickSizeInQuoteLotsPerBaseLot = getInt64LE(_data, i);
     i += 8;
     final var orderSequenceNumber = SequenceNumber.read(_data, i);
-    i += orderSequenceNumber.l();
+    i += 16;
     final var tradeSequenceNumber = SequenceNumber.read(_data, i);
-    i += tradeSequenceNumber.l();
+    i += 16;
     final var defaultTakerFeeMicro = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var defaultMakerFeeMicro = getInt32LE(_data, i);
     i += 4;
     final var totalMakerQuoteLotFees = SignedQuoteLots.read(_data, i);
-    i += totalMakerQuoteLotFees.l();
+    i += 8;
     final var totalTakerQuoteLotFees = QuoteLots.read(_data, i);
     return new OrderbookHeader(_address,
                                discriminator,

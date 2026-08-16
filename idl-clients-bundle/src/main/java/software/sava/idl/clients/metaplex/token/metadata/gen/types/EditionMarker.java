@@ -42,7 +42,7 @@ public record EditionMarker(PublicKey _address, Key key, byte[] ledger) implemen
     }
     int i = _offset;
     final var key = Key.read(_data, i);
-    i += key.l();
+    i += 1;
     final var ledger = new byte[31];
     SerDeUtil.readArray(ledger, _data, i);
     return new EditionMarker(_address, key, ledger);

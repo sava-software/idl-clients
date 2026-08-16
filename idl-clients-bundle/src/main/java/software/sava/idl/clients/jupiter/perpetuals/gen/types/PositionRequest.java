@@ -177,11 +177,11 @@ public record PositionRequest(PublicKey _address,
     final var collateralDelta = getInt64LE(_data, i);
     i += 8;
     final var requestChange = RequestChange.read(_data, i);
-    i += requestChange.l();
+    i += 1;
     final var requestType = RequestType.read(_data, i);
-    i += requestType.l();
+    i += 1;
     final var side = Side.read(_data, i);
-    i += side.l();
+    i += 1;
     final OptionalLong priceSlippage;
     if (SerDeUtil.isAbsent(1, _data, i)) {
       priceSlippage = OptionalLong.empty();

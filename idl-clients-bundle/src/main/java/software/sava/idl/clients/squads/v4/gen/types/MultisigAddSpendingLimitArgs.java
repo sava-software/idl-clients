@@ -70,7 +70,7 @@ public record MultisigAddSpendingLimitArgs(PublicKey createKey,
     final var amount = getInt64LE(_data, i);
     i += 8;
     final var period = Period.read(_data, i);
-    i += period.l();
+    i += 1;
     final var members = SerDeUtil.readPublicKeyVector(4, _data, i);
     i += SerDeUtil.lenVector(4, members);
     final var destinations = SerDeUtil.readPublicKeyVector(4, _data, i);

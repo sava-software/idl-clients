@@ -16,7 +16,7 @@ public record UpsertEscrowRequestParams(EscrowParticipantMetadata participantMet
     }
     int i = _offset;
     final var participantMetadata = EscrowParticipantMetadata.read(_data, i);
-    i += participantMetadata.l();
+    i += 4;
     final var action = EscrowAction.read(_data, i);
     return new UpsertEscrowRequestParams(participantMetadata, action);
   }

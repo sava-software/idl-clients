@@ -66,7 +66,7 @@ public record WithdrawYtEvent(Discriminator discriminator,
     final var amount = getInt64LE(_data, i);
     i += 8;
     final var syExchangeRate = Number.read(_data, i);
-    i += syExchangeRate.l();
+    i += 32;
     final var userYtBalanceAfter = getInt64LE(_data, i);
     i += 8;
     final var vaultYtBalanceAfter = getInt64LE(_data, i);

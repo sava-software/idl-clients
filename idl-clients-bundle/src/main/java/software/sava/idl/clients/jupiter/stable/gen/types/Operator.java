@@ -78,7 +78,7 @@ public record Operator(PublicKey _address,
     final var role = getInt64LE(_data, i);
     i += 8;
     final var status = OperatorStatus.read(_data, i);
-    i += status.l();
+    i += 1;
     final var padding0 = new byte[7];
     i += SerDeUtil.readArray(padding0, _data, i);
     final var reserved = new byte[128];

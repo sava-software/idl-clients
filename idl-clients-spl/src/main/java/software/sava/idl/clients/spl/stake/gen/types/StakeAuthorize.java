@@ -3,6 +3,7 @@ package software.sava.idl.clients.spl.stake.gen.types;
 
 import software.sava.core.encoding.ByteUtil;
 import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 public enum StakeAuthorize implements SerDe {
 
@@ -10,7 +11,7 @@ public enum StakeAuthorize implements SerDe {
   withdrawer;
 
   public static StakeAuthorize read(final byte[] _data, final int _offset) {
-    return StakeAuthorize.values()[ByteUtil.getInt32LE(_data, _offset)];
+    return SerDeUtil.read(4, StakeAuthorize.values(), _data, _offset);
   }
 
   @Override

@@ -22,7 +22,7 @@ public record UpdateCapsParams(ParsedPrincipalCaps borrowCaps,
     } else {
       ++i;
       borrowCaps = ParsedPrincipalCaps.read(_data, i);
-      i += borrowCaps.l();
+      i += 24;
     }
     final ParsedPrincipalCaps withdrawCaps;
     if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -31,7 +31,7 @@ public record UpdateCapsParams(ParsedPrincipalCaps borrowCaps,
     } else {
       ++i;
       withdrawCaps = ParsedPrincipalCaps.read(_data, i);
-      i += withdrawCaps.l();
+      i += 24;
     }
     final ParsedPrincipalCaps supplyCaps;
     if (SerDeUtil.isAbsent(1, _data, i)) {

@@ -14,7 +14,7 @@ public record AddCollateralTimeLockArgs(CollateralTerms collateralTerms, UpdateA
     }
     int i = _offset;
     final var collateralTerms = CollateralTerms.read(_data, i);
-    i += collateralTerms.l();
+    i += 72;
     final var updateAssetDataParams = UpdateAssetDataParams.read(_data, i);
     return new AddCollateralTimeLockArgs(collateralTerms, updateAssetDataParams);
   }

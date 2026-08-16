@@ -223,7 +223,7 @@ public sealed interface UpdateArgs extends RustEnum permits
       } else {
         ++i;
         tokenStandard = TokenStandard.read(_data, i);
-        i += tokenStandard.l();
+        i += 1;
       }
       final AuthorizationData authorizationData;
       if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -330,7 +330,7 @@ public sealed interface UpdateArgs extends RustEnum permits
       } else {
         ++i;
         tokenStandard = TokenStandard.read(_data, i);
-        i += tokenStandard.l();
+        i += 1;
       }
       final AuthorizationData authorizationData;
       if (SerDeUtil.isAbsent(1, _data, i)) {

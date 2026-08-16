@@ -103,25 +103,25 @@ public record BankCache(long baseRate,
     final var interestAccumulatedFor = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var accumulatedSinceLastUpdate = WrappedI80F48.read(_data, i);
-    i += accumulatedSinceLastUpdate.l();
+    i += 16;
     final var lastOraclePrice = WrappedI80F48.read(_data, i);
-    i += lastOraclePrice.l();
+    i += 16;
     final var lastOraclePriceTimestamp = getInt64LE(_data, i);
     i += 8;
     final var lastOraclePriceConfidence = WrappedI80F48.read(_data, i);
-    i += lastOraclePriceConfidence.l();
+    i += 16;
     final var liqCacheFlags = _data[i] & 0xFF;
     ++i;
     final var pad0 = new byte[7];
     i += SerDeUtil.readArray(pad0, _data, i);
     final var priceMultiplier = WrappedI80F48.read(_data, i);
-    i += priceMultiplier.l();
+    i += 16;
     final var liquidationPriceRt = WrappedI80F48.read(_data, i);
-    i += liquidationPriceRt.l();
+    i += 16;
     final var liquidationPriceRtConfidence = WrappedI80F48.read(_data, i);
-    i += liquidationPriceRtConfidence.l();
+    i += 16;
     final var liquidationPriceTwap = WrappedI80F48.read(_data, i);
-    i += liquidationPriceTwap.l();
+    i += 16;
     final var liquidationPriceTwapConfidence = WrappedI80F48.read(_data, i);
     return new BankCache(baseRate,
                          lendingRate,

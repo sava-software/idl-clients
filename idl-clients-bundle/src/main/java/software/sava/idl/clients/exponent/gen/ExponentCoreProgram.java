@@ -1554,7 +1554,7 @@ public final class ExponentCoreProgram {
       final var initRateAnchor = getFloat64LE(_data, i);
       i += 8;
       final var syExchangeRate = Number.read(_data, i);
-      i += syExchangeRate.l();
+      i += 32;
       final var ptInit = getInt64LE(_data, i);
       i += 8;
       final var syInit = getInt64LE(_data, i);

@@ -19,9 +19,9 @@ public record LeverageTier(BaseLots upperBoundSize,
     }
     int i = _offset;
     final var upperBoundSize = BaseLots.read(_data, i);
-    i += upperBoundSize.l();
+    i += 8;
     final var maxLeverage = Constant.read(_data, i);
-    i += maxLeverage.l();
+    i += 8;
     final var limitOrderRiskFactor = BasisPoints.read(_data, i);
     return new LeverageTier(upperBoundSize, maxLeverage, limitOrderRiskFactor);
   }

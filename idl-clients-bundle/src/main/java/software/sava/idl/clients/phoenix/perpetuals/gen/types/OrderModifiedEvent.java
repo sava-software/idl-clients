@@ -39,13 +39,13 @@ public record OrderModifiedEvent(Discriminator discriminator,
     final var orderSequenceNumber = getInt64LE(_data, i);
     i += 8;
     final var price = Ticks.read(_data, i);
-    i += price.l();
+    i += 8;
     final var baseLotsReleased = SignedBaseLots.read(_data, i);
-    i += baseLotsReleased.l();
+    i += 8;
     final var quoteLotsReleased = SignedQuoteLots.read(_data, i);
-    i += quoteLotsReleased.l();
+    i += 8;
     final var baseLotsRemaining = BaseLots.read(_data, i);
-    i += baseLotsRemaining.l();
+    i += 8;
     final var reason = OrderModificationReason.read(_data, i);
     return new OrderModifiedEvent(discriminator,
                                   orderSequenceNumber,

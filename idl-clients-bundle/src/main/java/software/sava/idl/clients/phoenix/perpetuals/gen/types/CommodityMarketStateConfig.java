@@ -24,7 +24,7 @@ public record CommodityMarketStateConfig(CommodityMarketState marketState,
     }
     int i = _offset;
     final var marketState = CommodityMarketState.read(_data, i);
-    i += marketState.l();
+    i += 1;
     final var isCommodity = _data[i] == 1;
     ++i;
     final Ticks lastKnownIndexPrice;
@@ -34,7 +34,7 @@ public record CommodityMarketStateConfig(CommodityMarketState marketState,
     } else {
       ++i;
       lastKnownIndexPrice = Ticks.read(_data, i);
-      i += lastKnownIndexPrice.l();
+      i += 8;
     }
     final var lastIndexExpiryTimestamp = getInt64LE(_data, i);
     i += 8;

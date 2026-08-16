@@ -105,7 +105,7 @@ public record LiquidationRecord(PublicKey _address,
     final var entries = new LiquidationEntry[4];
     i += SerDeUtil.readArray(entries, LiquidationEntry::read, _data, i);
     final var cache = LiquidationCache.read(_data, i);
-    i += cache.l();
+    i += 104;
     final var reserved0 = new byte[64];
     i += SerDeUtil.readArray(reserved0, _data, i);
     final var reserved2 = new byte[16];

@@ -43,15 +43,15 @@ public record InterestRateConfigCompact(WrappedI80F48 insuranceFeeFixedApr,
     }
     int i = _offset;
     final var insuranceFeeFixedApr = WrappedI80F48.read(_data, i);
-    i += insuranceFeeFixedApr.l();
+    i += 16;
     final var insuranceIrFee = WrappedI80F48.read(_data, i);
-    i += insuranceIrFee.l();
+    i += 16;
     final var protocolFixedFeeApr = WrappedI80F48.read(_data, i);
-    i += protocolFixedFeeApr.l();
+    i += 16;
     final var protocolIrFee = WrappedI80F48.read(_data, i);
-    i += protocolIrFee.l();
+    i += 16;
     final var protocolOriginationFee = WrappedI80F48.read(_data, i);
-    i += protocolOriginationFee.l();
+    i += 16;
     final var zeroUtilRate = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var hundredUtilRate = Integer.toUnsignedLong(getInt32LE(_data, i));

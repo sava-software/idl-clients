@@ -87,7 +87,7 @@ public record ConditionalOrderHeader(PublicKey _address,
     final var fundingKey = readPubKey(_data, i);
     i += 32;
     final var sequenceNumber = SequenceNumber.read(_data, i);
-    i += sequenceNumber.l();
+    i += 16;
     final var len = _data[i] & 0xFF;
     ++i;
     final var capacity = _data[i] & 0xFF;

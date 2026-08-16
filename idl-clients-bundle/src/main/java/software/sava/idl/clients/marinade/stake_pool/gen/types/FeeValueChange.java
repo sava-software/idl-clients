@@ -16,7 +16,7 @@ public record FeeValueChange(Fee old, Fee _new) implements SerDe {
     }
     int i = _offset;
     final var old = Fee.read(_data, i);
-    i += old.l();
+    i += 4;
     final var _new = Fee.read(_data, i);
     return new FeeValueChange(old, _new);
   }

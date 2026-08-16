@@ -571,7 +571,7 @@ public final class KaminoLendingProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final var mode = UpdateConfigMode.read(_data, i);
-      i += mode.l();
+      i += 1;
       final var value = SerDeUtil.readbyteVector(4, _data, i);
       i += SerDeUtil.lenVector(4, value);
       final var skipConfigIntegrityValidation = _data[i] == 1;
@@ -4677,7 +4677,7 @@ public final class KaminoLendingProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final var orderConfig = BorrowOrderConfigArgs.read(_data, i);
-      i += orderConfig.l();
+      i += 29;
       final var minExpectedCurrentRemainingDebtAmount = getInt64LE(_data, i);
       return new SetBorrowOrderIxData(discriminator, orderConfig, minExpectedCurrentRemainingDebtAmount);
     }
@@ -4821,7 +4821,7 @@ public final class KaminoLendingProgram {
       final var orderIdx = _data[i] & 0xFF;
       ++i;
       final var orderConfig = BorrowOrderConfigArgs.read(_data, i);
-      i += orderConfig.l();
+      i += 29;
       final var minExpectedCurrentRemainingDebtAmount = getInt64LE(_data, i);
       return new SetBorrowOrderV2IxData(discriminator, orderIdx, orderConfig, minExpectedCurrentRemainingDebtAmount);
     }
@@ -4925,7 +4925,7 @@ public final class KaminoLendingProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final var mode = UpdateObligationConfigMode.read(_data, i);
-      i += mode.l();
+      i += 1;
       final var value = SerDeUtil.readbyteVector(4, _data, i);
       return new UpdateObligationConfigIxData(discriminator, mode, value);
     }
@@ -6232,7 +6232,7 @@ public final class KaminoLendingProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final var mode = UpdateGlobalConfigMode.read(_data, i);
-      i += mode.l();
+      i += 1;
       final var value = SerDeUtil.readbyteVector(4, _data, i);
       return new UpdateGlobalConfigIxData(discriminator, mode, value);
     }
@@ -6372,13 +6372,13 @@ public final class KaminoLendingProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final var reserveFarmKind = ReserveFarmKind.read(_data, i);
-      i += reserveFarmKind.l();
+      i += 1;
       final var feeCalculation = FeeCalculation.read(_data, i);
-      i += feeCalculation.l();
+      i += 1;
       final var reserveStatus = ReserveStatus.read(_data, i);
-      i += reserveStatus.l();
+      i += 1;
       final var updateConfigMode = UpdateConfigMode.read(_data, i);
-      i += updateConfigMode.l();
+      i += 1;
       final var updateLendingMarketConfigValue = UpdateLendingMarketConfigValue.read(_data, i);
       i += updateLendingMarketConfigValue.l();
       final var updateLendingMarketConfigMode = UpdateLendingMarketMode.read(_data, i);

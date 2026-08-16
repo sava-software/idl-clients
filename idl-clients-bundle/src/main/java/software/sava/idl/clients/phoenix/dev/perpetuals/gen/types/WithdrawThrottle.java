@@ -27,11 +27,11 @@ public record WithdrawThrottle(QuoteLots maxBudget,
     }
     int i = _offset;
     final var maxBudget = QuoteLots.read(_data, i);
-    i += maxBudget.l();
+    i += 8;
     final var remainingBudget = QuoteLots.read(_data, i);
-    i += remainingBudget.l();
+    i += 8;
     final var replenishAmountPerSlot = QuoteLots.read(_data, i);
-    i += replenishAmountPerSlot.l();
+    i += 8;
     final var lastUpdateSlot = getInt64LE(_data, i);
     return new WithdrawThrottle(maxBudget,
                                 remainingBudget,

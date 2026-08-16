@@ -20,7 +20,7 @@ public record UpdateFundingParametersInstruction(Symbol perpAssetSymbol,
     }
     int i = _offset;
     final var perpAssetSymbol = Symbol.read(_data, i);
-    i += perpAssetSymbol.l();
+    i += 16;
     final FundingRateUnitInSeconds fundingIntervalSeconds;
     if (SerDeUtil.isAbsent(1, _data, i)) {
       fundingIntervalSeconds = null;
@@ -28,7 +28,7 @@ public record UpdateFundingParametersInstruction(Symbol perpAssetSymbol,
     } else {
       ++i;
       fundingIntervalSeconds = FundingRateUnitInSeconds.read(_data, i);
-      i += fundingIntervalSeconds.l();
+      i += 8;
     }
     final FundingRateUnitInSeconds fundingPeriodSeconds;
     if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -37,7 +37,7 @@ public record UpdateFundingParametersInstruction(Symbol perpAssetSymbol,
     } else {
       ++i;
       fundingPeriodSeconds = FundingRateUnitInSeconds.read(_data, i);
-      i += fundingPeriodSeconds.l();
+      i += 8;
     }
     final SignedQuoteLotsPerBaseLot maxFundingRate;
     if (SerDeUtil.isAbsent(1, _data, i)) {

@@ -53,7 +53,7 @@ public record TokenOwnedEscrow(PublicKey _address,
     }
     int i = _offset;
     final var key = Key.read(_data, i);
-    i += key.l();
+    i += 1;
     final var baseToken = readPubKey(_data, i);
     i += 32;
     final var authority = EscrowAuthority.read(_data, i);

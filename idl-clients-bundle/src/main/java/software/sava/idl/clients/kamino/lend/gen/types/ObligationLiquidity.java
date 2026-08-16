@@ -76,7 +76,7 @@ public record ObligationLiquidity(PublicKey borrowReserve,
     final var borrowReserve = readPubKey(_data, i);
     i += 32;
     final var cumulativeBorrowRateBsf = BigFractionBytes.read(_data, i);
-    i += cumulativeBorrowRateBsf.l();
+    i += 48;
     final var lastBorrowedAtTimestamp = getInt64LE(_data, i);
     i += 8;
     final var borrowedAmountSf = getUInt128LE(_data, i);
@@ -88,7 +88,7 @@ public record ObligationLiquidity(PublicKey borrowReserve,
     final var borrowedAmountOutsideElevationGroups = getInt64LE(_data, i);
     i += 8;
     final var fixedTermBorrowRolloverConfig = FixedTermBorrowRolloverConfig.read(_data, i);
-    i += fixedTermBorrowRolloverConfig.l();
+    i += 16;
     final var borrowedAmountAtExpiration = getInt64LE(_data, i);
     i += 8;
     final var padding2 = new long[4];

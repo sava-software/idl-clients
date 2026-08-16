@@ -66,7 +66,7 @@ public record MasterEditionV2(PublicKey _address,
     }
     int i = _offset;
     final var key = Key.read(_data, i);
-    i += key.l();
+    i += 1;
     final var supply = getInt64LE(_data, i);
     i += 8;
     final OptionalLong maxSupply;

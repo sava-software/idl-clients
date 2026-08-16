@@ -118,9 +118,9 @@ public record Offer(PublicKey _address,
     final var creator = readPubKey(_data, i);
     i += 32;
     final var side = OfferSide.read(_data, i);
-    i += side.l();
+    i += 1;
     final var status = OfferStatus.read(_data, i);
-    i += status.l();
+    i += 1;
     final var padding = new byte[6];
     i += SerDeUtil.readArray(padding, _data, i);
     final var principal = Asset.read(_data, i);

@@ -52,7 +52,7 @@ public record OrderPlacedEvent(Discriminator discriminator,
     final var orderId = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var orderFlags = OrderFlags.read(_data, i);
-    i += orderFlags.l();
+    i += 1;
     final var orderSequenceNumber = getInt64LE(_data, i);
     i += 8;
     final var prevOrderSequenceNumberSlot = getInt64LE(_data, i);
@@ -60,11 +60,11 @@ public record OrderPlacedEvent(Discriminator discriminator,
     final var clientOrderId = new byte[16];
     i += SerDeUtil.readArray(clientOrderId, _data, i);
     final var price = Ticks.read(_data, i);
-    i += price.l();
+    i += 8;
     final var quantity = SignedBaseLots.read(_data, i);
-    i += quantity.l();
+    i += 8;
     final var lastValidSlot = OptionalNonZeroU64.read(_data, i);
-    i += lastValidSlot.l();
+    i += 8;
     final var initialSlot = getInt64LE(_data, i);
     return new OrderPlacedEvent(discriminator,
                                 orderId,

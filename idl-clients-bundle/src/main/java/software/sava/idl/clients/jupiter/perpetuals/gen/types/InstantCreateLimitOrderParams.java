@@ -38,7 +38,7 @@ public record InstantCreateLimitOrderParams(long sizeUsdDelta,
     final var collateralTokenDelta = getInt64LE(_data, i);
     i += 8;
     final var side = Side.read(_data, i);
-    i += side.l();
+    i += 1;
     final var triggerPrice = getInt64LE(_data, i);
     i += 8;
     final var triggerAboveThreshold = _data[i] == 1;

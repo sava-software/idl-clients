@@ -33,19 +33,19 @@ public record TickRegion(Ticks startOffset,
     }
     int i = _offset;
     final var startOffset = Ticks.read(_data, i);
-    i += startOffset.l();
+    i += 8;
     final var endOffset = Ticks.read(_data, i);
-    i += endOffset.l();
+    i += 8;
     final var density = BaseLotsPerTickU32.read(_data, i);
-    i += density.l();
+    i += 4;
     final var topLevelHiddenTakeSize = BaseLotsPerTickU32.read(_data, i);
-    i += topLevelHiddenTakeSize.l();
+    i += 4;
     final var totalSize = BaseLots.read(_data, i);
-    i += totalSize.l();
+    i += 8;
     final var filledSize = BaseLotsU32.read(_data, i);
-    i += filledSize.l();
+    i += 4;
     final var hiddenFilledSize = BaseLotsU32.read(_data, i);
-    i += hiddenFilledSize.l();
+    i += 4;
     final var lifespan = getInt64LE(_data, i);
     return new TickRegion(startOffset,
                           endOffset,

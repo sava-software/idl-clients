@@ -118,17 +118,17 @@ public record HealthCache(WrappedI80F48 assetValue,
     }
     int i = _offset;
     final var assetValue = WrappedI80F48.read(_data, i);
-    i += assetValue.l();
+    i += 16;
     final var liabilityValue = WrappedI80F48.read(_data, i);
-    i += liabilityValue.l();
+    i += 16;
     final var assetValueMaint = WrappedI80F48.read(_data, i);
-    i += assetValueMaint.l();
+    i += 16;
     final var liabilityValueMaint = WrappedI80F48.read(_data, i);
-    i += liabilityValueMaint.l();
+    i += 16;
     final var assetValueEquity = WrappedI80F48.read(_data, i);
-    i += assetValueEquity.l();
+    i += 16;
     final var liabilityValueEquity = WrappedI80F48.read(_data, i);
-    i += liabilityValueEquity.l();
+    i += 16;
     final var timestamp = getInt64LE(_data, i);
     i += 8;
     final var flags = Integer.toUnsignedLong(getInt32LE(_data, i));

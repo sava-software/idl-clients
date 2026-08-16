@@ -486,7 +486,7 @@ public final class DovesProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final var update = UpdateMessage.read(_data, i);
-      i += update.l();
+      i += 82;
       final var raise = _data[i] == 1;
       return new UpdateWithSignerIxData(discriminator, update, raise);
     }

@@ -93,7 +93,7 @@ public final class StakeProgram {
       final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
       final var arg0 = Authorized.read(_data, i);
-      i += arg0.l();
+      i += 64;
       final var arg1 = Lockup.read(_data, i);
       return new InitializeIxData(discriminator, arg0, arg1);
     }
@@ -623,7 +623,7 @@ public final class StakeProgram {
       } else {
         ++i;
         unixTimestamp = UnixTimestamp.read(_data, i);
-        i += unixTimestamp.l();
+        i += 8;
       }
       final Epoch epoch;
       if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -633,7 +633,7 @@ public final class StakeProgram {
       } else {
         ++i;
         epoch = Epoch.read(_data, i);
-        i += epoch.l();
+        i += 8;
       }
       final PublicKey custodian;
       if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -846,7 +846,7 @@ public final class StakeProgram {
       final var newAuthorizedPubkey = readPubKey(_data, i);
       i += 32;
       final var stakeAuthorize = StakeAuthorize.read(_data, i);
-      i += stakeAuthorize.l();
+      i += 4;
       final byte[] _authoritySeed = SerDeUtil.readbyteVector(8, _data, i);
       final var authoritySeed = SerDeUtil.decodeString(_authoritySeed);
       i += 8 + _authoritySeed.length;
@@ -1151,7 +1151,7 @@ public final class StakeProgram {
       final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
       final var stakeAuthorize = StakeAuthorize.read(_data, i);
-      i += stakeAuthorize.l();
+      i += 4;
       final byte[] _authoritySeed = SerDeUtil.readbyteVector(8, _data, i);
       final var authoritySeed = SerDeUtil.decodeString(_authoritySeed);
       i += 8 + _authoritySeed.length;
@@ -1265,7 +1265,7 @@ public final class StakeProgram {
       } else {
         ++i;
         unixTimestamp = UnixTimestamp.read(_data, i);
-        i += unixTimestamp.l();
+        i += 8;
       }
       final Epoch epoch;
       if (SerDeUtil.isAbsent(1, _data, i)) {

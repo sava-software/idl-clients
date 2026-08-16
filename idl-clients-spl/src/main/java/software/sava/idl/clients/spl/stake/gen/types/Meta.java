@@ -25,7 +25,7 @@ public record Meta(long rentExemptReserve,
     final var rentExemptReserve = getInt64LE(_data, i);
     i += 8;
     final var authorized = Authorized.read(_data, i);
-    i += authorized.l();
+    i += 64;
     final var lockup = Lockup.read(_data, i);
     return new Meta(rentExemptReserve, authorized, lockup);
   }

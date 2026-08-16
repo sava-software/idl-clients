@@ -18,7 +18,7 @@ public record PerpAssetMapEntry(Symbol key, PerpAssetMetadata value) implements 
     }
     int i = _offset;
     final var key = Symbol.read(_data, i);
-    i += key.l();
+    i += 16;
     final var value = PerpAssetMetadata.read(_data, i);
     return new PerpAssetMapEntry(key, value);
   }

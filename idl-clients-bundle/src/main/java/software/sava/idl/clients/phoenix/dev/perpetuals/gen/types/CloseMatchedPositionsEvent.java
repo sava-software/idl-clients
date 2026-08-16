@@ -57,13 +57,13 @@ public record CloseMatchedPositionsEvent(Discriminator discriminator,
     final var assetId = getInt64LE(_data, i);
     i += 8;
     final var baseLotsClosed = SignedBaseLots.read(_data, i);
-    i += baseLotsClosed.l();
+    i += 8;
     final var atLossCloseValue = SignedQuoteLots.read(_data, i);
-    i += atLossCloseValue.l();
+    i += 8;
     final var inProfitCloseValue = SignedQuoteLots.read(_data, i);
-    i += inProfitCloseValue.l();
+    i += 8;
     final var atLossCollateralChange = SignedQuoteLots.read(_data, i);
-    i += atLossCollateralChange.l();
+    i += 8;
     final var inProfitCollateralChange = SignedQuoteLots.read(_data, i);
     return new CloseMatchedPositionsEvent(discriminator,
                                           caller,

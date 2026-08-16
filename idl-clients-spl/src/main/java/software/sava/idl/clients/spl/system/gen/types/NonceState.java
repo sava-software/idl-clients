@@ -3,6 +3,7 @@ package software.sava.idl.clients.spl.system.gen.types;
 
 import software.sava.core.encoding.ByteUtil;
 import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 public enum NonceState implements SerDe {
 
@@ -10,7 +11,7 @@ public enum NonceState implements SerDe {
   initialized;
 
   public static NonceState read(final byte[] _data, final int _offset) {
-    return NonceState.values()[ByteUtil.getInt32LE(_data, _offset)];
+    return SerDeUtil.read(4, NonceState.values(), _data, _offset);
   }
 
   @Override

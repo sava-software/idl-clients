@@ -3064,7 +3064,7 @@ public final class WhirlpoolProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final var bumps = WhirlpoolBumps.read(_data, i);
-      i += bumps.l();
+      i += 1;
       final var tickSpacing = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
       final var initialSqrtPrice = getUInt128LE(_data, i);
@@ -4486,7 +4486,7 @@ public final class WhirlpoolProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final var bumps = OpenPositionBumps.read(_data, i);
-      i += bumps.l();
+      i += 1;
       final var tickLowerIndex = getInt32LE(_data, i);
       i += 4;
       final var tickUpperIndex = getInt32LE(_data, i);
@@ -4656,7 +4656,7 @@ public final class WhirlpoolProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final var bumps = OpenPositionWithMetadataBumps.read(_data, i);
-      i += bumps.l();
+      i += 2;
       final var tickLowerIndex = getInt32LE(_data, i);
       i += 4;
       final var tickUpperIndex = getInt32LE(_data, i);

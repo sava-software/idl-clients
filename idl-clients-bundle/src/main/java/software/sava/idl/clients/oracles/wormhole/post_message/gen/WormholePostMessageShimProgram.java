@@ -261,7 +261,7 @@ public final class WormholePostMessageShimProgram {
       final var nonce = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
       final var consistencyLevel = Finality.read(_data, i);
-      i += consistencyLevel.l();
+      i += 1;
       final var payload = SerDeUtil.readbyteVector(4, _data, i);
       return new PostMessageIxData(discriminator, nonce, consistencyLevel, payload);
     }

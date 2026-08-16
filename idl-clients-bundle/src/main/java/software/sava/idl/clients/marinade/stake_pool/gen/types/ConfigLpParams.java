@@ -28,7 +28,7 @@ public record ConfigLpParams(Fee minFee,
     } else {
       ++i;
       minFee = Fee.read(_data, i);
-      i += minFee.l();
+      i += 4;
     }
     final Fee maxFee;
     if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -37,7 +37,7 @@ public record ConfigLpParams(Fee minFee,
     } else {
       ++i;
       maxFee = Fee.read(_data, i);
-      i += maxFee.l();
+      i += 4;
     }
     final OptionalLong liquidityTarget;
     if (SerDeUtil.isAbsent(1, _data, i)) {

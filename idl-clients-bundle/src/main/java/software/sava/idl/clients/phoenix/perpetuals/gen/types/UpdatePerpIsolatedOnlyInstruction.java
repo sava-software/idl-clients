@@ -19,7 +19,7 @@ public record UpdatePerpIsolatedOnlyInstruction(Symbol perpAssetSymbol, int isol
     }
     int i = _offset;
     final var perpAssetSymbol = Symbol.read(_data, i);
-    i += perpAssetSymbol.l();
+    i += 16;
     final var isolatedOnly = _data[i] & 0xFF;
     return new UpdatePerpIsolatedOnlyInstruction(perpAssetSymbol, isolatedOnly);
   }

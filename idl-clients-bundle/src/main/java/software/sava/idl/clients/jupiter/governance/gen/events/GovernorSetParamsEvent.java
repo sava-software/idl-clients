@@ -30,7 +30,7 @@ public record GovernorSetParamsEvent(Discriminator discriminator,
     final var governor = readPubKey(_data, i);
     i += 32;
     final var prevParams = GovernanceParameters.read(_data, i);
-    i += prevParams.l();
+    i += 32;
     final var params = GovernanceParameters.read(_data, i);
     return new GovernorSetParamsEvent(discriminator, governor, prevParams, params);
   }

@@ -21,7 +21,7 @@ public record BankRateLimiter(RateLimitWindow hourly, RateLimitWindow daily) imp
     }
     int i = _offset;
     final var hourly = RateLimitWindow.read(_data, i);
-    i += hourly.l();
+    i += 40;
     final var daily = RateLimitWindow.read(_data, i);
     return new BankRateLimiter(hourly, daily);
   }

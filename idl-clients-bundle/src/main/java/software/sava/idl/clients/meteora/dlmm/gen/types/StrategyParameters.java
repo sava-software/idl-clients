@@ -34,7 +34,7 @@ public record StrategyParameters(int minBinId,
     final var maxBinId = getInt32LE(_data, i);
     i += 4;
     final var strategyType = StrategyType.read(_data, i);
-    i += strategyType.l();
+    i += 1;
     final var parameteres = new byte[64];
     SerDeUtil.readArray(parameteres, _data, i);
     return new StrategyParameters(minBinId,

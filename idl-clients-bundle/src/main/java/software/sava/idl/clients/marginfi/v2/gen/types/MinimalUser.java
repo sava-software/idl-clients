@@ -96,7 +96,7 @@ public record MinimalUser(PublicKey authority,
     final var subAccountId = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var status = UserStatus.read(_data, i);
-    i += status.l();
+    i += 1;
     final var padding8 = new byte[27];
     SerDeUtil.readArray(padding8, _data, i);
     return new MinimalUser(authority,

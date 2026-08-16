@@ -71,9 +71,9 @@ public record Nonce(PublicKey _address,
     }
     int i = _offset;
     final var version = NonceVersion.read(_data, i);
-    i += version.l();
+    i += 4;
     final var state = NonceState.read(_data, i);
-    i += state.l();
+    i += 4;
     final var authority = readPubKey(_data, i);
     i += 32;
     final var blockhash = readPubKey(_data, i);

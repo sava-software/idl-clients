@@ -44,7 +44,7 @@ public record StakeSystem(List stakeList,
     }
     int i = _offset;
     final var stakeList = List.read(_data, i);
-    i += stakeList.l();
+    i += 76;
     final var delayedUnstakeCoolingDown = getInt64LE(_data, i);
     i += 8;
     final var stakeDepositBumpSeed = _data[i] & 0xFF;

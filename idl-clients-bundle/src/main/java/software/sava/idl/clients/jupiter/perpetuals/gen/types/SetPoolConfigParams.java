@@ -32,13 +32,13 @@ public record SetPoolConfigParams(Fees fees,
     }
     int i = _offset;
     final var fees = Fees.read(_data, i);
-    i += fees.l();
+    i += 72;
     final var limit = Limit.read(_data, i);
-    i += limit.l();
+    i += 40;
     final var maxRequestExecutionSec = getInt64LE(_data, i);
     i += 8;
     final var parameterUpdateOracle = Secp256k1Pubkey.read(_data, i);
-    i += parameterUpdateOracle.l();
+    i += 33;
     final var maxTriggerPriceDiffBps = getInt64LE(_data, i);
     i += 8;
     final var disableClosePositionRequest = _data[i] == 1;

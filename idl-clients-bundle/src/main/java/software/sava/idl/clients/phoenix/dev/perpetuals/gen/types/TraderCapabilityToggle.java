@@ -16,7 +16,7 @@ public record TraderCapabilityToggle(TraderCapabilityToggleTarget target, boolea
     }
     int i = _offset;
     final var target = TraderCapabilityToggleTarget.read(_data, i);
-    i += target.l();
+    i += 1;
     final var enable = _data[i] == 1;
     return new TraderCapabilityToggle(target, enable);
   }

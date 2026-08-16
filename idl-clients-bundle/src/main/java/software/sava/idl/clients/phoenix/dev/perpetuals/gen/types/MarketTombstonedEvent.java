@@ -35,7 +35,7 @@ public record MarketTombstonedEvent(Discriminator discriminator,
     final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var previousMarketStatus = MarketStatus.read(_data, i);
-    i += previousMarketStatus.l();
+    i += 1;
     final var finalSequenceNumber = getInt64LE(_data, i);
     i += 8;
     final var finalTradeSequenceNumber = getInt64LE(_data, i);

@@ -52,7 +52,7 @@ public record TraderCollateralTransferredEvent(Discriminator discriminator,
     final var authority = readPubKey(_data, i);
     i += 32;
     final var amount = QuoteLots.read(_data, i);
-    i += amount.l();
+    i += 8;
     final var srcTrader = readPubKey(_data, i);
     i += 32;
     final var srcTraderSequenceNumber = getInt64LE(_data, i);
@@ -60,7 +60,7 @@ public record TraderCollateralTransferredEvent(Discriminator discriminator,
     final var srcTraderPrevSequenceNumberSlot = getInt64LE(_data, i);
     i += 8;
     final var srcTraderNewCollateralBalance = SignedQuoteLots.read(_data, i);
-    i += srcTraderNewCollateralBalance.l();
+    i += 8;
     final var dstTrader = readPubKey(_data, i);
     i += 32;
     final var dstTraderSequenceNumber = getInt64LE(_data, i);

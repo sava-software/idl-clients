@@ -456,7 +456,7 @@ public record VaultState(PublicKey _address,
     final var depositCap = getInt64LE(_data, i);
     i += 8;
     final var rewardInfo = VaultRewardInfo.read(_data, i);
-    i += rewardInfo.l();
+    i += 96;
     final var padding3 = new BigInteger[232];
     SerDeUtil.readU128Array(padding3, _data, i);
     return new VaultState(_address,

@@ -51,9 +51,9 @@ public record ShutdownClosePositionsEvent(Discriminator discriminator,
     final var assetId = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var baseLotsClosed = BaseLots.read(_data, i);
-    i += baseLotsClosed.l();
+    i += 8;
     final var settlementPrice = Ticks.read(_data, i);
-    i += settlementPrice.l();
+    i += 8;
     final var tradeSequenceNumber = getInt64LE(_data, i);
     i += 8;
     final var sequenceNumber = getInt64LE(_data, i);

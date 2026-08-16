@@ -271,9 +271,9 @@ public record LbPair(PublicKey _address,
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var parameters = StaticParameters.read(_data, i);
-    i += parameters.l();
+    i += 32;
     final var vParameters = VariableParameters.read(_data, i);
-    i += vParameters.l();
+    i += 32;
     final var bumpSeed = new byte[1];
     i += SerDeUtil.readArray(bumpSeed, _data, i);
     final var binStepSeed = new byte[2];
@@ -303,7 +303,7 @@ public record LbPair(PublicKey _address,
     final var reserveY = readPubKey(_data, i);
     i += 32;
     final var protocolFee = ProtocolFee.read(_data, i);
-    i += protocolFee.l();
+    i += 16;
     final var padding1 = new byte[32];
     i += SerDeUtil.readArray(padding1, _data, i);
     final var rewardInfos = new RewardInfo[2];

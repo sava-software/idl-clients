@@ -18,7 +18,7 @@ public record UpdatePerpLeverageTiersInstruction(Symbol perpAssetSymbol, Leverag
     }
     int i = _offset;
     final var perpAssetSymbol = Symbol.read(_data, i);
-    i += perpAssetSymbol.l();
+    i += 16;
     final var leverageTiers = LeverageTiers.read(_data, i);
     return new UpdatePerpLeverageTiersInstruction(perpAssetSymbol, leverageTiers);
   }

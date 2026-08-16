@@ -149,13 +149,13 @@ public record Trader(PublicKey _address,
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var sequenceNumber = SequenceNumber.read(_data, i);
-    i += sequenceNumber.l();
+    i += 16;
     final var key = readPubKey(_data, i);
     i += 32;
     final var authority = readPubKey(_data, i);
     i += 32;
     final var traderState = TraderState.read(_data, i);
-    i += traderState.l();
+    i += 16;
     final var padding0 = new byte[4];
     i += SerDeUtil.readArray(padding0, _data, i);
     final var withdrawQueueNode = Integer.toUnsignedLong(getInt32LE(_data, i));

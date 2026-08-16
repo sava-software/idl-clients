@@ -39,7 +39,7 @@ public record DatedPrice(Price price,
     }
     int i = _offset;
     final var price = Price.read(_data, i);
-    i += price.l();
+    i += 16;
     final var lastUpdatedSlot = getInt64LE(_data, i);
     i += 8;
     final var unixTimestamp = getInt64LE(_data, i);

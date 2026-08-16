@@ -33,9 +33,9 @@ public record AddPoolParams(String name, byte[] _name,
     final var name = SerDeUtil.decodeString(_name);
     i += 4 + _name.length;
     final var limit = Limit.read(_data, i);
-    i += limit.l();
+    i += 40;
     final var fees = Fees.read(_data, i);
-    i += fees.l();
+    i += 72;
     final var maxRequestExecutionSec = getInt64LE(_data, i);
     return new AddPoolParams(name, name == null ? null : SerDeUtil.encodeString(name),
                              limit,

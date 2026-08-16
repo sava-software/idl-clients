@@ -81,15 +81,15 @@ public record WithdrawQueueHeader(PublicKey _address,
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var sequenceNumber = SequenceNumber.read(_data, i);
-    i += sequenceNumber.l();
+    i += 16;
     final var withdrawThrottle = WithdrawThrottle.read(_data, i);
-    i += withdrawThrottle.l();
+    i += 32;
     final var totalQueuedAmount = QuoteLots.read(_data, i);
-    i += totalQueuedAmount.l();
+    i += 8;
     final var withdrawalFee = QuoteLots.read(_data, i);
-    i += withdrawalFee.l();
+    i += 8;
     final var enqueueingFee = QuoteLots.read(_data, i);
-    i += enqueueingFee.l();
+    i += 8;
     final var reserved = new long[5];
     SerDeUtil.readArray(reserved, _data, i);
     return new WithdrawQueueHeader(_address,

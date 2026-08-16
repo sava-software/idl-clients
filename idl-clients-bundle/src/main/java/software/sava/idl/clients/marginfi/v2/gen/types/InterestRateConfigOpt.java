@@ -40,7 +40,7 @@ public record InterestRateConfigOpt(WrappedI80F48 insuranceFeeFixedApr,
     } else {
       ++i;
       insuranceFeeFixedApr = WrappedI80F48.read(_data, i);
-      i += insuranceFeeFixedApr.l();
+      i += 16;
     }
     final WrappedI80F48 insuranceIrFee;
     if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -49,7 +49,7 @@ public record InterestRateConfigOpt(WrappedI80F48 insuranceFeeFixedApr,
     } else {
       ++i;
       insuranceIrFee = WrappedI80F48.read(_data, i);
-      i += insuranceIrFee.l();
+      i += 16;
     }
     final WrappedI80F48 protocolFixedFeeApr;
     if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -58,7 +58,7 @@ public record InterestRateConfigOpt(WrappedI80F48 insuranceFeeFixedApr,
     } else {
       ++i;
       protocolFixedFeeApr = WrappedI80F48.read(_data, i);
-      i += protocolFixedFeeApr.l();
+      i += 16;
     }
     final WrappedI80F48 protocolIrFee;
     if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -67,7 +67,7 @@ public record InterestRateConfigOpt(WrappedI80F48 insuranceFeeFixedApr,
     } else {
       ++i;
       protocolIrFee = WrappedI80F48.read(_data, i);
-      i += protocolIrFee.l();
+      i += 16;
     }
     final WrappedI80F48 protocolOriginationFee;
     if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -76,7 +76,7 @@ public record InterestRateConfigOpt(WrappedI80F48 insuranceFeeFixedApr,
     } else {
       ++i;
       protocolOriginationFee = WrappedI80F48.read(_data, i);
-      i += protocolOriginationFee.l();
+      i += 16;
     }
     final OptionalLong zeroUtilRate;
     if (SerDeUtil.isAbsent(1, _data, i)) {

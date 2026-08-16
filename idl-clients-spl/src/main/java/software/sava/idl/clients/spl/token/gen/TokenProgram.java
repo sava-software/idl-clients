@@ -762,7 +762,7 @@ public final class TokenProgram {
       final var discriminator = _data[i] & 0xFF;
       ++i;
       final var authorityType = AuthorityType.read(_data, i);
-      i += authorityType.l();
+      i += 1;
       final PublicKey newAuthority;
       if (SerDeUtil.isAbsent(1, _data, i)) {
         newAuthority = null;

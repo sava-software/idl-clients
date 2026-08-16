@@ -192,7 +192,7 @@ public record MarketTwo(PublicKey _address,
     final var syProgram = readPubKey(_data, i);
     i += 32;
     final var financials = MarketFinancials.read(_data, i);
-    i += financials.l();
+    i += 48;
     final var emissions = MarketEmissions.read(_data, i);
     i += emissions.l();
     final var lpFarm = LpFarm.read(_data, i);
@@ -206,7 +206,7 @@ public record MarketTwo(PublicKey _address,
     final var isCurrentFlashSwap = _data[i] == 1;
     ++i;
     final var liquidityNetBalanceLimits = LiquidityNetBalanceLimits.read(_data, i);
-    i += liquidityNetBalanceLimits.l();
+    i += 22;
     final var seedId = new byte[1];
     SerDeUtil.readArray(seedId, _data, i);
     return new MarketTwo(_address,

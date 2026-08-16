@@ -20,7 +20,7 @@ public record MultisigAddMemberArgs(Member newMember, String memo, byte[] _memo)
     }
     int i = _offset;
     final var newMember = Member.read(_data, i);
-    i += newMember.l();
+    i += 33;
     final byte[] _memo;
     final String memo;
     if (SerDeUtil.isAbsent(1, _data, i)) {

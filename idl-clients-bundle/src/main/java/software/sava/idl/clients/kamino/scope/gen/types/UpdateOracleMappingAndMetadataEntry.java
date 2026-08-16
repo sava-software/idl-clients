@@ -60,7 +60,7 @@ public sealed interface UpdateOracleMappingAndMetadataEntry extends RustEnum per
       }
       int i = _offset;
       final var priceType = OracleType.read(_data, i);
-      i += priceType.l();
+      i += 1;
       final var genericData = new byte[20];
       SerDeUtil.readArray(genericData, _data, i);
       return new MappingConfig(priceType, genericData);
@@ -99,7 +99,7 @@ public sealed interface UpdateOracleMappingAndMetadataEntry extends RustEnum per
       }
       int i = _offset;
       final var priceType = OracleType.read(_data, i);
-      i += priceType.l();
+      i += 1;
       final var twapSource = Short.toUnsignedInt(getInt16LE(_data, i));
       return new MappingTwapEntry(priceType, twapSource);
     }

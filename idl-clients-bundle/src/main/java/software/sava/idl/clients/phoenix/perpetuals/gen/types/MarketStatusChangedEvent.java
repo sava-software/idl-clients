@@ -24,7 +24,7 @@ public record MarketStatusChangedEvent(Discriminator discriminator, MarketStatus
     final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var previousMarketStatus = MarketStatus.read(_data, i);
-    i += previousMarketStatus.l();
+    i += 1;
     final var newMarketStatus = MarketStatus.read(_data, i);
     return new MarketStatusChangedEvent(discriminator, previousMarketStatus, newMarketStatus);
   }

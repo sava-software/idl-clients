@@ -71,7 +71,7 @@ public record DepositYtEventV2(Discriminator discriminator,
     final var amount = getInt64LE(_data, i);
     i += 8;
     final var syExchangeRate = Number.read(_data, i);
-    i += syExchangeRate.l();
+    i += 32;
     final var userYtBalanceAfter = getInt64LE(_data, i);
     i += 8;
     final var vaultYtBalanceAfter = getInt64LE(_data, i);
@@ -81,7 +81,7 @@ public record DepositYtEventV2(Discriminator discriminator,
     final var unixTimestamp = getInt64LE(_data, i);
     i += 8;
     final var userInterest = YieldTokenTracker.read(_data, i);
-    i += userInterest.l();
+    i += 40;
     final var userEmissions = SerDeUtil.readVector(4, YieldTokenTracker.class, YieldTokenTracker::read, _data, i);
     return new DepositYtEventV2(discriminator,
                                 depositor,

@@ -22,7 +22,7 @@ public record BorrowOrderPartialFillEvent(Discriminator discriminator, BorrowOrd
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var before = BorrowOrder.read(_data, i);
-    i += before.l();
+    i += 160;
     final var after = BorrowOrder.read(_data, i);
     return new BorrowOrderPartialFillEvent(discriminator, before, after);
   }

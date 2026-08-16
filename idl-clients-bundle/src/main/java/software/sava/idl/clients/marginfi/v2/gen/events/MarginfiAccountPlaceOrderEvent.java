@@ -37,11 +37,11 @@ public record MarginfiAccountPlaceOrderEvent(Discriminator discriminator,
     final var order = readPubKey(_data, i);
     i += 32;
     final var trigger = OrderTriggerType.read(_data, i);
-    i += trigger.l();
+    i += 1;
     final var stopLoss = WrappedI80F48.read(_data, i);
-    i += stopLoss.l();
+    i += 16;
     final var takeProfit = WrappedI80F48.read(_data, i);
-    i += takeProfit.l();
+    i += 16;
     final var tags = new int[2];
     SerDeUtil.readUnsignedShortArray(tags, _data, i);
     return new MarginfiAccountPlaceOrderEvent(discriminator,

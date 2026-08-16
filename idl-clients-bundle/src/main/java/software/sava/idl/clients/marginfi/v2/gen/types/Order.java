@@ -122,9 +122,9 @@ public record Order(PublicKey _address,
     final var marginfiAccount = readPubKey(_data, i);
     i += 32;
     final var stopLoss = WrappedI80F48.read(_data, i);
-    i += stopLoss.l();
+    i += 16;
     final var takeProfit = WrappedI80F48.read(_data, i);
-    i += takeProfit.l();
+    i += 16;
     final var placeholder = getInt64LE(_data, i);
     i += 8;
     final var maxSlippage = Integer.toUnsignedLong(getInt32LE(_data, i));
@@ -138,7 +138,7 @@ public record Order(PublicKey _address,
     final var tagsPadding = new byte[32];
     i += SerDeUtil.readArray(tagsPadding, _data, i);
     final var trigger = OrderTriggerType.read(_data, i);
-    i += trigger.l();
+    i += 1;
     final var bump = _data[i] & 0xFF;
     ++i;
     final var pad2 = new byte[6];

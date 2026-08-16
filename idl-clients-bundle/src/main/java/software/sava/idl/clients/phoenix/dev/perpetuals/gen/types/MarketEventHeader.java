@@ -56,7 +56,7 @@ public record MarketEventHeader(Discriminator discriminator,
     final var prevSequenceNumberSlot = getInt64LE(_data, i);
     i += 8;
     final var assetSymbol = Symbol.read(_data, i);
-    i += assetSymbol.l();
+    i += 16;
     final var assetId = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var tickSize = Integer.toUnsignedLong(getInt32LE(_data, i));

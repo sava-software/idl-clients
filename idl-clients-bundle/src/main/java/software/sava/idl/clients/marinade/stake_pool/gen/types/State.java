@@ -281,13 +281,13 @@ public record State(PublicKey _address,
     final var rentExemptForTokenAcc = getInt64LE(_data, i);
     i += 8;
     final var rewardFee = Fee.read(_data, i);
-    i += rewardFee.l();
+    i += 4;
     final var stakeSystem = StakeSystem.read(_data, i);
-    i += stakeSystem.l();
+    i += 114;
     final var validatorSystem = ValidatorSystem.read(_data, i);
-    i += validatorSystem.l();
+    i += 121;
     final var liqPool = LiqPool.read(_data, i);
-    i += liqPool.l();
+    i += 111;
     final var availableReserveBalance = getInt64LE(_data, i);
     i += 8;
     final var msolSupply = getInt64LE(_data, i);
@@ -313,9 +313,9 @@ public record State(PublicKey _address,
     final var paused = _data[i] == 1;
     ++i;
     final var delayedUnstakeFee = FeeCents.read(_data, i);
-    i += delayedUnstakeFee.l();
+    i += 4;
     final var withdrawStakeAccountFee = FeeCents.read(_data, i);
-    i += withdrawStakeAccountFee.l();
+    i += 4;
     final var withdrawStakeAccountEnabled = _data[i] == 1;
     ++i;
     final var lastStakeMoveEpoch = getInt64LE(_data, i);
@@ -323,11 +323,11 @@ public record State(PublicKey _address,
     final var stakeMoved = getInt64LE(_data, i);
     i += 8;
     final var maxStakeMovedPerEpoch = Fee.read(_data, i);
-    i += maxStakeMovedPerEpoch.l();
+    i += 4;
     final var delinquentUpgrader = DelinquentUpgraderState.read(_data, i);
     i += delinquentUpgrader.l();
     final var depositSolFee = FeeCents.read(_data, i);
-    i += depositSolFee.l();
+    i += 4;
     final var depositStakeAccountFee = FeeCents.read(_data, i);
     return new State(_address,
                      discriminator,

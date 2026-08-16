@@ -62,11 +62,11 @@ public record AddCustodyParams(boolean isStable,
     final var isStable = _data[i] == 1;
     ++i;
     final var oracle = OracleParams.read(_data, i);
-    i += oracle.l();
+    i += 45;
     final var pricing = PricingParams.read(_data, i);
-    i += pricing.l();
+    i += 48;
     final var permissions = Permissions.read(_data, i);
-    i += permissions.l();
+    i += 7;
     final var hourlyFundingDbps = getInt64LE(_data, i);
     i += 8;
     final var targetRatioBps = getInt64LE(_data, i);
@@ -80,7 +80,7 @@ public record AddCustodyParams(boolean isStable,
     final var maxPositionSizeUsd = getInt64LE(_data, i);
     i += 8;
     final var jumpRate = JumpRateState.read(_data, i);
-    i += jumpRate.l();
+    i += 32;
     final var priceImpactFeeFactor = getInt64LE(_data, i);
     i += 8;
     final var priceImpactExponent = getFloat32LE(_data, i);

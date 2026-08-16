@@ -78,7 +78,7 @@ public record BuyYtEvent(Discriminator discriminator,
     final var ytOut = getInt64LE(_data, i);
     i += 8;
     final var syExchangeRate = Number.read(_data, i);
-    i += syExchangeRate.l();
+    i += 32;
     final var syToStrip = getInt64LE(_data, i);
     i += 8;
     final var syBorrowed = getInt64LE(_data, i);

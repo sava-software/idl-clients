@@ -41,7 +41,7 @@ public record EmodeEntry(int collateralBankEmodeTag,
     final var pad0 = new byte[5];
     i += SerDeUtil.readArray(pad0, _data, i);
     final var assetWeightInit = WrappedI80F48.read(_data, i);
-    i += assetWeightInit.l();
+    i += 16;
     final var assetWeightMaint = WrappedI80F48.read(_data, i);
     return new EmodeEntry(collateralBankEmodeTag,
                           flags,

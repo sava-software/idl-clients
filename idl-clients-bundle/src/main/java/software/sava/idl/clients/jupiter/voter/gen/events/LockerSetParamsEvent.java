@@ -30,7 +30,7 @@ public record LockerSetParamsEvent(Discriminator discriminator,
     final var locker = readPubKey(_data, i);
     i += 32;
     final var prevParams = LockerParams.read(_data, i);
-    i += prevParams.l();
+    i += 25;
     final var params = LockerParams.read(_data, i);
     return new LockerSetParamsEvent(discriminator, locker, prevParams, params);
   }

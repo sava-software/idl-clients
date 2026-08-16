@@ -49,17 +49,17 @@ public record PnLEvent(Discriminator discriminator,
     final var assetId = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var assetSymbol = Symbol.read(_data, i);
-    i += assetSymbol.l();
+    i += 16;
     final var realizedPnl = SignedQuoteLots.read(_data, i);
-    i += realizedPnl.l();
+    i += 8;
     final var fundingPayment = SignedQuoteLots.read(_data, i);
-    i += fundingPayment.l();
+    i += 8;
     final var baseLotsBefore = SignedBaseLots.read(_data, i);
-    i += baseLotsBefore.l();
+    i += 8;
     final var baseLotsAfter = SignedBaseLots.read(_data, i);
-    i += baseLotsAfter.l();
+    i += 8;
     final var virtualQuoteLotsBefore = SignedQuoteLots.read(_data, i);
-    i += virtualQuoteLotsBefore.l();
+    i += 8;
     final var virtualQuoteLotsAfter = SignedQuoteLots.read(_data, i);
     return new PnLEvent(discriminator,
                         trader,

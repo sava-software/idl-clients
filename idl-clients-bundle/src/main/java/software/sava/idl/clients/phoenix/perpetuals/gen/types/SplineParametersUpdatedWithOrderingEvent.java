@@ -66,7 +66,7 @@ public record SplineParametersUpdatedWithOrderingEvent(Discriminator discriminat
     final var market = readPubKey(_data, i);
     i += 32;
     final var symbol = Symbol.read(_data, i);
-    i += symbol.l();
+    i += 16;
     final var midPrice = getInt64LE(_data, i);
     i += 8;
     final var bidRegions = new TickRegion[10];

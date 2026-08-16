@@ -775,7 +775,7 @@ public final class Token2022Program {
       final var discriminator = _data[i] & 0xFF;
       ++i;
       final var authorityType = AuthorityType.read(_data, i);
-      i += authorityType.l();
+      i += 1;
       final PublicKey newAuthority;
       if (SerDeUtil.isAbsent(1, _data, i)) {
         newAuthority = null;
@@ -3982,7 +3982,7 @@ public final class Token2022Program {
       final var confidentialTransferDiscriminator = _data[i] & 0xFF;
       ++i;
       final var decryptableZeroBalance = DecryptableBalance.read(_data, i);
-      i += decryptableZeroBalance.l();
+      i += 36;
       final var maximumPendingBalanceCreditCounter = getInt64LE(_data, i);
       i += 8;
       final var proofInstructionOffset = _data[i];
@@ -4678,7 +4678,7 @@ public final class Token2022Program {
       final var decimals = _data[i] & 0xFF;
       ++i;
       final var newDecryptableAvailableBalance = DecryptableBalance.read(_data, i);
-      i += newDecryptableAvailableBalance.l();
+      i += 36;
       final var equalityProofInstructionOffset = _data[i];
       ++i;
       final var rangeProofInstructionOffset = _data[i];
@@ -4960,11 +4960,11 @@ public final class Token2022Program {
       final var confidentialTransferDiscriminator = _data[i] & 0xFF;
       ++i;
       final var newSourceDecryptableAvailableBalance = DecryptableBalance.read(_data, i);
-      i += newSourceDecryptableAvailableBalance.l();
+      i += 36;
       final var transferAmountAuditorCiphertextLo = EncryptedBalance.read(_data, i);
-      i += transferAmountAuditorCiphertextLo.l();
+      i += 64;
       final var transferAmountAuditorCiphertextHi = EncryptedBalance.read(_data, i);
-      i += transferAmountAuditorCiphertextHi.l();
+      i += 64;
       final var equalityProofInstructionOffset = _data[i];
       ++i;
       final var ciphertextValidityProofInstructionOffset = _data[i];
@@ -5866,11 +5866,11 @@ public final class Token2022Program {
       final var confidentialTransferDiscriminator = _data[i] & 0xFF;
       ++i;
       final var newSourceDecryptableAvailableBalance = DecryptableBalance.read(_data, i);
-      i += newSourceDecryptableAvailableBalance.l();
+      i += 36;
       final var transferAmountAuditorCiphertextLo = EncryptedBalance.read(_data, i);
-      i += transferAmountAuditorCiphertextLo.l();
+      i += 64;
       final var transferAmountAuditorCiphertextHi = EncryptedBalance.read(_data, i);
-      i += transferAmountAuditorCiphertextHi.l();
+      i += 64;
       final var equalityProofInstructionOffset = _data[i];
       ++i;
       final var transferAmountCiphertextValidityProofInstructionOffset = _data[i];
@@ -6388,7 +6388,7 @@ public final class Token2022Program {
       final var newExtensionTypes = new ExtensionType[_newExtensionTypesCount];
       for (int _i = 0; _i < _newExtensionTypesCount; ++_i) {
         final var _newExtensionTypesItem = ExtensionType.read(_data, i);
-        i += _newExtensionTypesItem.l();
+        i += 2;
         newExtensionTypes[_i] = _newExtensionTypesItem;
       }
       return new ReallocateIxData(discriminator, newExtensionTypes);
@@ -9796,11 +9796,11 @@ public final class Token2022Program {
       final var confidentialMintBurnDiscriminator = _data[i] & 0xFF;
       ++i;
       final var newDecryptableSupply = DecryptableBalance.read(_data, i);
-      i += newDecryptableSupply.l();
+      i += 36;
       final var mintAmountAuditorCiphertextLo = EncryptedBalance.read(_data, i);
-      i += mintAmountAuditorCiphertextLo.l();
+      i += 64;
       final var mintAmountAuditorCiphertextHi = EncryptedBalance.read(_data, i);
-      i += mintAmountAuditorCiphertextHi.l();
+      i += 64;
       final var equalityProofInstructionOffset = _data[i];
       ++i;
       final var ciphertextValidityProofInstructionOffset = _data[i];
@@ -10088,11 +10088,11 @@ public final class Token2022Program {
       final var confidentialMintBurnDiscriminator = _data[i] & 0xFF;
       ++i;
       final var newDecryptableAvailableBalance = DecryptableBalance.read(_data, i);
-      i += newDecryptableAvailableBalance.l();
+      i += 36;
       final var burnAmountAuditorCiphertextLo = EncryptedBalance.read(_data, i);
-      i += burnAmountAuditorCiphertextLo.l();
+      i += 64;
       final var burnAmountAuditorCiphertextHi = EncryptedBalance.read(_data, i);
-      i += burnAmountAuditorCiphertextHi.l();
+      i += 64;
       final var equalityProofInstructionOffset = _data[i];
       ++i;
       final var ciphertextValidityProofInstructionOffset = _data[i];
@@ -12611,11 +12611,11 @@ public final class Token2022Program {
       final var permissionedBurnDiscriminator = _data[i] & 0xFF;
       ++i;
       final var newDecryptableAvailableBalance = DecryptableBalance.read(_data, i);
-      i += newDecryptableAvailableBalance.l();
+      i += 36;
       final var burnAmountAuditorCiphertextLo = EncryptedBalance.read(_data, i);
-      i += burnAmountAuditorCiphertextLo.l();
+      i += 64;
       final var burnAmountAuditorCiphertextHi = EncryptedBalance.read(_data, i);
-      i += burnAmountAuditorCiphertextHi.l();
+      i += 64;
       final var equalityProofInstructionOffset = _data[i];
       ++i;
       final var ciphertextValidityProofInstructionOffset = _data[i];

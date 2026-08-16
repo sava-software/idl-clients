@@ -30,7 +30,7 @@ public record ManageRaydiumLiquidityParams(int collateralIndex,
     final var liquidityAmount = getUInt128LE(_data, i);
     i += 16;
     final var manageParams = TokenAmountsParams.read(_data, i);
-    i += manageParams.l();
+    i += 16;
     final var assetIndexGuidance = SerDeUtil.readbyteVector(4, _data, i);
     return new ManageRaydiumLiquidityParams(collateralIndex,
                                             liquidityAmount,

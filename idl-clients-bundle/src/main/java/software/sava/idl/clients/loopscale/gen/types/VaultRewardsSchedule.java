@@ -51,7 +51,7 @@ public record VaultRewardsSchedule(PublicKey rewardMint,
     final var rewardMint = readPubKey(_data, i);
     i += 32;
     final var totalWeightedStakeSupply = PodDecimal.read(_data, i);
-    i += totalWeightedStakeSupply.l();
+    i += 24;
     final var rewardStartTime = getInt64LE(_data, i);
     i += 8;
     final var rewardEndTime = getInt64LE(_data, i);
@@ -59,9 +59,9 @@ public record VaultRewardsSchedule(PublicKey rewardMint,
     final var totalEmissionsAmount = getInt64LE(_data, i);
     i += 8;
     final var emissionsPerSecond = PodDecimal.read(_data, i);
-    i += emissionsPerSecond.l();
+    i += 24;
     final var rewardIndex = PodDecimal.read(_data, i);
-    i += rewardIndex.l();
+    i += 24;
     final var lastRewardIndexUpdateTime = getInt64LE(_data, i);
     i += 8;
     final var emissionsClaimed = getInt64LE(_data, i);

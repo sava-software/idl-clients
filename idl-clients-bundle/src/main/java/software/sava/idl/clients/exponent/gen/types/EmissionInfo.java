@@ -41,11 +41,11 @@ public record EmissionInfo(PublicKey tokenAccount,
     final var tokenAccount = readPubKey(_data, i);
     i += 32;
     final var initialIndex = Number.read(_data, i);
-    i += initialIndex.l();
+    i += 32;
     final var lastSeenIndex = Number.read(_data, i);
-    i += lastSeenIndex.l();
+    i += 32;
     final var finalIndex = Number.read(_data, i);
-    i += finalIndex.l();
+    i += 32;
     final var treasuryTokenAccount = readPubKey(_data, i);
     i += 32;
     final var feeBps = Short.toUnsignedInt(getInt16LE(_data, i));

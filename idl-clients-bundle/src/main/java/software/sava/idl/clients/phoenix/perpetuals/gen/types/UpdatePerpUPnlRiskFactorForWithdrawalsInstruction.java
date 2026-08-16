@@ -18,7 +18,7 @@ public record UpdatePerpUPnlRiskFactorForWithdrawalsInstruction(Symbol perpAsset
     }
     int i = _offset;
     final var perpAssetSymbol = Symbol.read(_data, i);
-    i += perpAssetSymbol.l();
+    i += 16;
     final var upnlRiskFactorForWithdrawals = UPnlRiskFactor.read(_data, i);
     return new UpdatePerpUPnlRiskFactorForWithdrawalsInstruction(perpAssetSymbol, upnlRiskFactorForWithdrawals);
   }

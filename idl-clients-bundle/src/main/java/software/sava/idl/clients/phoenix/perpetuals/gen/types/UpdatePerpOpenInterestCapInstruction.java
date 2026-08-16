@@ -18,7 +18,7 @@ public record UpdatePerpOpenInterestCapInstruction(Symbol perpAssetSymbol, BaseL
     }
     int i = _offset;
     final var perpAssetSymbol = Symbol.read(_data, i);
-    i += perpAssetSymbol.l();
+    i += 16;
     final var openInterestCap = BaseLots.read(_data, i);
     return new UpdatePerpOpenInterestCapInstruction(perpAssetSymbol, openInterestCap);
   }

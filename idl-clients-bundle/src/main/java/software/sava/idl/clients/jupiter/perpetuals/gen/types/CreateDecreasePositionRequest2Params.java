@@ -42,7 +42,7 @@ public record CreateDecreasePositionRequest2Params(long collateralUsdDelta,
     final var sizeUsdDelta = getInt64LE(_data, i);
     i += 8;
     final var requestType = RequestType.read(_data, i);
-    i += requestType.l();
+    i += 1;
     final OptionalLong priceSlippage;
     if (SerDeUtil.isAbsent(1, _data, i)) {
       priceSlippage = OptionalLong.empty();

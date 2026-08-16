@@ -81,9 +81,9 @@ public record Oracle(PublicKey _address,
     final var tradeEnableTimestamp = getInt64LE(_data, i);
     i += 8;
     final var adaptiveFeeConstants = AdaptiveFeeConstants.read(_data, i);
-    i += adaptiveFeeConstants.l();
+    i += 34;
     final var adaptiveFeeVariables = AdaptiveFeeVariables.read(_data, i);
-    i += adaptiveFeeVariables.l();
+    i += 44;
     final var reserved = new byte[128];
     SerDeUtil.readArray(reserved, _data, i);
     return new Oracle(_address,

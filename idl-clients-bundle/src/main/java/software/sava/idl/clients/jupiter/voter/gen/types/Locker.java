@@ -120,7 +120,7 @@ public record Locker(PublicKey _address,
     final var governor = readPubKey(_data, i);
     i += 32;
     final var params = LockerParams.read(_data, i);
-    i += params.l();
+    i += 25;
     final var buffers = new BigInteger[32];
     SerDeUtil.readU128Array(buffers, _data, i);
     return new Locker(_address,

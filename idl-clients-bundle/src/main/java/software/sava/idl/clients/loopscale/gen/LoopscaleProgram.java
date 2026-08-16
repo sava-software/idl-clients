@@ -895,7 +895,7 @@ public final class LoopscaleProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final var params = CreateRewardsScheduleParams.read(_data, i);
-      i += params.l();
+      i += 60;
       final var amountToTransfer = getInt64LE(_data, i);
       return new CreateRewardsScheduleIxData(discriminator, params, amountToTransfer);
     }

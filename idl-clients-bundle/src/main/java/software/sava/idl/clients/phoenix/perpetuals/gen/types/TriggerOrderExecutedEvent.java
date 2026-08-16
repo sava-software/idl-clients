@@ -55,7 +55,7 @@ public record TriggerOrderExecutedEvent(Discriminator discriminator,
     final var conditionalOrderIndex = _data[i] & 0xFF;
     ++i;
     final var triggerDirection = Direction.read(_data, i);
-    i += triggerDirection.l();
+    i += 1;
     final var orderSequenceNumber = getInt64LE(_data, i);
     return new TriggerOrderExecutedEvent(discriminator,
                                          trader,

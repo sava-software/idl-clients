@@ -108,11 +108,11 @@ public record OracleStatsAccountData(PublicKey _address,
     final var oracle = readPubKey(_data, i);
     i += 32;
     final var finalizedEpoch = OracleEpochInfo.read(_data, i);
-    i += finalizedEpoch.l();
+    i += 48;
     final var currentEpoch = OracleEpochInfo.read(_data, i);
-    i += currentEpoch.l();
+    i += 48;
     final var megaSlotInfo = MegaSlotInfo.read(_data, i);
-    i += megaSlotInfo.l();
+    i += 32;
     final var lastTransferSlot = getInt64LE(_data, i);
     i += 8;
     final var bump = _data[i] & 0xFF;

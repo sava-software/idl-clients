@@ -1708,13 +1708,13 @@ public final class FarmsProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final var globalConfigOptionKind = GlobalConfigOption.read(_data, i);
-      i += globalConfigOptionKind.l();
+      i += 1;
       final var farmConfigOptionKind = FarmConfigOption.read(_data, i);
-      i += farmConfigOptionKind.l();
+      i += 1;
       final var timeUnit = TimeUnit.read(_data, i);
-      i += timeUnit.l();
+      i += 1;
       final var lockingMode = LockingMode.read(_data, i);
-      i += lockingMode.l();
+      i += 1;
       final var rewardType = RewardType.read(_data, i);
       return new IdlMissingTypesIxData(discriminator,
                                        globalConfigOptionKind,

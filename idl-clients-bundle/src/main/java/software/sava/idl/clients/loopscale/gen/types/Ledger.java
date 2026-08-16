@@ -68,9 +68,9 @@ public record Ledger(int status,
     final var lastInterestUpdatedTime = getInt64LE(_data, i);
     i += 8;
     final var duration = Duration.read(_data, i);
-    i += duration.l();
+    i += 5;
     final var interestPerSecond = PodDecimal.read(_data, i);
-    i += interestPerSecond.l();
+    i += 24;
     final var startTime = getInt64LE(_data, i);
     i += 8;
     final var endTime = getInt64LE(_data, i);

@@ -44,11 +44,11 @@ public record OrderRejectedEvent(Discriminator discriminator,
     final var clientOrderId = new byte[16];
     i += SerDeUtil.readArray(clientOrderId, _data, i);
     final var price = Ticks.read(_data, i);
-    i += price.l();
+    i += 8;
     final var side = Side.read(_data, i);
-    i += side.l();
+    i += 1;
     final var numBaseLots = BaseLots.read(_data, i);
-    i += numBaseLots.l();
+    i += 8;
     final var reason = new byte[32];
     SerDeUtil.readArray(reason, _data, i);
     return new OrderRejectedEvent(discriminator,

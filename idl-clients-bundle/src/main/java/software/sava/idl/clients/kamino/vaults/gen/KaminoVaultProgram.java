@@ -1449,7 +1449,7 @@ public final class KaminoVaultProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final var entry = VaultConfigField.read(_data, i);
-      i += entry.l();
+      i += 1;
       final var data = SerDeUtil.readbyteVector(4, _data, i);
       return new UpdateVaultConfigIxData(discriminator, entry, data);
     }

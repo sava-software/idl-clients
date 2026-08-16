@@ -2090,7 +2090,7 @@ public sealed interface Swap extends RustEnum permits
       }
       int i = _offset;
       final var side = Side.read(_data, i);
-      i += side.l();
+      i += 1;
       final var fillData = SerDeUtil.readbyteVector(4, _data, i);
       return new JupiterRfqV2(side, fillData);
     }
@@ -2222,7 +2222,7 @@ public sealed interface Swap extends RustEnum permits
       }
       int i = _offset;
       final var side = Side.read(_data, i);
-      i += side.l();
+      i += 1;
       final var authAmountIn = getInt64LE(_data, i);
       i += 8;
       final var auth = getInt64LE(_data, i);
@@ -2668,7 +2668,7 @@ public sealed interface Swap extends RustEnum permits
       }
       int i = _offset;
       final var side = BisonFiPredictSide.read(_data, i);
-      i += side.l();
+      i += 1;
       final var isBuy = _data[i] == 1;
       return new BisonFiPredict(side, isBuy);
     }
@@ -2794,7 +2794,7 @@ public sealed interface Swap extends RustEnum permits
       }
       int i = _offset;
       final var side = Side.read(_data, i);
-      i += side.l();
+      i += 1;
       final var instrId = Integer.toUnsignedLong(getInt32LE(_data, i));
       return new Deriverse(side, instrId);
     }

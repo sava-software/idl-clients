@@ -26,7 +26,7 @@ public record PositionBinData(BigInteger liquidityShare,
     final var liquidityShare = getUInt128LE(_data, i);
     i += 16;
     final var rewardInfo = UserRewardInfo.read(_data, i);
-    i += rewardInfo.l();
+    i += 48;
     final var feeInfo = FeeInfo.read(_data, i);
     return new PositionBinData(liquidityShare, rewardInfo, feeInfo);
   }

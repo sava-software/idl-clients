@@ -32,7 +32,7 @@ public record OracleParams(PublicKey oracleAccount,
     final var oracleAccount = readPubKey(_data, i);
     i += 32;
     final var oracleType = OracleType.read(_data, i);
-    i += oracleType.l();
+    i += 1;
     final var buffer = getInt64LE(_data, i);
     i += 8;
     final var maxPriceAgeSec = Integer.toUnsignedLong(getInt32LE(_data, i));

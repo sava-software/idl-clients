@@ -82,7 +82,7 @@ public record AssetData(String name, byte[] _name,
     final var isMutable = _data[i] == 1;
     ++i;
     final var tokenStandard = TokenStandard.read(_data, i);
-    i += tokenStandard.l();
+    i += 1;
     final Collection collection;
     if (SerDeUtil.isAbsent(1, _data, i)) {
       collection = null;
@@ -90,7 +90,7 @@ public record AssetData(String name, byte[] _name,
     } else {
       ++i;
       collection = Collection.read(_data, i);
-      i += collection.l();
+      i += 33;
     }
     final Uses uses;
     if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -99,7 +99,7 @@ public record AssetData(String name, byte[] _name,
     } else {
       ++i;
       uses = Uses.read(_data, i);
-      i += uses.l();
+      i += 17;
     }
     final CollectionDetails collectionDetails;
     if (SerDeUtil.isAbsent(1, _data, i)) {

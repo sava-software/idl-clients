@@ -48,7 +48,7 @@ public record UpdatePerpMarkPriceParametersInstruction(Symbol perpAssetSymbol,
     }
     int i = _offset;
     final var perpAssetSymbol = Symbol.read(_data, i);
-    i += perpAssetSymbol.l();
+    i += 16;
     final OptionalLong emaPeriodSlots;
     if (SerDeUtil.isAbsent(1, _data, i)) {
       emaPeriodSlots = OptionalLong.empty();

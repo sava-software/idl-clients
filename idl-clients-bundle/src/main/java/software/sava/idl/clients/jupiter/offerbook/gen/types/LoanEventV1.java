@@ -67,7 +67,7 @@ public record LoanEventV1(PublicKey lender,
     final var offer = readPubKey(_data, i);
     i += 32;
     final var status = LoanStatus.read(_data, i);
-    i += status.l();
+    i += 1;
     final var fillIndex = getInt64LE(_data, i);
     i += 8;
     final var principal = EventAsset.read(_data, i);
@@ -95,7 +95,7 @@ public record LoanEventV1(PublicKey lender,
     final var collateralAccountBump = _data[i] & 0xFF;
     ++i;
     final var loanType = LoanType.read(_data, i);
-    i += loanType.l();
+    i += 1;
     final var extendable = _data[i] & 0xFF;
     ++i;
     final var extensionCount = _data[i] & 0xFF;

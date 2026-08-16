@@ -56,19 +56,19 @@ public record TradeSummaryEvent(Discriminator discriminator,
     final var prevTradeSequenceNumberSlot = getInt64LE(_data, i);
     i += 8;
     final var side = Side.read(_data, i);
-    i += side.l();
+    i += 1;
     final var baseLotsFilled = BaseLots.read(_data, i);
-    i += baseLotsFilled.l();
+    i += 8;
     final var quoteLotsFilled = QuoteLots.read(_data, i);
-    i += quoteLotsFilled.l();
+    i += 8;
     final var feeInQuoteLots = QuoteLots.read(_data, i);
-    i += feeInQuoteLots.l();
+    i += 8;
     final var baseLotPosition = SignedBaseLots.read(_data, i);
-    i += baseLotPosition.l();
+    i += 8;
     final var virtualQuoteLotPosition = SignedQuoteLots.read(_data, i);
-    i += virtualQuoteLotPosition.l();
+    i += 8;
     final var quoteLotCollateral = SignedQuoteLots.read(_data, i);
-    i += quoteLotCollateral.l();
+    i += 8;
     final var cumulativeFundingSnapshot = SignedQuoteLotsPerBaseLot.read(_data, i);
     return new TradeSummaryEvent(discriminator,
                                  trader,

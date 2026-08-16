@@ -62,13 +62,13 @@ public record RewardInfo(TokenInfo token,
     }
     int i = _offset;
     final var token = TokenInfo.read(_data, i);
-    i += token.l();
+    i += 120;
     final var rewardsVault = readPubKey(_data, i);
     i += 32;
     final var rewardsAvailable = getInt64LE(_data, i);
     i += 8;
     final var rewardScheduleCurve = RewardScheduleCurve.read(_data, i);
-    i += rewardScheduleCurve.l();
+    i += 320;
     final var minClaimDurationSeconds = getInt64LE(_data, i);
     i += 8;
     final var lastIssuanceTs = getInt64LE(_data, i);

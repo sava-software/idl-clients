@@ -27,15 +27,15 @@ public record ConditionalOrderPingSnapshot(ConditionalOrderPingStateSnapshot sta
     }
     int i = _offset;
     final var state = ConditionalOrderPingStateSnapshot.read(_data, i);
-    i += state.l();
+    i += 1;
     final var attachedOrderId = OptionalFIFOOrderId.read(_data, i);
-    i += attachedOrderId.l();
+    i += 16;
     final var maxSize = BaseLots.read(_data, i);
-    i += maxSize.l();
+    i += 8;
     final var fillableSize = BaseLots.read(_data, i);
-    i += fillableSize.l();
+    i += 8;
     final var filledSize = BaseLots.read(_data, i);
-    i += filledSize.l();
+    i += 8;
     final OptionalInt coPositionSequenceNumber;
     if (SerDeUtil.isAbsent(1, _data, i)) {
       coPositionSequenceNumber = OptionalInt.empty();

@@ -33,7 +33,7 @@ public record ValidatorSystem(List validatorList,
     }
     int i = _offset;
     final var validatorList = List.read(_data, i);
-    i += validatorList.l();
+    i += 76;
     final var managerAuthority = readPubKey(_data, i);
     i += 32;
     final var totalValidatorScore = Integer.toUnsignedLong(getInt32LE(_data, i));

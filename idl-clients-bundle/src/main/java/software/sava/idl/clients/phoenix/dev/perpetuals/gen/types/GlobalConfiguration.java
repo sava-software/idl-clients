@@ -235,9 +235,9 @@ public record GlobalConfiguration(PublicKey _address,
     final var activeTraderBufferHeaderKey = readPubKey(_data, i);
     i += 32;
     final var totalQuoteLotFees = QuoteLots.read(_data, i);
-    i += totalQuoteLotFees.l();
+    i += 8;
     final var unclaimedQuoteLotFees = QuoteLots.read(_data, i);
-    i += unclaimedQuoteLotFees.l();
+    i += 8;
     final var withdrawQueueKey = readPubKey(_data, i);
     i += 32;
     final var exchangeStatus = _data[i] & 0xFF;

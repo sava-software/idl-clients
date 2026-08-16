@@ -512,7 +512,7 @@ public final class LbClmmProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final var liquidityParameter = LiquidityParameterByStrategy.read(_data, i);
-      i += liquidityParameter.l();
+      i += 97;
       final var remainingAccountsInfo = RemainingAccountsInfo.read(_data, i);
       return new AddLiquidityByStrategy2IxData(discriminator, liquidityParameter, remainingAccountsInfo);
     }

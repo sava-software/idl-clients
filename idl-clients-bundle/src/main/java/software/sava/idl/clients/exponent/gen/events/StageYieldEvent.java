@@ -52,7 +52,7 @@ public record StageYieldEvent(Discriminator discriminator,
     final var vaultYieldPosition = readPubKey(_data, i);
     i += 32;
     final var syExchangeRate = Number.read(_data, i);
-    i += syExchangeRate.l();
+    i += 32;
     final var userYtBalance = getInt64LE(_data, i);
     i += 8;
     final var userStagedYield = getInt64LE(_data, i);

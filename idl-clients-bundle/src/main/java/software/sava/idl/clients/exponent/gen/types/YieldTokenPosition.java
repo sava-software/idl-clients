@@ -83,7 +83,7 @@ public record YieldTokenPosition(PublicKey _address,
     final var ytBalance = getInt64LE(_data, i);
     i += 8;
     final var interest = YieldTokenTracker.read(_data, i);
-    i += interest.l();
+    i += 40;
     final var emissions = SerDeUtil.readVector(4, YieldTokenTracker.class, YieldTokenTracker::read, _data, i);
     return new YieldTokenPosition(_address,
                                   discriminator,

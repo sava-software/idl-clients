@@ -60,7 +60,7 @@ public record SpotPosition(long scaledBalance,
     final var marketIndex = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var balanceType = SpotBalanceType.read(_data, i);
-    i += balanceType.l();
+    i += 1;
     final var openOrders = _data[i] & 0xFF;
     ++i;
     final var padding = new byte[4];

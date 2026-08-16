@@ -22,9 +22,9 @@ public record Lockup(UnixTimestamp unixTimestamp,
     }
     int i = _offset;
     final var unixTimestamp = UnixTimestamp.read(_data, i);
-    i += unixTimestamp.l();
+    i += 8;
     final var epoch = Epoch.read(_data, i);
-    i += epoch.l();
+    i += 8;
     final var custodian = readPubKey(_data, i);
     return new Lockup(unixTimestamp, epoch, custodian);
   }

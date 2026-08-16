@@ -66,7 +66,7 @@ public record DataV2(String name, byte[] _name,
     } else {
       ++i;
       collection = Collection.read(_data, i);
-      i += collection.l();
+      i += 33;
     }
     final Uses uses;
     if (SerDeUtil.isAbsent(1, _data, i)) {

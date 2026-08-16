@@ -31,7 +31,7 @@ public record PlaceLimitOrderWithConditionalsInstruction(OrderPacket orderPacket
     } else {
       ++i;
       greaterTriggerOrder = TriggerOrderParams.read(_data, i);
-      i += greaterTriggerOrder.l();
+      i += 19;
     }
     final TriggerOrderParams lessTriggerOrder;
     if (SerDeUtil.isAbsent(1, _data, i)) {

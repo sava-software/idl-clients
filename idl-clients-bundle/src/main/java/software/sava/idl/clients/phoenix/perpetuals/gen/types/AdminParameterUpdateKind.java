@@ -141,7 +141,7 @@ public sealed interface AdminParameterUpdateKind extends RustEnum permits
       }
       int i = _offset;
       final var previous = software.sava.idl.clients.phoenix.perpetuals.gen.types.LeverageTiers.read(_data, i);
-      i += previous.l();
+      i += 96;
       final var _new = software.sava.idl.clients.phoenix.perpetuals.gen.types.LeverageTiers.read(_data, i);
       return new LeverageTiers(previous, _new);
     }
@@ -178,7 +178,7 @@ public sealed interface AdminParameterUpdateKind extends RustEnum permits
       }
       int i = _offset;
       final var previous = MarkPriceConfig.read(_data, i);
-      i += previous.l();
+      i += 347;
       final var _new = MarkPriceConfig.read(_data, i);
       return new MarkPriceParameters(previous, _new);
     }
@@ -338,7 +338,7 @@ public sealed interface AdminParameterUpdateKind extends RustEnum permits
       }
       int i = _offset;
       final var previous = WithdrawConfig.read(_data, i);
-      i += previous.l();
+      i += 24;
       final var _new = WithdrawConfig.read(_data, i);
       return new WithdrawParameters(previous, _new);
     }
@@ -375,7 +375,7 @@ public sealed interface AdminParameterUpdateKind extends RustEnum permits
       }
       int i = _offset;
       final var previous = WithdrawRateLimitConfig.read(_data, i);
-      i += previous.l();
+      i += 16;
       final var _new = WithdrawRateLimitConfig.read(_data, i);
       return new WithdrawRateLimits(previous, _new);
     }
@@ -417,7 +417,7 @@ public sealed interface AdminParameterUpdateKind extends RustEnum permits
       final var trader = readPubKey(_data, i);
       i += 32;
       final var previousFlags = TraderCapabilityFlags.read(_data, i);
-      i += previousFlags.l();
+      i += 4;
       final var newFlags = TraderCapabilityFlags.read(_data, i);
       return new TraderCapability(trader, previousFlags, newFlags);
     }
@@ -456,7 +456,7 @@ public sealed interface AdminParameterUpdateKind extends RustEnum permits
       }
       int i = _offset;
       final var previous = FundingConfig.read(_data, i);
-      i += previous.l();
+      i += 24;
       final var _new = FundingConfig.read(_data, i);
       return new FundingParameters(previous, _new);
     }
@@ -493,7 +493,7 @@ public sealed interface AdminParameterUpdateKind extends RustEnum permits
       }
       int i = _offset;
       final var previous = MarketFeeConfig.read(_data, i);
-      i += previous.l();
+      i += 8;
       final var _new = MarketFeeConfig.read(_data, i);
       return new MarketFees(previous, _new);
     }

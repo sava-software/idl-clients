@@ -42,7 +42,7 @@ public record InitializeEvent(Discriminator discriminator,
     final var state = readPubKey(_data, i);
     i += 32;
     final var params = InitializeData.read(_data, i);
-    i += params.l();
+    i += 144;
     final var stakeList = readPubKey(_data, i);
     i += 32;
     final var validatorList = readPubKey(_data, i);

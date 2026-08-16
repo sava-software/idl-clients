@@ -21,7 +21,7 @@ public record GroupRateLimiter(RateLimitWindow hourly, RateLimitWindow daily) im
     }
     int i = _offset;
     final var hourly = RateLimitWindow.read(_data, i);
-    i += hourly.l();
+    i += 40;
     final var daily = RateLimitWindow.read(_data, i);
     return new GroupRateLimiter(hourly, daily);
   }

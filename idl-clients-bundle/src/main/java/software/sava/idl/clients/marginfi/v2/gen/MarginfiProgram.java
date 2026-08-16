@@ -1516,7 +1516,7 @@ public final class MarginfiProgram {
       } else {
         ++i;
         programFeeFixed = WrappedI80F48.read(_data, i);
-        i += programFeeFixed.l();
+        i += 16;
       }
       final WrappedI80F48 programFeeRate;
       if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -1525,7 +1525,7 @@ public final class MarginfiProgram {
       } else {
         ++i;
         programFeeRate = WrappedI80F48.read(_data, i);
-        i += programFeeRate.l();
+        i += 16;
       }
       final WrappedI80F48 liquidationMaxFee;
       if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -1534,7 +1534,7 @@ public final class MarginfiProgram {
       } else {
         ++i;
         liquidationMaxFee = WrappedI80F48.read(_data, i);
-        i += liquidationMaxFee.l();
+        i += 16;
       }
       final WrappedI80F48 orderExecutionMaxFee;
       if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -1543,7 +1543,7 @@ public final class MarginfiProgram {
       } else {
         ++i;
         orderExecutionMaxFee = WrappedI80F48.read(_data, i);
-        i += orderExecutionMaxFee.l();
+        i += 16;
       }
       final PublicKey pauseDelegateAdmin;
       if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -1996,11 +1996,11 @@ public final class MarginfiProgram {
       final var orderInitFlatSolFee = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
       final var programFeeFixed = WrappedI80F48.read(_data, i);
-      i += programFeeFixed.l();
+      i += 16;
       final var programFeeRate = WrappedI80F48.read(_data, i);
-      i += programFeeRate.l();
+      i += 16;
       final var liquidationMaxFee = WrappedI80F48.read(_data, i);
-      i += liquidationMaxFee.l();
+      i += 16;
       final var orderExecutionMaxFee = WrappedI80F48.read(_data, i);
       return new InitGlobalFeeStateIxData(discriminator,
                                           admin,
@@ -4628,7 +4628,7 @@ public final class MarginfiProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final var bankConfig = DriftConfigCompact.read(_data, i);
-      i += bankConfig.l();
+      i += 90;
       final var bankSeed = getInt64LE(_data, i);
       return new LendingPoolAddBankDriftIxData(discriminator, bankConfig, bankSeed);
     }
@@ -4799,7 +4799,7 @@ public final class MarginfiProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final var bankConfig = JuplendConfigCompact.read(_data, i);
-      i += bankConfig.l();
+      i += 89;
       final var bankSeed = getInt64LE(_data, i);
       return new LendingPoolAddBankJuplendIxData(discriminator, bankConfig, bankSeed);
     }
@@ -4965,7 +4965,7 @@ public final class MarginfiProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final var bankConfig = KaminoConfigCompact.read(_data, i);
-      i += bankConfig.l();
+      i += 90;
       final var bankSeed = getInt64LE(_data, i);
       return new LendingPoolAddBankKaminoIxData(discriminator, bankConfig, bankSeed);
     }
@@ -5278,7 +5278,7 @@ public final class MarginfiProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final var bankConfig = SolendConfigCompact.read(_data, i);
-      i += bankConfig.l();
+      i += 90;
       final var bankSeed = getInt64LE(_data, i);
       return new LendingPoolAddBankSolendIxData(discriminator, bankConfig, bankSeed);
     }
@@ -5419,7 +5419,7 @@ public final class MarginfiProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final var bankConfig = BankConfigCompact.read(_data, i);
-      i += bankConfig.l();
+      i += 231;
       final var bankSeed = getInt64LE(_data, i);
       return new LendingPoolAddBankWithSeedIxData(discriminator, bankConfig, bankSeed);
     }
@@ -8033,7 +8033,7 @@ public final class MarginfiProgram {
       } else {
         ++i;
         emodeMaxInitLeverage = WrappedI80F48.read(_data, i);
-        i += emodeMaxInitLeverage.l();
+        i += 16;
       }
       final WrappedI80F48 emodeMaxMaintLeverage;
       if (SerDeUtil.isAbsent(1, _data, i)) {

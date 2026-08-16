@@ -49,7 +49,7 @@ public record TokenInfo(byte[] name,
     final var name = new byte[32];
     i += SerDeUtil.readArray(name, _data, i);
     final var heuristic = PriceHeuristic.read(_data, i);
-    i += heuristic.l();
+    i += 24;
     final var maxTwapDivergenceBps = getInt64LE(_data, i);
     i += 8;
     final var maxAgePriceSeconds = getInt64LE(_data, i);
@@ -57,11 +57,11 @@ public record TokenInfo(byte[] name,
     final var maxAgeTwapSeconds = getInt64LE(_data, i);
     i += 8;
     final var scopeConfiguration = ScopeConfiguration.read(_data, i);
-    i += scopeConfiguration.l();
+    i += 48;
     final var switchboardConfiguration = SwitchboardConfiguration.read(_data, i);
-    i += switchboardConfiguration.l();
+    i += 64;
     final var pythConfiguration = PythConfiguration.read(_data, i);
-    i += pythConfiguration.l();
+    i += 32;
     final var blockPriceUsage = _data[i] & 0xFF;
     ++i;
     final var reserved = new byte[7];

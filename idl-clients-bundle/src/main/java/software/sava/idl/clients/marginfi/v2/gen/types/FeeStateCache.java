@@ -34,9 +34,9 @@ public record FeeStateCache(PublicKey globalFeeWallet,
     final var globalFeeWallet = readPubKey(_data, i);
     i += 32;
     final var programFeeFixed = WrappedI80F48.read(_data, i);
-    i += programFeeFixed.l();
+    i += 16;
     final var programFeeRate = WrappedI80F48.read(_data, i);
-    i += programFeeRate.l();
+    i += 16;
     final var lastUpdate = getInt64LE(_data, i);
     return new FeeStateCache(globalFeeWallet,
                              programFeeFixed,

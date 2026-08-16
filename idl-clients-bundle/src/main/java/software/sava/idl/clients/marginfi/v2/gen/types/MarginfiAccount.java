@@ -190,13 +190,13 @@ public record MarginfiAccount(PublicKey _address,
     final var authority = readPubKey(_data, i);
     i += 32;
     final var lendingAccount = LendingAccount.read(_data, i);
-    i += lendingAccount.l();
+    i += 1728;
     final var accountFlags = getInt64LE(_data, i);
     i += 8;
     final var emissionsDestinationAccount = readPubKey(_data, i);
     i += 32;
     final var healthCache = HealthCache.read(_data, i);
-    i += healthCache.l();
+    i += 304;
     final var migratedFrom = readPubKey(_data, i);
     i += 32;
     final var migratedTo = readPubKey(_data, i);
@@ -216,7 +216,7 @@ public record MarginfiAccount(PublicKey _address,
     final var liquidationRecord = readPubKey(_data, i);
     i += 32;
     final var indexerFlags = IndexerFlags.read(_data, i);
-    i += indexerFlags.l();
+    i += 24;
     final var padding0 = new long[4];
     SerDeUtil.readArray(padding0, _data, i);
     return new MarginfiAccount(_address,

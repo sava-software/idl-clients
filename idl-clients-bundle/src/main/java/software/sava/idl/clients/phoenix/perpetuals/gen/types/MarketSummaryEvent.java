@@ -36,11 +36,11 @@ public record MarketSummaryEvent(Discriminator discriminator,
     final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var assetSymbol = Symbol.read(_data, i);
-    i += assetSymbol.l();
+    i += 16;
     final var assetId = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var openInterest = BaseLots.read(_data, i);
-    i += openInterest.l();
+    i += 8;
     final SignedQuoteLots totalMakerQuoteLotFees;
     if (SerDeUtil.isAbsent(1, _data, i)) {
       totalMakerQuoteLotFees = null;
@@ -48,7 +48,7 @@ public record MarketSummaryEvent(Discriminator discriminator,
     } else {
       ++i;
       totalMakerQuoteLotFees = SignedQuoteLots.read(_data, i);
-      i += totalMakerQuoteLotFees.l();
+      i += 8;
     }
     final QuoteLots totalTakerQuoteLotFees;
     if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -57,10 +57,10 @@ public record MarketSummaryEvent(Discriminator discriminator,
     } else {
       ++i;
       totalTakerQuoteLotFees = QuoteLots.read(_data, i);
-      i += totalTakerQuoteLotFees.l();
+      i += 8;
     }
     final var markPrice = Ticks.read(_data, i);
-    i += markPrice.l();
+    i += 8;
     final var spotPrice = Ticks.read(_data, i);
     return new MarketSummaryEvent(discriminator,
                                   assetSymbol,

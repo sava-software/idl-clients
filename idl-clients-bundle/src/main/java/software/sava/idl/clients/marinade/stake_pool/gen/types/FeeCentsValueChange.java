@@ -16,7 +16,7 @@ public record FeeCentsValueChange(FeeCents old, FeeCents _new) implements SerDe 
     }
     int i = _offset;
     final var old = FeeCents.read(_data, i);
-    i += old.l();
+    i += 4;
     final var _new = FeeCents.read(_data, i);
     return new FeeCentsValueChange(old, _new);
   }

@@ -114,11 +114,11 @@ public record Pool(PublicKey _address,
     final var aumUsd = getUInt128LE(_data, i);
     i += 16;
     final var limit = Limit.read(_data, i);
-    i += limit.l();
+    i += 40;
     final var fees = Fees.read(_data, i);
-    i += fees.l();
+    i += 72;
     final var poolApr = PoolApr.read(_data, i);
-    i += poolApr.l();
+    i += 24;
     final var maxRequestExecutionSec = getInt64LE(_data, i);
     i += 8;
     final var bump = _data[i] & 0xFF;
@@ -128,7 +128,7 @@ public record Pool(PublicKey _address,
     final var inceptionTime = getInt64LE(_data, i);
     i += 8;
     final var parameterUpdateOracle = Secp256k1Pubkey.read(_data, i);
-    i += parameterUpdateOracle.l();
+    i += 33;
     final var aumUsdUpdatedAt = getInt64LE(_data, i);
     i += 8;
     final var maxTriggerPriceDiffBps = getInt64LE(_data, i);

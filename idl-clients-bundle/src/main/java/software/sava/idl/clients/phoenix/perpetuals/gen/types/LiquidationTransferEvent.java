@@ -52,13 +52,13 @@ public record LiquidationTransferEvent(Discriminator discriminator,
     final var assetId = getInt64LE(_data, i);
     i += 8;
     final var baseLotsTransferred = SignedBaseLots.read(_data, i);
-    i += baseLotsTransferred.l();
+    i += 8;
     final var virtualQuoteLotsTransferred = SignedQuoteLots.read(_data, i);
-    i += virtualQuoteLotsTransferred.l();
+    i += 8;
     final var haircutRate = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var liquidateeCollateralChange = SignedQuoteLots.read(_data, i);
-    i += liquidateeCollateralChange.l();
+    i += 8;
     final var liquidatorCollateralChange = SignedQuoteLots.read(_data, i);
     return new LiquidationTransferEvent(discriminator,
                                         liquidatee,

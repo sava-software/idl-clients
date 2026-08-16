@@ -30,11 +30,11 @@ public record TriggerOrderParams(Direction triggerDirection,
     }
     int i = _offset;
     final var triggerDirection = Direction.read(_data, i);
-    i += triggerDirection.l();
+    i += 1;
     final var tradeSide = Side.read(_data, i);
-    i += tradeSide.l();
+    i += 1;
     final var orderKind = StopLossOrderKind.read(_data, i);
-    i += orderKind.l();
+    i += 1;
     final var triggerPrice = getInt64LE(_data, i);
     i += 8;
     final var executionPrice = getInt64LE(_data, i);

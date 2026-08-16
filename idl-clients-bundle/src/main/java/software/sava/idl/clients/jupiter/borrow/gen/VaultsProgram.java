@@ -1039,7 +1039,7 @@ public final class VaultsProgram {
       } else {
         ++i;
         transferType = TransferType.read(_data, i);
-        i += transferType.l();
+        i += 1;
       }
       final var remainingAccountsIndices = SerDeUtil.readbyteVector(4, _data, i);
       return new LiquidateIxData(discriminator,
@@ -1296,7 +1296,7 @@ public final class VaultsProgram {
       } else {
         ++i;
         transferType = TransferType.read(_data, i);
-        i += transferType.l();
+        i += 1;
       }
       final var remainingAccountsIndices = SerDeUtil.readbyteVector(4, _data, i);
       return new OperateIxData(discriminator,

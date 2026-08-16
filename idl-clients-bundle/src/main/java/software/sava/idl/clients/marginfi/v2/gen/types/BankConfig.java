@@ -113,21 +113,21 @@ public record BankConfig(WrappedI80F48 assetWeightInit,
     }
     int i = _offset;
     final var assetWeightInit = WrappedI80F48.read(_data, i);
-    i += assetWeightInit.l();
+    i += 16;
     final var assetWeightMaint = WrappedI80F48.read(_data, i);
-    i += assetWeightMaint.l();
+    i += 16;
     final var liabilityWeightInit = WrappedI80F48.read(_data, i);
-    i += liabilityWeightInit.l();
+    i += 16;
     final var liabilityWeightMaint = WrappedI80F48.read(_data, i);
-    i += liabilityWeightMaint.l();
+    i += 16;
     final var depositLimit = getInt64LE(_data, i);
     i += 8;
     final var interestRateConfig = InterestRateConfig.read(_data, i);
-    i += interestRateConfig.l();
+    i += 240;
     final var operationalState = BankOperationalState.read(_data, i);
-    i += operationalState.l();
+    i += 1;
     final var oracleSetup = OracleSetup.read(_data, i);
-    i += oracleSetup.l();
+    i += 1;
     final var oracleKeys = new PublicKey[5];
     i += SerDeUtil.readArray(oracleKeys, _data, i);
     final var pad0 = new byte[6];
@@ -135,7 +135,7 @@ public record BankConfig(WrappedI80F48 assetWeightInit,
     final var borrowLimit = getInt64LE(_data, i);
     i += 8;
     final var riskTier = RiskTier.read(_data, i);
-    i += riskTier.l();
+    i += 1;
     final var assetTag = _data[i] & 0xFF;
     ++i;
     final var configFlags = _data[i] & 0xFF;
@@ -151,7 +151,7 @@ public record BankConfig(WrappedI80F48 assetWeightInit,
     final var oracleMaxConfidence = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var fixedPrice = WrappedI80F48.read(_data, i);
-    i += fixedPrice.l();
+    i += 16;
     final var padding1 = new byte[16];
     SerDeUtil.readArray(padding1, _data, i);
     return new BankConfig(assetWeightInit,

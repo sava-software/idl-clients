@@ -38,7 +38,7 @@ public record InstantIncreasePositionParams(long sizeUsdDelta,
       i += 8;
     }
     final var side = Side.read(_data, i);
-    i += side.l();
+    i += 1;
     final var priceSlippage = getInt64LE(_data, i);
     i += 8;
     final var requestTime = getInt64LE(_data, i);

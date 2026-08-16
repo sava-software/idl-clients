@@ -283,7 +283,7 @@ public record Strategy(PublicKey _address,
     final var externalYieldSource = _data[i] & 0xFF;
     ++i;
     final var interestPerSecond = PodDecimal.read(_data, i);
-    i += interestPerSecond.l();
+    i += 24;
     final var lastAccruedTimestamp = getInt64LE(_data, i);
     i += 8;
     final var liquidityBuffer = getInt64LE(_data, i);
@@ -319,11 +319,11 @@ public record Strategy(PublicKey _address,
     final var collateralMap = new long[200][5];
     i += SerDeUtil.readArray(collateralMap, _data, i);
     final var externalYieldAccounts = ExternalYieldAccounts.read(_data, i);
-    i += externalYieldAccounts.l();
+    i += 64;
     final var supplyMonitor = CapMonitor.read(_data, i);
-    i += supplyMonitor.l();
+    i += 32;
     final var withdrawMonitor = CapMonitor.read(_data, i);
-    i += withdrawMonitor.l();
+    i += 32;
     final var borrowMonitor = CapMonitor.read(_data, i);
     return new Strategy(_address,
                         discriminator,

@@ -57,7 +57,7 @@ public record PricesUpdatedEvent(Discriminator discriminator,
       i += 32;
     }
     final var assetSymbol = Symbol.read(_data, i);
-    i += assetSymbol.l();
+    i += 16;
     final var assetId = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final Ticks newBestBid;
@@ -67,7 +67,7 @@ public record PricesUpdatedEvent(Discriminator discriminator,
     } else {
       ++i;
       newBestBid = Ticks.read(_data, i);
-      i += newBestBid.l();
+      i += 8;
     }
     final Ticks newBestAsk;
     if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -76,7 +76,7 @@ public record PricesUpdatedEvent(Discriminator discriminator,
     } else {
       ++i;
       newBestAsk = Ticks.read(_data, i);
-      i += newBestAsk.l();
+      i += 8;
     }
     final Ticks newLastTrade;
     if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -85,7 +85,7 @@ public record PricesUpdatedEvent(Discriminator discriminator,
     } else {
       ++i;
       newLastTrade = Ticks.read(_data, i);
-      i += newLastTrade.l();
+      i += 8;
     }
     final Ticks newExchangeSpotPrice;
     if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -94,7 +94,7 @@ public record PricesUpdatedEvent(Discriminator discriminator,
     } else {
       ++i;
       newExchangeSpotPrice = Ticks.read(_data, i);
-      i += newExchangeSpotPrice.l();
+      i += 8;
     }
     final Ticks newExchangePerpPrice;
     if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -103,7 +103,7 @@ public record PricesUpdatedEvent(Discriminator discriminator,
     } else {
       ++i;
       newExchangePerpPrice = Ticks.read(_data, i);
-      i += newExchangePerpPrice.l();
+      i += 8;
     }
     final SignedTicks newMidSpotDiffEmaTicks;
     if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -112,10 +112,10 @@ public record PricesUpdatedEvent(Discriminator discriminator,
     } else {
       ++i;
       newMidSpotDiffEmaTicks = SignedTicks.read(_data, i);
-      i += newMidSpotDiffEmaTicks.l();
+      i += 8;
     }
     final var newMarkPrice = Ticks.read(_data, i);
-    i += newMarkPrice.l();
+    i += 8;
     final SignedQuoteLotsPerBaseLot cumulativeFundingRate;
     if (SerDeUtil.isAbsent(1, _data, i)) {
       cumulativeFundingRate = null;
@@ -123,7 +123,7 @@ public record PricesUpdatedEvent(Discriminator discriminator,
     } else {
       ++i;
       cumulativeFundingRate = SignedQuoteLotsPerBaseLot.read(_data, i);
-      i += cumulativeFundingRate.l();
+      i += 8;
     }
     final SignedQuoteLotsPerBaseLot settledContribution;
     if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -132,7 +132,7 @@ public record PricesUpdatedEvent(Discriminator discriminator,
     } else {
       ++i;
       settledContribution = SignedQuoteLotsPerBaseLot.read(_data, i);
-      i += settledContribution.l();
+      i += 8;
     }
     final SignedQuoteLotsPerBaseLotUpcasted intervalAccumulator;
     if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -141,7 +141,7 @@ public record PricesUpdatedEvent(Discriminator discriminator,
     } else {
       ++i;
       intervalAccumulator = SignedQuoteLotsPerBaseLotUpcasted.read(_data, i);
-      i += intervalAccumulator.l();
+      i += 16;
     }
     final var assetSequenceNumber = getInt64LE(_data, i);
     i += 8;

@@ -24,7 +24,7 @@ public record Uses(UseMethod useMethod,
     }
     int i = _offset;
     final var useMethod = UseMethod.read(_data, i);
-    i += useMethod.l();
+    i += 1;
     final var remaining = getInt64LE(_data, i);
     i += 8;
     final var total = getInt64LE(_data, i);
