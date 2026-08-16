@@ -5,13 +5,13 @@ import software.sava.core.accounts.PublicKey;
 import software.sava.core.encoding.ByteUtil;
 import software.sava.core.rpc.Filter;
 import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import java.util.OptionalLong;
 import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
@@ -44,10 +44,13 @@ public record Token(PublicKey _address,
   public static final int MINT_OFFSET = 0;
   public static final int OWNER_OFFSET = 32;
   public static final int AMOUNT_OFFSET = 64;
+  public static final int DELEGATE_OPTION_OFFSET = 72;
   public static final int DELEGATE_OFFSET = 76;
   public static final int STATE_OFFSET = 108;
+  public static final int IS_NATIVE_OPTION_OFFSET = 109;
   public static final int IS_NATIVE_OFFSET = 113;
   public static final int DELEGATED_AMOUNT_OFFSET = 121;
+  public static final int CLOSE_AUTHORITY_OPTION_OFFSET = 129;
   public static final int CLOSE_AUTHORITY_OFFSET = 133;
 
   public static Filter createMintFilter(final PublicKey mint) {
@@ -65,7 +68,14 @@ public record Token(PublicKey _address,
   }
 
   public static Filter createDelegateFilter(final PublicKey delegate) {
-    return Filter.createMemCompFilter(DELEGATE_OFFSET, delegate);
+    final byte[] _data = new byte[36];
+    _data[0] = 1;
+    delegate.write(_data, 4);
+    return Filter.createMemCompFilter(DELEGATE_OPTION_OFFSET, _data);
+  }
+
+  public static Filter createDelegateAbsentFilter() {
+    return Filter.createMemCompFilter(DELEGATE_OPTION_OFFSET, new byte[4]);
   }
 
   public static Filter createStateFilter(final AccountState state) {
@@ -73,9 +83,14 @@ public record Token(PublicKey _address,
   }
 
   public static Filter createIsNativeFilter(final long isNative) {
-    final byte[] _data = new byte[8];
-    putInt64LE(_data, 0, isNative);
-    return Filter.createMemCompFilter(IS_NATIVE_OFFSET, _data);
+    final byte[] _data = new byte[12];
+    _data[0] = 1;
+    putInt64LE(_data, 4, isNative);
+    return Filter.createMemCompFilter(IS_NATIVE_OPTION_OFFSET, _data);
+  }
+
+  public static Filter createIsNativeAbsentFilter() {
+    return Filter.createMemCompFilter(IS_NATIVE_OPTION_OFFSET, new byte[4]);
   }
 
   public static Filter createDelegatedAmountFilter(final long delegatedAmount) {
@@ -85,7 +100,14 @@ public record Token(PublicKey _address,
   }
 
   public static Filter createCloseAuthorityFilter(final PublicKey closeAuthority) {
-    return Filter.createMemCompFilter(CLOSE_AUTHORITY_OFFSET, closeAuthority);
+    final byte[] _data = new byte[36];
+    _data[0] = 1;
+    closeAuthority.write(_data, 4);
+    return Filter.createMemCompFilter(CLOSE_AUTHORITY_OPTION_OFFSET, _data);
+  }
+
+  public static Filter createCloseAuthorityAbsentFilter() {
+    return Filter.createMemCompFilter(CLOSE_AUTHORITY_OPTION_OFFSET, new byte[4]);
   }
 
   public static Token read(final byte[] _data, final int _offset) {
@@ -115,7 +137,7 @@ public record Token(PublicKey _address,
     final var amount = getInt64LE(_data, i);
     i += 8;
     final PublicKey delegate;
-    if (Integer.toUnsignedLong(getInt32LE(_data, i)) == 0) {
+    if (SerDeUtil.isAbsent(4, _data, i)) {
       delegate = null;
       i += 32 + 4;
     } else {
@@ -126,7 +148,7 @@ public record Token(PublicKey _address,
     final var state = AccountState.read(_data, i);
     i += state.l();
     final OptionalLong isNative;
-    if (Integer.toUnsignedLong(getInt32LE(_data, i)) == 0) {
+    if (SerDeUtil.isAbsent(4, _data, i)) {
       isNative = OptionalLong.empty();
       i += 8 + 4;
     } else {
@@ -137,7 +159,7 @@ public record Token(PublicKey _address,
     final var delegatedAmount = getInt64LE(_data, i);
     i += 8;
     final PublicKey closeAuthority;
-    if (Integer.toUnsignedLong(getInt32LE(_data, i)) == 0) {
+    if (SerDeUtil.isAbsent(4, _data, i)) {
       closeAuthority = null;
     } else {
       i += 4;
@@ -168,6 +190,7 @@ public record Token(PublicKey _address,
       i += 4;
       delegate.write(_data, i);
     } else {
+      putInt32LE(_data, i, (int) 0);
       i += 4;
     }
     i += 32;
@@ -177,6 +200,7 @@ public record Token(PublicKey _address,
       i += 4;
       ByteUtil.putInt64LE(_data, i, isNative.getAsLong());
     } else {
+      putInt32LE(_data, i, (int) 0);
       i += 4;
     }
     i += 8;
@@ -187,6 +211,7 @@ public record Token(PublicKey _address,
       i += 4;
       closeAuthority.write(_data, i);
     } else {
+      putInt32LE(_data, i, (int) 0);
       i += 4;
     }
     i += 32;

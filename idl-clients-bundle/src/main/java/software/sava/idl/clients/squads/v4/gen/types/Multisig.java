@@ -60,6 +60,7 @@ public record Multisig(PublicKey _address,
   public static final int TIME_LOCK_OFFSET = 74;
   public static final int TRANSACTION_INDEX_OFFSET = 78;
   public static final int STALE_TRANSACTION_INDEX_OFFSET = 86;
+  public static final int RENT_COLLECTOR_OPTION_OFFSET = 94;
   public static final int RENT_COLLECTOR_OFFSET = 95;
 
   public static Filter createCreateKeyFilter(final PublicKey createKey) {
@@ -98,7 +99,11 @@ public record Multisig(PublicKey _address,
     final byte[] _data = new byte[33];
     _data[0] = 1;
     rentCollector.write(_data, 1);
-    return Filter.createMemCompFilter(RENT_COLLECTOR_OFFSET, _data);
+    return Filter.createMemCompFilter(RENT_COLLECTOR_OPTION_OFFSET, _data);
+  }
+
+  public static Filter createRentCollectorAbsentFilter() {
+    return Filter.createMemCompFilter(RENT_COLLECTOR_OPTION_OFFSET, new byte[1]);
   }
 
   public static Multisig read(final byte[] _data, final int _offset) {

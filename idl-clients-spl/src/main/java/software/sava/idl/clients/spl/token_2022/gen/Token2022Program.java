@@ -3560,12 +3560,16 @@ public final class Token2022Program {
     ++i;
     if (authority != null) {
       authority.write(_data, i);
+    } else {
+      Arrays.fill(_data, i, i + 32, (byte) 0);
     }
     i += 32;
     _data[i] = (byte) (autoApproveNewAccounts ? 1 : 0);
     ++i;
     if (auditorElgamalPubkey != null) {
       auditorElgamalPubkey.write(_data, i);
+    } else {
+      Arrays.fill(_data, i, i + 32, (byte) 0);
     }
     i += 32;
 
@@ -3615,11 +3619,11 @@ public final class Token2022Program {
       ++i;
       final var confidentialTransferDiscriminator = _data[i] & 0xFF;
       ++i;
-      final var authority = readPubKey(_data, i);
+      final var authority = SerDeUtil.isZeroed(_data, i, 32) ? null : readPubKey(_data, i);
       i += 32;
       final var autoApproveNewAccounts = _data[i] == 1;
       ++i;
-      final var auditorElgamalPubkey = readPubKey(_data, i);
+      final var auditorElgamalPubkey = SerDeUtil.isZeroed(_data, i, 32) ? null : readPubKey(_data, i);
       return new InitializeConfidentialTransferMintIxData(discriminator,
                                                           confidentialTransferDiscriminator,
                                                           authority,
@@ -3636,12 +3640,16 @@ public final class Token2022Program {
       ++i;
       if (authority != null) {
         authority.write(_data, i);
+      } else {
+        Arrays.fill(_data, i, i + 32, (byte) 0);
       }
       i += 32;
       _data[i] = (byte) (autoApproveNewAccounts ? 1 : 0);
       ++i;
       if (auditorElgamalPubkey != null) {
         auditorElgamalPubkey.write(_data, i);
+      } else {
+        Arrays.fill(_data, i, i + 32, (byte) 0);
       }
       i += 32;
       return i - _offset;
@@ -3717,6 +3725,8 @@ public final class Token2022Program {
     ++i;
     if (auditorElgamalPubkey != null) {
       auditorElgamalPubkey.write(_data, i);
+    } else {
+      Arrays.fill(_data, i, i + 32, (byte) 0);
     }
     i += 32;
 
@@ -3759,7 +3769,7 @@ public final class Token2022Program {
       ++i;
       final var autoApproveNewAccounts = _data[i] == 1;
       ++i;
-      final var auditorElgamalPubkey = readPubKey(_data, i);
+      final var auditorElgamalPubkey = SerDeUtil.isZeroed(_data, i, 32) ? null : readPubKey(_data, i);
       return new UpdateConfidentialTransferMintIxData(discriminator,
                                                       confidentialTransferDiscriminator,
                                                       autoApproveNewAccounts,
@@ -3777,6 +3787,8 @@ public final class Token2022Program {
       ++i;
       if (auditorElgamalPubkey != null) {
         auditorElgamalPubkey.write(_data, i);
+      } else {
+        Arrays.fill(_data, i, i + 32, (byte) 0);
       }
       i += 32;
       return i - _offset;
@@ -6805,6 +6817,8 @@ public final class Token2022Program {
     ++i;
     if (rateAuthority != null) {
       rateAuthority.write(_data, i);
+    } else {
+      Arrays.fill(_data, i, i + 32, (byte) 0);
     }
     i += 32;
     putInt16LE(_data, i, rate);
@@ -6849,7 +6863,7 @@ public final class Token2022Program {
       ++i;
       final var interestBearingMintDiscriminator = _data[i] & 0xFF;
       ++i;
-      final var rateAuthority = readPubKey(_data, i);
+      final var rateAuthority = SerDeUtil.isZeroed(_data, i, 32) ? null : readPubKey(_data, i);
       i += 32;
       final var rate = getInt16LE(_data, i);
       return new InitializeInterestBearingMintIxData(discriminator,
@@ -6867,6 +6881,8 @@ public final class Token2022Program {
       ++i;
       if (rateAuthority != null) {
         rateAuthority.write(_data, i);
+      } else {
+        Arrays.fill(_data, i, i + 32, (byte) 0);
       }
       i += 32;
       putInt16LE(_data, i, rate);
@@ -7340,10 +7356,14 @@ public final class Token2022Program {
     ++i;
     if (authority != null) {
       authority.write(_data, i);
+    } else {
+      Arrays.fill(_data, i, i + 32, (byte) 0);
     }
     i += 32;
     if (programId != null) {
       programId.write(_data, i);
+    } else {
+      Arrays.fill(_data, i, i + 32, (byte) 0);
     }
     i += 32;
 
@@ -7386,9 +7406,9 @@ public final class Token2022Program {
       ++i;
       final var transferHookDiscriminator = _data[i] & 0xFF;
       ++i;
-      final var authority = readPubKey(_data, i);
+      final var authority = SerDeUtil.isZeroed(_data, i, 32) ? null : readPubKey(_data, i);
       i += 32;
-      final var programId = readPubKey(_data, i);
+      final var programId = SerDeUtil.isZeroed(_data, i, 32) ? null : readPubKey(_data, i);
       return new InitializeTransferHookIxData(discriminator,
                                               transferHookDiscriminator,
                                               authority,
@@ -7404,10 +7424,14 @@ public final class Token2022Program {
       ++i;
       if (authority != null) {
         authority.write(_data, i);
+      } else {
+        Arrays.fill(_data, i, i + 32, (byte) 0);
       }
       i += 32;
       if (programId != null) {
         programId.write(_data, i);
+      } else {
+        Arrays.fill(_data, i, i + 32, (byte) 0);
       }
       i += 32;
       return i - _offset;
@@ -7483,6 +7507,8 @@ public final class Token2022Program {
     ++i;
     if (programId != null) {
       programId.write(_data, i);
+    } else {
+      Arrays.fill(_data, i, i + 32, (byte) 0);
     }
     i += 32;
 
@@ -7522,7 +7548,7 @@ public final class Token2022Program {
       ++i;
       final var transferHookDiscriminator = _data[i] & 0xFF;
       ++i;
-      final var programId = readPubKey(_data, i);
+      final var programId = SerDeUtil.isZeroed(_data, i, 32) ? null : readPubKey(_data, i);
       return new UpdateTransferHookIxData(discriminator, transferHookDiscriminator, programId);
     }
 
@@ -7535,6 +7561,8 @@ public final class Token2022Program {
       ++i;
       if (programId != null) {
         programId.write(_data, i);
+      } else {
+        Arrays.fill(_data, i, i + 32, (byte) 0);
       }
       i += 32;
       return i - _offset;
@@ -7606,6 +7634,8 @@ public final class Token2022Program {
     ++i;
     if (authority != null) {
       authority.write(_data, i);
+    } else {
+      Arrays.fill(_data, i, i + 32, (byte) 0);
     }
     i += 32;
     withdrawWithheldAuthorityElGamalPubkey.write(_data, i);
@@ -7648,7 +7678,7 @@ public final class Token2022Program {
       ++i;
       final var confidentialTransferFeeDiscriminator = _data[i] & 0xFF;
       ++i;
-      final var authority = readPubKey(_data, i);
+      final var authority = SerDeUtil.isZeroed(_data, i, 32) ? null : readPubKey(_data, i);
       i += 32;
       final var withdrawWithheldAuthorityElGamalPubkey = readPubKey(_data, i);
       return new InitializeConfidentialTransferFeeIxData(discriminator,
@@ -7666,6 +7696,8 @@ public final class Token2022Program {
       ++i;
       if (authority != null) {
         authority.write(_data, i);
+      } else {
+        Arrays.fill(_data, i, i + 32, (byte) 0);
       }
       i += 32;
       withdrawWithheldAuthorityElGamalPubkey.write(_data, i);
@@ -8408,10 +8440,14 @@ public final class Token2022Program {
     ++i;
     if (authority != null) {
       authority.write(_data, i);
+    } else {
+      Arrays.fill(_data, i, i + 32, (byte) 0);
     }
     i += 32;
     if (metadataAddress != null) {
       metadataAddress.write(_data, i);
+    } else {
+      Arrays.fill(_data, i, i + 32, (byte) 0);
     }
     i += 32;
 
@@ -8455,9 +8491,9 @@ public final class Token2022Program {
       ++i;
       final var metadataPointerDiscriminator = _data[i] & 0xFF;
       ++i;
-      final var authority = readPubKey(_data, i);
+      final var authority = SerDeUtil.isZeroed(_data, i, 32) ? null : readPubKey(_data, i);
       i += 32;
-      final var metadataAddress = readPubKey(_data, i);
+      final var metadataAddress = SerDeUtil.isZeroed(_data, i, 32) ? null : readPubKey(_data, i);
       return new InitializeMetadataPointerIxData(discriminator,
                                                  metadataPointerDiscriminator,
                                                  authority,
@@ -8473,10 +8509,14 @@ public final class Token2022Program {
       ++i;
       if (authority != null) {
         authority.write(_data, i);
+      } else {
+        Arrays.fill(_data, i, i + 32, (byte) 0);
       }
       i += 32;
       if (metadataAddress != null) {
         metadataAddress.write(_data, i);
+      } else {
+        Arrays.fill(_data, i, i + 32, (byte) 0);
       }
       i += 32;
       return i - _offset;
@@ -8537,6 +8577,8 @@ public final class Token2022Program {
     ++i;
     if (metadataAddress != null) {
       metadataAddress.write(_data, i);
+    } else {
+      Arrays.fill(_data, i, i + 32, (byte) 0);
     }
     i += 32;
 
@@ -8571,7 +8613,7 @@ public final class Token2022Program {
       ++i;
       final var metadataPointerDiscriminator = _data[i] & 0xFF;
       ++i;
-      final var metadataAddress = readPubKey(_data, i);
+      final var metadataAddress = SerDeUtil.isZeroed(_data, i, 32) ? null : readPubKey(_data, i);
       return new UpdateMetadataPointerIxData(discriminator, metadataPointerDiscriminator, metadataAddress);
     }
 
@@ -8584,6 +8626,8 @@ public final class Token2022Program {
       ++i;
       if (metadataAddress != null) {
         metadataAddress.write(_data, i);
+      } else {
+        Arrays.fill(_data, i, i + 32, (byte) 0);
       }
       i += 32;
       return i - _offset;
@@ -8661,10 +8705,14 @@ public final class Token2022Program {
     ++i;
     if (authority != null) {
       authority.write(_data, i);
+    } else {
+      Arrays.fill(_data, i, i + 32, (byte) 0);
     }
     i += 32;
     if (groupAddress != null) {
       groupAddress.write(_data, i);
+    } else {
+      Arrays.fill(_data, i, i + 32, (byte) 0);
     }
     i += 32;
 
@@ -8708,9 +8756,9 @@ public final class Token2022Program {
       ++i;
       final var groupPointerDiscriminator = _data[i] & 0xFF;
       ++i;
-      final var authority = readPubKey(_data, i);
+      final var authority = SerDeUtil.isZeroed(_data, i, 32) ? null : readPubKey(_data, i);
       i += 32;
-      final var groupAddress = readPubKey(_data, i);
+      final var groupAddress = SerDeUtil.isZeroed(_data, i, 32) ? null : readPubKey(_data, i);
       return new InitializeGroupPointerIxData(discriminator,
                                               groupPointerDiscriminator,
                                               authority,
@@ -8726,10 +8774,14 @@ public final class Token2022Program {
       ++i;
       if (authority != null) {
         authority.write(_data, i);
+      } else {
+        Arrays.fill(_data, i, i + 32, (byte) 0);
       }
       i += 32;
       if (groupAddress != null) {
         groupAddress.write(_data, i);
+      } else {
+        Arrays.fill(_data, i, i + 32, (byte) 0);
       }
       i += 32;
       return i - _offset;
@@ -8790,6 +8842,8 @@ public final class Token2022Program {
     ++i;
     if (groupAddress != null) {
       groupAddress.write(_data, i);
+    } else {
+      Arrays.fill(_data, i, i + 32, (byte) 0);
     }
     i += 32;
 
@@ -8824,7 +8878,7 @@ public final class Token2022Program {
       ++i;
       final var groupPointerDiscriminator = _data[i] & 0xFF;
       ++i;
-      final var groupAddress = readPubKey(_data, i);
+      final var groupAddress = SerDeUtil.isZeroed(_data, i, 32) ? null : readPubKey(_data, i);
       return new UpdateGroupPointerIxData(discriminator, groupPointerDiscriminator, groupAddress);
     }
 
@@ -8837,6 +8891,8 @@ public final class Token2022Program {
       ++i;
       if (groupAddress != null) {
         groupAddress.write(_data, i);
+      } else {
+        Arrays.fill(_data, i, i + 32, (byte) 0);
       }
       i += 32;
       return i - _offset;
@@ -8914,10 +8970,14 @@ public final class Token2022Program {
     ++i;
     if (authority != null) {
       authority.write(_data, i);
+    } else {
+      Arrays.fill(_data, i, i + 32, (byte) 0);
     }
     i += 32;
     if (memberAddress != null) {
       memberAddress.write(_data, i);
+    } else {
+      Arrays.fill(_data, i, i + 32, (byte) 0);
     }
     i += 32;
 
@@ -8961,9 +9021,9 @@ public final class Token2022Program {
       ++i;
       final var groupMemberPointerDiscriminator = _data[i] & 0xFF;
       ++i;
-      final var authority = readPubKey(_data, i);
+      final var authority = SerDeUtil.isZeroed(_data, i, 32) ? null : readPubKey(_data, i);
       i += 32;
-      final var memberAddress = readPubKey(_data, i);
+      final var memberAddress = SerDeUtil.isZeroed(_data, i, 32) ? null : readPubKey(_data, i);
       return new InitializeGroupMemberPointerIxData(discriminator,
                                                     groupMemberPointerDiscriminator,
                                                     authority,
@@ -8979,10 +9039,14 @@ public final class Token2022Program {
       ++i;
       if (authority != null) {
         authority.write(_data, i);
+      } else {
+        Arrays.fill(_data, i, i + 32, (byte) 0);
       }
       i += 32;
       if (memberAddress != null) {
         memberAddress.write(_data, i);
+      } else {
+        Arrays.fill(_data, i, i + 32, (byte) 0);
       }
       i += 32;
       return i - _offset;
@@ -9043,6 +9107,8 @@ public final class Token2022Program {
     ++i;
     if (memberAddress != null) {
       memberAddress.write(_data, i);
+    } else {
+      Arrays.fill(_data, i, i + 32, (byte) 0);
     }
     i += 32;
 
@@ -9077,7 +9143,7 @@ public final class Token2022Program {
       ++i;
       final var groupMemberPointerDiscriminator = _data[i] & 0xFF;
       ++i;
-      final var memberAddress = readPubKey(_data, i);
+      final var memberAddress = SerDeUtil.isZeroed(_data, i, 32) ? null : readPubKey(_data, i);
       return new UpdateGroupMemberPointerIxData(discriminator, groupMemberPointerDiscriminator, memberAddress);
     }
 
@@ -9090,6 +9156,8 @@ public final class Token2022Program {
       ++i;
       if (memberAddress != null) {
         memberAddress.write(_data, i);
+      } else {
+        Arrays.fill(_data, i, i + 32, (byte) 0);
       }
       i += 32;
       return i - _offset;
@@ -10208,6 +10276,8 @@ public final class Token2022Program {
     ++i;
     if (authority != null) {
       authority.write(_data, i);
+    } else {
+      Arrays.fill(_data, i, i + 32, (byte) 0);
     }
     i += 32;
     putFloat64LE(_data, i, multiplier);
@@ -10251,7 +10321,7 @@ public final class Token2022Program {
       ++i;
       final var scaledUiAmountMintDiscriminator = _data[i] & 0xFF;
       ++i;
-      final var authority = readPubKey(_data, i);
+      final var authority = SerDeUtil.isZeroed(_data, i, 32) ? null : readPubKey(_data, i);
       i += 32;
       final var multiplier = getFloat64LE(_data, i);
       return new InitializeScaledUiAmountMintIxData(discriminator,
@@ -10269,6 +10339,8 @@ public final class Token2022Program {
       ++i;
       if (authority != null) {
         authority.write(_data, i);
+      } else {
+        Arrays.fill(_data, i, i + 32, (byte) 0);
       }
       i += 32;
       putFloat64LE(_data, i, multiplier);
@@ -10451,6 +10523,8 @@ public final class Token2022Program {
     ++i;
     if (authority != null) {
       authority.write(_data, i);
+    } else {
+      Arrays.fill(_data, i, i + 32, (byte) 0);
     }
     i += 32;
 
@@ -10486,7 +10560,7 @@ public final class Token2022Program {
       ++i;
       final var pausableDiscriminator = _data[i] & 0xFF;
       ++i;
-      final var authority = readPubKey(_data, i);
+      final var authority = SerDeUtil.isZeroed(_data, i, 32) ? null : readPubKey(_data, i);
       return new InitializePausableConfigIxData(discriminator, pausableDiscriminator, authority);
     }
 
@@ -10499,6 +10573,8 @@ public final class Token2022Program {
       ++i;
       if (authority != null) {
         authority.write(_data, i);
+      } else {
+        Arrays.fill(_data, i, i + 32, (byte) 0);
       }
       i += 32;
       return i - _offset;
@@ -11215,6 +11291,8 @@ public final class Token2022Program {
     int i = UPDATE_TOKEN_METADATA_UPDATE_AUTHORITY_DISCRIMINATOR.write(_data, 0);
     if (newUpdateAuthority != null) {
       newUpdateAuthority.write(_data, i);
+    } else {
+      Arrays.fill(_data, i, i + 32, (byte) 0);
     }
     i += 32;
 
@@ -11246,7 +11324,7 @@ public final class Token2022Program {
       System.arraycopy(_data, i, discriminator, 0, discriminator.length);
       i += 8;
 
-      final var newUpdateAuthority = readPubKey(_data, i);
+      final var newUpdateAuthority = SerDeUtil.isZeroed(_data, i, 32) ? null : readPubKey(_data, i);
       return new UpdateTokenMetadataUpdateAuthorityIxData(checkMaxLength(discriminator, 8), newUpdateAuthority);
     }
 
@@ -11264,6 +11342,8 @@ public final class Token2022Program {
 
       if (newUpdateAuthority != null) {
         newUpdateAuthority.write(_data, i);
+      } else {
+        Arrays.fill(_data, i, i + 32, (byte) 0);
       }
       i += 32;
       return i - _offset;
@@ -11480,6 +11560,8 @@ public final class Token2022Program {
     int i = INITIALIZE_TOKEN_GROUP_DISCRIMINATOR.write(_data, 0);
     if (updateAuthority != null) {
       updateAuthority.write(_data, i);
+    } else {
+      Arrays.fill(_data, i, i + 32, (byte) 0);
     }
     i += 32;
     putInt64LE(_data, i, maxSize);
@@ -11518,7 +11600,7 @@ public final class Token2022Program {
       System.arraycopy(_data, i, discriminator, 0, discriminator.length);
       i += 8;
 
-      final var updateAuthority = readPubKey(_data, i);
+      final var updateAuthority = SerDeUtil.isZeroed(_data, i, 32) ? null : readPubKey(_data, i);
       i += 32;
       final var maxSize = getInt64LE(_data, i);
       return new InitializeTokenGroupIxData(checkMaxLength(discriminator, 8), updateAuthority, maxSize);
@@ -11538,6 +11620,8 @@ public final class Token2022Program {
 
       if (updateAuthority != null) {
         updateAuthority.write(_data, i);
+      } else {
+        Arrays.fill(_data, i, i + 32, (byte) 0);
       }
       i += 32;
       putInt64LE(_data, i, maxSize);
@@ -11680,6 +11764,8 @@ public final class Token2022Program {
     int i = UPDATE_TOKEN_GROUP_UPDATE_AUTHORITY_DISCRIMINATOR.write(_data, 0);
     if (newUpdateAuthority != null) {
       newUpdateAuthority.write(_data, i);
+    } else {
+      Arrays.fill(_data, i, i + 32, (byte) 0);
     }
     i += 32;
 
@@ -11711,7 +11797,7 @@ public final class Token2022Program {
       System.arraycopy(_data, i, discriminator, 0, discriminator.length);
       i += 8;
 
-      final var newUpdateAuthority = readPubKey(_data, i);
+      final var newUpdateAuthority = SerDeUtil.isZeroed(_data, i, 32) ? null : readPubKey(_data, i);
       return new UpdateTokenGroupUpdateAuthorityIxData(checkMaxLength(discriminator, 8), newUpdateAuthority);
     }
 
@@ -11729,6 +11815,8 @@ public final class Token2022Program {
 
       if (newUpdateAuthority != null) {
         newUpdateAuthority.write(_data, i);
+      } else {
+        Arrays.fill(_data, i, i + 32, (byte) 0);
       }
       i += 32;
       return i - _offset;

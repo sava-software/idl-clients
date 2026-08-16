@@ -4,12 +4,12 @@ package software.sava.idl.clients.spl.token.gen.types;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.rpc.Filter;
 import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
@@ -31,14 +31,23 @@ public record Mint(PublicKey _address,
   public static final int BYTES = 82;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
+  public static final int MINT_AUTHORITY_OPTION_OFFSET = 0;
   public static final int MINT_AUTHORITY_OFFSET = 4;
   public static final int SUPPLY_OFFSET = 36;
   public static final int DECIMALS_OFFSET = 44;
   public static final int IS_INITIALIZED_OFFSET = 45;
+  public static final int FREEZE_AUTHORITY_OPTION_OFFSET = 46;
   public static final int FREEZE_AUTHORITY_OFFSET = 50;
 
   public static Filter createMintAuthorityFilter(final PublicKey mintAuthority) {
-    return Filter.createMemCompFilter(MINT_AUTHORITY_OFFSET, mintAuthority);
+    final byte[] _data = new byte[36];
+    _data[0] = 1;
+    mintAuthority.write(_data, 4);
+    return Filter.createMemCompFilter(MINT_AUTHORITY_OPTION_OFFSET, _data);
+  }
+
+  public static Filter createMintAuthorityAbsentFilter() {
+    return Filter.createMemCompFilter(MINT_AUTHORITY_OPTION_OFFSET, new byte[4]);
   }
 
   public static Filter createSupplyFilter(final long supply) {
@@ -56,7 +65,14 @@ public record Mint(PublicKey _address,
   }
 
   public static Filter createFreezeAuthorityFilter(final PublicKey freezeAuthority) {
-    return Filter.createMemCompFilter(FREEZE_AUTHORITY_OFFSET, freezeAuthority);
+    final byte[] _data = new byte[36];
+    _data[0] = 1;
+    freezeAuthority.write(_data, 4);
+    return Filter.createMemCompFilter(FREEZE_AUTHORITY_OPTION_OFFSET, _data);
+  }
+
+  public static Filter createFreezeAuthorityAbsentFilter() {
+    return Filter.createMemCompFilter(FREEZE_AUTHORITY_OPTION_OFFSET, new byte[4]);
   }
 
   public static Mint read(final byte[] _data, final int _offset) {
@@ -80,7 +96,7 @@ public record Mint(PublicKey _address,
 
     int i = _offset;
     final PublicKey mintAuthority;
-    if (Integer.toUnsignedLong(getInt32LE(_data, i)) == 0) {
+    if (SerDeUtil.isAbsent(4, _data, i)) {
       mintAuthority = null;
       i += 32 + 4;
     } else {
@@ -95,7 +111,7 @@ public record Mint(PublicKey _address,
     final var isInitialized = _data[i] == 1;
     ++i;
     final PublicKey freezeAuthority;
-    if (Integer.toUnsignedLong(getInt32LE(_data, i)) == 0) {
+    if (SerDeUtil.isAbsent(4, _data, i)) {
       freezeAuthority = null;
     } else {
       i += 4;
@@ -117,6 +133,7 @@ public record Mint(PublicKey _address,
       i += 4;
       mintAuthority.write(_data, i);
     } else {
+      putInt32LE(_data, i, (int) 0);
       i += 4;
     }
     i += 32;
@@ -131,6 +148,7 @@ public record Mint(PublicKey _address,
       i += 4;
       freezeAuthority.write(_data, i);
     } else {
+      putInt32LE(_data, i, (int) 0);
       i += 4;
     }
     i += 32;

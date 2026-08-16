@@ -160,12 +160,42 @@ public final class SerDeUtil {
     }
   }
 
-  public static boolean isAbsent(final int optionalBytes, final byte[] data, final int offset) {
-    return val(optionalBytes, data, offset) == 0;
+  /// A presence tag is `0` or `1` and nothing else. Rust's `unpack_coption_key` returns
+  /// `InvalidAccountData` for any other tag and borsh-rs rejects it the same way, so a third
+  /// value does not mean "present" — it means these bytes are not the option they were read
+  /// as, and the fields after it are being decoded at the wrong offsets.
+  ///
+  /// @throws IllegalArgumentException if the tag is neither 0 nor 1
+  private static boolean present(final int optionalBytes, final byte[] data, final int offset) {
+    final int tag = val(optionalBytes, data, offset);
+    if (tag < 0 || tag > 1) {
+      throw new IllegalArgumentException(String.format(
+          "Invalid presence tag %d; a %d byte option tag is 0 or 1.", tag, optionalBytes
+      ));
+    }
+    return tag == 1;
   }
 
+  /// @throws IllegalArgumentException if the presence tag is neither 0 nor 1
+  public static boolean isAbsent(final int optionalBytes, final byte[] data, final int offset) {
+    return !present(optionalBytes, data, offset);
+  }
+
+  /// @throws IllegalArgumentException if the presence tag is neither 0 nor 1
   public static boolean isPresent(final int optionalBytes, final byte[] data, final int offset) {
-    return val(optionalBytes, data, offset) != 0;
+    return present(optionalBytes, data, offset);
+  }
+
+  /// A zeroable option carries no presence tag: the value's own slot being all zeros *is* the
+  /// absent encoding, so the bytes have to be inspected before they are decoded rather than
+  /// after, when an all-zero public key is indistinguishable from one that was really stored.
+  public static boolean isZeroed(final byte[] data, final int offset, final int len) {
+    for (int i = offset, to = offset + len; i < to; ++i) {
+      if (data[i] != 0) {
+        return false;
+      }
+    }
+    return true;
   }
 
   // unsigned 64-bit integers

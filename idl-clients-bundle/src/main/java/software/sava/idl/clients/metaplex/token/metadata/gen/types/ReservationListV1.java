@@ -23,6 +23,7 @@ public record ReservationListV1(PublicKey _address,
 
   public static final int KEY_OFFSET = 0;
   public static final int MASTER_EDITION_OFFSET = 1;
+  public static final int SUPPLY_SNAPSHOT_OPTION_OFFSET = 33;
   public static final int SUPPLY_SNAPSHOT_OFFSET = 34;
 
   public static Filter createKeyFilter(final Key key) {
@@ -37,7 +38,11 @@ public record ReservationListV1(PublicKey _address,
     final byte[] _data = new byte[9];
     _data[0] = 1;
     putInt64LE(_data, 1, supplySnapshot);
-    return Filter.createMemCompFilter(SUPPLY_SNAPSHOT_OFFSET, _data);
+    return Filter.createMemCompFilter(SUPPLY_SNAPSHOT_OPTION_OFFSET, _data);
+  }
+
+  public static Filter createSupplySnapshotAbsentFilter() {
+    return Filter.createMemCompFilter(SUPPLY_SNAPSHOT_OPTION_OFFSET, new byte[1]);
   }
 
   public static ReservationListV1 read(final byte[] _data, final int _offset) {

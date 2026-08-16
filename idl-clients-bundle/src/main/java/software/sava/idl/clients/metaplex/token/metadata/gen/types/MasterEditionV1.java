@@ -25,6 +25,7 @@ public record MasterEditionV1(PublicKey _address,
 
   public static final int KEY_OFFSET = 0;
   public static final int SUPPLY_OFFSET = 1;
+  public static final int MAX_SUPPLY_OPTION_OFFSET = 9;
   public static final int MAX_SUPPLY_OFFSET = 10;
 
   public static Filter createKeyFilter(final Key key) {
@@ -41,7 +42,11 @@ public record MasterEditionV1(PublicKey _address,
     final byte[] _data = new byte[9];
     _data[0] = 1;
     putInt64LE(_data, 1, maxSupply);
-    return Filter.createMemCompFilter(MAX_SUPPLY_OFFSET, _data);
+    return Filter.createMemCompFilter(MAX_SUPPLY_OPTION_OFFSET, _data);
+  }
+
+  public static Filter createMaxSupplyAbsentFilter() {
+    return Filter.createMemCompFilter(MAX_SUPPLY_OPTION_OFFSET, new byte[1]);
   }
 
   public static MasterEditionV1 read(final byte[] _data, final int _offset) {

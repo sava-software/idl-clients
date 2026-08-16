@@ -32,6 +32,7 @@ public record Config(PublicKey _address,
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 
   public static final int GOVERNANCE_AUTHORITY_OFFSET = 8;
+  public static final int TARGET_GOVERNANCE_AUTHORITY_OPTION_OFFSET = 40;
   public static final int TARGET_GOVERNANCE_AUTHORITY_OFFSET = 41;
 
   public static Filter createGovernanceAuthorityFilter(final PublicKey governanceAuthority) {
@@ -42,7 +43,11 @@ public record Config(PublicKey _address,
     final byte[] _data = new byte[33];
     _data[0] = 1;
     targetGovernanceAuthority.write(_data, 1);
-    return Filter.createMemCompFilter(TARGET_GOVERNANCE_AUTHORITY_OFFSET, _data);
+    return Filter.createMemCompFilter(TARGET_GOVERNANCE_AUTHORITY_OPTION_OFFSET, _data);
+  }
+
+  public static Filter createTargetGovernanceAuthorityAbsentFilter() {
+    return Filter.createMemCompFilter(TARGET_GOVERNANCE_AUTHORITY_OPTION_OFFSET, new byte[1]);
   }
 
   public static Config read(final byte[] _data, final int _offset) {

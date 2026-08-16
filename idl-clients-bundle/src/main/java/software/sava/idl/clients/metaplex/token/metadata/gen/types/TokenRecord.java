@@ -30,6 +30,7 @@ public record TokenRecord(PublicKey _address,
   public static final int KEY_OFFSET = 0;
   public static final int BUMP_OFFSET = 1;
   public static final int STATE_OFFSET = 2;
+  public static final int RULE_SET_REVISION_OPTION_OFFSET = 3;
   public static final int RULE_SET_REVISION_OFFSET = 4;
 
   public static Filter createKeyFilter(final Key key) {
@@ -48,7 +49,11 @@ public record TokenRecord(PublicKey _address,
     final byte[] _data = new byte[9];
     _data[0] = 1;
     putInt64LE(_data, 1, ruleSetRevision);
-    return Filter.createMemCompFilter(RULE_SET_REVISION_OFFSET, _data);
+    return Filter.createMemCompFilter(RULE_SET_REVISION_OPTION_OFFSET, _data);
+  }
+
+  public static Filter createRuleSetRevisionAbsentFilter() {
+    return Filter.createMemCompFilter(RULE_SET_REVISION_OPTION_OFFSET, new byte[1]);
   }
 
   public static TokenRecord read(final byte[] _data, final int _offset) {

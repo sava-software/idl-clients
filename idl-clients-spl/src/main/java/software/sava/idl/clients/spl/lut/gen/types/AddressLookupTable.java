@@ -35,6 +35,7 @@ public record AddressLookupTable(PublicKey _address,
   public static final int DEACTIVATION_SLOT_OFFSET = 4;
   public static final int LAST_EXTENDED_SLOT_OFFSET = 12;
   public static final int LAST_EXTENDED_SLOT_START_INDEX_OFFSET = 20;
+  public static final int AUTHORITY_OPTION_OFFSET = 21;
   public static final int AUTHORITY_OFFSET = 22;
   public static final int PADDING_OFFSET = 54;
   public static final int ADDRESSES_OFFSET = 56;
@@ -62,7 +63,14 @@ public record AddressLookupTable(PublicKey _address,
   }
 
   public static Filter createAuthorityFilter(final PublicKey authority) {
-    return Filter.createMemCompFilter(AUTHORITY_OFFSET, authority);
+    final byte[] _data = new byte[33];
+    _data[0] = 1;
+    authority.write(_data, 1);
+    return Filter.createMemCompFilter(AUTHORITY_OPTION_OFFSET, _data);
+  }
+
+  public static Filter createAuthorityAbsentFilter() {
+    return Filter.createMemCompFilter(AUTHORITY_OPTION_OFFSET, new byte[1]);
   }
 
   public static Filter createPaddingFilter() {
@@ -143,7 +151,8 @@ public record AddressLookupTable(PublicKey _address,
       ++i;
       authority.write(_data, i);
     } else {
-      i += 1;
+      _data[i] = (byte) 0;
+      ++i;
     }
     i += 32;
     putInt16LE(_data, i, padding);

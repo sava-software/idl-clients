@@ -20,6 +20,7 @@ public record CollectionAuthorityRecord(PublicKey _address,
 
   public static final int KEY_OFFSET = 0;
   public static final int BUMP_OFFSET = 1;
+  public static final int UPDATE_AUTHORITY_OPTION_OFFSET = 2;
   public static final int UPDATE_AUTHORITY_OFFSET = 3;
 
   public static Filter createKeyFilter(final Key key) {
@@ -34,7 +35,11 @@ public record CollectionAuthorityRecord(PublicKey _address,
     final byte[] _data = new byte[33];
     _data[0] = 1;
     updateAuthority.write(_data, 1);
-    return Filter.createMemCompFilter(UPDATE_AUTHORITY_OFFSET, _data);
+    return Filter.createMemCompFilter(UPDATE_AUTHORITY_OPTION_OFFSET, _data);
+  }
+
+  public static Filter createUpdateAuthorityAbsentFilter() {
+    return Filter.createMemCompFilter(UPDATE_AUTHORITY_OPTION_OFFSET, new byte[1]);
   }
 
   public static CollectionAuthorityRecord read(final byte[] _data, final int _offset) {

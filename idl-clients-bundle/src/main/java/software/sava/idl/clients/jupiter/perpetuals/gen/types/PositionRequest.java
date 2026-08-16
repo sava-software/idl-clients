@@ -68,6 +68,7 @@ public record PositionRequest(PublicKey _address,
   public static final int REQUEST_CHANGE_OFFSET = 200;
   public static final int REQUEST_TYPE_OFFSET = 201;
   public static final int SIDE_OFFSET = 202;
+  public static final int PRICE_SLIPPAGE_OPTION_OFFSET = 203;
   public static final int PRICE_SLIPPAGE_OFFSET = 204;
 
   public static Filter createOwnerFilter(final PublicKey owner) {
@@ -130,7 +131,11 @@ public record PositionRequest(PublicKey _address,
     final byte[] _data = new byte[9];
     _data[0] = 1;
     putInt64LE(_data, 1, priceSlippage);
-    return Filter.createMemCompFilter(PRICE_SLIPPAGE_OFFSET, _data);
+    return Filter.createMemCompFilter(PRICE_SLIPPAGE_OPTION_OFFSET, _data);
+  }
+
+  public static Filter createPriceSlippageAbsentFilter() {
+    return Filter.createMemCompFilter(PRICE_SLIPPAGE_OPTION_OFFSET, new byte[1]);
   }
 
   public static PositionRequest read(final byte[] _data, final int _offset) {
