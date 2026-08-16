@@ -14,7 +14,6 @@ import software.sava.idl.clients.jupiter.stable.gen.types.OperatorManagementActi
 import software.sava.idl.clients.jupiter.stable.gen.types.OperatorRole;
 import software.sava.idl.clients.jupiter.stable.gen.types.VaultManagementAction;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static software.sava.core.accounts.meta.AccountMeta.createRead;
@@ -22,7 +21,6 @@ import static software.sava.core.accounts.meta.AccountMeta.createReadOnlySigner;
 import static software.sava.core.accounts.meta.AccountMeta.createWritableSigner;
 import static software.sava.core.accounts.meta.AccountMeta.createWrite;
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
-import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
@@ -91,7 +89,7 @@ public final class JupStableProgram {
   public record CreateBenefactorIxData(Discriminator discriminator, int mintFeeRate, int redeemFeeRate) implements SerDe {
 
     public static CreateBenefactorIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 12;
@@ -177,7 +175,7 @@ public final class JupStableProgram {
   public record CreateOperatorIxData(Discriminator discriminator, OperatorRole role) implements SerDe {
 
     public static CreateOperatorIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -433,7 +431,7 @@ public final class JupStableProgram {
                            String uri, byte[] _uri) implements SerDe {
 
     public static InitIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int DECIMALS_OFFSET = 8;
@@ -459,19 +457,13 @@ public final class JupStableProgram {
       int i = _offset + discriminator.length();
       final var decimals = _data[i] & 0xFF;
       ++i;
-      final int _nameLength = getInt32LE(_data, i);
-      i += 4;
-      final byte[] _name = Arrays.copyOfRange(_data, i, i + _nameLength);
+      final byte[] _name = SerDeUtil.readbyteVector(4, _data, i);
       final var name = SerDeUtil.decodeString(_name);
-      i += _name.length;
-      final int _symbolLength = getInt32LE(_data, i);
-      i += 4;
-      final byte[] _symbol = Arrays.copyOfRange(_data, i, i + _symbolLength);
+      i += 4 + _name.length;
+      final byte[] _symbol = SerDeUtil.readbyteVector(4, _data, i);
       final var symbol = SerDeUtil.decodeString(_symbol);
-      i += _symbol.length;
-      final int _uriLength = getInt32LE(_data, i);
-      i += 4;
-      final byte[] _uri = Arrays.copyOfRange(_data, i, i + _uriLength);
+      i += 4 + _symbol.length;
+      final byte[] _uri = SerDeUtil.readbyteVector(4, _data, i);
       final var uri = SerDeUtil.decodeString(_uri);
       return new InitIxData(discriminator,
                             decimals,
@@ -535,7 +527,7 @@ public final class JupStableProgram {
   public record ManageBenefactorIxData(Discriminator discriminator, BenefactorManagementAction action) implements SerDe {
 
     public static ManageBenefactorIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ACTION_OFFSET = 8;
@@ -601,7 +593,7 @@ public final class JupStableProgram {
   public record ManageConfigIxData(Discriminator discriminator, ConfigManagementAction action) implements SerDe {
 
     public static ManageConfigIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ACTION_OFFSET = 8;
@@ -671,7 +663,7 @@ public final class JupStableProgram {
   public record ManageOperatorIxData(Discriminator discriminator, OperatorManagementAction action) implements SerDe {
 
     public static ManageOperatorIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ACTION_OFFSET = 8;
@@ -737,7 +729,7 @@ public final class JupStableProgram {
   public record ManageVaultIxData(Discriminator discriminator, VaultManagementAction action) implements SerDe {
 
     public static ManageVaultIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ACTION_OFFSET = 8;
@@ -865,7 +857,7 @@ public final class JupStableProgram {
   public record MintIxData(Discriminator discriminator, long amount, long minAmountOut) implements SerDe {
 
     public static MintIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 24;
@@ -997,7 +989,7 @@ public final class JupStableProgram {
   public record RedeemIxData(Discriminator discriminator, long amount, long minAmountOut) implements SerDe {
 
     public static RedeemIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 24;
@@ -1102,7 +1094,7 @@ public final class JupStableProgram {
   public record WithdrawIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static WithdrawIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;

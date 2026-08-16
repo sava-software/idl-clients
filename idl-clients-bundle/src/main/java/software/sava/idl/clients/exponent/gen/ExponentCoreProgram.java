@@ -15,7 +15,6 @@ import software.sava.idl.clients.exponent.gen.types.CpiAccounts;
 import software.sava.idl.clients.exponent.gen.types.MarketAdminAction;
 import software.sava.idl.clients.exponent.gen.types.Number;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static software.sava.core.accounts.meta.AccountMeta.createRead;
@@ -111,7 +110,7 @@ public final class ExponentCoreProgram {
   public record AddEmissionIxData(Discriminator discriminator, CpiAccounts cpiAccounts, int treasuryFeeBps) implements SerDe {
 
     public static AddEmissionIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int CPI_ACCOUNTS_OFFSET = 1;
@@ -215,7 +214,7 @@ public final class ExponentCoreProgram {
   public record AddFarmIxData(Discriminator discriminator, long tokenRate, long untilTimestamp) implements SerDe {
 
     public static AddFarmIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 13;
@@ -323,7 +322,7 @@ public final class ExponentCoreProgram {
                                           String uri, byte[] _uri) implements SerDe {
 
     public static AddLpTokensMetadataIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int NAME_OFFSET = 1;
@@ -341,19 +340,13 @@ public final class ExponentCoreProgram {
       }
       final var discriminator = createDiscriminator(_data, _offset, 1);
       int i = _offset + discriminator.length();
-      final int _nameLength = getInt32LE(_data, i);
-      i += 4;
-      final byte[] _name = Arrays.copyOfRange(_data, i, i + _nameLength);
+      final byte[] _name = SerDeUtil.readbyteVector(4, _data, i);
       final var name = SerDeUtil.decodeString(_name);
-      i += _name.length;
-      final int _symbolLength = getInt32LE(_data, i);
-      i += 4;
-      final byte[] _symbol = Arrays.copyOfRange(_data, i, i + _symbolLength);
+      i += 4 + _name.length;
+      final byte[] _symbol = SerDeUtil.readbyteVector(4, _data, i);
       final var symbol = SerDeUtil.decodeString(_symbol);
-      i += _symbol.length;
-      final int _uriLength = getInt32LE(_data, i);
-      i += 4;
-      final byte[] _uri = Arrays.copyOfRange(_data, i, i + _uriLength);
+      i += 4 + _symbol.length;
+      final byte[] _uri = SerDeUtil.readbyteVector(4, _data, i);
       final var uri = SerDeUtil.decodeString(_uri);
       return new AddLpTokensMetadataIxData(discriminator, name, name == null ? null : SerDeUtil.encodeString(name), symbol, symbol == null ? null : SerDeUtil.encodeString(symbol), uri, uri == null ? null : SerDeUtil.encodeString(uri));
     }
@@ -431,7 +424,7 @@ public final class ExponentCoreProgram {
   public record AddMarketEmissionIxData(Discriminator discriminator, CpiAccounts cpiAccounts) implements SerDe {
 
     public static AddMarketEmissionIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int CPI_ACCOUNTS_OFFSET = 1;
@@ -589,7 +582,7 @@ public final class ExponentCoreProgram {
   public record BuyYtIxData(Discriminator discriminator, long syIn, long ytOut) implements SerDe {
 
     public static BuyYtIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 17;
@@ -687,7 +680,7 @@ public final class ExponentCoreProgram {
   public record ClaimFarmEmissionsIxData(Discriminator discriminator, Amount amount) implements SerDe {
 
     public static ClaimFarmEmissionsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int AMOUNT_OFFSET = 1;
@@ -796,7 +789,7 @@ public final class ExponentCoreProgram {
   public record CollectEmissionIxData(Discriminator discriminator, int index, Amount amount) implements SerDe {
 
     public static CollectEmissionIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int INDEX_OFFSET = 1;
@@ -911,7 +904,7 @@ public final class ExponentCoreProgram {
   public record CollectInterestIxData(Discriminator discriminator, Amount amount) implements SerDe {
 
     public static CollectInterestIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int AMOUNT_OFFSET = 1;
@@ -1028,7 +1021,7 @@ public final class ExponentCoreProgram {
                                               CollectTreasuryEmissionKind kind) implements SerDe {
 
     public static CollectTreasuryEmissionIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int EMISSION_INDEX_OFFSET = 1;
@@ -1137,7 +1130,7 @@ public final class ExponentCoreProgram {
   public record CollectTreasuryInterestIxData(Discriminator discriminator, Amount amount, CollectTreasuryInterestKind kind) implements SerDe {
 
     public static CollectTreasuryInterestIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int AMOUNT_OFFSET = 1;
@@ -1265,7 +1258,7 @@ public final class ExponentCoreProgram {
   public record DepositYtIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static DepositYtIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -1536,7 +1529,7 @@ public final class ExponentCoreProgram {
                                     int seedId) implements SerDe {
 
     public static InitMarketTwoIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int LN_FEE_RATE_ROOT_OFFSET = 1;
@@ -1793,7 +1786,7 @@ public final class ExponentCoreProgram {
                                       String ptMetadataUri, byte[] _ptMetadataUri) implements SerDe {
 
     public static InitializeVaultIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int START_TIMESTAMP_OFFSET = 1;
@@ -1841,19 +1834,13 @@ public final class ExponentCoreProgram {
       i += 8;
       final var minOpSizeMerge = getInt64LE(_data, i);
       i += 8;
-      final int _ptMetadataNameLength = getInt32LE(_data, i);
-      i += 4;
-      final byte[] _ptMetadataName = Arrays.copyOfRange(_data, i, i + _ptMetadataNameLength);
+      final byte[] _ptMetadataName = SerDeUtil.readbyteVector(4, _data, i);
       final var ptMetadataName = SerDeUtil.decodeString(_ptMetadataName);
-      i += _ptMetadataName.length;
-      final int _ptMetadataSymbolLength = getInt32LE(_data, i);
-      i += 4;
-      final byte[] _ptMetadataSymbol = Arrays.copyOfRange(_data, i, i + _ptMetadataSymbolLength);
+      i += 4 + _ptMetadataName.length;
+      final byte[] _ptMetadataSymbol = SerDeUtil.readbyteVector(4, _data, i);
       final var ptMetadataSymbol = SerDeUtil.decodeString(_ptMetadataSymbol);
-      i += _ptMetadataSymbol.length;
-      final int _ptMetadataUriLength = getInt32LE(_data, i);
-      i += 4;
-      final byte[] _ptMetadataUri = Arrays.copyOfRange(_data, i, i + _ptMetadataUriLength);
+      i += 4 + _ptMetadataSymbol.length;
+      final byte[] _ptMetadataUri = SerDeUtil.readbyteVector(4, _data, i);
       final var ptMetadataUri = SerDeUtil.decodeString(_ptMetadataUri);
       return new InitializeVaultIxData(discriminator,
                                        startTimestamp,
@@ -2021,7 +2008,7 @@ public final class ExponentCoreProgram {
   public record MarketCollectEmissionIxData(Discriminator discriminator, int emissionIndex) implements SerDe {
 
     public static MarketCollectEmissionIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 3;
@@ -2135,7 +2122,7 @@ public final class ExponentCoreProgram {
   public record MarketDepositLpIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static MarketDepositLpIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -2272,7 +2259,7 @@ public final class ExponentCoreProgram {
                                                 long minLpOut) implements SerDe {
 
     public static MarketTwoDepositLiquidityIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 25;
@@ -2423,7 +2410,7 @@ public final class ExponentCoreProgram {
                                                  long minSyOut) implements SerDe {
 
     public static MarketTwoWithdrawLiquidityIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 25;
@@ -2547,7 +2534,7 @@ public final class ExponentCoreProgram {
   public record MarketWithdrawLpIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static MarketWithdrawLpIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -2694,7 +2681,7 @@ public final class ExponentCoreProgram {
   public record MergeIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static MergeIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -2789,7 +2776,7 @@ public final class ExponentCoreProgram {
   public record ModifyFarmIxData(Discriminator discriminator, long untilTimestamp, long newRate) implements SerDe {
 
     public static ModifyFarmIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 13;
@@ -2867,7 +2854,7 @@ public final class ExponentCoreProgram {
   public record ModifyMarketSettingIxData(Discriminator discriminator, MarketAdminAction action) implements SerDe {
 
     public static ModifyMarketSettingIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ACTION_OFFSET = 1;
@@ -2937,7 +2924,7 @@ public final class ExponentCoreProgram {
   public record ModifyVaultSettingIxData(Discriminator discriminator, AdminAction action) implements SerDe {
 
     public static ModifyVaultSettingIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ACTION_OFFSET = 1;
@@ -3014,7 +3001,7 @@ public final class ExponentCoreProgram {
   public record ReallocMarketIxData(Discriminator discriminator, long additionalBytes) implements SerDe {
 
     public static ReallocMarketIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -3181,7 +3168,7 @@ public final class ExponentCoreProgram {
   public record SellYtIxData(Discriminator discriminator, long ytIn, long minSyOut) implements SerDe {
 
     public static SellYtIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 17;
@@ -3387,7 +3374,7 @@ public final class ExponentCoreProgram {
   public record StripIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static StripIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -3510,7 +3497,7 @@ public final class ExponentCoreProgram {
   public record TradePtIxData(Discriminator discriminator, long netTraderPt, long syConstraint) implements SerDe {
 
     public static TradePtIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 17;
@@ -3637,7 +3624,7 @@ public final class ExponentCoreProgram {
   public record WithdrawYtIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static WithdrawYtIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -3768,7 +3755,7 @@ public final class ExponentCoreProgram {
                                    int mintSyRemAccountsUntil) implements SerDe {
 
     public static WrapperBuyPtIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 18;
@@ -3953,7 +3940,7 @@ public final class ExponentCoreProgram {
                                    int mintSyAccountsLength) implements SerDe {
 
     public static WrapperBuyYtIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 18;
@@ -4073,7 +4060,7 @@ public final class ExponentCoreProgram {
   public record WrapperCollectInterestIxData(Discriminator discriminator, int redeemSyAccountsLength) implements SerDe {
 
     public static WrapperCollectInterestIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 2;
@@ -4206,7 +4193,7 @@ public final class ExponentCoreProgram {
   public record WrapperMergeIxData(Discriminator discriminator, long amountPy, int redeemSyAccountsUntil) implements SerDe {
 
     public static WrapperMergeIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 10;
@@ -4446,7 +4433,7 @@ public final class ExponentCoreProgram {
                                               int mintBaseAccountsUntil) implements SerDe {
 
     public static WrapperProvideLiquidityIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 18;
@@ -4633,7 +4620,7 @@ public final class ExponentCoreProgram {
                                                   long externalSyConstraint) implements SerDe {
 
     public static WrapperProvideLiquidityBaseIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 34;
@@ -4822,7 +4809,7 @@ public final class ExponentCoreProgram {
                                                      int mintSyAccountsUntil) implements SerDe {
 
     public static WrapperProvideLiquidityClassicIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 26;
@@ -4972,7 +4959,7 @@ public final class ExponentCoreProgram {
                                     int redeemSyRemAccountsUntil) implements SerDe {
 
     public static WrapperSellPtIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 18;
@@ -5145,7 +5132,7 @@ public final class ExponentCoreProgram {
                                     int redeemSyAccountsUntil) implements SerDe {
 
     public static WrapperSellYtIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 18;
@@ -5296,7 +5283,7 @@ public final class ExponentCoreProgram {
   public record WrapperStripIxData(Discriminator discriminator, long amountBase, int mintSyAccountsUntil) implements SerDe {
 
     public static WrapperStripIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 10;
@@ -5460,7 +5447,7 @@ public final class ExponentCoreProgram {
                                                int redeemSyAccountsLength) implements SerDe {
 
     public static WrapperWithdrawLiquidityIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 18;
@@ -5609,7 +5596,7 @@ public final class ExponentCoreProgram {
   public record WrapperWithdrawLiquidityClassicIxData(Discriminator discriminator, long amountLp, int redeemSyAccountsLength) implements SerDe {
 
     public static WrapperWithdrawLiquidityClassicIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 10;

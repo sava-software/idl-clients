@@ -69,7 +69,7 @@ public final class JupiterProgram {
   public record ClaimIxData(Discriminator discriminator, int id) implements SerDe {
 
     public static ClaimIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -162,7 +162,7 @@ public final class JupiterProgram {
   public record ClaimTokenIxData(Discriminator discriminator, int id) implements SerDe {
 
     public static ClaimTokenIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -250,7 +250,7 @@ public final class JupiterProgram {
   public record CloseTokenIxData(Discriminator discriminator, int id, boolean burnAll) implements SerDe {
 
     public static CloseTokenIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 10;
@@ -364,7 +364,7 @@ public final class JupiterProgram {
   public record CreateTokenAccountIxData(Discriminator discriminator, int bump) implements SerDe {
 
     public static CreateTokenAccountIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -540,7 +540,7 @@ public final class JupiterProgram {
                                     int platformFeeBps) implements SerDe {
 
     public static ExactOutRouteIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ROUTE_PLAN_OFFSET = 8;
@@ -697,7 +697,7 @@ public final class JupiterProgram {
                             int platformFeeBps) implements SerDe {
 
     public static RouteIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ROUTE_PLAN_OFFSET = 8;
@@ -849,7 +849,7 @@ public final class JupiterProgram {
                                            int platformFeeBps) implements SerDe {
 
     public static RouteWithTokenLedgerIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ROUTE_PLAN_OFFSET = 8;
@@ -1047,7 +1047,7 @@ public final class JupiterProgram {
                                                   int platformFeeBps) implements SerDe {
 
     public static SharedAccountsExactOutRouteIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ID_OFFSET = 8;
@@ -1236,7 +1236,7 @@ public final class JupiterProgram {
                                           int platformFeeBps) implements SerDe {
 
     public static SharedAccountsRouteIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ID_OFFSET = 8;
@@ -1420,7 +1420,7 @@ public final class JupiterProgram {
                                                          int platformFeeBps) implements SerDe {
 
     public static SharedAccountsRouteWithTokenLedgerIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ID_OFFSET = 8;
@@ -1592,7 +1592,7 @@ public final class JupiterProgram {
                                       RoutePlanStepV2[] routePlan) implements SerDe {
 
     public static ExactOutRouteV2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int OUT_AMOUNT_OFFSET = 8;
@@ -1774,7 +1774,7 @@ public final class JupiterProgram {
                               RoutePlanStepV2[] routePlan) implements SerDe {
 
     public static RouteV2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int IN_AMOUNT_OFFSET = 8;
@@ -1971,7 +1971,7 @@ public final class JupiterProgram {
                                                     RoutePlanStepV2[] routePlan) implements SerDe {
 
     public static SharedAccountsExactOutRouteV2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ID_OFFSET = 8;
@@ -2175,7 +2175,7 @@ public final class JupiterProgram {
                                             RoutePlanStepV2[] routePlan) implements SerDe {
 
     public static SharedAccountsRouteV2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ID_OFFSET = 8;

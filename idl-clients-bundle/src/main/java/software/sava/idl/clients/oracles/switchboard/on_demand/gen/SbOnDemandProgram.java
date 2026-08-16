@@ -114,7 +114,7 @@ public final class SbOnDemandProgram {
   public record GuardianQuoteVerifyIxData(Discriminator discriminator, GuardianQuoteVerifyParams params) implements SerDe {
 
     public static GuardianQuoteVerifyIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -184,7 +184,7 @@ public final class SbOnDemandProgram {
   public record GuardianRegisterIxData(Discriminator discriminator, GuardianRegisterParams params) implements SerDe {
 
     public static GuardianRegisterIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 8;
@@ -256,7 +256,7 @@ public final class SbOnDemandProgram {
   public record GuardianUnregisterIxData(Discriminator discriminator, GuardianUnregisterParams params) implements SerDe {
 
     public static GuardianUnregisterIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 8;
@@ -365,7 +365,7 @@ public final class SbOnDemandProgram {
   public record OracleHeartbeatIxData(Discriminator discriminator, OracleHeartbeatParams params) implements SerDe {
 
     public static OracleHeartbeatIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -443,7 +443,7 @@ public final class SbOnDemandProgram {
   public record OracleHeartbeatV2IxData(Discriminator discriminator, OracleHeartbeatV2Params params) implements SerDe {
 
     public static OracleHeartbeatV2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -530,7 +530,7 @@ public final class SbOnDemandProgram {
   public record OracleInitIxData(Discriminator discriminator, OracleInitParams params) implements SerDe {
 
     public static OracleInitIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -617,7 +617,7 @@ public final class SbOnDemandProgram {
   public record OracleInitSvmIxData(Discriminator discriminator, OracleInitSVMParams params) implements SerDe {
 
     public static OracleInitSvmIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -700,7 +700,7 @@ public final class SbOnDemandProgram {
   public record OracleResetLutIxData(Discriminator discriminator, OracleResetLutParams params) implements SerDe {
 
     public static OracleResetLutIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -764,7 +764,7 @@ public final class SbOnDemandProgram {
   public record OracleSetConfigsIxData(Discriminator discriminator, OracleSetConfigsParams params) implements SerDe {
 
     public static OracleSetConfigsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -830,7 +830,7 @@ public final class SbOnDemandProgram {
   public record OracleSetOperatorIxData(Discriminator discriminator, OracleSetOperatorParams params) implements SerDe {
 
     public static OracleSetOperatorIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 8;
@@ -943,7 +943,7 @@ public final class SbOnDemandProgram {
   public record OracleSyncLutIxData(Discriminator discriminator, OracleSyncLutParams params) implements SerDe {
 
     public static OracleSyncLutIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 8;
@@ -1007,7 +1007,7 @@ public final class SbOnDemandProgram {
   public record PermissionSetIxData(Discriminator discriminator, PermissionSetParams params) implements SerDe {
 
     public static PermissionSetIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 10;
@@ -1101,7 +1101,7 @@ public final class SbOnDemandProgram {
   public record PullFeedCloseIxData(Discriminator discriminator, PullFeedCloseParams params) implements SerDe {
 
     public static PullFeedCloseIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 8;
@@ -1200,7 +1200,7 @@ public final class SbOnDemandProgram {
   public record PullFeedInitIxData(Discriminator discriminator, PullFeedInitParams params) implements SerDe {
 
     public static PullFeedInitIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -1262,7 +1262,7 @@ public final class SbOnDemandProgram {
   public record PullFeedSetConfigsIxData(Discriminator discriminator, PullFeedSetConfigsParams params) implements SerDe {
 
     public static PullFeedSetConfigsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -1346,7 +1346,7 @@ public final class SbOnDemandProgram {
   public record PullFeedSubmitResponseIxData(Discriminator discriminator, PullFeedSubmitResponseParams params) implements SerDe {
 
     public static PullFeedSubmitResponseIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -1427,7 +1427,7 @@ public final class SbOnDemandProgram {
   public record PullFeedSubmitResponseConsensusIxData(Discriminator discriminator, PullFeedSubmitResponseConsensusParams params) implements SerDe {
 
     public static PullFeedSubmitResponseConsensusIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -1494,7 +1494,7 @@ public final class SbOnDemandProgram {
   public record PullFeedSubmitResponseConsensusLightIxData(Discriminator discriminator, PullFeedSubmitResponseConsensusLightParams params) implements SerDe {
 
     public static PullFeedSubmitResponseConsensusLightIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -1574,7 +1574,7 @@ public final class SbOnDemandProgram {
   public record PullFeedSubmitResponseManyIxData(Discriminator discriminator, PullFeedSubmitResponseManyParams params) implements SerDe {
 
     public static PullFeedSubmitResponseManyIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -1658,7 +1658,7 @@ public final class SbOnDemandProgram {
   public record PullFeedSubmitResponseSvmIxData(Discriminator discriminator, PullFeedSubmitResponseSVMParams params) implements SerDe {
 
     public static PullFeedSubmitResponseSvmIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -1728,7 +1728,7 @@ public final class SbOnDemandProgram {
   public record QueueAddMrEnclaveIxData(Discriminator discriminator, QueueAddMrEnclaveParams params) implements SerDe {
 
     public static QueueAddMrEnclaveIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 40;
@@ -1796,7 +1796,7 @@ public final class SbOnDemandProgram {
   public record QueueAllowSubsidiesIxData(Discriminator discriminator, QueueAllowSubsidiesParams params) implements SerDe {
 
     public static QueueAllowSubsidiesIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -1868,7 +1868,7 @@ public final class SbOnDemandProgram {
   public record QueueGarbageCollectIxData(Discriminator discriminator, QueueGarbageCollectParams params) implements SerDe {
 
     public static QueueGarbageCollectIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 12;
@@ -1963,7 +1963,7 @@ public final class SbOnDemandProgram {
   public record QueueInitIxData(Discriminator discriminator, QueueInitParams params) implements SerDe {
 
     public static QueueInitIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 34;
@@ -2058,7 +2058,7 @@ public final class SbOnDemandProgram {
   public record QueueInitSvmIxData(Discriminator discriminator, QueueInitSVMParams params) implements SerDe {
 
     public static QueueInitSvmIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 66;
@@ -2130,7 +2130,7 @@ public final class SbOnDemandProgram {
   public record QueueOverrideSvmIxData(Discriminator discriminator, QueueOverrideSVMParams params) implements SerDe {
 
     public static QueueOverrideSvmIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 120;
@@ -2220,7 +2220,7 @@ public final class SbOnDemandProgram {
   public record QueuePayRewardsIxData(Discriminator discriminator, QueuePayRewardsParams params) implements SerDe {
 
     public static QueuePayRewardsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 8;
@@ -2318,7 +2318,7 @@ public final class SbOnDemandProgram {
   public record QueuePaySubsidyIxData(Discriminator discriminator, QueuePaySubsidyParams params) implements SerDe {
 
     public static QueuePaySubsidyIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 8;
@@ -2390,7 +2390,7 @@ public final class SbOnDemandProgram {
   public record QueueRemoveMrEnclaveIxData(Discriminator discriminator, QueueRemoveMrEnclaveParams params) implements SerDe {
 
     public static QueueRemoveMrEnclaveIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 40;
@@ -2475,7 +2475,7 @@ public final class SbOnDemandProgram {
   public record QueueResetLutIxData(Discriminator discriminator, QueueResetLutParams params) implements SerDe {
 
     public static QueueResetLutIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -2551,7 +2551,7 @@ public final class SbOnDemandProgram {
   public record QueueResetVaultIxData(Discriminator discriminator, QueueResetVaultParams params) implements SerDe {
 
     public static QueueResetVaultIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 8;
@@ -2619,7 +2619,7 @@ public final class SbOnDemandProgram {
   public record QueueSetConfigsIxData(Discriminator discriminator, QueueSetConfigsParams params) implements SerDe {
 
     public static QueueSetConfigsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -2689,7 +2689,7 @@ public final class SbOnDemandProgram {
   public record QueueSetNcnIxData(Discriminator discriminator, QueueSetNcnParams params) implements SerDe {
 
     public static QueueSetNcnIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 8;
@@ -2765,7 +2765,7 @@ public final class SbOnDemandProgram {
   public record QueueSetVaultIxData(Discriminator discriminator, QueueSetVaultParams params) implements SerDe {
 
     public static QueueSetVaultIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -2855,7 +2855,7 @@ public final class SbOnDemandProgram {
   public record RandomnessCloseIxData(Discriminator discriminator, RandomnessCloseParams params) implements SerDe {
 
     public static RandomnessCloseIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 8;
@@ -2931,7 +2931,7 @@ public final class SbOnDemandProgram {
   public record RandomnessCommitIxData(Discriminator discriminator, RandomnessCommitParams params) implements SerDe {
 
     public static RandomnessCommitIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 8;
@@ -3030,7 +3030,7 @@ public final class SbOnDemandProgram {
   public record RandomnessInitIxData(Discriminator discriminator, RandomnessInitParams params) implements SerDe {
 
     public static RandomnessInitIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -3128,7 +3128,7 @@ public final class SbOnDemandProgram {
   public record RandomnessRevealIxData(Discriminator discriminator, RandomnessRevealParams params) implements SerDe {
 
     public static RandomnessRevealIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 105;
@@ -3196,7 +3196,7 @@ public final class SbOnDemandProgram {
   public record StateInitIxData(Discriminator discriminator, StateInitParams params) implements SerDe {
 
     public static StateInitIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 8;
@@ -3272,7 +3272,7 @@ public final class SbOnDemandProgram {
   public record StateSetConfigsIxData(Discriminator discriminator, StateSetConfigsParams params) implements SerDe {
 
     public static StateSetConfigsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 153;
@@ -3334,7 +3334,7 @@ public final class SbOnDemandProgram {
   public record TestUpdateOracleStatsIxData(Discriminator discriminator, TestUpdateOracleStatsParams params) implements SerDe {
 
     public static TestUpdateOracleStatsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;

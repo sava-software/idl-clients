@@ -170,7 +170,7 @@ public final class EternalProgram {
   public record PlaceMarketOrderIxData(Discriminator discriminator, OrderPacket orderPacket) implements SerDe {
 
     public static PlaceMarketOrderIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ORDER_PACKET_OFFSET = 8;
@@ -290,7 +290,7 @@ public final class EternalProgram {
   public record PlaceLimitOrderIxData(Discriminator discriminator, OrderPacket orderPacket) implements SerDe {
 
     public static PlaceLimitOrderIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ORDER_PACKET_OFFSET = 8;
@@ -410,7 +410,7 @@ public final class EternalProgram {
   public record PlaceMultiLimitOrderIxData(Discriminator discriminator, MultipleOrderPacket orderPacket) implements SerDe {
 
     public static PlaceMultiLimitOrderIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ORDER_PACKET_OFFSET = 8;
@@ -530,7 +530,7 @@ public final class EternalProgram {
   public record CancelOrdersByIdIxData(Discriminator discriminator, OrderIds orderIds) implements SerDe {
 
     public static CancelOrdersByIdIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ORDER_IDS_OFFSET = 8;
@@ -650,7 +650,7 @@ public final class EternalProgram {
   public record CancelUpToIxData(Discriminator discriminator, CancelUpToInstruction params) implements SerDe {
 
     public static CancelUpToIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -829,7 +829,7 @@ public final class EternalProgram {
   public record UpdateOraclePricesWithOrderingIxData(Discriminator discriminator, UpdateOraclePricesWithOrderingInstruction params) implements SerDe {
 
     public static UpdateOraclePricesWithOrderingIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -927,7 +927,7 @@ public final class EternalProgram {
   public record UpdateSplinePriceIxData(Discriminator discriminator, UpdateSplinePriceParamsWithOrdering params) implements SerDe {
 
     public static UpdateSplinePriceIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -1047,7 +1047,7 @@ public final class EternalProgram {
   public record DepositFundsIxData(Discriminator discriminator, DepositFundsInstruction params) implements SerDe {
 
     public static DepositFundsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -1151,7 +1151,7 @@ public final class EternalProgram {
   public record RegisterTraderIxData(Discriminator discriminator, RegisterTraderParams params) implements SerDe {
 
     public static RegisterTraderIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 18;
@@ -1279,7 +1279,7 @@ public final class EternalProgram {
   public record LiquidateViaMarketOrderIxData(Discriminator discriminator, LiquidationParams params) implements SerDe {
 
     public static LiquidateViaMarketOrderIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 57;
@@ -1395,7 +1395,7 @@ public final class EternalProgram {
   public record LiquidationTransferIxData(Discriminator discriminator, LiquidationTransferParams params) implements SerDe {
 
     public static LiquidationTransferIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -1509,7 +1509,7 @@ public final class EternalProgram {
   public record CloseMatchedPositionsIxData(Discriminator discriminator, ClosePositionsParams params) implements SerDe {
 
     public static CloseMatchedPositionsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -1581,7 +1581,7 @@ public final class EternalProgram {
   public record LogIxData(Discriminator discriminator, OffChainMarketEvent eventBatch) implements SerDe {
 
     public static LogIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int EVENT_BATCH_OFFSET = 8;
@@ -1653,7 +1653,7 @@ public final class EternalProgram {
   public record LogEventLengthsIxData(Discriminator discriminator, OffChainMarketEventLengths eventLengths) implements SerDe {
 
     public static LogEventLengthsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int EVENT_LENGTHS_OFFSET = 8;
@@ -1785,7 +1785,7 @@ public final class EternalProgram {
   public record WithdrawFundsIxData(Discriminator discriminator, WithdrawFundsInstruction params) implements SerDe {
 
     public static WithdrawFundsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -1885,7 +1885,7 @@ public final class EternalProgram {
   public record UpdateSplineParametersIxData(Discriminator discriminator, UpdateSplineParametersParamsWithOrdering params) implements SerDe {
 
     public static UpdateSplineParametersIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -2023,7 +2023,7 @@ public final class EternalProgram {
   public record PlaceStopLossIxData(Discriminator discriminator, PlaceStopLossInstruction params) implements SerDe {
 
     public static PlaceStopLossIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 35;
@@ -2163,7 +2163,7 @@ public final class EternalProgram {
   public record ExecuteStopLossIxData(Discriminator discriminator, ExecuteStopLossInstruction params) implements SerDe {
 
     public static ExecuteStopLossIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -2273,7 +2273,7 @@ public final class EternalProgram {
   public record CancelStopLossIxData(Discriminator discriminator, CancelStopLossInstruction params) implements SerDe {
 
     public static CancelStopLossIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -2472,7 +2472,7 @@ public final class EternalProgram {
   public record ForceCancelRiskIncreasingIxData(Discriminator discriminator, ForceCancelRiskIncreasingParams params) implements SerDe {
 
     public static ForceCancelRiskIncreasingIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 8;
@@ -2852,7 +2852,7 @@ public final class EternalProgram {
   public record RevokePermissionIxData(Discriminator discriminator, RevokePermissionParams params) implements SerDe {
 
     public static RevokePermissionIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -2944,7 +2944,7 @@ public final class EternalProgram {
   public record SetPermissionIxData(Discriminator discriminator, SetPermissionInstruction params) implements SerDe {
 
     public static SetPermissionIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -3052,7 +3052,7 @@ public final class EternalProgram {
   public record SetTraderCapabilitiesDelegatedIxData(Discriminator discriminator, TraderCapabilityUpdate params) implements SerDe {
 
     public static SetTraderCapabilitiesDelegatedIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -3160,7 +3160,7 @@ public final class EternalProgram {
   public record SetTraderCapabilityIxData(Discriminator discriminator, TraderCapabilityUpdate params) implements SerDe {
 
     public static SetTraderCapabilityIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -3339,7 +3339,7 @@ public final class EternalProgram {
   public record TransferCollateralIxData(Discriminator discriminator, TransferCollateralInstruction params) implements SerDe {
 
     public static TransferCollateralIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -3526,7 +3526,7 @@ public final class EternalProgram {
   public record UncrossCrankIxData(Discriminator discriminator, UncrossCrankParams params) implements SerDe {
 
     public static UncrossCrankIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -3636,7 +3636,7 @@ public final class EternalProgram {
   public record ClearExpiredOrdersIxData(Discriminator discriminator, ClearExpiredOrdersParams params) implements SerDe {
 
     public static ClearExpiredOrdersIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -3744,7 +3744,7 @@ public final class EternalProgram {
   public record CreateConditionalOrdersAccountIxData(Discriminator discriminator, CreateConditionalOrdersAccountInstruction params) implements SerDe {
 
     public static CreateConditionalOrdersAccountIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -3884,7 +3884,7 @@ public final class EternalProgram {
   public record PlacePositionConditionalOrderIxData(Discriminator discriminator, PlacePositionConditionalOrderInstruction params) implements SerDe {
 
     public static PlacePositionConditionalOrderIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -3986,7 +3986,7 @@ public final class EternalProgram {
   public record CancelConditionalOrderIxData(Discriminator discriminator, CancelConditionalOrderInstruction params) implements SerDe {
 
     public static CancelConditionalOrderIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 11;
@@ -4114,7 +4114,7 @@ public final class EternalProgram {
   public record PlaceAttachedConditionalOrderIxData(Discriminator discriminator, PlaceAttachedConditionalOrderInstruction params) implements SerDe {
 
     public static PlaceAttachedConditionalOrderIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -4252,7 +4252,7 @@ public final class EternalProgram {
   public record PlaceLimitOrderWithConditionalsIxData(Discriminator discriminator, PlaceLimitOrderWithConditionalsInstruction params) implements SerDe {
 
     public static PlaceLimitOrderWithConditionalsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -4384,7 +4384,7 @@ public final class EternalProgram {
   public record ExecuteConditionalOrdersIxData(Discriminator discriminator, ExecuteConditionalOrderInstruction params) implements SerDe {
 
     public static ExecuteConditionalOrdersIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 10;
@@ -4850,7 +4850,7 @@ public final class EternalProgram {
   public record AuthorizedForceCancelIxData(Discriminator discriminator, AuthorizedForceCancelParams params) implements SerDe {
 
     public static AuthorizedForceCancelIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 24;
@@ -4972,7 +4972,7 @@ public final class EternalProgram {
   public record AuthorizedForceCancelByIdIxData(Discriminator discriminator, AuthorizedForceCancelByIdParams params) implements SerDe {
 
     public static AuthorizedForceCancelByIdIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -5074,7 +5074,7 @@ public final class EternalProgram {
   public record ChangeMarketStatusIxData(Discriminator discriminator, ChangeMarketStatusParams params) implements SerDe {
 
     public static ChangeMarketStatusIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -5176,7 +5176,7 @@ public final class EternalProgram {
   public record CreateEscrowAccountIxData(Discriminator discriminator, CreateEscrowAccountParams params) implements SerDe {
 
     public static CreateEscrowAccountIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -5310,7 +5310,7 @@ public final class EternalProgram {
   public record CreateEscrowRequestIxData(Discriminator discriminator, CreateEscrowRequestParams params) implements SerDe {
 
     public static CreateEscrowRequestIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -5495,7 +5495,7 @@ public final class EternalProgram {
   public record CancelEscrowRequestIxData(Discriminator discriminator, CancelEscrowRequestParams params) implements SerDe {
 
     public static CancelEscrowRequestIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -5629,7 +5629,7 @@ public final class EternalProgram {
   public record UpsertEscrowRequestIxData(Discriminator discriminator, UpsertEscrowRequestParams params) implements SerDe {
 
     public static UpsertEscrowRequestIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -5765,7 +5765,7 @@ public final class EternalProgram {
   public record RegisterSplineIxData(Discriminator discriminator, RegisterSplineParams params) implements SerDe {
 
     public static RegisterSplineIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 8;
@@ -5887,7 +5887,7 @@ public final class EternalProgram {
   public record UpdateCommodityMarketStateIxData(Discriminator discriminator, UpdateCommodityMarketStateInstruction params) implements SerDe {
 
     public static UpdateCommodityMarketStateIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -5983,7 +5983,7 @@ public final class EternalProgram {
   public record UpdatePerpIsolatedOnlyIxData(Discriminator discriminator, UpdatePerpIsolatedOnlyInstruction params) implements SerDe {
 
     public static UpdatePerpIsolatedOnlyIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 25;
@@ -6081,7 +6081,7 @@ public final class EternalProgram {
   public record UpdatePerpLeverageTiersIxData(Discriminator discriminator, UpdatePerpLeverageTiersInstruction params) implements SerDe {
 
     public static UpdatePerpLeverageTiersIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 120;
@@ -6179,7 +6179,7 @@ public final class EternalProgram {
   public record UpdatePerpOpenInterestCapIxData(Discriminator discriminator, UpdatePerpOpenInterestCapInstruction params) implements SerDe {
 
     public static UpdatePerpOpenInterestCapIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 32;
@@ -6277,7 +6277,7 @@ public final class EternalProgram {
   public record UpdatePerpUPnlRiskFactorIxData(Discriminator discriminator, UpdatePerpUPnlRiskFactorInstruction params) implements SerDe {
 
     public static UpdatePerpUPnlRiskFactorIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 32;
@@ -6375,7 +6375,7 @@ public final class EternalProgram {
   public record UpdatePerpUPnlRiskFactorForWithdrawalsIxData(Discriminator discriminator, UpdatePerpUPnlRiskFactorForWithdrawalsInstruction params) implements SerDe {
 
     public static UpdatePerpUPnlRiskFactorForWithdrawalsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 32;
@@ -6473,7 +6473,7 @@ public final class EternalProgram {
   public record UpdatePerpCancelRiskFactorIxData(Discriminator discriminator, UpdatePerpCancelRiskFactorInstruction params) implements SerDe {
 
     public static UpdatePerpCancelRiskFactorIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 26;
@@ -6571,7 +6571,7 @@ public final class EternalProgram {
   public record UpdatePerpMarkPriceParametersIxData(Discriminator discriminator, UpdatePerpMarkPriceParametersInstruction params) implements SerDe {
 
     public static UpdatePerpMarkPriceParametersIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -6673,7 +6673,7 @@ public final class EternalProgram {
   public record UpdateTraderFeesIxData(Discriminator discriminator, UpdateTraderFeesParams params) implements SerDe {
 
     public static UpdateTraderFeesIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 10;
@@ -6771,7 +6771,7 @@ public final class EternalProgram {
   public record UpdateMarketFeesIxData(Discriminator discriminator, UpdateMarketFeesParams params) implements SerDe {
 
     public static UpdateMarketFeesIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -6867,7 +6867,7 @@ public final class EternalProgram {
   public record UpdateWithdrawRateLimitsIxData(Discriminator discriminator, UpdateWithdrawRateLimitsParams params) implements SerDe {
 
     public static UpdateWithdrawRateLimitsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -6963,7 +6963,7 @@ public final class EternalProgram {
   public record UpdateWithdrawParametersIxData(Discriminator discriminator, UpdateWithdrawParametersParams params) implements SerDe {
 
     public static UpdateWithdrawParametersIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -7053,7 +7053,7 @@ public final class EternalProgram {
   public record UpdateAuthoritiesIxData(Discriminator discriminator, UpdateAuthoritiesParams params) implements SerDe {
 
     public static UpdateAuthoritiesIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -7159,7 +7159,7 @@ public final class EternalProgram {
   public record InitializeArenaIxData(Discriminator discriminator, InitializeArenaParams params) implements SerDe {
 
     public static InitializeArenaIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -7326,7 +7326,7 @@ public final class EternalProgram {
   public record RemoveOracleIxData(Discriminator discriminator, RemoveOracleInstruction params) implements SerDe {
 
     public static RemoveOracleIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -7422,7 +7422,7 @@ public final class EternalProgram {
   public record RemoveAllOraclesIxData(Discriminator discriminator, RemoveAllOraclesInstruction params) implements SerDe {
 
     public static RemoveAllOraclesIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 24;
@@ -7532,7 +7532,7 @@ public final class EternalProgram {
   public record SetPermissionDelegatedIxData(Discriminator discriminator, SetPermissionInstruction params) implements SerDe {
 
     public static SetPermissionDelegatedIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -7802,7 +7802,7 @@ public final class EternalProgram {
   public record UpdateFundingParametersIxData(Discriminator discriminator, UpdateFundingParametersInstruction params) implements SerDe {
 
     public static UpdateFundingParametersIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -8206,7 +8206,7 @@ public final class EternalProgram {
   public record UpdateSplinePositionLimitsConfigIxData(Discriminator discriminator, UpdateSplinePositionLimitsConfigParams params) implements SerDe {
 
     public static UpdateSplinePositionLimitsConfigIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;

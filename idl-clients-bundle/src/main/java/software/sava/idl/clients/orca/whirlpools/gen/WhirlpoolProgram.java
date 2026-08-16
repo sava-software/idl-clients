@@ -131,7 +131,7 @@ public final class WhirlpoolProgram {
   public record CloseBundledPositionIxData(Discriminator discriminator, int bundleIndex) implements SerDe {
 
     public static CloseBundledPositionIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 10;
@@ -478,7 +478,7 @@ public final class WhirlpoolProgram {
   public record CollectFeesV2IxData(Discriminator discriminator, RemainingAccountsInfo remainingAccountsInfo) implements SerDe {
 
     public static CollectFeesV2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int REMAINING_ACCOUNTS_INFO_OFFSET = 9;
@@ -679,7 +679,7 @@ public final class WhirlpoolProgram {
   public record CollectProtocolFeesV2IxData(Discriminator discriminator, RemainingAccountsInfo remainingAccountsInfo) implements SerDe {
 
     public static CollectProtocolFeesV2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int REMAINING_ACCOUNTS_INFO_OFFSET = 9;
@@ -789,7 +789,7 @@ public final class WhirlpoolProgram {
   public record CollectRewardIxData(Discriminator discriminator, int rewardIndex) implements SerDe {
 
     public static CollectRewardIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -914,7 +914,7 @@ public final class WhirlpoolProgram {
   public record CollectRewardV2IxData(Discriminator discriminator, int rewardIndex, RemainingAccountsInfo remainingAccountsInfo) implements SerDe {
 
     public static CollectRewardV2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int REWARD_INDEX_OFFSET = 8;
@@ -1095,7 +1095,7 @@ public final class WhirlpoolProgram {
                                         long tokenMinB) implements SerDe {
 
     public static DecreaseLiquidityIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 40;
@@ -1306,7 +1306,7 @@ public final class WhirlpoolProgram {
                                           RemainingAccountsInfo remainingAccountsInfo) implements SerDe {
 
     public static DecreaseLiquidityV2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int LIQUIDITY_AMOUNT_OFFSET = 8;
@@ -1668,7 +1668,7 @@ public final class WhirlpoolProgram {
                                         long tokenMaxB) implements SerDe {
 
     public static IncreaseLiquidityIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 40;
@@ -1865,7 +1865,7 @@ public final class WhirlpoolProgram {
   public record IncreaseLiquidityByTokenAmountsV2IxData(Discriminator discriminator, IncreaseLiquidityMethod method, RemainingAccountsInfo remainingAccountsInfo) implements SerDe {
 
     public static IncreaseLiquidityByTokenAmountsV2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int METHOD_OFFSET = 8;
@@ -2072,7 +2072,7 @@ public final class WhirlpoolProgram {
                                           RemainingAccountsInfo remainingAccountsInfo) implements SerDe {
 
     public static IncreaseLiquidityV2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int LIQUIDITY_AMOUNT_OFFSET = 8;
@@ -2354,7 +2354,7 @@ public final class WhirlpoolProgram {
                                                 int majorSwapThresholdTicks) implements SerDe {
 
     public static InitializeAdaptiveFeeTierIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 96;
@@ -2553,7 +2553,7 @@ public final class WhirlpoolProgram {
                                        int defaultProtocolFeeRate) implements SerDe {
 
     public static InitializeConfigIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 106;
@@ -2745,7 +2745,7 @@ public final class WhirlpoolProgram {
   public record InitializeDynamicTickArrayIxData(Discriminator discriminator, int startTickIndex, boolean idempotent) implements SerDe {
 
     public static InitializeDynamicTickArrayIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 13;
@@ -2883,7 +2883,7 @@ public final class WhirlpoolProgram {
   public record InitializeFeeTierIxData(Discriminator discriminator, int tickSpacing, int defaultFeeRate) implements SerDe {
 
     public static InitializeFeeTierIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 12;
@@ -3048,7 +3048,7 @@ public final class WhirlpoolProgram {
                                      BigInteger initialSqrtPrice) implements SerDe {
 
     public static InitializePoolIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 27;
@@ -3220,7 +3220,7 @@ public final class WhirlpoolProgram {
   public record InitializePoolV2IxData(Discriminator discriminator, int tickSpacing, BigInteger initialSqrtPrice) implements SerDe {
 
     public static InitializePoolV2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 26;
@@ -3396,7 +3396,7 @@ public final class WhirlpoolProgram {
   public record InitializePoolWithAdaptiveFeeIxData(Discriminator discriminator, BigInteger initialSqrtPrice, OptionalLong tradeEnableTimestamp) implements SerDe {
 
     public static InitializePoolWithAdaptiveFeeIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int INITIAL_SQRT_PRICE_OFFSET = 8;
@@ -3676,7 +3676,7 @@ public final class WhirlpoolProgram {
   public record InitializeRewardIxData(Discriminator discriminator, int rewardIndex) implements SerDe {
 
     public static InitializeRewardIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -3818,7 +3818,7 @@ public final class WhirlpoolProgram {
   public record InitializeRewardV2IxData(Discriminator discriminator, int rewardIndex) implements SerDe {
 
     public static InitializeRewardV2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -3925,7 +3925,7 @@ public final class WhirlpoolProgram {
   public record InitializeTickArrayIxData(Discriminator discriminator, int startTickIndex) implements SerDe {
 
     public static InitializeTickArrayIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 12;
@@ -4122,7 +4122,7 @@ public final class WhirlpoolProgram {
   public record LockPositionIxData(Discriminator discriminator, LockType lockType) implements SerDe {
 
     public static LockPositionIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -4316,7 +4316,7 @@ public final class WhirlpoolProgram {
                                           int tickUpperIndex) implements SerDe {
 
     public static OpenBundledPositionIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 18;
@@ -4470,7 +4470,7 @@ public final class WhirlpoolProgram {
                                    int tickUpperIndex) implements SerDe {
 
     public static OpenPositionIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 17;
@@ -4640,7 +4640,7 @@ public final class WhirlpoolProgram {
                                                int tickUpperIndex) implements SerDe {
 
     public static OpenPositionWithMetadataIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 18;
@@ -4806,7 +4806,7 @@ public final class WhirlpoolProgram {
                                                       boolean withTokenMetadataExtension) implements SerDe {
 
     public static OpenPositionWithTokenExtensionsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 17;
@@ -5062,7 +5062,7 @@ public final class WhirlpoolProgram {
                                             RemainingAccountsInfo remainingAccountsInfo) implements SerDe {
 
     public static RepositionLiquidityV2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int NEW_TICK_LOWER_INDEX_OFFSET = 8;
@@ -5216,7 +5216,7 @@ public final class WhirlpoolProgram {
   public record ResetPositionRangeIxData(Discriminator discriminator, int newTickLowerIndex, int newTickUpperIndex) implements SerDe {
 
     public static ResetPositionRangeIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -5426,7 +5426,7 @@ public final class WhirlpoolProgram {
                                               OptionalInt majorSwapThresholdTicks) implements SerDe {
 
     public static SetAdaptiveFeeConstantsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int FILTER_PERIOD_OFFSET = 9;
@@ -5701,7 +5701,7 @@ public final class WhirlpoolProgram {
   public record SetConfigFeatureFlagIxData(Discriminator discriminator, ConfigFeatureFlag featureFlag) implements SerDe {
 
     public static SetConfigFeatureFlagIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int FEATURE_FLAG_OFFSET = 8;
@@ -5813,7 +5813,7 @@ public final class WhirlpoolProgram {
   public record SetDefaultBaseFeeRateIxData(Discriminator discriminator, int defaultBaseFeeRate) implements SerDe {
 
     public static SetDefaultBaseFeeRateIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 10;
@@ -5928,7 +5928,7 @@ public final class WhirlpoolProgram {
   public record SetDefaultFeeRateIxData(Discriminator discriminator, int defaultFeeRate) implements SerDe {
 
     public static SetDefaultFeeRateIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 10;
@@ -6039,7 +6039,7 @@ public final class WhirlpoolProgram {
   public record SetDefaultProtocolFeeRateIxData(Discriminator discriminator, int defaultProtocolFeeRate) implements SerDe {
 
     public static SetDefaultProtocolFeeRateIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 10;
@@ -6269,7 +6269,7 @@ public final class WhirlpoolProgram {
   public record SetFeeRateIxData(Discriminator discriminator, int feeRate) implements SerDe {
 
     public static SetFeeRateIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 10;
@@ -6381,7 +6381,7 @@ public final class WhirlpoolProgram {
   public record SetFeeRateByDelegatedFeeAuthorityIxData(Discriminator discriminator, int feeRate) implements SerDe {
 
     public static SetFeeRateByDelegatedFeeAuthorityIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 10;
@@ -6619,7 +6619,7 @@ public final class WhirlpoolProgram {
                                                     int majorSwapThresholdTicks) implements SerDe {
 
     public static SetPresetAdaptiveFeeConstantsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 26;
@@ -6771,7 +6771,7 @@ public final class WhirlpoolProgram {
   public record SetProtocolFeeRateIxData(Discriminator discriminator, int protocolFeeRate) implements SerDe {
 
     public static SetProtocolFeeRateIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 10;
@@ -6880,7 +6880,7 @@ public final class WhirlpoolProgram {
   public record SetRewardAuthorityIxData(Discriminator discriminator, int rewardIndex) implements SerDe {
 
     public static SetRewardAuthorityIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -6993,7 +6993,7 @@ public final class WhirlpoolProgram {
   public record SetRewardAuthorityBySuperAuthorityIxData(Discriminator discriminator, int rewardIndex) implements SerDe {
 
     public static SetRewardAuthorityBySuperAuthorityIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -7127,7 +7127,7 @@ public final class WhirlpoolProgram {
   public record SetRewardEmissionsIxData(Discriminator discriminator, int rewardIndex, BigInteger emissionsPerSecondX64) implements SerDe {
 
     public static SetRewardEmissionsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 25;
@@ -7323,7 +7323,7 @@ public final class WhirlpoolProgram {
   public record SetRewardEmissionsV2IxData(Discriminator discriminator, int rewardIndex, BigInteger emissionsPerSecondX64) implements SerDe {
 
     public static SetRewardEmissionsV2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 25;
@@ -7442,7 +7442,7 @@ public final class WhirlpoolProgram {
   public record SetTokenBadgeAttributeIxData(Discriminator discriminator, TokenBadgeAttribute attribute) implements SerDe {
 
     public static SetTokenBadgeAttributeIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ATTRIBUTE_OFFSET = 8;
@@ -7700,7 +7700,7 @@ public final class WhirlpoolProgram {
                            boolean aToB) implements SerDe {
 
     public static SwapIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 42;
@@ -7959,7 +7959,7 @@ public final class WhirlpoolProgram {
                              RemainingAccountsInfo remainingAccountsInfo) implements SerDe {
 
     public static SwapV2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int AMOUNT_OFFSET = 8;
@@ -8332,7 +8332,7 @@ public final class WhirlpoolProgram {
                                  BigInteger sqrtPriceLimitTwo) implements SerDe {
 
     public static TwoHopSwapIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 59;
@@ -8663,7 +8663,7 @@ public final class WhirlpoolProgram {
                                    RemainingAccountsInfo remainingAccountsInfo) implements SerDe {
 
     public static TwoHopSwapV2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int AMOUNT_OFFSET = 8;

@@ -108,7 +108,7 @@ public final class FarmsProgram {
   public record UpdateGlobalConfigIxData(Discriminator discriminator, int mode, byte[] value) implements SerDe {
 
     public static UpdateGlobalConfigIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 41;
@@ -374,7 +374,7 @@ public final class FarmsProgram {
   public record AddRewardsIxData(Discriminator discriminator, long amount, long rewardIndex) implements SerDe {
 
     public static AddRewardsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 24;
@@ -457,7 +457,7 @@ public final class FarmsProgram {
   public record UpdateFarmConfigIxData(Discriminator discriminator, int mode, byte[] data) implements SerDe {
 
     public static UpdateFarmConfigIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int MODE_OFFSET = 8;
@@ -658,7 +658,7 @@ public final class FarmsProgram {
                                      long expectedRewardIssuedUnclaimed) implements SerDe {
 
     public static RewardUserOnceIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 32;
@@ -789,7 +789,7 @@ public final class FarmsProgram {
   public record StakeIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static StakeIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -861,7 +861,7 @@ public final class FarmsProgram {
   public record SetStakeDelegatedIxData(Discriminator discriminator, long newAmount) implements SerDe {
 
     public static SetStakeDelegatedIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -967,7 +967,7 @@ public final class FarmsProgram {
   public record HarvestRewardIxData(Discriminator discriminator, long rewardIndex) implements SerDe {
 
     public static HarvestRewardIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -1042,7 +1042,7 @@ public final class FarmsProgram {
   public record UnstakeIxData(Discriminator discriminator, BigInteger stakeSharesScaled) implements SerDe {
 
     public static UnstakeIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 24;
@@ -1206,7 +1206,7 @@ public final class FarmsProgram {
   public record WithdrawTreasuryIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static WithdrawTreasuryIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -1286,7 +1286,7 @@ public final class FarmsProgram {
   public record DepositToFarmVaultIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static DepositToFarmVaultIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -1370,7 +1370,7 @@ public final class FarmsProgram {
   public record WithdrawFromFarmVaultIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static WithdrawFromFarmVaultIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -1562,7 +1562,7 @@ public final class FarmsProgram {
   public record WithdrawRewardIxData(Discriminator discriminator, long amount, long rewardIndex) implements SerDe {
 
     public static WithdrawRewardIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 24;
@@ -1690,7 +1690,7 @@ public final class FarmsProgram {
                                       RewardType rewardType) implements SerDe {
 
     public static IdlMissingTypesIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 13;

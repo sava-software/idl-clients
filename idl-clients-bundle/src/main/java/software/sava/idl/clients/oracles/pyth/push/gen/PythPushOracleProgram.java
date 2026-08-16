@@ -94,7 +94,7 @@ public final class PythPushOracleProgram {
                                       byte[] feedId) implements SerDe {
 
     public static UpdatePriceFeedIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int FEED_ID_LEN = 32;

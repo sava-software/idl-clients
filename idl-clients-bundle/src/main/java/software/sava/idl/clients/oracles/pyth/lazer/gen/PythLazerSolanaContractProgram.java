@@ -67,7 +67,7 @@ public final class PythLazerSolanaContractProgram {
   public record InitializeIxData(Discriminator discriminator, PublicKey topAuthority, PublicKey treasury) implements SerDe {
 
     public static InitializeIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 72;
@@ -141,7 +141,7 @@ public final class PythLazerSolanaContractProgram {
   public record UpdateIxData(Discriminator discriminator, PublicKey trustedSigner, long expiresAt) implements SerDe {
 
     public static UpdateIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 48;
@@ -214,7 +214,7 @@ public final class PythLazerSolanaContractProgram {
   public record UpdateEcdsaSignerIxData(Discriminator discriminator, byte[] trustedSigner, long expiresAt) implements SerDe {
 
     public static UpdateEcdsaSignerIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 36;
@@ -292,7 +292,7 @@ public final class PythLazerSolanaContractProgram {
   public record VerifyEcdsaMessageIxData(Discriminator discriminator, byte[] messageData) implements SerDe {
 
     public static VerifyEcdsaMessageIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int MESSAGE_DATA_OFFSET = 8;
@@ -422,7 +422,7 @@ public final class PythLazerSolanaContractProgram {
                                     int signatureIndex) implements SerDe {
 
     public static VerifyMessageIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int MESSAGE_DATA_OFFSET = 8;

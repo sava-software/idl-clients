@@ -10,7 +10,6 @@ import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.jupiter.lend.gen.types.AddressBool;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.OptionalLong;
 
@@ -21,7 +20,6 @@ import static software.sava.core.accounts.meta.AccountMeta.createRead;
 import static software.sava.core.accounts.meta.AccountMeta.createReadOnlySigner;
 import static software.sava.core.accounts.meta.AccountMeta.createWritableSigner;
 import static software.sava.core.accounts.meta.AccountMeta.createWrite;
-import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
@@ -125,7 +123,7 @@ public final class LendingProgram {
   public record DepositIxData(Discriminator discriminator, long assets) implements SerDe {
 
     public static DepositIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -259,7 +257,7 @@ public final class LendingProgram {
   public record DepositWithMinAmountOutIxData(Discriminator discriminator, long assets, long minAmountOut) implements SerDe {
 
     public static DepositWithMinAmountOutIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 24;
@@ -367,7 +365,7 @@ public final class LendingProgram {
   public record InitLendingIxData(Discriminator discriminator, String symbol, byte[] _symbol, PublicKey liquidityProgram) implements SerDe {
 
     public static InitLendingIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int SYMBOL_OFFSET = 8;
@@ -382,11 +380,9 @@ public final class LendingProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final int _symbolLength = getInt32LE(_data, i);
-      i += 4;
-      final byte[] _symbol = Arrays.copyOfRange(_data, i, i + _symbolLength);
+      final byte[] _symbol = SerDeUtil.readbyteVector(4, _data, i);
       final var symbol = SerDeUtil.decodeString(_symbol);
-      i += _symbol.length;
+      i += 4 + _symbol.length;
       final var liquidityProgram = readPubKey(_data, i);
       return new InitLendingIxData(discriminator, symbol, symbol == null ? null : SerDeUtil.encodeString(symbol), liquidityProgram);
     }
@@ -461,7 +457,7 @@ public final class LendingProgram {
                                        PublicKey authority) implements SerDe {
 
     public static InitLendingAdminIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 104;
@@ -598,7 +594,7 @@ public final class LendingProgram {
   public record MintIxData(Discriminator discriminator, long shares) implements SerDe {
 
     public static MintIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -732,7 +728,7 @@ public final class LendingProgram {
   public record MintWithMaxAssetsIxData(Discriminator discriminator, long shares, long maxAssets) implements SerDe {
 
     public static MintWithMaxAssetsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 24;
@@ -939,7 +935,7 @@ public final class LendingProgram {
   public record RebalanceWithAmountsIxData(Discriminator discriminator, OptionalLong amount) implements SerDe {
 
     public static RebalanceWithAmountsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int AMOUNT_OFFSET = 9;
@@ -1073,7 +1069,7 @@ public final class LendingProgram {
   public record RedeemIxData(Discriminator discriminator, long shares) implements SerDe {
 
     public static RedeemIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -1211,7 +1207,7 @@ public final class LendingProgram {
   public record RedeemWithMinAmountOutIxData(Discriminator discriminator, long shares, long minAmountOut) implements SerDe {
 
     public static RedeemWithMinAmountOutIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 24;
@@ -1297,7 +1293,7 @@ public final class LendingProgram {
   public record SetRewardsRateModelIxData(Discriminator discriminator, PublicKey mint) implements SerDe {
 
     public static SetRewardsRateModelIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 40;
@@ -1362,7 +1358,7 @@ public final class LendingProgram {
   public record UpdateAuthorityIxData(Discriminator discriminator, PublicKey newAuthority) implements SerDe {
 
     public static UpdateAuthorityIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 40;
@@ -1427,7 +1423,7 @@ public final class LendingProgram {
   public record UpdateAuthsIxData(Discriminator discriminator, AddressBool[] authStatus) implements SerDe {
 
     public static UpdateAuthsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int AUTH_STATUS_OFFSET = 8;
@@ -1526,7 +1522,7 @@ public final class LendingProgram {
   public record UpdateRebalancerIxData(Discriminator discriminator, PublicKey newRebalancer) implements SerDe {
 
     public static UpdateRebalancerIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 40;
@@ -1657,7 +1653,7 @@ public final class LendingProgram {
   public record WithdrawIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static WithdrawIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -1795,7 +1791,7 @@ public final class LendingProgram {
   public record WithdrawWithMaxSharesBurnIxData(Discriminator discriminator, long amount, long maxSharesBurn) implements SerDe {
 
     public static WithdrawWithMaxSharesBurnIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 24;

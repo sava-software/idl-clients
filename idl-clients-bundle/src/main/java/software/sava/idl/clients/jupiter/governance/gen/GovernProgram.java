@@ -10,7 +10,6 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.jupiter.governance.gen.types.GovernanceParameters;
 import software.sava.idl.clients.jupiter.governance.gen.types.ProposalInstruction;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -18,7 +17,6 @@ import static software.sava.core.accounts.meta.AccountMeta.createRead;
 import static software.sava.core.accounts.meta.AccountMeta.createReadOnlySigner;
 import static software.sava.core.accounts.meta.AccountMeta.createWritableSigner;
 import static software.sava.core.accounts.meta.AccountMeta.createWrite;
-import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
@@ -92,7 +90,7 @@ public final class GovernProgram {
   public record CreateGovernorIxData(Discriminator discriminator, PublicKey locker, GovernanceParameters params) implements SerDe {
 
     public static CreateGovernorIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 72;
@@ -234,7 +232,7 @@ public final class GovernProgram {
                                      ProposalInstruction[] instructions) implements SerDe {
 
     public static CreateProposalIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PROPOSAL_TYPE_OFFSET = 8;
@@ -502,7 +500,7 @@ public final class GovernProgram {
   public record NewVoteIxData(Discriminator discriminator, PublicKey voter) implements SerDe {
 
     public static NewVoteIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 40;
@@ -602,7 +600,7 @@ public final class GovernProgram {
   public record SetVoteIxData(Discriminator discriminator, int side, long weight) implements SerDe {
 
     public static SetVoteIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 17;
@@ -685,7 +683,7 @@ public final class GovernProgram {
   public record SetGovernanceParamsIxData(Discriminator discriminator, GovernanceParameters params) implements SerDe {
 
     public static SetGovernanceParamsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 40;
@@ -771,7 +769,7 @@ public final class GovernProgram {
   public record SetVotingRewardIxData(Discriminator discriminator, long rewardPerProposal) implements SerDe {
 
     public static SetVotingRewardIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -921,7 +919,7 @@ public final class GovernProgram {
   public record SetLockerIxData(Discriminator discriminator, PublicKey newLocker) implements SerDe {
 
     public static SetLockerIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 40;
@@ -1043,7 +1041,7 @@ public final class GovernProgram {
                                          String descriptionLink, byte[] _descriptionLink) implements SerDe {
 
     public static CreateProposalMetaIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BUMP_OFFSET = 8;
@@ -1064,14 +1062,10 @@ public final class GovernProgram {
       int i = _offset + discriminator.length();
       final var bump = _data[i] & 0xFF;
       ++i;
-      final int _titleLength = getInt32LE(_data, i);
-      i += 4;
-      final byte[] _title = Arrays.copyOfRange(_data, i, i + _titleLength);
+      final byte[] _title = SerDeUtil.readbyteVector(4, _data, i);
       final var title = SerDeUtil.decodeString(_title);
-      i += _title.length;
-      final int _descriptionLinkLength = getInt32LE(_data, i);
-      i += 4;
-      final byte[] _descriptionLink = Arrays.copyOfRange(_data, i, i + _descriptionLinkLength);
+      i += 4 + _title.length;
+      final byte[] _descriptionLink = SerDeUtil.readbyteVector(4, _data, i);
       final var descriptionLink = SerDeUtil.decodeString(_descriptionLink);
       return new CreateProposalMetaIxData(discriminator, bump, title, title == null ? null : SerDeUtil.encodeString(title), descriptionLink, descriptionLink == null ? null : SerDeUtil.encodeString(descriptionLink));
     }
@@ -1169,7 +1163,7 @@ public final class GovernProgram {
   public record CreateOptionProposalMetaIxData(Discriminator discriminator, int bump, String[] optionDescriptions) implements SerDe {
 
     public static CreateOptionProposalMetaIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BUMP_OFFSET = 8;

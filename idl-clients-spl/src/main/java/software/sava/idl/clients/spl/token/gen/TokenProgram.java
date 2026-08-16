@@ -122,7 +122,7 @@ public final class TokenProgram {
                                      PublicKey freezeAuthority) implements SerDe {
 
     public static InitializeMintIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int DISCRIMINATOR_OFFSET = 0;
@@ -263,7 +263,7 @@ public final class TokenProgram {
   public record InitializeAccountIxData(int discriminator) implements SerDe {
 
     public static InitializeAccountIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 1;
@@ -379,7 +379,7 @@ public final class TokenProgram {
   public record InitializeMultisigIxData(int discriminator, int m) implements SerDe {
 
     public static InitializeMultisigIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 2;
@@ -478,7 +478,7 @@ public final class TokenProgram {
   public record TransferIxData(int discriminator, long amount) implements SerDe {
 
     public static TransferIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -573,7 +573,7 @@ public final class TokenProgram {
   public record ApproveIxData(int discriminator, long amount) implements SerDe {
 
     public static ApproveIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -652,7 +652,7 @@ public final class TokenProgram {
   public record RevokeIxData(int discriminator) implements SerDe {
 
     public static RevokeIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 1;
@@ -746,7 +746,7 @@ public final class TokenProgram {
                                    PublicKey newAuthority) implements SerDe {
 
     public static SetAuthorityIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int DISCRIMINATOR_OFFSET = 0;
@@ -844,7 +844,7 @@ public final class TokenProgram {
   public record MintToIxData(int discriminator, long amount) implements SerDe {
 
     public static MintToIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -939,7 +939,7 @@ public final class TokenProgram {
   public record BurnIxData(int discriminator, long amount) implements SerDe {
 
     public static BurnIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -1028,7 +1028,7 @@ public final class TokenProgram {
   public record CloseAccountIxData(int discriminator) implements SerDe {
 
     public static CloseAccountIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 1;
@@ -1106,7 +1106,7 @@ public final class TokenProgram {
   public record FreezeAccountIxData(int discriminator) implements SerDe {
 
     public static FreezeAccountIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 1;
@@ -1184,7 +1184,7 @@ public final class TokenProgram {
   public record ThawAccountIxData(int discriminator) implements SerDe {
 
     public static ThawAccountIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 1;
@@ -1312,7 +1312,7 @@ public final class TokenProgram {
                                       int decimals) implements SerDe {
 
     public static TransferCheckedIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 10;
@@ -1448,7 +1448,7 @@ public final class TokenProgram {
                                      int decimals) implements SerDe {
 
     public static ApproveCheckedIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 10;
@@ -1574,7 +1574,7 @@ public final class TokenProgram {
                                     int decimals) implements SerDe {
 
     public static MintToCheckedIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 10;
@@ -1704,7 +1704,7 @@ public final class TokenProgram {
                                   int decimals) implements SerDe {
 
     public static BurnCheckedIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 10;
@@ -1810,7 +1810,7 @@ public final class TokenProgram {
   public record InitializeAccount2IxData(int discriminator, PublicKey owner) implements SerDe {
 
     public static InitializeAccount2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 33;
@@ -1905,7 +1905,7 @@ public final class TokenProgram {
   public record SyncNativeIxData(int discriminator) implements SerDe {
 
     public static SyncNativeIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 1;
@@ -1983,7 +1983,7 @@ public final class TokenProgram {
   public record InitializeAccount3IxData(int discriminator, PublicKey owner) implements SerDe {
 
     public static InitializeAccount3IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 33;
@@ -2062,7 +2062,7 @@ public final class TokenProgram {
   public record InitializeMultisig2IxData(int discriminator, int m) implements SerDe {
 
     public static InitializeMultisig2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 2;
@@ -2167,7 +2167,7 @@ public final class TokenProgram {
                                       PublicKey freezeAuthority) implements SerDe {
 
     public static InitializeMint2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int DISCRIMINATOR_OFFSET = 0;
@@ -2272,7 +2272,7 @@ public final class TokenProgram {
   public record GetAccountDataSizeIxData(int discriminator) implements SerDe {
 
     public static GetAccountDataSizeIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 1;
@@ -2362,7 +2362,7 @@ public final class TokenProgram {
   public record InitializeImmutableOwnerIxData(int discriminator) implements SerDe {
 
     public static InitializeImmutableOwnerIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 1;
@@ -2462,7 +2462,7 @@ public final class TokenProgram {
   public record AmountToUiAmountIxData(int discriminator, long amount) implements SerDe {
 
     public static AmountToUiAmountIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -2562,7 +2562,7 @@ public final class TokenProgram {
   public record UiAmountToAmountIxData(int discriminator, String uiAmount, byte[] _uiAmount) implements SerDe {
 
     public static UiAmountToAmountIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int DISCRIMINATOR_OFFSET = 0;
@@ -2659,7 +2659,7 @@ public final class TokenProgram {
   public record WithdrawExcessLamportsIxData(int discriminator) implements SerDe {
 
     public static WithdrawExcessLamportsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 1;
@@ -2749,7 +2749,7 @@ public final class TokenProgram {
   public record UnwrapLamportsIxData(int discriminator, OptionalLong amount) implements SerDe {
 
     public static UnwrapLamportsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int DISCRIMINATOR_OFFSET = 0;

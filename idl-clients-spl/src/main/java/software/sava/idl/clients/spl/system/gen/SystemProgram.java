@@ -10,7 +10,6 @@ import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -83,7 +82,7 @@ public final class SystemProgram {
                                     PublicKey programAddress) implements SerDe {
 
     public static CreateAccountIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 52;
@@ -162,7 +161,7 @@ public final class SystemProgram {
   public record AssignIxData(long discriminator, PublicKey programAddress) implements SerDe {
 
     public static AssignIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 36;
@@ -235,7 +234,7 @@ public final class SystemProgram {
   public record TransferSolIxData(long discriminator, long amount) implements SerDe {
 
     public static TransferSolIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 12;
@@ -349,7 +348,7 @@ public final class SystemProgram {
                                             PublicKey programAddress) implements SerDe {
 
     public static CreateAccountWithSeedIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int DISCRIMINATOR_OFFSET = 0;
@@ -380,11 +379,9 @@ public final class SystemProgram {
       i += 4;
       final var base = readPubKey(_data, i);
       i += 32;
-      final int _seedLength = Math.toIntExact(getInt64LE(_data, i));
-      i += 8;
-      final byte[] _seed = Arrays.copyOfRange(_data, i, i + _seedLength);
+      final byte[] _seed = SerDeUtil.readbyteVector(8, _data, i);
       final var seed = SerDeUtil.decodeString(_seed);
-      i += _seedLength;
+      i += 8 + _seed.length;
       final var amount = getInt64LE(_data, i);
       i += 8;
       final var space = getInt64LE(_data, i);
@@ -464,7 +461,7 @@ public final class SystemProgram {
   public record AdvanceNonceAccountIxData(long discriminator) implements SerDe {
 
     public static AdvanceNonceAccountIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 4;
@@ -539,7 +536,7 @@ public final class SystemProgram {
   public record WithdrawNonceAccountIxData(long discriminator, long withdrawAmount) implements SerDe {
 
     public static WithdrawNonceAccountIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 12;
@@ -610,7 +607,7 @@ public final class SystemProgram {
   public record InitializeNonceAccountIxData(long discriminator, PublicKey nonceAuthority) implements SerDe {
 
     public static InitializeNonceAccountIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 36;
@@ -680,7 +677,7 @@ public final class SystemProgram {
   public record AuthorizeNonceAccountIxData(long discriminator, PublicKey newNonceAuthority) implements SerDe {
 
     public static AuthorizeNonceAccountIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 36;
@@ -749,7 +746,7 @@ public final class SystemProgram {
   public record AllocateIxData(long discriminator, long space) implements SerDe {
 
     public static AllocateIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 12;
@@ -848,7 +845,7 @@ public final class SystemProgram {
                                        PublicKey programAddress) implements SerDe {
 
     public static AllocateWithSeedIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int DISCRIMINATOR_OFFSET = 0;
@@ -877,11 +874,9 @@ public final class SystemProgram {
       i += 4;
       final var base = readPubKey(_data, i);
       i += 32;
-      final int _seedLength = Math.toIntExact(getInt64LE(_data, i));
-      i += 8;
-      final byte[] _seed = Arrays.copyOfRange(_data, i, i + _seedLength);
+      final byte[] _seed = SerDeUtil.readbyteVector(8, _data, i);
       final var seed = SerDeUtil.decodeString(_seed);
-      i += _seedLength;
+      i += 8 + _seed.length;
       final var space = getInt64LE(_data, i);
       i += 8;
       final var programAddress = readPubKey(_data, i);
@@ -974,7 +969,7 @@ public final class SystemProgram {
                                      PublicKey programAddress) implements SerDe {
 
     public static AssignWithSeedIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int DISCRIMINATOR_OFFSET = 0;
@@ -1001,11 +996,9 @@ public final class SystemProgram {
       i += 4;
       final var base = readPubKey(_data, i);
       i += 32;
-      final int _seedLength = Math.toIntExact(getInt64LE(_data, i));
-      i += 8;
-      final byte[] _seed = Arrays.copyOfRange(_data, i, i + _seedLength);
+      final byte[] _seed = SerDeUtil.readbyteVector(8, _data, i);
       final var seed = SerDeUtil.decodeString(_seed);
-      i += _seedLength;
+      i += 8 + _seed.length;
       final var programAddress = readPubKey(_data, i);
       return new AssignWithSeedIxData(discriminator,
                                       base,
@@ -1096,7 +1089,7 @@ public final class SystemProgram {
                                           PublicKey fromOwner) implements SerDe {
 
     public static TransferSolWithSeedIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int DISCRIMINATOR_OFFSET = 0;
@@ -1123,11 +1116,9 @@ public final class SystemProgram {
       i += 4;
       final var amount = getInt64LE(_data, i);
       i += 8;
-      final int _fromSeedLength = Math.toIntExact(getInt64LE(_data, i));
-      i += 8;
-      final byte[] _fromSeed = Arrays.copyOfRange(_data, i, i + _fromSeedLength);
+      final byte[] _fromSeed = SerDeUtil.readbyteVector(8, _data, i);
       final var fromSeed = SerDeUtil.decodeString(_fromSeed);
-      i += _fromSeedLength;
+      i += 8 + _fromSeed.length;
       final var fromOwner = readPubKey(_data, i);
       return new TransferSolWithSeedIxData(discriminator,
                                            amount,
@@ -1184,7 +1175,7 @@ public final class SystemProgram {
   public record UpgradeNonceAccountIxData(long discriminator) implements SerDe {
 
     public static UpgradeNonceAccountIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 4;
@@ -1272,7 +1263,7 @@ public final class SystemProgram {
                                                 PublicKey programAddress) implements SerDe {
 
     public static CreateAccountAllowPrefundIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 52;

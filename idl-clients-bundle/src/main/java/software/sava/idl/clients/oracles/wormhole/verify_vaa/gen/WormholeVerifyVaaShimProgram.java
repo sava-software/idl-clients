@@ -173,7 +173,7 @@ public final class WormholeVerifyVaaShimProgram {
                                      byte[][] guardianSignatures) implements SerDe {
 
     public static PostSignaturesIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int GUARDIAN_SET_INDEX_OFFSET = 8;
@@ -372,7 +372,7 @@ public final class WormholeVerifyVaaShimProgram {
   public record VerifyHashIxData(Discriminator discriminator, int guardianSetBump, byte[] digest) implements SerDe {
 
     public static VerifyHashIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 41;

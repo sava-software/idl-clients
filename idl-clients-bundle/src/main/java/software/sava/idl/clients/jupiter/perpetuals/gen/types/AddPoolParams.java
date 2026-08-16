@@ -4,9 +4,6 @@ package software.sava.idl.clients.jupiter.perpetuals.gen.types;
 import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
-import java.util.Arrays;
-
-import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
@@ -32,11 +29,9 @@ public record AddPoolParams(String name, byte[] _name,
       return null;
     }
     int i = _offset;
-    final int _nameLength = getInt32LE(_data, i);
-    i += 4;
-    final byte[] _name = Arrays.copyOfRange(_data, i, i + _nameLength);
+    final byte[] _name = SerDeUtil.readbyteVector(4, _data, i);
     final var name = SerDeUtil.decodeString(_name);
-    i += _name.length;
+    i += 4 + _name.length;
     final var limit = Limit.read(_data, i);
     i += limit.l();
     final var fees = Fees.read(_data, i);

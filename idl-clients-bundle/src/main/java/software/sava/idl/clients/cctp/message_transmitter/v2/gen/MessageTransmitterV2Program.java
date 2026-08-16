@@ -75,7 +75,7 @@ public final class MessageTransmitterV2Program {
   public record AcceptOwnershipIxData(Discriminator discriminator, AcceptOwnershipParams params) implements SerDe {
 
     public static AcceptOwnershipIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 8;
@@ -155,7 +155,7 @@ public final class MessageTransmitterV2Program {
   public record DisableAttesterIxData(Discriminator discriminator, DisableAttesterParams params) implements SerDe {
 
     public static DisableAttesterIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 40;
@@ -235,7 +235,7 @@ public final class MessageTransmitterV2Program {
   public record EnableAttesterIxData(Discriminator discriminator, EnableAttesterParams params) implements SerDe {
 
     public static EnableAttesterIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 40;
@@ -323,7 +323,7 @@ public final class MessageTransmitterV2Program {
   public record InitializeIxData(Discriminator discriminator, InitializeParams params) implements SerDe {
 
     public static InitializeIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 56;
@@ -418,7 +418,7 @@ public final class MessageTransmitterV2Program {
   public record PauseIxData(Discriminator discriminator, PauseParams params) implements SerDe {
 
     public static PauseIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 8;
@@ -512,7 +512,7 @@ public final class MessageTransmitterV2Program {
   public record ReceiveMessageIxData(Discriminator discriminator, ReceiveMessageParams params) implements SerDe {
 
     public static ReceiveMessageIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -580,7 +580,7 @@ public final class MessageTransmitterV2Program {
   public record ReclaimEventAccountIxData(Discriminator discriminator, ReclaimEventAccountParams params) implements SerDe {
 
     public static ReclaimEventAccountIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -658,7 +658,7 @@ public final class MessageTransmitterV2Program {
   public record SendMessageIxData(Discriminator discriminator, SendMessageParams params) implements SerDe {
 
     public static SendMessageIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -728,7 +728,7 @@ public final class MessageTransmitterV2Program {
   public record SetMaxMessageBodySizeIxData(Discriminator discriminator, SetMaxMessageBodySizeParams params) implements SerDe {
 
     public static SetMaxMessageBodySizeIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -800,7 +800,7 @@ public final class MessageTransmitterV2Program {
   public record SetSignatureThresholdIxData(Discriminator discriminator, SetSignatureThresholdParams params) implements SerDe {
 
     public static SetSignatureThresholdIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 12;
@@ -872,7 +872,7 @@ public final class MessageTransmitterV2Program {
   public record TransferOwnershipIxData(Discriminator discriminator, TransferOwnershipParams params) implements SerDe {
 
     public static TransferOwnershipIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 40;
@@ -944,7 +944,7 @@ public final class MessageTransmitterV2Program {
   public record UnpauseIxData(Discriminator discriminator, UnpauseParams params) implements SerDe {
 
     public static UnpauseIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 8;
@@ -1016,7 +1016,7 @@ public final class MessageTransmitterV2Program {
   public record UpdateAttesterManagerIxData(Discriminator discriminator, UpdateAttesterManagerParams params) implements SerDe {
 
     public static UpdateAttesterManagerIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 40;
@@ -1088,7 +1088,7 @@ public final class MessageTransmitterV2Program {
   public record UpdatePauserIxData(Discriminator discriminator, UpdatePauserParams params) implements SerDe {
 
     public static UpdatePauserIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 40;

@@ -2,11 +2,8 @@
 package software.sava.idl.clients.squads.v4.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.encoding.ByteUtil;
 import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
-
-import java.util.Arrays;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
@@ -76,14 +73,11 @@ public record MultisigCreateArgsV2(PublicKey configAuthority,
     }
     final byte[] _memo;
     final String memo;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       _memo = null;
       memo = null;
     } else {
-      int _from = i + 1;
-      final int _memoLength = ByteUtil.getInt32LE(_data, _from);
-      _from += 4;
-      _memo = Arrays.copyOfRange(_data, _from, _from + _memoLength);
+      _memo = SerDeUtil.readbyteVector(4, _data, i + 1);
       memo = SerDeUtil.decodeString(_memo);
     }
 

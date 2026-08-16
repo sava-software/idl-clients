@@ -117,7 +117,7 @@ public final class OrderEngineProgram {
                            long expireAt) implements SerDe {
 
     public static FillIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 32;

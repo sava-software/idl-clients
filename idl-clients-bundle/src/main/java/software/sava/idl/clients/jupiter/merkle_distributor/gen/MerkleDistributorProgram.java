@@ -107,7 +107,7 @@ public final class MerkleDistributorProgram {
   public record NewDistributorIxData(Discriminator discriminator, NewDistributorParams params) implements SerDe {
 
     public static NewDistributorIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 179;
@@ -268,7 +268,7 @@ public final class MerkleDistributorProgram {
   public record SetActivationPointIxData(Discriminator discriminator, long activationPoint) implements SerDe {
 
     public static SetActivationPointIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -448,7 +448,7 @@ public final class MerkleDistributorProgram {
   public record SetOperatorIxData(Discriminator discriminator, PublicKey newOperator) implements SerDe {
 
     public static SetOperatorIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 40;
@@ -584,7 +584,7 @@ public final class MerkleDistributorProgram {
                                byte[][] proof) implements SerDe {
 
     public static NewClaimIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int AMOUNT_UNLOCKED_OFFSET = 8;
@@ -794,7 +794,7 @@ public final class MerkleDistributorProgram {
                                        byte[][] proof) implements SerDe {
 
     public static NewClaimAndStakeIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int AMOUNT_UNLOCKED_OFFSET = 8;

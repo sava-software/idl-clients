@@ -82,7 +82,7 @@ public final class AddressLookupTableProgram {
                                         int bump) implements SerDe {
 
     public static CreateLookupTableIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 13;
@@ -154,7 +154,7 @@ public final class AddressLookupTableProgram {
   public record FreezeLookupTableIxData(long discriminator) implements SerDe {
 
     public static FreezeLookupTableIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 4;
@@ -225,7 +225,7 @@ public final class AddressLookupTableProgram {
   public record ExtendLookupTableIxData(long discriminator, PublicKey[] addresses) implements SerDe {
 
     public static ExtendLookupTableIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int DISCRIMINATOR_OFFSET = 0;
@@ -289,7 +289,7 @@ public final class AddressLookupTableProgram {
   public record DeactivateLookupTableIxData(long discriminator) implements SerDe {
 
     public static DeactivateLookupTableIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 4;
@@ -353,7 +353,7 @@ public final class AddressLookupTableProgram {
   public record CloseLookupTableIxData(long discriminator) implements SerDe {
 
     public static CloseLookupTableIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 4;

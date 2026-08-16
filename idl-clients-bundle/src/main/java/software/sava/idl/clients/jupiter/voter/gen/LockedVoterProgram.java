@@ -9,7 +9,6 @@ import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.jupiter.voter.gen.types.LockerParams;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -17,7 +16,6 @@ import static software.sava.core.accounts.meta.AccountMeta.createRead;
 import static software.sava.core.accounts.meta.AccountMeta.createReadOnlySigner;
 import static software.sava.core.accounts.meta.AccountMeta.createWritableSigner;
 import static software.sava.core.accounts.meta.AccountMeta.createWrite;
-import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
@@ -93,7 +91,7 @@ public final class LockedVoterProgram {
   public record NewLockerIxData(Discriminator discriminator, LockerParams params) implements SerDe {
 
     public static NewLockerIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 33;
@@ -257,7 +255,7 @@ public final class LockedVoterProgram {
   public record IncreaseLockedAmountIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static IncreaseLockedAmountIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -338,7 +336,7 @@ public final class LockedVoterProgram {
   public record ExtendLockDurationIxData(Discriminator discriminator, long duration) implements SerDe {
 
     public static ExtendLockDurationIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -419,7 +417,7 @@ public final class LockedVoterProgram {
   public record ToggleMaxLockIxData(Discriminator discriminator, boolean isMaxLock) implements SerDe {
 
     public static ToggleMaxLockIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -645,7 +643,7 @@ public final class LockedVoterProgram {
   public record CastVoteIxData(Discriminator discriminator, int side) implements SerDe {
 
     public static CastVoteIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -720,7 +718,7 @@ public final class LockedVoterProgram {
   public record SetVoteDelegateIxData(Discriminator discriminator, PublicKey newDelegate) implements SerDe {
 
     public static SetVoteDelegateIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 40;
@@ -801,7 +799,7 @@ public final class LockedVoterProgram {
   public record SetLockerParamsIxData(Discriminator discriminator, LockerParams params) implements SerDe {
 
     public static SetLockerParamsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 33;
@@ -899,7 +897,7 @@ public final class LockedVoterProgram {
   public record OpenPartialUnstakingIxData(Discriminator discriminator, long amount, String memo, byte[] _memo) implements SerDe {
 
     public static OpenPartialUnstakingIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int AMOUNT_OFFSET = 8;
@@ -917,9 +915,7 @@ public final class LockedVoterProgram {
       int i = _offset + discriminator.length();
       final var amount = getInt64LE(_data, i);
       i += 8;
-      final int _memoLength = getInt32LE(_data, i);
-      i += 4;
-      final byte[] _memo = Arrays.copyOfRange(_data, i, i + _memoLength);
+      final byte[] _memo = SerDeUtil.readbyteVector(4, _data, i);
       final var memo = SerDeUtil.decodeString(_memo);
       return new OpenPartialUnstakingIxData(discriminator, amount, memo, memo == null ? null : SerDeUtil.encodeString(memo));
     }

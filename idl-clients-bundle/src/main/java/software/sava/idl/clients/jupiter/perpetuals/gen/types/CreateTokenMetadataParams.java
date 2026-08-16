@@ -4,10 +4,6 @@ package software.sava.idl.clients.jupiter.perpetuals.gen.types;
 import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
-import java.util.Arrays;
-
-import static software.sava.core.encoding.ByteUtil.getInt32LE;
-
 public record CreateTokenMetadataParams(String name, byte[] _name,
                                         String symbol, byte[] _symbol,
                                         String uri, byte[] _uri) implements SerDe {
@@ -25,19 +21,13 @@ public record CreateTokenMetadataParams(String name, byte[] _name,
       return null;
     }
     int i = _offset;
-    final int _nameLength = getInt32LE(_data, i);
-    i += 4;
-    final byte[] _name = Arrays.copyOfRange(_data, i, i + _nameLength);
+    final byte[] _name = SerDeUtil.readbyteVector(4, _data, i);
     final var name = SerDeUtil.decodeString(_name);
-    i += _name.length;
-    final int _symbolLength = getInt32LE(_data, i);
-    i += 4;
-    final byte[] _symbol = Arrays.copyOfRange(_data, i, i + _symbolLength);
+    i += 4 + _name.length;
+    final byte[] _symbol = SerDeUtil.readbyteVector(4, _data, i);
     final var symbol = SerDeUtil.decodeString(_symbol);
-    i += _symbol.length;
-    final int _uriLength = getInt32LE(_data, i);
-    i += 4;
-    final byte[] _uri = Arrays.copyOfRange(_data, i, i + _uriLength);
+    i += 4 + _symbol.length;
+    final byte[] _uri = SerDeUtil.readbyteVector(4, _data, i);
     final var uri = SerDeUtil.decodeString(_uri);
     return new CreateTokenMetadataParams(name, name == null ? null : SerDeUtil.encodeString(name), symbol, symbol == null ? null : SerDeUtil.encodeString(symbol), uri, uri == null ? null : SerDeUtil.encodeString(uri));
   }

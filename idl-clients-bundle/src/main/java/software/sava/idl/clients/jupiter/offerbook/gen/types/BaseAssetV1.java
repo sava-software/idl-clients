@@ -8,12 +8,10 @@ import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
-import java.util.Arrays;
 import java.util.OptionalLong;
 import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
@@ -87,16 +85,12 @@ public record BaseAssetV1(PublicKey _address,
     i += 32;
     final var updateAuthority = UpdateAuthority.read(_data, i);
     i += updateAuthority.l();
-    final int _nameLength = getInt32LE(_data, i);
-    i += 4;
-    final byte[] _name = Arrays.copyOfRange(_data, i, i + _nameLength);
+    final byte[] _name = SerDeUtil.readbyteVector(4, _data, i);
     final var name = SerDeUtil.decodeString(_name);
-    i += _name.length;
-    final int _uriLength = getInt32LE(_data, i);
-    i += 4;
-    final byte[] _uri = Arrays.copyOfRange(_data, i, i + _uriLength);
+    i += 4 + _name.length;
+    final byte[] _uri = SerDeUtil.readbyteVector(4, _data, i);
     final var uri = SerDeUtil.decodeString(_uri);
-    i += _uri.length;
+    i += 4 + _uri.length;
     final OptionalLong seq;
     if (SerDeUtil.isAbsent(1, _data, i)) {
       seq = OptionalLong.empty();

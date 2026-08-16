@@ -8,7 +8,6 @@ import software.sava.core.tx.Instruction;
 import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -17,7 +16,6 @@ import static software.sava.core.accounts.meta.AccountMeta.createReadOnlySigner;
 import static software.sava.core.accounts.meta.AccountMeta.createWritableSigner;
 import static software.sava.core.accounts.meta.AccountMeta.createWrite;
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
-import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
@@ -72,7 +70,7 @@ public final class SolanaAttestationServiceProgram {
   public record CreateCredentialIxData(Discriminator discriminator, String name, byte[] _name, PublicKey[] signers) implements SerDe {
 
     public static CreateCredentialIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int NAME_OFFSET = 1;
@@ -87,11 +85,9 @@ public final class SolanaAttestationServiceProgram {
       }
       final var discriminator = createDiscriminator(_data, _offset, 1);
       int i = _offset + discriminator.length();
-      final int _nameLength = getInt32LE(_data, i);
-      i += 4;
-      final byte[] _name = Arrays.copyOfRange(_data, i, i + _nameLength);
+      final byte[] _name = SerDeUtil.readbyteVector(4, _data, i);
       final var name = SerDeUtil.decodeString(_name);
-      i += _name.length;
+      i += 4 + _name.length;
       final var signers = SerDeUtil.readPublicKeyVector(4, _data, i);
       return new CreateCredentialIxData(discriminator, name, name == null ? null : SerDeUtil.encodeString(name), signers);
     }
@@ -180,7 +176,7 @@ public final class SolanaAttestationServiceProgram {
                                    String[] fieldNames) implements SerDe {
 
     public static CreateSchemaIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int NAME_OFFSET = 1;
@@ -203,16 +199,12 @@ public final class SolanaAttestationServiceProgram {
       }
       final var discriminator = createDiscriminator(_data, _offset, 1);
       int i = _offset + discriminator.length();
-      final int _nameLength = getInt32LE(_data, i);
-      i += 4;
-      final byte[] _name = Arrays.copyOfRange(_data, i, i + _nameLength);
+      final byte[] _name = SerDeUtil.readbyteVector(4, _data, i);
       final var name = SerDeUtil.decodeString(_name);
-      i += _name.length;
-      final int _descriptionLength = getInt32LE(_data, i);
-      i += 4;
-      final byte[] _description = Arrays.copyOfRange(_data, i, i + _descriptionLength);
+      i += 4 + _name.length;
+      final byte[] _description = SerDeUtil.readbyteVector(4, _data, i);
       final var description = SerDeUtil.decodeString(_description);
-      i += _description.length;
+      i += 4 + _description.length;
       final var layout = SerDeUtil.readbyteVector(4, _data, i);
       i += SerDeUtil.lenVector(4, layout);
       final var fieldNames = SerDeUtil.readStringVector(4, 4, _data, i);
@@ -281,7 +273,7 @@ public final class SolanaAttestationServiceProgram {
   public record ChangeSchemaStatusIxData(Discriminator discriminator, boolean isPaused) implements SerDe {
 
     public static ChangeSchemaStatusIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 2;
@@ -356,7 +348,7 @@ public final class SolanaAttestationServiceProgram {
   public record ChangeAuthorizedSignersIxData(Discriminator discriminator, PublicKey[] signers) implements SerDe {
 
     public static ChangeAuthorizedSignersIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int SIGNERS_OFFSET = 1;
@@ -435,7 +427,7 @@ public final class SolanaAttestationServiceProgram {
   public record ChangeSchemaDescriptionIxData(Discriminator discriminator, String description, byte[] _description) implements SerDe {
 
     public static ChangeSchemaDescriptionIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int DESCRIPTION_OFFSET = 1;
@@ -450,9 +442,7 @@ public final class SolanaAttestationServiceProgram {
       }
       final var discriminator = createDiscriminator(_data, _offset, 1);
       int i = _offset + discriminator.length();
-      final int _descriptionLength = getInt32LE(_data, i);
-      i += 4;
-      final byte[] _description = Arrays.copyOfRange(_data, i, i + _descriptionLength);
+      final byte[] _description = SerDeUtil.readbyteVector(4, _data, i);
       final var description = SerDeUtil.decodeString(_description);
       return new ChangeSchemaDescriptionIxData(discriminator, description, description == null ? null : SerDeUtil.encodeString(description));
     }
@@ -525,7 +515,7 @@ public final class SolanaAttestationServiceProgram {
   public record ChangeSchemaVersionIxData(Discriminator discriminator, byte[] layout, String[] fieldNames) implements SerDe {
 
     public static ChangeSchemaVersionIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int LAYOUT_OFFSET = 1;
@@ -628,7 +618,7 @@ public final class SolanaAttestationServiceProgram {
                                         long expiry) implements SerDe {
 
     public static CreateAttestationIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int NONCE_OFFSET = 1;
@@ -779,7 +769,7 @@ public final class SolanaAttestationServiceProgram {
   public record TokenizeSchemaIxData(Discriminator discriminator, long maxSize) implements SerDe {
 
     public static TokenizeSchemaIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -947,7 +937,7 @@ public final class SolanaAttestationServiceProgram {
                                                  int mintAccountSpace) implements SerDe {
 
     public static CreateTokenizedAttestationIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int NONCE_OFFSET = 1;
@@ -983,21 +973,15 @@ public final class SolanaAttestationServiceProgram {
       i += SerDeUtil.lenVector(4, data);
       final var expiry = getInt64LE(_data, i);
       i += 8;
-      final int _nameLength = getInt32LE(_data, i);
-      i += 4;
-      final byte[] _name = Arrays.copyOfRange(_data, i, i + _nameLength);
+      final byte[] _name = SerDeUtil.readbyteVector(4, _data, i);
       final var name = SerDeUtil.decodeString(_name);
-      i += _name.length;
-      final int _uriLength = getInt32LE(_data, i);
-      i += 4;
-      final byte[] _uri = Arrays.copyOfRange(_data, i, i + _uriLength);
+      i += 4 + _name.length;
+      final byte[] _uri = SerDeUtil.readbyteVector(4, _data, i);
       final var uri = SerDeUtil.decodeString(_uri);
-      i += _uri.length;
-      final int _symbolLength = getInt32LE(_data, i);
-      i += 4;
-      final byte[] _symbol = Arrays.copyOfRange(_data, i, i + _symbolLength);
+      i += 4 + _uri.length;
+      final byte[] _symbol = SerDeUtil.readbyteVector(4, _data, i);
       final var symbol = SerDeUtil.decodeString(_symbol);
-      i += _symbol.length;
+      i += 4 + _symbol.length;
       final var mintAccountSpace = Short.toUnsignedInt(getInt16LE(_data, i));
       return new CreateTokenizedAttestationIxData(discriminator,
                                                   nonce,

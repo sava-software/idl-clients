@@ -245,7 +245,7 @@ public final class WormholePostMessageShimProgram {
                                   byte[] payload) implements SerDe {
 
     public static PostMessageIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int NONCE_OFFSET = 8;

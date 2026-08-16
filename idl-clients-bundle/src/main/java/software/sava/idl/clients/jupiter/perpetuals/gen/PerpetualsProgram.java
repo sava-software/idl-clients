@@ -128,7 +128,7 @@ public final class PerpetualsProgram {
   public record InitIxData(Discriminator discriminator, InitParams params) implements SerDe {
 
     public static InitIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 15;
@@ -216,7 +216,7 @@ public final class PerpetualsProgram {
   public record AddPoolIxData(Discriminator discriminator, AddPoolParams params) implements SerDe {
 
     public static AddPoolIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -310,7 +310,7 @@ public final class PerpetualsProgram {
   public record AddCustodyIxData(Discriminator discriminator, AddCustodyParams params) implements SerDe {
 
     public static AddCustodyIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 273;
@@ -378,7 +378,7 @@ public final class PerpetualsProgram {
   public record SetCustodyConfigIxData(Discriminator discriminator, SetCustodyConfigParams params) implements SerDe {
 
     public static SetCustodyConfigIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 377;
@@ -446,7 +446,7 @@ public final class PerpetualsProgram {
   public record SetPoolConfigIxData(Discriminator discriminator, SetPoolConfigParams params) implements SerDe {
 
     public static SetPoolConfigIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 178;
@@ -510,7 +510,7 @@ public final class PerpetualsProgram {
   public record SetPerpetualsConfigIxData(Discriminator discriminator, SetPerpetualsConfigParams params) implements SerDe {
 
     public static SetPerpetualsConfigIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 15;
@@ -578,7 +578,7 @@ public final class PerpetualsProgram {
   public record TransferAdminIxData(Discriminator discriminator, TransferAdminParams params) implements SerDe {
 
     public static TransferAdminIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 8;
@@ -674,7 +674,7 @@ public final class PerpetualsProgram {
   public record WithdrawFees2IxData(Discriminator discriminator, WithdrawFees2Params params) implements SerDe {
 
     public static WithdrawFees2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 8;
@@ -766,7 +766,7 @@ public final class PerpetualsProgram {
   public record CreateTokenMetadataIxData(Discriminator discriminator, CreateTokenMetadataParams params) implements SerDe {
 
     public static CreateTokenMetadataIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -987,7 +987,7 @@ public final class PerpetualsProgram {
   public record CreateAndDelegateStakeAccountIxData(Discriminator discriminator, CreateAndDelegateStakeAccountParams params) implements SerDe {
 
     public static CreateAndDelegateStakeAccountIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 24;
@@ -1214,7 +1214,7 @@ public final class PerpetualsProgram {
   public record OperatorSetCustodyConfigIxData(Discriminator discriminator, OperatorSetCustodyConfigParams params) implements SerDe {
 
     public static OperatorSetCustodyConfigIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 261;
@@ -1278,7 +1278,7 @@ public final class PerpetualsProgram {
   public record OperatorSetPoolConfigIxData(Discriminator discriminator, OperatorSetPoolConfigParams params) implements SerDe {
 
     public static OperatorSetPoolConfigIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 145;
@@ -1358,7 +1358,7 @@ public final class PerpetualsProgram {
   public record TestInitIxData(Discriminator discriminator, TestInitParams params) implements SerDe {
 
     public static TestInitIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 15;
@@ -1422,7 +1422,7 @@ public final class PerpetualsProgram {
   public record SetTestTimeIxData(Discriminator discriminator, SetTestTimeParams params) implements SerDe {
 
     public static SetTestTimeIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -1575,7 +1575,7 @@ public final class PerpetualsProgram {
   public record Swap2IxData(Discriminator discriminator, Swap2Params params) implements SerDe {
 
     public static Swap2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 24;
@@ -1699,7 +1699,7 @@ public final class PerpetualsProgram {
   public record SwapWithTokenLedgerIxData(Discriminator discriminator, SwapWithTokenLedgerParams params) implements SerDe {
 
     public static SwapWithTokenLedgerIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -1819,7 +1819,7 @@ public final class PerpetualsProgram {
   public record InstantIncreasePositionPreSwapIxData(Discriminator discriminator, InstantIncreasePositionPreSwapParams params) implements SerDe {
 
     public static InstantIncreasePositionPreSwapIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 24;
@@ -1931,7 +1931,7 @@ public final class PerpetualsProgram {
   public record AddLiquidity2IxData(Discriminator discriminator, AddLiquidity2Params params) implements SerDe {
 
     public static AddLiquidity2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -2041,7 +2041,7 @@ public final class PerpetualsProgram {
   public record RemoveLiquidity2IxData(Discriminator discriminator, RemoveLiquidity2Params params) implements SerDe {
 
     public static RemoveLiquidity2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 24;
@@ -2163,7 +2163,7 @@ public final class PerpetualsProgram {
   public record CreateIncreasePositionMarketRequestIxData(Discriminator discriminator, CreateIncreasePositionMarketRequestParams params) implements SerDe {
 
     public static CreateIncreasePositionMarketRequestIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -2291,7 +2291,7 @@ public final class PerpetualsProgram {
   public record CreateDecreasePositionRequest2IxData(Discriminator discriminator, CreateDecreasePositionRequest2Params params) implements SerDe {
 
     public static CreateDecreasePositionRequest2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -2411,7 +2411,7 @@ public final class PerpetualsProgram {
   public record CreateDecreasePositionMarketRequestIxData(Discriminator discriminator, CreateDecreasePositionMarketRequestParams params) implements SerDe {
 
     public static CreateDecreasePositionMarketRequestIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -2497,7 +2497,7 @@ public final class PerpetualsProgram {
   public record UpdateDecreasePositionRequest2IxData(Discriminator discriminator, UpdateDecreasePositionRequest2Params params) implements SerDe {
 
     public static UpdateDecreasePositionRequest2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 24;
@@ -2763,7 +2763,7 @@ public final class PerpetualsProgram {
   public record IncreasePosition4IxData(Discriminator discriminator, IncreasePosition4Params params) implements SerDe {
 
     public static IncreasePosition4IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 8;
@@ -2863,7 +2863,7 @@ public final class PerpetualsProgram {
   public record IncreasePositionPreSwapIxData(Discriminator discriminator, IncreasePositionPreSwapParams params) implements SerDe {
 
     public static IncreasePositionPreSwapIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 8;
@@ -2999,7 +2999,7 @@ public final class PerpetualsProgram {
   public record IncreasePositionWithInternalSwapIxData(Discriminator discriminator, IncreasePositionWithInternalSwapParams params) implements SerDe {
 
     public static IncreasePositionWithInternalSwapIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 8;
@@ -3127,7 +3127,7 @@ public final class PerpetualsProgram {
   public record DecreasePosition4IxData(Discriminator discriminator, DecreasePosition4Params params) implements SerDe {
 
     public static DecreasePosition4IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 8;
@@ -3271,7 +3271,7 @@ public final class PerpetualsProgram {
   public record DecreasePositionWithInternalSwapIxData(Discriminator discriminator, DecreasePositionWithInternalSwapParams params) implements SerDe {
 
     public static DecreasePositionWithInternalSwapIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 8;
@@ -3391,7 +3391,7 @@ public final class PerpetualsProgram {
   public record DecreasePositionWithTpslIxData(Discriminator discriminator, DecreasePositionWithTpslParams params) implements SerDe {
 
     public static DecreasePositionWithTpslIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 8;
@@ -3523,7 +3523,7 @@ public final class PerpetualsProgram {
   public record DecreasePositionWithTpslAndInternalSwapIxData(Discriminator discriminator, DecreasePositionWithTpslAndInternalSwapParams params) implements SerDe {
 
     public static DecreasePositionWithTpslAndInternalSwapIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 8;
@@ -3631,7 +3631,7 @@ public final class PerpetualsProgram {
   public record LiquidateFullPosition4IxData(Discriminator discriminator, LiquidateFullPosition4Params params) implements SerDe {
 
     public static LiquidateFullPosition4IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 8;
@@ -3703,7 +3703,7 @@ public final class PerpetualsProgram {
   public record RefreshAssetsUnderManagementIxData(Discriminator discriminator, RefreshAssetsUnderManagementParams params) implements SerDe {
 
     public static RefreshAssetsUnderManagementIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 8;
@@ -3771,7 +3771,7 @@ public final class PerpetualsProgram {
   public record SetMaxGlobalSizesIxData(Discriminator discriminator, SetMaxGlobalSizesParams params) implements SerDe {
 
     public static SetMaxGlobalSizesIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 113;
@@ -3909,7 +3909,7 @@ public final class PerpetualsProgram {
   public record InstantCreateTpslIxData(Discriminator discriminator, InstantCreateTpslParams params) implements SerDe {
 
     public static InstantCreateTpslIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 50;
@@ -4047,7 +4047,7 @@ public final class PerpetualsProgram {
   public record InstantCreateLimitOrderIxData(Discriminator discriminator, InstantCreateLimitOrderParams params) implements SerDe {
 
     public static InstantCreateLimitOrderIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 50;
@@ -4185,7 +4185,7 @@ public final class PerpetualsProgram {
   public record InstantIncreasePositionIxData(Discriminator discriminator, InstantIncreasePositionParams params) implements SerDe {
 
     public static InstantIncreasePositionIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -4329,7 +4329,7 @@ public final class PerpetualsProgram {
   public record InstantDecreasePositionIxData(Discriminator discriminator, InstantDecreasePositionParams params) implements SerDe {
 
     public static InstantDecreasePositionIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -4473,7 +4473,7 @@ public final class PerpetualsProgram {
   public record InstantDecreasePosition2IxData(Discriminator discriminator, InstantDecreasePosition2Params params) implements SerDe {
 
     public static InstantDecreasePosition2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -4567,7 +4567,7 @@ public final class PerpetualsProgram {
   public record InstantUpdateLimitOrderIxData(Discriminator discriminator, InstantUpdateLimitOrderParams params) implements SerDe {
 
     public static InstantUpdateLimitOrderIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 32;
@@ -4671,7 +4671,7 @@ public final class PerpetualsProgram {
   public record InstantUpdateTpslIxData(Discriminator discriminator, InstantUpdateTpslParams params) implements SerDe {
 
     public static InstantUpdateTpslIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 32;
@@ -4751,7 +4751,7 @@ public final class PerpetualsProgram {
   public record GetAddLiquidityAmountAndFee2IxData(Discriminator discriminator, GetAddLiquidityAmountAndFee2Params params) implements SerDe {
 
     public static GetAddLiquidityAmountAndFee2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -4831,7 +4831,7 @@ public final class PerpetualsProgram {
   public record GetRemoveLiquidityAmountAndFee2IxData(Discriminator discriminator, GetRemoveLiquidityAmountAndFee2Params params) implements SerDe {
 
     public static GetRemoveLiquidityAmountAndFee2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -4895,7 +4895,7 @@ public final class PerpetualsProgram {
   public record GetAssetsUnderManagement2IxData(Discriminator discriminator, GetAssetsUnderManagement2Params params) implements SerDe {
 
     public static GetAssetsUnderManagement2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -4997,7 +4997,7 @@ public final class PerpetualsProgram {
   public record BorrowFromCustodyIxData(Discriminator discriminator, BorrowFromCustodyParams params) implements SerDe {
 
     public static BorrowFromCustodyIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -5093,7 +5093,7 @@ public final class PerpetualsProgram {
   public record RepayToCustodyIxData(Discriminator discriminator, RepayToCustodyParams params) implements SerDe {
 
     public static RepayToCustodyIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -5201,7 +5201,7 @@ public final class PerpetualsProgram {
   public record DepositCollateralForBorrowsIxData(Discriminator discriminator, DepositParams params) implements SerDe {
 
     public static DepositCollateralForBorrowsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -5305,7 +5305,7 @@ public final class PerpetualsProgram {
   public record WithdrawCollateralForBorrowsIxData(Discriminator discriminator, WithdrawParams params) implements SerDe {
 
     public static WithdrawCollateralForBorrowsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -5405,7 +5405,7 @@ public final class PerpetualsProgram {
   public record LiquidateBorrowPositionIxData(Discriminator discriminator, LiquidateBorrowPositionParams params) implements SerDe {
 
     public static LiquidateBorrowPositionIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 8;
@@ -5505,7 +5505,7 @@ public final class PerpetualsProgram {
   public record PartialLiquidateBorrowPositionIxData(Discriminator discriminator, PartialLiquidateBorrowPositionParams params) implements SerDe {
 
     public static PartialLiquidateBorrowPositionIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 8;
@@ -5581,7 +5581,7 @@ public final class PerpetualsProgram {
   public record CloseBorrowPositionIxData(Discriminator discriminator, CloseBorrowPositionParams params) implements SerDe {
 
     public static CloseBorrowPositionIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 8;

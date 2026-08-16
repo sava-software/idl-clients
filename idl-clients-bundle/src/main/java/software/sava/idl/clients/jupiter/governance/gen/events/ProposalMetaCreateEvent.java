@@ -5,10 +5,7 @@ import software.sava.core.accounts.PublicKey;
 import software.sava.core.programs.Discriminator;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
-import java.util.Arrays;
-
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
@@ -46,14 +43,10 @@ public record ProposalMetaCreateEvent(Discriminator discriminator,
     i += 32;
     final var proposal = readPubKey(_data, i);
     i += 32;
-    final int _titleLength = getInt32LE(_data, i);
-    i += 4;
-    final byte[] _title = Arrays.copyOfRange(_data, i, i + _titleLength);
+    final byte[] _title = SerDeUtil.readbyteVector(4, _data, i);
     final var title = SerDeUtil.decodeString(_title);
-    i += _title.length;
-    final int _descriptionLinkLength = getInt32LE(_data, i);
-    i += 4;
-    final byte[] _descriptionLink = Arrays.copyOfRange(_data, i, i + _descriptionLinkLength);
+    i += 4 + _title.length;
+    final byte[] _descriptionLink = SerDeUtil.readbyteVector(4, _data, i);
     final var descriptionLink = SerDeUtil.decodeString(_descriptionLink);
     return new ProposalMetaCreateEvent(discriminator,
                                        governor,

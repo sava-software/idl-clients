@@ -80,7 +80,7 @@ public final class NtbundleProgram {
   public record AddStrategyIxData(Discriminator discriminator, long allocationBps) implements SerDe {
 
     public static AddStrategyIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 12;
@@ -186,7 +186,7 @@ public final class NtbundleProgram {
   public record ChangeBundleMasterAdminIxData(Discriminator discriminator, PublicKey newAdmin) implements SerDe {
 
     public static ChangeBundleMasterAdminIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 40;
@@ -251,7 +251,7 @@ public final class NtbundleProgram {
   public record ChangeManagerIxData(Discriminator discriminator, PublicKey newManager) implements SerDe {
 
     public static ChangeManagerIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 40;
@@ -327,7 +327,7 @@ public final class NtbundleProgram {
   public record ClearUserFeeOverrideIxData(Discriminator discriminator, int clearMask) implements SerDe {
 
     public static ClearUserFeeOverrideIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -403,7 +403,7 @@ public final class NtbundleProgram {
   public record ClearUserWithdrawalTimingOverrideIxData(Discriminator discriminator, int clearMask) implements SerDe {
 
     public static ClearUserWithdrawalTimingOverrideIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -788,7 +788,7 @@ public final class NtbundleProgram {
                                        boolean permissionned) implements SerDe {
 
     public static InitializeBundleIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 181;
@@ -1156,7 +1156,7 @@ public final class NtbundleProgram {
   public record ManagerWithdrawWithSplitIxData(Discriminator discriminator, long partnerPfeeBps, long partnerMfeeBps) implements SerDe {
 
     public static ManagerWithdrawWithSplitIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -1291,7 +1291,7 @@ public final class NtbundleProgram {
   public record PauseDepositsWithdrawalsIxData(Discriminator discriminator, boolean pause) implements SerDe {
 
     public static PauseDepositsWithdrawalsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -1387,7 +1387,7 @@ public final class NtbundleProgram {
   public record PerformRefillIxData(Discriminator discriminator, long refillAmount) implements SerDe {
 
     public static PerformRefillIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -1959,7 +1959,7 @@ public final class NtbundleProgram {
   public record RequestBundleSwitchIxData(Discriminator discriminator, BigInteger sharesAmount) implements SerDe {
 
     public static RequestBundleSwitchIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 24;
@@ -2069,7 +2069,7 @@ public final class NtbundleProgram {
   public record RequestDepositIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static RequestDepositIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -2155,7 +2155,7 @@ public final class NtbundleProgram {
   public record RequestWithdrawalIxData(Discriminator discriminator, BigInteger sharesAmount) implements SerDe {
 
     public static RequestWithdrawalIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 24;
@@ -2234,7 +2234,7 @@ public final class NtbundleProgram {
   public record SetBundleCreatorIxData(Discriminator discriminator, boolean allowed) implements SerDe {
 
     public static SetBundleCreatorIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -2325,7 +2325,7 @@ public final class NtbundleProgram {
                                 float withdrawalCurve) implements SerDe {
 
     public static SetDelaysIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 36;
@@ -2450,7 +2450,7 @@ public final class NtbundleProgram {
                               long managementFeeBps) implements SerDe {
 
     public static SetFeesIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 56;
@@ -2540,7 +2540,7 @@ public final class NtbundleProgram {
   public record SetKeeperIxData(Discriminator discriminator, PublicKey newkeeper) implements SerDe {
 
     public static SetKeeperIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 40;
@@ -2608,7 +2608,7 @@ public final class NtbundleProgram {
   public record SetMaxDepositAmountIxData(Discriminator discriminator, long maxDepositAmount) implements SerDe {
 
     public static SetMaxDepositAmountIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -2676,7 +2676,7 @@ public final class NtbundleProgram {
   public record SetMinDepositAmountIxData(Discriminator discriminator, long minDepositAmount) implements SerDe {
 
     public static SetMinDepositAmountIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -2744,7 +2744,7 @@ public final class NtbundleProgram {
   public record SetOracleBufferIxData(Discriminator discriminator, long oracleBuffer) implements SerDe {
 
     public static SetOracleBufferIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -2809,7 +2809,7 @@ public final class NtbundleProgram {
   public record SetOracleMaxAgeIxData(Discriminator discriminator, long oracleMaxAge) implements SerDe {
 
     public static SetOracleMaxAgeIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -2874,7 +2874,7 @@ public final class NtbundleProgram {
   public record SetOracleUpdateTimeLimitIxData(Discriminator discriminator, long oracleUpdateTimeLimit) implements SerDe {
 
     public static SetOracleUpdateTimeLimitIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -2943,7 +2943,7 @@ public final class NtbundleProgram {
   public record SetReferrerActiveIxData(Discriminator discriminator, boolean active) implements SerDe {
 
     public static SetReferrerActiveIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -3040,7 +3040,7 @@ public final class NtbundleProgram {
                                         long referrerMinDepositAmount) implements SerDe {
 
     public static SetReferrerConfigIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 25;
@@ -3154,7 +3154,7 @@ public final class NtbundleProgram {
                                               long customMfeeBps) implements SerDe {
 
     public static SetReferrerRateOverrideIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 17;
@@ -3281,7 +3281,7 @@ public final class NtbundleProgram {
                                          long customManagementFeeBps) implements SerDe {
 
     public static SetUserFeeOverrideIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 25;
@@ -3451,7 +3451,7 @@ public final class NtbundleProgram {
                                                       float customWithdrawalCurve) implements SerDe {
 
     public static SetUserWithdrawalTimingOverrideIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 37;
@@ -3558,7 +3558,7 @@ public final class NtbundleProgram {
                                                       long withdrawalRedemptionUnlockNextCycleTs) implements SerDe {
 
     public static SetWithdrawalRedemptionScheduleIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 32;
@@ -3677,7 +3677,7 @@ public final class NtbundleProgram {
   public record UpdateAllocationsIxData(Discriminator discriminator, long newAllocationBps) implements SerDe {
 
     public static UpdateAllocationsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 12;
@@ -3753,7 +3753,7 @@ public final class NtbundleProgram {
   public record UpdateOracleIxData(Discriminator discriminator, long newEquity) implements SerDe {
 
     public static UpdateOracleIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;

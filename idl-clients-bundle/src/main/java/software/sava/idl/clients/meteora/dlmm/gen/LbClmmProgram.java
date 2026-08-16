@@ -144,7 +144,7 @@ public final class LbClmmProgram {
   public record AddLiquidityIxData(Discriminator discriminator, LiquidityParameter liquidityParameter) implements SerDe {
 
     public static AddLiquidityIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int LIQUIDITY_PARAMETER_OFFSET = 8;
@@ -259,7 +259,7 @@ public final class LbClmmProgram {
   public record AddLiquidity2IxData(Discriminator discriminator, LiquidityParameter liquidityParameter, RemainingAccountsInfo remainingAccountsInfo) implements SerDe {
 
     public static AddLiquidity2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int LIQUIDITY_PARAMETER_OFFSET = 8;
@@ -382,7 +382,7 @@ public final class LbClmmProgram {
   public record AddLiquidityByStrategyIxData(Discriminator discriminator, LiquidityParameterByStrategy liquidityParameter) implements SerDe {
 
     public static AddLiquidityByStrategyIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 105;
@@ -499,7 +499,7 @@ public final class LbClmmProgram {
   public record AddLiquidityByStrategy2IxData(Discriminator discriminator, LiquidityParameterByStrategy liquidityParameter, RemainingAccountsInfo remainingAccountsInfo) implements SerDe {
 
     public static AddLiquidityByStrategy2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int LIQUIDITY_PARAMETER_OFFSET = 8;
@@ -607,7 +607,7 @@ public final class LbClmmProgram {
   public record AddLiquidityByStrategyOneSideIxData(Discriminator discriminator, LiquidityParameterByStrategyOneSide liquidityParameter) implements SerDe {
 
     public static AddLiquidityByStrategyOneSideIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 97;
@@ -729,7 +729,7 @@ public final class LbClmmProgram {
   public record AddLiquidityByWeightIxData(Discriminator discriminator, LiquidityParameterByWeight liquidityParameter) implements SerDe {
 
     public static AddLiquidityByWeightIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int LIQUIDITY_PARAMETER_OFFSET = 8;
@@ -844,7 +844,7 @@ public final class LbClmmProgram {
   public record AddLiquidityByWeight2IxData(Discriminator discriminator, LiquidityParameterByWeight liquidityParameter, RemainingAccountsInfo remainingAccountsInfo) implements SerDe {
 
     public static AddLiquidityByWeight2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int LIQUIDITY_PARAMETER_OFFSET = 8;
@@ -951,7 +951,7 @@ public final class LbClmmProgram {
   public record AddLiquidityOneSideIxData(Discriminator discriminator, LiquidityOneSideParameter liquidityParameter) implements SerDe {
 
     public static AddLiquidityOneSideIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int LIQUIDITY_PARAMETER_OFFSET = 8;
@@ -1055,7 +1055,7 @@ public final class LbClmmProgram {
   public record AddLiquidityOneSidePreciseIxData(Discriminator discriminator, AddLiquiditySingleSidePreciseParameter parameter) implements SerDe {
 
     public static AddLiquidityOneSidePreciseIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMETER_OFFSET = 8;
@@ -1154,7 +1154,7 @@ public final class LbClmmProgram {
   public record AddLiquidityOneSidePrecise2IxData(Discriminator discriminator, AddLiquiditySingleSidePreciseParameter2 liquidityParameter, RemainingAccountsInfo remainingAccountsInfo) implements SerDe {
 
     public static AddLiquidityOneSidePrecise2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int LIQUIDITY_PARAMETER_OFFSET = 8;
@@ -1278,7 +1278,7 @@ public final class LbClmmProgram {
   public record CancelLimitOrderIxData(Discriminator discriminator, int[] bins, RemainingAccountsInfo remainingAccountsInfo) implements SerDe {
 
     public static CancelLimitOrderIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BINS_OFFSET = 8;
@@ -1481,7 +1481,7 @@ public final class LbClmmProgram {
                                 RemainingAccountsInfo remainingAccountsInfo) implements SerDe {
 
     public static ClaimFee2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int MIN_BIN_ID_OFFSET = 8;
@@ -1592,7 +1592,7 @@ public final class LbClmmProgram {
   public record ClaimRewardIxData(Discriminator discriminator, long rewardIndex) implements SerDe {
 
     public static ClaimRewardIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -1715,7 +1715,7 @@ public final class LbClmmProgram {
                                    RemainingAccountsInfo remainingAccountsInfo) implements SerDe {
 
     public static ClaimReward2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int REWARD_INDEX_OFFSET = 8;
@@ -2158,7 +2158,7 @@ public final class LbClmmProgram {
   public record CreateOperatorAccountIxData(Discriminator discriminator, BigInteger permission) implements SerDe {
 
     public static CreateOperatorAccountIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 24;
@@ -2249,7 +2249,7 @@ public final class LbClmmProgram {
   public record DecreasePositionLengthIxData(Discriminator discriminator, int lengthToRemove, int side) implements SerDe {
 
     public static DecreasePositionLengthIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 11;
@@ -2315,7 +2315,7 @@ public final class LbClmmProgram {
   public record ForIdlTypeGenerationDoNotCallIxData(Discriminator discriminator, DummyIx ix) implements SerDe {
 
     public static ForIdlTypeGenerationDoNotCallIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 14;
@@ -2436,7 +2436,7 @@ public final class LbClmmProgram {
                                  RemainingAccountsInfo remainingAccountsInfo) implements SerDe {
 
     public static FundRewardIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int REWARD_INDEX_OFFSET = 8;
@@ -2535,7 +2535,7 @@ public final class LbClmmProgram {
   public record GoToABinIxData(Discriminator discriminator, int binId) implements SerDe {
 
     public static GoToABinIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 12;
@@ -2615,7 +2615,7 @@ public final class LbClmmProgram {
   public record IncreaseOracleLengthIxData(Discriminator discriminator, long lengthToAdd) implements SerDe {
 
     public static IncreaseOracleLengthIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -2710,7 +2710,7 @@ public final class LbClmmProgram {
   public record IncreasePositionLengthIxData(Discriminator discriminator, int lengthToAdd, int side) implements SerDe {
 
     public static IncreasePositionLengthIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 11;
@@ -2800,7 +2800,7 @@ public final class LbClmmProgram {
   public record IncreasePositionLength2IxData(Discriminator discriminator, int minimumUpperBinId) implements SerDe {
 
     public static IncreasePositionLength2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 12;
@@ -2873,7 +2873,7 @@ public final class LbClmmProgram {
   public record InitializeBinArrayIxData(Discriminator discriminator, long index) implements SerDe {
 
     public static InitializeBinArrayIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -3027,7 +3027,7 @@ public final class LbClmmProgram {
   public record InitializeCustomizablePermissionlessLbPairIxData(Discriminator discriminator, CustomizableParams params) implements SerDe {
 
     public static InitializeCustomizablePermissionlessLbPairIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -3151,7 +3151,7 @@ public final class LbClmmProgram {
   public record InitializeCustomizablePermissionlessLbPair2IxData(Discriminator discriminator, CustomizableParams params) implements SerDe {
 
     public static InitializeCustomizablePermissionlessLbPair2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -3270,7 +3270,7 @@ public final class LbClmmProgram {
   public record InitializeLbPairIxData(Discriminator discriminator, int activeId, int binStep) implements SerDe {
 
     public static InitializeLbPairIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 14;
@@ -3398,7 +3398,7 @@ public final class LbClmmProgram {
   public record InitializeLbPair2IxData(Discriminator discriminator, InitializeLbPair2Params params) implements SerDe {
 
     public static InitializeLbPair2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 108;
@@ -3528,7 +3528,7 @@ public final class LbClmmProgram {
   public record InitializePermissionLbPairIxData(Discriminator discriminator, InitPermissionPairIx ixData) implements SerDe {
 
     public static InitializePermissionLbPairIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 22;
@@ -3620,7 +3620,7 @@ public final class LbClmmProgram {
   public record InitializePositionIxData(Discriminator discriminator, int lowerBinId, int width) implements SerDe {
 
     public static InitializePositionIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -3714,7 +3714,7 @@ public final class LbClmmProgram {
   public record InitializePosition2IxData(Discriminator discriminator, int lowerBinId, int width) implements SerDe {
 
     public static InitializePosition2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -3848,7 +3848,7 @@ public final class LbClmmProgram {
                                                    long lockReleasePoint) implements SerDe {
 
     public static InitializePositionByOperatorIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 56;
@@ -3966,7 +3966,7 @@ public final class LbClmmProgram {
   public record InitializePositionPdaIxData(Discriminator discriminator, int lowerBinId, int width) implements SerDe {
 
     public static InitializePositionPdaIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -4048,7 +4048,7 @@ public final class LbClmmProgram {
   public record InitializePresetParameterIxData(Discriminator discriminator, InitPresetParametersIx ix) implements SerDe {
 
     public static InitializePresetParameterIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 33;
@@ -4173,7 +4173,7 @@ public final class LbClmmProgram {
                                        PublicKey funder) implements SerDe {
 
     public static InitializeRewardIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 56;
@@ -4338,7 +4338,7 @@ public final class LbClmmProgram {
   public record PlaceLimitOrderIxData(Discriminator discriminator, PlaceLimitOrderParams params, RemainingAccountsInfo remainingAccountsInfo) implements SerDe {
 
     public static PlaceLimitOrderIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -4465,7 +4465,7 @@ public final class LbClmmProgram {
   public record RebalanceLiquidityIxData(Discriminator discriminator, RebalanceLiquidityParams params, RemainingAccountsInfo remainingAccountsInfo) implements SerDe {
 
     public static RebalanceLiquidityIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -4671,7 +4671,7 @@ public final class LbClmmProgram {
   public record RemoveLiquidityIxData(Discriminator discriminator, BinLiquidityReduction[] binLiquidityRemoval) implements SerDe {
 
     public static RemoveLiquidityIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BIN_LIQUIDITY_REMOVAL_OFFSET = 8;
@@ -4790,7 +4790,7 @@ public final class LbClmmProgram {
   public record RemoveLiquidity2IxData(Discriminator discriminator, BinLiquidityReduction[] binLiquidityRemoval, RemainingAccountsInfo remainingAccountsInfo) implements SerDe {
 
     public static RemoveLiquidity2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BIN_LIQUIDITY_REMOVAL_OFFSET = 8;
@@ -4933,7 +4933,7 @@ public final class LbClmmProgram {
                                              int bpsToRemove) implements SerDe {
 
     public static RemoveLiquidityByRangeIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 18;
@@ -5088,7 +5088,7 @@ public final class LbClmmProgram {
                                               RemainingAccountsInfo remainingAccountsInfo) implements SerDe {
 
     public static RemoveLiquidityByRange2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int FROM_BIN_ID_OFFSET = 8;
@@ -5172,7 +5172,7 @@ public final class LbClmmProgram {
   public record SetActivationPointIxData(Discriminator discriminator, long activationPoint) implements SerDe {
 
     public static SetActivationPointIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -5244,7 +5244,7 @@ public final class LbClmmProgram {
   public record SetPairStatusIxData(Discriminator discriminator, int status) implements SerDe {
 
     public static SetPairStatusIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -5312,7 +5312,7 @@ public final class LbClmmProgram {
   public record SetPairStatusPermissionlessIxData(Discriminator discriminator, int status) implements SerDe {
 
     public static SetPairStatusPermissionlessIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -5388,7 +5388,7 @@ public final class LbClmmProgram {
   public record SetPermissionlessOperationBitsIxData(Discriminator discriminator, int bits) implements SerDe {
 
     public static SetPermissionlessOperationBitsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -5456,7 +5456,7 @@ public final class LbClmmProgram {
   public record SetPreActivationDurationIxData(Discriminator discriminator, long preActivationDuration) implements SerDe {
 
     public static SetPreActivationDurationIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -5521,7 +5521,7 @@ public final class LbClmmProgram {
   public record SetPreActivationSwapAddressIxData(Discriminator discriminator, PublicKey preActivationSwapAddress) implements SerDe {
 
     public static SetPreActivationSwapAddressIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 40;
@@ -5650,7 +5650,7 @@ public final class LbClmmProgram {
   public record SwapIxData(Discriminator discriminator, long amountIn, long minAmountOut) implements SerDe {
 
     public static SwapIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 24;
@@ -5801,7 +5801,7 @@ public final class LbClmmProgram {
                             RemainingAccountsInfo remainingAccountsInfo) implements SerDe {
 
     public static Swap2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int AMOUNT_IN_OFFSET = 8;
@@ -5937,7 +5937,7 @@ public final class LbClmmProgram {
   public record SwapExactOutIxData(Discriminator discriminator, long maxInAmount, long outAmount) implements SerDe {
 
     public static SwapExactOutIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 24;
@@ -6088,7 +6088,7 @@ public final class LbClmmProgram {
                                     RemainingAccountsInfo remainingAccountsInfo) implements SerDe {
 
     public static SwapExactOut2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int MAX_IN_AMOUNT_OFFSET = 8;
@@ -6242,7 +6242,7 @@ public final class LbClmmProgram {
                                           int maxPriceImpactBps) implements SerDe {
 
     public static SwapWithPriceImpactIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int AMOUNT_IN_OFFSET = 8;
@@ -6412,7 +6412,7 @@ public final class LbClmmProgram {
                                            RemainingAccountsInfo remainingAccountsInfo) implements SerDe {
 
     public static SwapWithPriceImpact2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int AMOUNT_IN_OFFSET = 8;
@@ -6509,7 +6509,7 @@ public final class LbClmmProgram {
   public record UpdateBaseFeeParametersIxData(Discriminator discriminator, BaseFeeParameter feeParameter) implements SerDe {
 
     public static UpdateBaseFeeParametersIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 13;
@@ -6585,7 +6585,7 @@ public final class LbClmmProgram {
   public record UpdateDynamicFeeParametersIxData(Discriminator discriminator, DynamicFeeParameter feeParameter) implements SerDe {
 
     public static UpdateDynamicFeeParametersIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 22;
@@ -6657,7 +6657,7 @@ public final class LbClmmProgram {
   public record UpdateFeesAndReward2IxData(Discriminator discriminator, int minBinId, int maxBinId) implements SerDe {
 
     public static UpdateFeesAndReward2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -6772,7 +6772,7 @@ public final class LbClmmProgram {
   public record UpdatePositionOperatorIxData(Discriminator discriminator, PublicKey operator) implements SerDe {
 
     public static UpdatePositionOperatorIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 40;
@@ -6863,7 +6863,7 @@ public final class LbClmmProgram {
   public record UpdateRewardDurationIxData(Discriminator discriminator, long rewardIndex, long newDuration) implements SerDe {
 
     public static UpdateRewardDurationIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 24;
@@ -6952,7 +6952,7 @@ public final class LbClmmProgram {
   public record UpdateRewardFunderIxData(Discriminator discriminator, long rewardIndex, PublicKey newFunder) implements SerDe {
 
     public static UpdateRewardFunderIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 48;
@@ -7061,7 +7061,7 @@ public final class LbClmmProgram {
   public record WithdrawIneligibleRewardIxData(Discriminator discriminator, long rewardIndex, RemainingAccountsInfo remainingAccountsInfo) implements SerDe {
 
     public static WithdrawIneligibleRewardIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int REWARD_INDEX_OFFSET = 8;
@@ -7189,7 +7189,7 @@ public final class LbClmmProgram {
                                           RemainingAccountsInfo remainingAccountsInfo) implements SerDe {
 
     public static WithdrawProtocolFeeIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int MAX_AMOUNT_X_OFFSET = 8;
@@ -7294,7 +7294,7 @@ public final class LbClmmProgram {
   public record ZapProtocolFeeIxData(Discriminator discriminator, long maxAmount, RemainingAccountsInfo remainingAccountsInfo) implements SerDe {
 
     public static ZapProtocolFeeIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int MAX_AMOUNT_OFFSET = 8;

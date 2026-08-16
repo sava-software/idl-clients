@@ -10,11 +10,9 @@ import software.sava.rpc.json.http.response.AccountInfo;
 
 import java.math.BigInteger;
 
-import java.util.Arrays;
 import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
@@ -105,9 +103,7 @@ public record PartialUnstaking(PublicKey _address,
     i += 8;
     final var buffers = new BigInteger[6];
     i += SerDeUtil.readU128Array(buffers, _data, i);
-    final int _memoLength = getInt32LE(_data, i);
-    i += 4;
-    final byte[] _memo = Arrays.copyOfRange(_data, i, i + _memoLength);
+    final byte[] _memo = SerDeUtil.readbyteVector(4, _data, i);
     final var memo = SerDeUtil.decodeString(_memo);
     return new PartialUnstaking(_address,
                                 discriminator,

@@ -66,7 +66,7 @@ public final class DovesProgram {
   public record InitializeIxData(Discriminator discriminator, byte[] pair, byte[] feedSigner) implements SerDe {
 
     public static InitializeIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 73;
@@ -163,7 +163,7 @@ public final class DovesProgram {
                                                    int channelId) implements SerDe {
 
     public static InitializePythLazerPriceFeedIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 45;
@@ -386,7 +386,7 @@ public final class DovesProgram {
                                               boolean raise) implements SerDe {
 
     public static UpdateManyWithPythLazerIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int MESSAGE_DATA_OFFSET = 8;
@@ -471,7 +471,7 @@ public final class DovesProgram {
   public record UpdateWithSignerIxData(Discriminator discriminator, UpdateMessage update, boolean raise) implements SerDe {
 
     public static UpdateWithSignerIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 91;

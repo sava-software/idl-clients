@@ -86,7 +86,7 @@ public final class AssociatedTokenProgram {
   public record CreateAssociatedTokenIxData(int discriminator) implements SerDe {
 
     public static CreateAssociatedTokenIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 1;
@@ -188,7 +188,7 @@ public final class AssociatedTokenProgram {
   public record CreateAssociatedTokenIdempotentIxData(int discriminator) implements SerDe {
 
     public static CreateAssociatedTokenIdempotentIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 1;
@@ -326,7 +326,7 @@ public final class AssociatedTokenProgram {
   public record RecoverNestedAssociatedTokenIxData(int discriminator) implements SerDe {
 
     public static RecoverNestedAssociatedTokenIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 1;

@@ -4,10 +4,7 @@ package software.sava.idl.clients.metaplex.token.metadata.gen.types;
 import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
-import java.util.Arrays;
-
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
-import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 
 /// @param sellerFeeBasisPoints: u16
@@ -36,21 +33,15 @@ public record Data(String name, byte[] _name,
       return null;
     }
     int i = _offset;
-    final int _nameLength = getInt32LE(_data, i);
-    i += 4;
-    final byte[] _name = Arrays.copyOfRange(_data, i, i + _nameLength);
+    final byte[] _name = SerDeUtil.readbyteVector(4, _data, i);
     final var name = SerDeUtil.decodeString(_name);
-    i += _name.length;
-    final int _symbolLength = getInt32LE(_data, i);
-    i += 4;
-    final byte[] _symbol = Arrays.copyOfRange(_data, i, i + _symbolLength);
+    i += 4 + _name.length;
+    final byte[] _symbol = SerDeUtil.readbyteVector(4, _data, i);
     final var symbol = SerDeUtil.decodeString(_symbol);
-    i += _symbol.length;
-    final int _uriLength = getInt32LE(_data, i);
-    i += 4;
-    final byte[] _uri = Arrays.copyOfRange(_data, i, i + _uriLength);
+    i += 4 + _symbol.length;
+    final byte[] _uri = SerDeUtil.readbyteVector(4, _data, i);
     final var uri = SerDeUtil.decodeString(_uri);
-    i += _uri.length;
+    i += 4 + _uri.length;
     final var sellerFeeBasisPoints = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final Creator[] creators;

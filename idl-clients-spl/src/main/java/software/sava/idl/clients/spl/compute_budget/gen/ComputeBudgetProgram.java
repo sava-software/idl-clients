@@ -39,7 +39,7 @@ public final class ComputeBudgetProgram {
                                    long additionalFee) implements SerDe {
 
     public static RequestUnitsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -98,7 +98,7 @@ public final class ComputeBudgetProgram {
   public record RequestHeapFrameIxData(int discriminator, long bytes) implements SerDe {
 
     public static RequestHeapFrameIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 5;
@@ -150,7 +150,7 @@ public final class ComputeBudgetProgram {
   public record SetComputeUnitLimitIxData(int discriminator, long units) implements SerDe {
 
     public static SetComputeUnitLimitIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 5;
@@ -202,7 +202,7 @@ public final class ComputeBudgetProgram {
   public record SetComputeUnitPriceIxData(int discriminator, long microLamports) implements SerDe {
 
     public static SetComputeUnitPriceIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -254,7 +254,7 @@ public final class ComputeBudgetProgram {
   public record SetLoadedAccountsDataSizeLimitIxData(int discriminator, long accountDataSizeLimit) implements SerDe {
 
     public static SetLoadedAccountsDataSizeLimitIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 5;

@@ -125,7 +125,7 @@ public final class VaultsProgram {
   public record InitBranchIxData(Discriminator discriminator, int vaultId, long branchId) implements SerDe {
 
     public static InitBranchIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 14;
@@ -242,7 +242,7 @@ public final class VaultsProgram {
   public record InitPositionIxData(Discriminator discriminator, int vaultId, long nextPositionId) implements SerDe {
 
     public static InitPositionIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 14;
@@ -329,7 +329,7 @@ public final class VaultsProgram {
   public record InitTickIxData(Discriminator discriminator, int vaultId, int tick) implements SerDe {
 
     public static InitTickIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 14;
@@ -419,7 +419,7 @@ public final class VaultsProgram {
   public record InitTickHasDebtArrayIxData(Discriminator discriminator, int vaultId, int index) implements SerDe {
 
     public static InitTickHasDebtArrayIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 11;
@@ -522,7 +522,7 @@ public final class VaultsProgram {
                                             long totalIds) implements SerDe {
 
     public static InitTickIdLiquidationIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 18;
@@ -605,7 +605,7 @@ public final class VaultsProgram {
   public record InitVaultAdminIxData(Discriminator discriminator, PublicKey liquidity, PublicKey authority) implements SerDe {
 
     public static InitVaultAdminIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 72;
@@ -716,7 +716,7 @@ public final class VaultsProgram {
   public record InitVaultConfigIxData(Discriminator discriminator, int vaultId, InitVaultConfigParams params) implements SerDe {
 
     public static InitVaultConfigIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 122;
@@ -814,7 +814,7 @@ public final class VaultsProgram {
   public record InitVaultStateIxData(Discriminator discriminator, int vaultId) implements SerDe {
 
     public static InitVaultStateIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 10;
@@ -1012,7 +1012,7 @@ public final class VaultsProgram {
                                 byte[] remainingAccountsIndices) implements SerDe {
 
     public static LiquidateIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int DEBT_AMT_OFFSET = 8;
@@ -1272,7 +1272,7 @@ public final class VaultsProgram {
                               byte[] remainingAccountsIndices) implements SerDe {
 
     public static OperateIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int NEW_COL_OFFSET = 8;
@@ -1790,7 +1790,7 @@ public final class VaultsProgram {
                                    BigInteger debtToken1MinMax) implements SerDe {
 
     public static RebalanceDexIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 72;
@@ -2238,7 +2238,7 @@ public final class VaultsProgram {
                                               BigInteger debtToken1MinMax) implements SerDe {
 
     public static RebalanceDexWithAmountsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int SUPPLY_AMOUNT_OFFSET = 9;
@@ -2453,7 +2453,7 @@ public final class VaultsProgram {
   public record RebalanceWithAmountsIxData(Discriminator discriminator, BigInteger supplyAmount, BigInteger borrowAmount) implements SerDe {
 
     public static RebalanceWithAmountsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int SUPPLY_AMOUNT_OFFSET = 9;
@@ -2531,7 +2531,7 @@ public final class VaultsProgram {
   public record UpdateAuthorityIxData(Discriminator discriminator, PublicKey newAuthority) implements SerDe {
 
     public static UpdateAuthorityIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 40;
@@ -2596,7 +2596,7 @@ public final class VaultsProgram {
   public record UpdateAuthsIxData(Discriminator discriminator, AddressBool[] authStatus) implements SerDe {
 
     public static UpdateAuthsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int AUTH_STATUS_OFFSET = 8;
@@ -2692,7 +2692,7 @@ public final class VaultsProgram {
   public record UpdateBorrowFeeIxData(Discriminator discriminator, int vaultId, int borrowFee) implements SerDe {
 
     public static UpdateBorrowFeeIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 11;
@@ -2793,7 +2793,7 @@ public final class VaultsProgram {
   public record UpdateBorrowRateMagnifierIxData(Discriminator discriminator, int vaultId, int borrowRateMagnifier) implements SerDe {
 
     public static UpdateBorrowRateMagnifierIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 12;
@@ -2897,7 +2897,7 @@ public final class VaultsProgram {
   public record UpdateCollateralFactorIxData(Discriminator discriminator, int vaultId, int collateralFactor) implements SerDe {
 
     public static UpdateCollateralFactorIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 12;
@@ -2998,7 +2998,7 @@ public final class VaultsProgram {
   public record UpdateCoreSettingsIxData(Discriminator discriminator, int vaultId, UpdateCoreSettingsParams params) implements SerDe {
 
     public static UpdateCoreSettingsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 25;
@@ -3086,7 +3086,7 @@ public final class VaultsProgram {
   public record UpdateExchangePricesIxData(Discriminator discriminator, int vaultId) implements SerDe {
 
     public static UpdateExchangePricesIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 10;
@@ -3185,7 +3185,7 @@ public final class VaultsProgram {
   public record UpdateLiquidationMaxLimitIxData(Discriminator discriminator, int vaultId, int liquidationMaxLimit) implements SerDe {
 
     public static UpdateLiquidationMaxLimitIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 12;
@@ -3289,7 +3289,7 @@ public final class VaultsProgram {
   public record UpdateLiquidationPenaltyIxData(Discriminator discriminator, int vaultId, int liquidationPenalty) implements SerDe {
 
     public static UpdateLiquidationPenaltyIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 12;
@@ -3393,7 +3393,7 @@ public final class VaultsProgram {
   public record UpdateLiquidationThresholdIxData(Discriminator discriminator, int vaultId, int liquidationThreshold) implements SerDe {
 
     public static UpdateLiquidationThresholdIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 12;
@@ -3476,7 +3476,7 @@ public final class VaultsProgram {
   public record UpdateLookupTableIxData(Discriminator discriminator, int vaultId, PublicKey lookupTable) implements SerDe {
 
     public static UpdateLookupTableIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 42;
@@ -3577,7 +3577,7 @@ public final class VaultsProgram {
   public record UpdateOracleIxData(Discriminator discriminator, int vaultId) implements SerDe {
 
     public static UpdateOracleIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 10;
@@ -3673,7 +3673,7 @@ public final class VaultsProgram {
   public record UpdateRebalancerIxData(Discriminator discriminator, int vaultId, PublicKey newRebalancer) implements SerDe {
 
     public static UpdateRebalancerIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 42;
@@ -3774,7 +3774,7 @@ public final class VaultsProgram {
   public record UpdateSupplyRateMagnifierIxData(Discriminator discriminator, int vaultId, int supplyRateMagnifier) implements SerDe {
 
     public static UpdateSupplyRateMagnifierIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 12;
@@ -3878,7 +3878,7 @@ public final class VaultsProgram {
   public record UpdateWithdrawGapIxData(Discriminator discriminator, int vaultId, int withdrawGap) implements SerDe {
 
     public static UpdateWithdrawGapIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 12;

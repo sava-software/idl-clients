@@ -9,7 +9,6 @@ import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.kamino.scope.gen.types.UpdateOracleMappingAndMetadataEntriesWithId;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -18,7 +17,6 @@ import static software.sava.core.accounts.meta.AccountMeta.createReadOnlySigner;
 import static software.sava.core.accounts.meta.AccountMeta.createWritableSigner;
 import static software.sava.core.accounts.meta.AccountMeta.createWrite;
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
-import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
@@ -82,7 +80,7 @@ public final class ScopeProgram {
   public record InitializeIxData(Discriminator discriminator, String feedName, byte[] _feedName) implements SerDe {
 
     public static InitializeIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int FEED_NAME_OFFSET = 8;
@@ -97,9 +95,7 @@ public final class ScopeProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final int _feedNameLength = getInt32LE(_data, i);
-      i += 4;
-      final byte[] _feedName = Arrays.copyOfRange(_data, i, i + _feedNameLength);
+      final byte[] _feedName = SerDeUtil.readbyteVector(4, _data, i);
       final var feedName = SerDeUtil.decodeString(_feedName);
       return new InitializeIxData(discriminator, feedName, feedName == null ? null : SerDeUtil.encodeString(feedName));
     }
@@ -162,7 +158,7 @@ public final class ScopeProgram {
   public record RefreshPriceListIxData(Discriminator discriminator, int[] tokens) implements SerDe {
 
     public static RefreshPriceListIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int TOKENS_OFFSET = 8;
@@ -267,7 +263,7 @@ public final class ScopeProgram {
   public record RefreshChainlinkPriceIxData(Discriminator discriminator, int token, byte[] serializedChainlinkReport) implements SerDe {
 
     public static RefreshChainlinkPriceIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int TOKEN_OFFSET = 8;
@@ -394,7 +390,7 @@ public final class ScopeProgram {
                                             int ed25519InstructionIndex) implements SerDe {
 
     public static RefreshPythLazerPriceIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int TOKENS_OFFSET = 8;
@@ -487,7 +483,7 @@ public final class ScopeProgram {
   public record UpdateMappingAndMetadataIxData(Discriminator discriminator, String feedName, byte[] _feedName, UpdateOracleMappingAndMetadataEntriesWithId[] updates) implements SerDe {
 
     public static UpdateMappingAndMetadataIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int FEED_NAME_OFFSET = 8;
@@ -502,11 +498,9 @@ public final class ScopeProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final int _feedNameLength = getInt32LE(_data, i);
-      i += 4;
-      final byte[] _feedName = Arrays.copyOfRange(_data, i, i + _feedNameLength);
+      final byte[] _feedName = SerDeUtil.readbyteVector(4, _data, i);
       final var feedName = SerDeUtil.decodeString(_feedName);
-      i += _feedName.length;
+      i += 4 + _feedName.length;
       final var updates = SerDeUtil.readVector(4, UpdateOracleMappingAndMetadataEntriesWithId.class, UpdateOracleMappingAndMetadataEntriesWithId::read, _data, i);
       return new UpdateMappingAndMetadataIxData(discriminator, feedName, feedName == null ? null : SerDeUtil.encodeString(feedName), updates);
     }
@@ -575,7 +569,7 @@ public final class ScopeProgram {
   public record ResetTwapIxData(Discriminator discriminator, long token, String feedName, byte[] _feedName) implements SerDe {
 
     public static ResetTwapIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int TOKEN_OFFSET = 8;
@@ -593,9 +587,7 @@ public final class ScopeProgram {
       int i = _offset + discriminator.length();
       final var token = getInt64LE(_data, i);
       i += 8;
-      final int _feedNameLength = getInt32LE(_data, i);
-      i += 4;
-      final byte[] _feedName = Arrays.copyOfRange(_data, i, i + _feedNameLength);
+      final byte[] _feedName = SerDeUtil.readbyteVector(4, _data, i);
       final var feedName = SerDeUtil.decodeString(_feedName);
       return new ResetTwapIxData(discriminator, token, feedName, feedName == null ? null : SerDeUtil.encodeString(feedName));
     }
@@ -654,7 +646,7 @@ public final class ScopeProgram {
   public record SetAdminCachedIxData(Discriminator discriminator, PublicKey newAdmin, String feedName, byte[] _feedName) implements SerDe {
 
     public static SetAdminCachedIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int NEW_ADMIN_OFFSET = 8;
@@ -672,9 +664,7 @@ public final class ScopeProgram {
       int i = _offset + discriminator.length();
       final var newAdmin = readPubKey(_data, i);
       i += 32;
-      final int _feedNameLength = getInt32LE(_data, i);
-      i += 4;
-      final byte[] _feedName = Arrays.copyOfRange(_data, i, i + _feedNameLength);
+      final byte[] _feedName = SerDeUtil.readbyteVector(4, _data, i);
       final var feedName = SerDeUtil.decodeString(_feedName);
       return new SetAdminCachedIxData(discriminator, newAdmin, feedName, feedName == null ? null : SerDeUtil.encodeString(feedName));
     }
@@ -729,7 +719,7 @@ public final class ScopeProgram {
   public record ApproveAdminCachedIxData(Discriminator discriminator, String feedName, byte[] _feedName) implements SerDe {
 
     public static ApproveAdminCachedIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int FEED_NAME_OFFSET = 8;
@@ -744,9 +734,7 @@ public final class ScopeProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final int _feedNameLength = getInt32LE(_data, i);
-      i += 4;
-      final byte[] _feedName = Arrays.copyOfRange(_data, i, i + _feedNameLength);
+      final byte[] _feedName = SerDeUtil.readbyteVector(4, _data, i);
       final var feedName = SerDeUtil.decodeString(_feedName);
       return new ApproveAdminCachedIxData(discriminator, feedName, feedName == null ? null : SerDeUtil.encodeString(feedName));
     }
@@ -838,7 +826,7 @@ public final class ScopeProgram {
                                     int[][] scopeChains) implements SerDe {
 
     public static CreateMintMapIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int SEED_PK_OFFSET = 8;
@@ -972,7 +960,7 @@ public final class ScopeProgram {
   public record ResumeChainlinkxPriceIxData(Discriminator discriminator, int token, String feedName, byte[] _feedName) implements SerDe {
 
     public static ResumeChainlinkxPriceIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int TOKEN_OFFSET = 8;
@@ -990,9 +978,7 @@ public final class ScopeProgram {
       int i = _offset + discriminator.length();
       final var token = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
-      final int _feedNameLength = getInt32LE(_data, i);
-      i += 4;
-      final byte[] _feedName = Arrays.copyOfRange(_data, i, i + _feedNameLength);
+      final byte[] _feedName = SerDeUtil.readbyteVector(4, _data, i);
       final var feedName = SerDeUtil.decodeString(_feedName);
       return new ResumeChainlinkxPriceIxData(discriminator, token, feedName, feedName == null ? null : SerDeUtil.encodeString(feedName));
     }
@@ -1070,7 +1056,7 @@ public final class ScopeProgram {
                                   boolean freeze) implements SerDe {
 
     public static FreezePriceIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int TOKEN_OFFSET = 8;
@@ -1091,11 +1077,9 @@ public final class ScopeProgram {
       int i = _offset + discriminator.length();
       final var token = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
-      final int _feedNameLength = getInt32LE(_data, i);
-      i += 4;
-      final byte[] _feedName = Arrays.copyOfRange(_data, i, i + _feedNameLength);
+      final byte[] _feedName = SerDeUtil.readbyteVector(4, _data, i);
       final var feedName = SerDeUtil.decodeString(_feedName);
-      i += _feedName.length;
+      i += 4 + _feedName.length;
       final var freeze = _data[i] == 1;
       return new FreezePriceIxData(discriminator, token, feedName, feedName == null ? null : SerDeUtil.encodeString(feedName), freeze);
     }
@@ -1156,7 +1140,7 @@ public final class ScopeProgram {
   public record SetEmergencyCouncilIxData(Discriminator discriminator, PublicKey newEmergencyCouncil, String feedName, byte[] _feedName) implements SerDe {
 
     public static SetEmergencyCouncilIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int NEW_EMERGENCY_COUNCIL_OFFSET = 8;
@@ -1174,9 +1158,7 @@ public final class ScopeProgram {
       int i = _offset + discriminator.length();
       final var newEmergencyCouncil = readPubKey(_data, i);
       i += 32;
-      final int _feedNameLength = getInt32LE(_data, i);
-      i += 4;
-      final byte[] _feedName = Arrays.copyOfRange(_data, i, i + _feedNameLength);
+      final byte[] _feedName = SerDeUtil.readbyteVector(4, _data, i);
       final var feedName = SerDeUtil.decodeString(_feedName);
       return new SetEmergencyCouncilIxData(discriminator, newEmergencyCouncil, feedName, feedName == null ? null : SerDeUtil.encodeString(feedName));
     }
@@ -1235,7 +1217,7 @@ public final class ScopeProgram {
   public record SetResumeAuthorityIxData(Discriminator discriminator, PublicKey newResumeAuthority, String feedName, byte[] _feedName) implements SerDe {
 
     public static SetResumeAuthorityIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int NEW_RESUME_AUTHORITY_OFFSET = 8;
@@ -1253,9 +1235,7 @@ public final class ScopeProgram {
       int i = _offset + discriminator.length();
       final var newResumeAuthority = readPubKey(_data, i);
       i += 32;
-      final int _feedNameLength = getInt32LE(_data, i);
-      i += 4;
-      final byte[] _feedName = Arrays.copyOfRange(_data, i, i + _feedNameLength);
+      final byte[] _feedName = SerDeUtil.readbyteVector(4, _data, i);
       final var feedName = SerDeUtil.decodeString(_feedName);
       return new SetResumeAuthorityIxData(discriminator, newResumeAuthority, feedName, feedName == null ? null : SerDeUtil.encodeString(feedName));
     }

@@ -8,11 +8,9 @@ import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
-import java.util.Arrays;
 import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
@@ -54,9 +52,7 @@ public record ShortUrl(PublicKey _address, Discriminator discriminator, PublicKe
     int i = _offset + discriminator.length();
     final var referrer = readPubKey(_data, i);
     i += 32;
-    final int _shortUrlLength = getInt32LE(_data, i);
-    i += 4;
-    final byte[] _shortUrl = Arrays.copyOfRange(_data, i, i + _shortUrlLength);
+    final byte[] _shortUrl = SerDeUtil.readbyteVector(4, _data, i);
     final var shortUrl = SerDeUtil.decodeString(_shortUrl);
     return new ShortUrl(_address, discriminator, referrer, shortUrl, shortUrl == null ? null : SerDeUtil.encodeString(shortUrl));
   }

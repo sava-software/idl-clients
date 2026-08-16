@@ -65,7 +65,7 @@ public final class PythSolanaReceiverProgram {
   public record InitializeIxData(Discriminator discriminator, Config initialConfig) implements SerDe {
 
     public static InitializeIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int INITIAL_CONFIG_OFFSET = 8;
@@ -127,7 +127,7 @@ public final class PythSolanaReceiverProgram {
   public record RequestGovernanceAuthorityTransferIxData(Discriminator discriminator, PublicKey targetGovernanceAuthority) implements SerDe {
 
     public static RequestGovernanceAuthorityTransferIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 40;
@@ -242,7 +242,7 @@ public final class PythSolanaReceiverProgram {
   public record SetDataSourcesIxData(Discriminator discriminator, DataSource[] validDataSources) implements SerDe {
 
     public static SetDataSourcesIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int VALID_DATA_SOURCES_OFFSET = 8;
@@ -307,7 +307,7 @@ public final class PythSolanaReceiverProgram {
   public record SetFeeIxData(Discriminator discriminator, long singleUpdateFeeInLamports) implements SerDe {
 
     public static SetFeeIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -372,7 +372,7 @@ public final class PythSolanaReceiverProgram {
   public record SetWormholeAddressIxData(Discriminator discriminator, PublicKey wormhole) implements SerDe {
 
     public static SetWormholeAddressIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 40;
@@ -440,7 +440,7 @@ public final class PythSolanaReceiverProgram {
   public record SetMinimumSignaturesIxData(Discriminator discriminator, int minimumSignatures) implements SerDe {
 
     public static SetMinimumSignaturesIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -564,7 +564,7 @@ public final class PythSolanaReceiverProgram {
   public record PostUpdateAtomicIxData(Discriminator discriminator, PostUpdateAtomicParams params) implements SerDe {
 
     public static PostUpdateAtomicIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -662,7 +662,7 @@ public final class PythSolanaReceiverProgram {
   public record PostUpdateIxData(Discriminator discriminator, PostUpdateParams params) implements SerDe {
 
     public static PostUpdateIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -764,7 +764,7 @@ public final class PythSolanaReceiverProgram {
   public record PostTwapUpdateIxData(Discriminator discriminator, PostTwapUpdateParams params) implements SerDe {
 
     public static PostTwapUpdateIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;

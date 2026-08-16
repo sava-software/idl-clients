@@ -10,10 +10,8 @@ import software.sava.rpc.json.http.response.AccountInfo;
 
 import java.math.BigInteger;
 
-import java.util.Arrays;
 import java.util.function.BiFunction;
 
-import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
@@ -108,11 +106,9 @@ public record Pool(PublicKey _address,
     }
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
-    final int _nameLength = getInt32LE(_data, i);
-    i += 4;
-    final byte[] _name = Arrays.copyOfRange(_data, i, i + _nameLength);
+    final byte[] _name = SerDeUtil.readbyteVector(4, _data, i);
     final var name = SerDeUtil.decodeString(_name);
-    i += _name.length;
+    i += 4 + _name.length;
     final var custodies = SerDeUtil.readPublicKeyVector(4, _data, i);
     i += SerDeUtil.lenVector(4, custodies);
     final var aumUsd = getUInt128LE(_data, i);

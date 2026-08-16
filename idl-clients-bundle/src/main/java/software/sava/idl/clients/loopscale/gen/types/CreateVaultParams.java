@@ -5,10 +5,7 @@ import software.sava.core.accounts.PublicKey;
 import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
-import java.util.Arrays;
-
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.encoding.ByteUtil.getInt32LE;
 
 public record CreateVaultParams(String tokenName, byte[] _tokenName,
                                 String tokenSymbol, byte[] _tokenSymbol,
@@ -35,21 +32,15 @@ public record CreateVaultParams(String tokenName, byte[] _tokenName,
       return null;
     }
     int i = _offset;
-    final int _tokenNameLength = getInt32LE(_data, i);
-    i += 4;
-    final byte[] _tokenName = Arrays.copyOfRange(_data, i, i + _tokenNameLength);
+    final byte[] _tokenName = SerDeUtil.readbyteVector(4, _data, i);
     final var tokenName = SerDeUtil.decodeString(_tokenName);
-    i += _tokenName.length;
-    final int _tokenSymbolLength = getInt32LE(_data, i);
-    i += 4;
-    final byte[] _tokenSymbol = Arrays.copyOfRange(_data, i, i + _tokenSymbolLength);
+    i += 4 + _tokenName.length;
+    final byte[] _tokenSymbol = SerDeUtil.readbyteVector(4, _data, i);
     final var tokenSymbol = SerDeUtil.decodeString(_tokenSymbol);
-    i += _tokenSymbol.length;
-    final int _tokenUriLength = getInt32LE(_data, i);
-    i += 4;
-    final byte[] _tokenUri = Arrays.copyOfRange(_data, i, i + _tokenUriLength);
+    i += 4 + _tokenSymbol.length;
+    final byte[] _tokenUri = SerDeUtil.readbyteVector(4, _data, i);
     final var tokenUri = SerDeUtil.decodeString(_tokenUri);
-    i += _tokenUri.length;
+    i += 4 + _tokenUri.length;
     final var manager = readPubKey(_data, i);
     i += 32;
     final var createStrategyParams = CreateStrategyParams.read(_data, i);

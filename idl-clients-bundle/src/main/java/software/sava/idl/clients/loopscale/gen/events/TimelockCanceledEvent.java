@@ -4,9 +4,6 @@ package software.sava.idl.clients.loopscale.gen.events;
 import software.sava.core.programs.Discriminator;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
-import java.util.Arrays;
-
-import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
@@ -26,9 +23,7 @@ public record TimelockCanceledEvent(Discriminator discriminator, String timelock
     }
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
-    final int _timelockLength = getInt32LE(_data, i);
-    i += 4;
-    final byte[] _timelock = Arrays.copyOfRange(_data, i, i + _timelockLength);
+    final byte[] _timelock = SerDeUtil.readbyteVector(4, _data, i);
     final var timelock = SerDeUtil.decodeString(_timelock);
     return new TimelockCanceledEvent(discriminator, timelock, timelock == null ? null : SerDeUtil.encodeString(timelock));
   }

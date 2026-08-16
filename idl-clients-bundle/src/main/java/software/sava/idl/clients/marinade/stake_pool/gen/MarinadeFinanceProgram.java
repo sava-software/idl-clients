@@ -101,7 +101,7 @@ public final class MarinadeFinanceProgram {
   public record InitializeIxData(Discriminator discriminator, InitializeData data) implements SerDe {
 
     public static InitializeIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 152;
@@ -165,7 +165,7 @@ public final class MarinadeFinanceProgram {
   public record ChangeAuthorityIxData(Discriminator discriminator, ChangeAuthorityData data) implements SerDe {
 
     public static ChangeAuthorityIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int DATA_OFFSET = 8;
@@ -260,7 +260,7 @@ public final class MarinadeFinanceProgram {
   public record AddValidatorIxData(Discriminator discriminator, long score) implements SerDe {
 
     public static AddValidatorIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 12;
@@ -344,7 +344,7 @@ public final class MarinadeFinanceProgram {
   public record RemoveValidatorIxData(Discriminator discriminator, long index, PublicKey validatorVote) implements SerDe {
 
     public static RemoveValidatorIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 44;
@@ -441,7 +441,7 @@ public final class MarinadeFinanceProgram {
                                         long score) implements SerDe {
 
     public static SetValidatorScoreIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 48;
@@ -519,7 +519,7 @@ public final class MarinadeFinanceProgram {
   public record ConfigValidatorSystemIxData(Discriminator discriminator, long extraRuns) implements SerDe {
 
     public static ConfigValidatorSystemIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 12;
@@ -625,7 +625,7 @@ public final class MarinadeFinanceProgram {
   public record DepositIxData(Discriminator discriminator, long lamports) implements SerDe {
 
     public static DepositIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -747,7 +747,7 @@ public final class MarinadeFinanceProgram {
   public record DepositStakeAccountIxData(Discriminator discriminator, long validatorIndex) implements SerDe {
 
     public static DepositStakeAccountIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 12;
@@ -847,7 +847,7 @@ public final class MarinadeFinanceProgram {
   public record LiquidUnstakeIxData(Discriminator discriminator, long msolAmount) implements SerDe {
 
     public static LiquidUnstakeIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -943,7 +943,7 @@ public final class MarinadeFinanceProgram {
   public record AddLiquidityIxData(Discriminator discriminator, long lamports) implements SerDe {
 
     public static AddLiquidityIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -1047,7 +1047,7 @@ public final class MarinadeFinanceProgram {
   public record RemoveLiquidityIxData(Discriminator discriminator, long tokens) implements SerDe {
 
     public static RemoveLiquidityIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -1112,7 +1112,7 @@ public final class MarinadeFinanceProgram {
   public record ConfigLpIxData(Discriminator discriminator, ConfigLpParams params) implements SerDe {
 
     public static ConfigLpIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -1174,7 +1174,7 @@ public final class MarinadeFinanceProgram {
   public record ConfigMarinadeIxData(Discriminator discriminator, ConfigMarinadeParams params) implements SerDe {
 
     public static ConfigMarinadeIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int PARAMS_OFFSET = 8;
@@ -1263,7 +1263,7 @@ public final class MarinadeFinanceProgram {
   public record OrderUnstakeIxData(Discriminator discriminator, long msolAmount) implements SerDe {
 
     public static OrderUnstakeIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -1424,7 +1424,7 @@ public final class MarinadeFinanceProgram {
   public record StakeReserveIxData(Discriminator discriminator, long validatorIndex) implements SerDe {
 
     public static StakeReserveIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 12;
@@ -1543,7 +1543,7 @@ public final class MarinadeFinanceProgram {
   public record UpdateActiveIxData(Discriminator discriminator, long stakeIndex, long validatorIndex) implements SerDe {
 
     public static UpdateActiveIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -1675,7 +1675,7 @@ public final class MarinadeFinanceProgram {
   public record UpdateDeactivatedIxData(Discriminator discriminator, long stakeIndex, long validatorIndex) implements SerDe {
 
     public static UpdateDeactivatedIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -1803,7 +1803,7 @@ public final class MarinadeFinanceProgram {
   public record DeactivateStakeIxData(Discriminator discriminator, long stakeIndex, long validatorIndex) implements SerDe {
 
     public static DeactivateStakeIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -1907,7 +1907,7 @@ public final class MarinadeFinanceProgram {
   public record EmergencyUnstakeIxData(Discriminator discriminator, long stakeIndex, long validatorIndex) implements SerDe {
 
     public static EmergencyUnstakeIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -2051,7 +2051,7 @@ public final class MarinadeFinanceProgram {
                                      long desiredUnstakeAmount) implements SerDe {
 
     public static PartialUnstakeIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 24;
@@ -2188,7 +2188,7 @@ public final class MarinadeFinanceProgram {
                                   long validatorIndex) implements SerDe {
 
     public static MergeStakesIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 20;
@@ -2313,7 +2313,7 @@ public final class MarinadeFinanceProgram {
   public record CreateCanonicalStakeIxData(Discriminator discriminator, long sourceStakeIndex, long validatorIndex) implements SerDe {
 
     public static CreateCanonicalStakeIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -2521,7 +2521,7 @@ public final class MarinadeFinanceProgram {
                                            PublicKey beneficiary) implements SerDe {
 
     public static WithdrawStakeAccountIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 56;
@@ -2620,7 +2620,7 @@ public final class MarinadeFinanceProgram {
   public record ReallocValidatorListIxData(Discriminator discriminator, long capacity) implements SerDe {
 
     public static ReallocValidatorListIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 12;
@@ -2700,7 +2700,7 @@ public final class MarinadeFinanceProgram {
   public record ReallocStakeListIxData(Discriminator discriminator, long capacity) implements SerDe {
 
     public static ReallocStakeListIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 12;
@@ -2768,7 +2768,7 @@ public final class MarinadeFinanceProgram {
   public record FinalizeDelinquentUpgradeIxData(Discriminator discriminator, long maxValidators) implements SerDe {
 
     public static FinalizeDelinquentUpgradeIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 12;

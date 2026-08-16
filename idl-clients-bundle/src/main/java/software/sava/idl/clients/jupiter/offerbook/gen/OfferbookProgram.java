@@ -335,7 +335,7 @@ public final class OfferbookProgram {
   public record CreateNftCollateralOfferIxData(Discriminator discriminator, NftCollateralOfferParams offerParams, NftCollateralAsset collateral) implements SerDe {
 
     public static CreateNftCollateralOfferIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int OFFER_PARAMS_OFFSET = 8;
@@ -462,7 +462,7 @@ public final class OfferbookProgram {
   public record CreateNftPrincipalOfferIxData(Discriminator discriminator, NftPrincipalOfferParams offerParams, NftCollateral collateral) implements SerDe {
 
     public static CreateNftPrincipalOfferIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int OFFER_PARAMS_OFFSET = 8;
@@ -592,7 +592,7 @@ public final class OfferbookProgram {
   public record CreateTokenCollateralOfferIxData(Discriminator discriminator, TokenCollateralOfferParams offerParams) implements SerDe {
 
     public static CreateTokenCollateralOfferIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 46;
@@ -720,7 +720,7 @@ public final class OfferbookProgram {
   public record CreateTokenPrincipalOfferIxData(Discriminator discriminator, TokenPrincipalOfferParams offerParams) implements SerDe {
 
     public static CreateTokenPrincipalOfferIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 46;
@@ -1246,7 +1246,7 @@ public final class OfferbookProgram {
   public record EscrowTokenDepositIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static EscrowTokenDepositIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -1338,7 +1338,7 @@ public final class OfferbookProgram {
   public record EscrowTokenWithdrawIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static EscrowTokenWithdrawIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -1538,7 +1538,7 @@ public final class OfferbookProgram {
   public record FillNonFungibleCollateralOfferIxData(Discriminator discriminator, FillNftCollateralOfferParams fillParams) implements SerDe {
 
     public static FillNonFungibleCollateralOfferIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -1668,7 +1668,7 @@ public final class OfferbookProgram {
   public record FillNonFungiblePrincipalOfferIxData(Discriminator discriminator, FillNftPrincipalOfferParams fillParams) implements SerDe {
 
     public static FillNonFungiblePrincipalOfferIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -1800,7 +1800,7 @@ public final class OfferbookProgram {
   public record FillTokenCollateralOfferIxData(Discriminator discriminator, FillTokenCollateralOfferParams fillParams) implements SerDe {
 
     public static FillTokenCollateralOfferIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 33;
@@ -1932,7 +1932,7 @@ public final class OfferbookProgram {
   public record FillTokenPrincipalOfferIxData(Discriminator discriminator, FillTokenPrincipalOfferParams fillParams) implements SerDe {
 
     public static FillTokenPrincipalOfferIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 33;
@@ -2213,7 +2213,7 @@ public final class OfferbookProgram {
   public record SetLoanExtendableIxData(Discriminator discriminator, boolean allow) implements SerDe {
 
     public static SetLoanExtendableIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -2278,7 +2278,7 @@ public final class OfferbookProgram {
   public record UpdateConfigIxData(Discriminator discriminator, UpdateConfigAction action) implements SerDe {
 
     public static UpdateConfigIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ACTION_OFFSET = 8;

@@ -15,7 +15,6 @@ import software.sava.idl.clients.spl.stake.gen.types.StakeAuthorize;
 import software.sava.idl.clients.spl.stake.gen.types.UnixTimestamp;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -76,7 +75,7 @@ public final class StakeProgram {
                                  Lockup arg1) implements SerDe {
 
     public static InitializeIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 116;
@@ -176,7 +175,7 @@ public final class StakeProgram {
                                 StakeAuthorize arg1) implements SerDe {
 
     public static AuthorizeIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 40;
@@ -268,7 +267,7 @@ public final class StakeProgram {
   public record DelegateStakeIxData(long discriminator) implements SerDe {
 
     public static DelegateStakeIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 4;
@@ -344,7 +343,7 @@ public final class StakeProgram {
   public record SplitIxData(long discriminator, long args) implements SerDe {
 
     public static SplitIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 12;
@@ -440,7 +439,7 @@ public final class StakeProgram {
   public record WithdrawIxData(long discriminator, long args) implements SerDe {
 
     public static WithdrawIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 12;
@@ -515,7 +514,7 @@ public final class StakeProgram {
   public record DeactivateIxData(long discriminator) implements SerDe {
 
     public static DeactivateIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 4;
@@ -602,7 +601,7 @@ public final class StakeProgram {
                                 PublicKey custodian) implements SerDe {
 
     public static SetLockupIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int DISCRIMINATOR_OFFSET = 0;
@@ -712,7 +711,7 @@ public final class StakeProgram {
   public record MergeIxData(long discriminator) implements SerDe {
 
     public static MergeIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 4;
@@ -816,7 +815,7 @@ public final class StakeProgram {
                                         PublicKey authorityOwner) implements SerDe {
 
     public static AuthorizeWithSeedIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int DISCRIMINATOR_OFFSET = 0;
@@ -848,11 +847,9 @@ public final class StakeProgram {
       i += 32;
       final var stakeAuthorize = StakeAuthorize.read(_data, i);
       i += stakeAuthorize.l();
-      final int _authoritySeedLength = Math.toIntExact(getInt64LE(_data, i));
-      i += 8;
-      final byte[] _authoritySeed = Arrays.copyOfRange(_data, i, i + _authoritySeedLength);
+      final byte[] _authoritySeed = SerDeUtil.readbyteVector(8, _data, i);
       final var authoritySeed = SerDeUtil.decodeString(_authoritySeed);
-      i += _authoritySeedLength;
+      i += 8 + _authoritySeed.length;
       final var authorityOwner = readPubKey(_data, i);
       return new AuthorizeWithSeedIxData(discriminator,
                                          newAuthorizedPubkey,
@@ -933,7 +930,7 @@ public final class StakeProgram {
   public record InitializeCheckedIxData(long discriminator) implements SerDe {
 
     public static InitializeCheckedIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 4;
@@ -1018,7 +1015,7 @@ public final class StakeProgram {
   public record AuthorizeCheckedIxData(long discriminator, StakeAuthorize stakeAuthorize) implements SerDe {
 
     public static AuthorizeCheckedIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 8;
@@ -1128,7 +1125,7 @@ public final class StakeProgram {
                                                PublicKey authorityOwner) implements SerDe {
 
     public static AuthorizeCheckedWithSeedIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int DISCRIMINATOR_OFFSET = 0;
@@ -1155,11 +1152,9 @@ public final class StakeProgram {
       i += 4;
       final var stakeAuthorize = StakeAuthorize.read(_data, i);
       i += stakeAuthorize.l();
-      final int _authoritySeedLength = Math.toIntExact(getInt64LE(_data, i));
-      i += 8;
-      final byte[] _authoritySeed = Arrays.copyOfRange(_data, i, i + _authoritySeedLength);
+      final byte[] _authoritySeed = SerDeUtil.readbyteVector(8, _data, i);
       final var authoritySeed = SerDeUtil.decodeString(_authoritySeed);
-      i += _authoritySeedLength;
+      i += 8 + _authoritySeed.length;
       final var authorityOwner = readPubKey(_data, i);
       return new AuthorizeCheckedWithSeedIxData(discriminator,
                                                 stakeAuthorize,
@@ -1248,7 +1243,7 @@ public final class StakeProgram {
                                        Epoch epoch) implements SerDe {
 
     public static SetLockupCheckedIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int DISCRIMINATOR_OFFSET = 0;
@@ -1310,7 +1305,7 @@ public final class StakeProgram {
   public record GetMinimumDelegationIxData(long discriminator) implements SerDe {
 
     public static GetMinimumDelegationIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 4;
@@ -1380,7 +1375,7 @@ public final class StakeProgram {
   public record DeactivateDelinquentIxData(long discriminator) implements SerDe {
 
     public static DeactivateDelinquentIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 4;
@@ -1456,7 +1451,7 @@ public final class StakeProgram {
   public record MoveStakeIxData(long discriminator, long args) implements SerDe {
 
     public static MoveStakeIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 12;
@@ -1539,7 +1534,7 @@ public final class StakeProgram {
   public record MoveLamportsIxData(long discriminator, long args) implements SerDe {
 
     public static MoveLamportsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 12;

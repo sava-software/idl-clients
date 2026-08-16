@@ -88,7 +88,7 @@ public final class SquadsMultisigProgram {
   public record ProgramConfigInitIxData(Discriminator discriminator, ProgramConfigInitArgs args) implements SerDe {
 
     public static ProgramConfigInitIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 80;
@@ -158,7 +158,7 @@ public final class SquadsMultisigProgram {
   public record ProgramConfigSetAuthorityIxData(Discriminator discriminator, ProgramConfigSetAuthorityArgs args) implements SerDe {
 
     public static ProgramConfigSetAuthorityIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 40;
@@ -228,7 +228,7 @@ public final class SquadsMultisigProgram {
   public record ProgramConfigSetMultisigCreationFeeIxData(Discriminator discriminator, ProgramConfigSetMultisigCreationFeeArgs args) implements SerDe {
 
     public static ProgramConfigSetMultisigCreationFeeIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -298,7 +298,7 @@ public final class SquadsMultisigProgram {
   public record ProgramConfigSetTreasuryIxData(Discriminator discriminator, ProgramConfigSetTreasuryArgs args) implements SerDe {
 
     public static ProgramConfigSetTreasuryIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 40;
@@ -421,7 +421,7 @@ public final class SquadsMultisigProgram {
   public record MultisigCreateV2IxData(Discriminator discriminator, MultisigCreateArgsV2 args) implements SerDe {
 
     public static MultisigCreateV2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ARGS_OFFSET = 8;
@@ -509,7 +509,7 @@ public final class SquadsMultisigProgram {
   public record MultisigAddMemberIxData(Discriminator discriminator, MultisigAddMemberArgs args) implements SerDe {
 
     public static MultisigAddMemberIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ARGS_OFFSET = 8;
@@ -597,7 +597,7 @@ public final class SquadsMultisigProgram {
   public record MultisigRemoveMemberIxData(Discriminator discriminator, MultisigRemoveMemberArgs args) implements SerDe {
 
     public static MultisigRemoveMemberIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ARGS_OFFSET = 8;
@@ -685,7 +685,7 @@ public final class SquadsMultisigProgram {
   public record MultisigSetTimeLockIxData(Discriminator discriminator, MultisigSetTimeLockArgs args) implements SerDe {
 
     public static MultisigSetTimeLockIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ARGS_OFFSET = 8;
@@ -773,7 +773,7 @@ public final class SquadsMultisigProgram {
   public record MultisigChangeThresholdIxData(Discriminator discriminator, MultisigChangeThresholdArgs args) implements SerDe {
 
     public static MultisigChangeThresholdIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ARGS_OFFSET = 8;
@@ -861,7 +861,7 @@ public final class SquadsMultisigProgram {
   public record MultisigSetConfigAuthorityIxData(Discriminator discriminator, MultisigSetConfigAuthorityArgs args) implements SerDe {
 
     public static MultisigSetConfigAuthorityIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ARGS_OFFSET = 8;
@@ -949,7 +949,7 @@ public final class SquadsMultisigProgram {
   public record MultisigSetRentCollectorIxData(Discriminator discriminator, MultisigSetRentCollectorArgs args) implements SerDe {
 
     public static MultisigSetRentCollectorIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ARGS_OFFSET = 8;
@@ -1033,7 +1033,7 @@ public final class SquadsMultisigProgram {
   public record MultisigAddSpendingLimitIxData(Discriminator discriminator, MultisigAddSpendingLimitArgs args) implements SerDe {
 
     public static MultisigAddSpendingLimitIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ARGS_OFFSET = 8;
@@ -1113,7 +1113,7 @@ public final class SquadsMultisigProgram {
   public record MultisigRemoveSpendingLimitIxData(Discriminator discriminator, MultisigRemoveSpendingLimitArgs args) implements SerDe {
 
     public static MultisigRemoveSpendingLimitIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ARGS_OFFSET = 8;
@@ -1197,7 +1197,7 @@ public final class SquadsMultisigProgram {
   public record ConfigTransactionCreateIxData(Discriminator discriminator, ConfigTransactionCreateArgs args) implements SerDe {
 
     public static ConfigTransactionCreateIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ARGS_OFFSET = 8;
@@ -1349,7 +1349,7 @@ public final class SquadsMultisigProgram {
   public record VaultTransactionCreateIxData(Discriminator discriminator, VaultTransactionCreateArgs args) implements SerDe {
 
     public static VaultTransactionCreateIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ARGS_OFFSET = 8;
@@ -1433,7 +1433,7 @@ public final class SquadsMultisigProgram {
   public record TransactionBufferCreateIxData(Discriminator discriminator, TransactionBufferCreateArgs args) implements SerDe {
 
     public static TransactionBufferCreateIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ARGS_OFFSET = 8;
@@ -1544,7 +1544,7 @@ public final class SquadsMultisigProgram {
   public record TransactionBufferExtendIxData(Discriminator discriminator, TransactionBufferExtendArgs args) implements SerDe {
 
     public static TransactionBufferExtendIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ARGS_OFFSET = 8;
@@ -1639,7 +1639,7 @@ public final class SquadsMultisigProgram {
   public record VaultTransactionCreateFromBufferIxData(Discriminator discriminator, VaultTransactionCreateArgs args) implements SerDe {
 
     public static VaultTransactionCreateFromBufferIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ARGS_OFFSET = 8;
@@ -1769,7 +1769,7 @@ public final class SquadsMultisigProgram {
   public record BatchCreateIxData(Discriminator discriminator, BatchCreateArgs args) implements SerDe {
 
     public static BatchCreateIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ARGS_OFFSET = 8;
@@ -1867,7 +1867,7 @@ public final class SquadsMultisigProgram {
   public record BatchAddTransactionIxData(Discriminator discriminator, BatchAddTransactionArgs args) implements SerDe {
 
     public static BatchAddTransactionIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ARGS_OFFSET = 8;
@@ -2004,7 +2004,7 @@ public final class SquadsMultisigProgram {
   public record ProposalCreateIxData(Discriminator discriminator, ProposalCreateArgs args) implements SerDe {
 
     public static ProposalCreateIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 17;
@@ -2116,7 +2116,7 @@ public final class SquadsMultisigProgram {
   public record ProposalApproveIxData(Discriminator discriminator, ProposalVoteArgs args) implements SerDe {
 
     public static ProposalApproveIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ARGS_OFFSET = 8;
@@ -2191,7 +2191,7 @@ public final class SquadsMultisigProgram {
   public record ProposalRejectIxData(Discriminator discriminator, ProposalVoteArgs args) implements SerDe {
 
     public static ProposalRejectIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ARGS_OFFSET = 8;
@@ -2266,7 +2266,7 @@ public final class SquadsMultisigProgram {
   public record ProposalCancelIxData(Discriminator discriminator, ProposalVoteArgs args) implements SerDe {
 
     public static ProposalCancelIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ARGS_OFFSET = 8;
@@ -2360,7 +2360,7 @@ public final class SquadsMultisigProgram {
   public record ProposalCancelV2IxData(Discriminator discriminator, ProposalVoteArgs args) implements SerDe {
 
     public static ProposalCancelV2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ARGS_OFFSET = 8;
@@ -2480,7 +2480,7 @@ public final class SquadsMultisigProgram {
   public record SpendingLimitUseIxData(Discriminator discriminator, SpendingLimitUseArgs args) implements SerDe {
 
     public static SpendingLimitUseIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ARGS_OFFSET = 8;

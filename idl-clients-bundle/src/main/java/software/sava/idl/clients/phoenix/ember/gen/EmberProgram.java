@@ -158,7 +158,7 @@ public final class EmberProgram {
   public record DepositIxData(Discriminator discriminator, DepositParams depositParams) implements SerDe {
 
     public static DepositIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -262,7 +262,7 @@ public final class EmberProgram {
   public record WithdrawIxData(Discriminator discriminator, WithdrawParams withdrawParams) implements SerDe {
 
     public static WithdrawIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;

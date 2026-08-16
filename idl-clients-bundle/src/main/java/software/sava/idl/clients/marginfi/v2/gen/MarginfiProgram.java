@@ -133,7 +133,7 @@ public final class MarginfiProgram {
   public record ConfigGroupFeeIxData(Discriminator discriminator, boolean enableProgramFee) implements SerDe {
 
     public static ConfigGroupFeeIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -227,7 +227,7 @@ public final class MarginfiProgram {
   public record ConfigureBankRateLimitsIxData(Discriminator discriminator, OptionalLong hourlyMaxOutflow, OptionalLong dailyMaxOutflow) implements SerDe {
 
     public static ConfigureBankRateLimitsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int HOURLY_MAX_OUTFLOW_OFFSET = 9;
@@ -314,7 +314,7 @@ public final class MarginfiProgram {
   public record ConfigureDeleverageWithdrawalLimitIxData(Discriminator discriminator, long limit) implements SerDe {
 
     public static ConfigureDeleverageWithdrawalLimitIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 12;
@@ -404,7 +404,7 @@ public final class MarginfiProgram {
   public record ConfigureGroupRateLimitsIxData(Discriminator discriminator, OptionalLong hourlyMaxOutflowUsd, OptionalLong dailyMaxOutflowUsd) implements SerDe {
 
     public static ConfigureGroupRateLimitsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int HOURLY_MAX_OUTFLOW_USD_OFFSET = 9;
@@ -648,7 +648,7 @@ public final class MarginfiProgram {
   public record DriftClaimBadDebtIxData(Discriminator discriminator, long amount, byte[][] proof) implements SerDe {
 
     public static DriftClaimBadDebtIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int AMOUNT_OFFSET = 8;
@@ -809,7 +809,7 @@ public final class MarginfiProgram {
   public record DriftDepositIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static DriftDepositIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -1072,7 +1072,7 @@ public final class MarginfiProgram {
   public record DriftInitUserIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static DriftInitUserIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -1292,7 +1292,7 @@ public final class MarginfiProgram {
   public record DriftWithdrawIxData(Discriminator discriminator, long amount, Boolean withdrawAll) implements SerDe {
 
     public static DriftWithdrawIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int AMOUNT_OFFSET = 8;
@@ -1453,7 +1453,7 @@ public final class MarginfiProgram {
                                          PublicKey pauseDelegateAdmin) implements SerDe {
 
     public static EditGlobalFeeStateIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ADMIN_OFFSET = 9;
@@ -1640,7 +1640,7 @@ public final class MarginfiProgram {
   public record EditStakedSettingsIxData(Discriminator discriminator, StakedSettingsEditConfig settings) implements SerDe {
 
     public static EditStakedSettingsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int SETTINGS_OFFSET = 8;
@@ -1964,7 +1964,7 @@ public final class MarginfiProgram {
                                          WrappedI80F48 orderExecutionMaxFee) implements SerDe {
 
     public static InitGlobalFeeStateIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 148;
@@ -2140,7 +2140,7 @@ public final class MarginfiProgram {
   public record InitStakedSettingsIxData(Discriminator discriminator, StakedSettingsConfig settings) implements SerDe {
 
     public static InitStakedSettingsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 91;
@@ -2313,7 +2313,7 @@ public final class MarginfiProgram {
   public record JuplendDepositIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static JuplendDepositIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -2488,7 +2488,7 @@ public final class MarginfiProgram {
   public record JuplendInitPositionIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static JuplendInitPositionIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -2696,7 +2696,7 @@ public final class MarginfiProgram {
   public record JuplendWithdrawIxData(Discriminator discriminator, long amount, Boolean withdrawAll) implements SerDe {
 
     public static JuplendWithdrawIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int AMOUNT_OFFSET = 8;
@@ -2900,7 +2900,7 @@ public final class MarginfiProgram {
   public record KaminoDepositIxData(Discriminator discriminator, long amount, Boolean refreshReserve) implements SerDe {
 
     public static KaminoDepositIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int AMOUNT_OFFSET = 8;
@@ -3053,7 +3053,7 @@ public final class MarginfiProgram {
   public record KaminoHarvestRewardIxData(Discriminator discriminator, long rewardIndex) implements SerDe {
 
     public static KaminoHarvestRewardIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -3256,7 +3256,7 @@ public final class MarginfiProgram {
   public record KaminoInitObligationIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static KaminoInitObligationIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -3471,7 +3471,7 @@ public final class MarginfiProgram {
   public record KaminoWithdrawIxData(Discriminator discriminator, long amount, OptionalInt flags) implements SerDe {
 
     public static KaminoWithdrawIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int AMOUNT_OFFSET = 8;
@@ -3586,7 +3586,7 @@ public final class MarginfiProgram {
   public record LendingAccountBorrowIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static LendingAccountBorrowIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -3732,7 +3732,7 @@ public final class MarginfiProgram {
   public record LendingAccountDepositIxData(Discriminator discriminator, long amount, Boolean depositUpToLimit) implements SerDe {
 
     public static LendingAccountDepositIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int AMOUNT_OFFSET = 8;
@@ -3915,7 +3915,7 @@ public final class MarginfiProgram {
                                               int liquidatorAccounts) implements SerDe {
 
     public static LendingAccountLiquidateIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 18;
@@ -4079,7 +4079,7 @@ public final class MarginfiProgram {
   public record LendingAccountRepayIxData(Discriminator discriminator, long amount, Boolean repayAll) implements SerDe {
 
     public static LendingAccountRepayIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int AMOUNT_OFFSET = 8;
@@ -4168,7 +4168,7 @@ public final class MarginfiProgram {
   public record LendingAccountStartFlashloanIxData(Discriminator discriminator, long endIndex) implements SerDe {
 
     public static LendingAccountStartFlashloanIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -4293,7 +4293,7 @@ public final class MarginfiProgram {
   public record LendingAccountWithdrawIxData(Discriminator discriminator, long amount, Boolean withdrawAll) implements SerDe {
 
     public static LendingAccountWithdrawIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int AMOUNT_OFFSET = 8;
@@ -4457,7 +4457,7 @@ public final class MarginfiProgram {
   public record LendingPoolAddBankIxData(Discriminator discriminator, BankConfigCompact bankConfig) implements SerDe {
 
     public static LendingPoolAddBankIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 239;
@@ -4613,7 +4613,7 @@ public final class MarginfiProgram {
   public record LendingPoolAddBankDriftIxData(Discriminator discriminator, DriftConfigCompact bankConfig, long bankSeed) implements SerDe {
 
     public static LendingPoolAddBankDriftIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 106;
@@ -4784,7 +4784,7 @@ public final class MarginfiProgram {
   public record LendingPoolAddBankJuplendIxData(Discriminator discriminator, JuplendConfigCompact bankConfig, long bankSeed) implements SerDe {
 
     public static LendingPoolAddBankJuplendIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 105;
@@ -4950,7 +4950,7 @@ public final class MarginfiProgram {
   public record LendingPoolAddBankKaminoIxData(Discriminator discriminator, KaminoConfigCompact bankConfig, long bankSeed) implements SerDe {
 
     public static LendingPoolAddBankKaminoIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 106;
@@ -5110,7 +5110,7 @@ public final class MarginfiProgram {
   public record LendingPoolAddBankPermissionlessIxData(Discriminator discriminator, long bankSeed) implements SerDe {
 
     public static LendingPoolAddBankPermissionlessIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -5263,7 +5263,7 @@ public final class MarginfiProgram {
   public record LendingPoolAddBankSolendIxData(Discriminator discriminator, SolendConfigCompact bankConfig, long bankSeed) implements SerDe {
 
     public static LendingPoolAddBankSolendIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 106;
@@ -5404,7 +5404,7 @@ public final class MarginfiProgram {
   public record LendingPoolAddBankWithSeedIxData(Discriminator discriminator, BankConfigCompact bankConfig, long bankSeed) implements SerDe {
 
     public static LendingPoolAddBankWithSeedIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 247;
@@ -5495,7 +5495,7 @@ public final class MarginfiProgram {
   public record LendingPoolBackfillBankIsT22FlagIxData(Discriminator discriminator, OptionalLong bankSeed) implements SerDe {
 
     public static LendingPoolBackfillBankIsT22FlagIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BANK_SEED_OFFSET = 9;
@@ -5661,7 +5661,7 @@ public final class MarginfiProgram {
   public record LendingPoolCloneBankIxData(Discriminator discriminator, long bankSeed) implements SerDe {
 
     public static LendingPoolCloneBankIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -5882,7 +5882,7 @@ public final class MarginfiProgram {
   public record LendingPoolConfigureBankIxData(Discriminator discriminator, BankConfigOpt bankConfigOpt) implements SerDe {
 
     public static LendingPoolConfigureBankIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BANK_CONFIG_OPT_OFFSET = 8;
@@ -5961,7 +5961,7 @@ public final class MarginfiProgram {
   public record LendingPoolConfigureBankEmodeIxData(Discriminator discriminator, int emodeTag, EmodeEntry[] entries) implements SerDe {
 
     public static LendingPoolConfigureBankEmodeIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 410;
@@ -6045,7 +6045,7 @@ public final class MarginfiProgram {
   public record LendingPoolConfigureBankInterestOnlyIxData(Discriminator discriminator, InterestRateConfigOpt interestRateConfig) implements SerDe {
 
     public static LendingPoolConfigureBankInterestOnlyIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int INTEREST_RATE_CONFIG_OFFSET = 8;
@@ -6146,7 +6146,7 @@ public final class MarginfiProgram {
                                                          OptionalLong totalAssetValueInitLimit) implements SerDe {
 
     public static LendingPoolConfigureBankLimitsOnlyIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int DEPOSIT_LIMIT_OFFSET = 9;
@@ -6251,7 +6251,7 @@ public final class MarginfiProgram {
   public record LendingPoolConfigureBankOracleIxData(Discriminator discriminator, int setup, PublicKey oracle) implements SerDe {
 
     public static LendingPoolConfigureBankOracleIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 41;
@@ -6357,7 +6357,7 @@ public final class MarginfiProgram {
   public record LendingPoolEmissionsDepositIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static LendingPoolEmissionsDepositIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -6569,7 +6569,7 @@ public final class MarginfiProgram {
   public record LendingPoolSetFixedOraclePriceIxData(Discriminator discriminator, WrappedI80F48 price) implements SerDe {
 
     public static LendingPoolSetFixedOraclePriceIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 24;
@@ -6703,7 +6703,7 @@ public final class MarginfiProgram {
   public record LendingPoolWithdrawFeesIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static LendingPoolWithdrawFeesIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -6793,7 +6793,7 @@ public final class MarginfiProgram {
   public record LendingPoolWithdrawFeesPermissionlessIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static LendingPoolWithdrawFeesPermissionlessIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -6887,7 +6887,7 @@ public final class MarginfiProgram {
   public record LendingPoolWithdrawInsuranceIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static LendingPoolWithdrawInsuranceIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -7310,7 +7310,7 @@ public final class MarginfiProgram {
   public record MarginfiAccountInitializePdaIxData(Discriminator discriminator, int accountIndex, OptionalInt thirdPartyId) implements SerDe {
 
     public static MarginfiAccountInitializePdaIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ACCOUNT_INDEX_OFFSET = 8;
@@ -7473,7 +7473,7 @@ public final class MarginfiProgram {
   public record MarginfiAccountPlaceOrderIxData(Discriminator discriminator, PublicKey[] bankKeys, OrderTrigger trigger) implements SerDe {
 
     public static MarginfiAccountPlaceOrderIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BANK_KEYS_OFFSET = 8;
@@ -7551,7 +7551,7 @@ public final class MarginfiProgram {
   public record MarginfiAccountSetFreezeIxData(Discriminator discriminator, boolean frozen) implements SerDe {
 
     public static MarginfiAccountSetFreezeIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 9;
@@ -7643,7 +7643,7 @@ public final class MarginfiProgram {
   public record MarginfiAccountSetKeeperCloseFlagsIxData(Discriminator discriminator, PublicKey[] bankKeysOpt) implements SerDe {
 
     public static MarginfiAccountSetKeeperCloseFlagsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BANK_KEYS_OPT_OFFSET = 9;
@@ -7943,7 +7943,7 @@ public final class MarginfiProgram {
                                              WrappedI80F48 emodeMaxMaintLeverage) implements SerDe {
 
     public static MarginfiGroupConfigureIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int NEW_ADMIN_OFFSET = 9;
@@ -8483,7 +8483,7 @@ public final class MarginfiProgram {
   public record SolendDepositIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static SolendDepositIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -8658,7 +8658,7 @@ public final class MarginfiProgram {
   public record SolendInitObligationIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static SolendInitObligationIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -8840,7 +8840,7 @@ public final class MarginfiProgram {
   public record SolendWithdrawIxData(Discriminator discriminator, long amount, Boolean withdrawAll) implements SerDe {
 
     public static SolendWithdrawIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int AMOUNT_OFFSET = 8;
@@ -9047,7 +9047,7 @@ public final class MarginfiProgram {
   public record SuperAdminDepositIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static SuperAdminDepositIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -9144,7 +9144,7 @@ public final class MarginfiProgram {
   public record SuperAdminWithdrawIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static SuperAdminWithdrawIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -9362,7 +9362,7 @@ public final class MarginfiProgram {
   public record TransferToNewAccountPdaIxData(Discriminator discriminator, int accountIndex, OptionalInt thirdPartyId) implements SerDe {
 
     public static TransferToNewAccountPdaIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ACCOUNT_INDEX_OFFSET = 8;
@@ -9482,7 +9482,7 @@ public final class MarginfiProgram {
                                                   long eventEndSlot) implements SerDe {
 
     public static UpdateDeleverageWithdrawalsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 36;
@@ -9627,7 +9627,7 @@ public final class MarginfiProgram {
                                              long eventEndSlot) implements SerDe {
 
     public static UpdateGroupRateLimiterIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int OUTFLOW_USD_OFFSET = 9;
@@ -9771,7 +9771,7 @@ public final class MarginfiProgram {
   public record WriteBankMetadataIxData(Discriminator discriminator, byte[] ticker, byte[] description) implements SerDe {
 
     public static WriteBankMetadataIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int TICKER_OFFSET = 9;
@@ -9919,7 +9919,7 @@ public final class MarginfiProgram {
                                                byte[] description) implements SerDe {
 
     public static WriteBankMetadataPreInitIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BANK_SEED_OFFSET = 8;

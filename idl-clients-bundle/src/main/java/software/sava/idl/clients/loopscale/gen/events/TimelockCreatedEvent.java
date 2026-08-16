@@ -5,9 +5,6 @@ import software.sava.core.programs.Discriminator;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.loopscale.gen.types.TimelockUpdateParams;
 
-import java.util.Arrays;
-
-import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
@@ -44,16 +41,12 @@ public record TimelockCreatedEvent(Discriminator discriminator,
     }
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
-    final int _timelockAddressLength = getInt32LE(_data, i);
-    i += 4;
-    final byte[] _timelockAddress = Arrays.copyOfRange(_data, i, i + _timelockAddressLength);
+    final byte[] _timelockAddress = SerDeUtil.readbyteVector(4, _data, i);
     final var timelockAddress = SerDeUtil.decodeString(_timelockAddress);
-    i += _timelockAddress.length;
-    final int _vaultAddressLength = getInt32LE(_data, i);
-    i += 4;
-    final byte[] _vaultAddress = Arrays.copyOfRange(_data, i, i + _vaultAddressLength);
+    i += 4 + _timelockAddress.length;
+    final byte[] _vaultAddress = SerDeUtil.readbyteVector(4, _data, i);
     final var vaultAddress = SerDeUtil.decodeString(_vaultAddress);
-    i += _vaultAddress.length;
+    i += 4 + _vaultAddress.length;
     final var timelockParams = TimelockUpdateParams.read(_data, i);
     i += timelockParams.l();
     final var timelockInitTimestamp = getInt64LE(_data, i);

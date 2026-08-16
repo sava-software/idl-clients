@@ -4,8 +4,6 @@ package software.sava.idl.clients.spl.token_2022.gen.types;
 import software.sava.idl.clients.core.gen.RustEnum;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
-import java.util.Arrays;
-
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 
   /// Fields in the metadata account, used for updating.
@@ -69,9 +67,7 @@ public sealed interface TokenMetadataField extends RustEnum permits
 
     public static key read(final byte[] _data, final int _offset) {
       int i = _offset;
-      final int _valLength = getInt32LE(_data, i);
-      i += 4;
-      final byte[] _val = Arrays.copyOfRange(_data, i, i + _valLength);
+      final byte[] _val = SerDeUtil.readbyteVector(4, _data, i);
       final var val = SerDeUtil.decodeString(_val);
       return new key(_val, val);
     }

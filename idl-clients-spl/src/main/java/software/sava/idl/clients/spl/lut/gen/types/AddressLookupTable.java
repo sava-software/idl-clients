@@ -120,7 +120,7 @@ public record AddressLookupTable(PublicKey _address,
     i += 2;
     final int _addressesCount = (_data.length - i) / 32;
     final var addresses = new PublicKey[_addressesCount];
-    for (int _i = 0; i < _data.length; ++_i) {
+    for (int _i = 0; _i < _addressesCount; ++_i) {
       final var _addressesItem = readPubKey(_data, i);
       i += 32;
       addresses[_i] = _addressesItem;

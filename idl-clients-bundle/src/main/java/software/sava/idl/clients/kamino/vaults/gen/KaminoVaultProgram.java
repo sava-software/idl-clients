@@ -11,7 +11,6 @@ import software.sava.idl.clients.kamino.vaults.gen.types.UpdateGlobalConfigMode;
 import software.sava.idl.clients.kamino.vaults.gen.types.UpdateReserveWhitelistMode;
 import software.sava.idl.clients.kamino.vaults.gen.types.VaultConfigField;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Objects.requireNonNullElse;
@@ -20,7 +19,6 @@ import static software.sava.core.accounts.meta.AccountMeta.createRead;
 import static software.sava.core.accounts.meta.AccountMeta.createReadOnlySigner;
 import static software.sava.core.accounts.meta.AccountMeta.createWritableSigner;
 import static software.sava.core.accounts.meta.AccountMeta.createWrite;
-import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
@@ -182,7 +180,7 @@ public final class KaminoVaultProgram {
   public record UpdateReserveAllocationIxData(Discriminator discriminator, long weight, long cap) implements SerDe {
 
     public static UpdateReserveAllocationIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 24;
@@ -327,7 +325,7 @@ public final class KaminoVaultProgram {
                                                 long ctokenAllocationCap) implements SerDe {
 
     public static UpdateReserveAllocationV2IxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 32;
@@ -449,7 +447,7 @@ public final class KaminoVaultProgram {
   public record DepositIxData(Discriminator discriminator, long maxAmount) implements SerDe {
 
     public static DepositIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -568,7 +566,7 @@ public final class KaminoVaultProgram {
   public record DepositWithMinSharesOutIxData(Discriminator discriminator, long maxAmount, long minSharesOut) implements SerDe {
 
     public static DepositWithMinSharesOutIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 24;
@@ -685,7 +683,7 @@ public final class KaminoVaultProgram {
   public record BuyIxData(Discriminator discriminator, long maxAmount) implements SerDe {
 
     public static BuyIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -804,7 +802,7 @@ public final class KaminoVaultProgram {
   public record BuyWithMinSharesOutIxData(Discriminator discriminator, long maxAmount, long minSharesOut) implements SerDe {
 
     public static BuyWithMinSharesOutIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 24;
@@ -969,7 +967,7 @@ public final class KaminoVaultProgram {
   public record WithdrawIxData(Discriminator discriminator, long sharesAmount) implements SerDe {
 
     public static WithdrawIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -1129,7 +1127,7 @@ public final class KaminoVaultProgram {
   public record SellIxData(Discriminator discriminator, long sharesAmount) implements SerDe {
 
     public static SellIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -1362,7 +1360,7 @@ public final class KaminoVaultProgram {
   public record InvestWithMaxAmountIxData(Discriminator discriminator, long maxAmount) implements SerDe {
 
     public static InvestWithMaxAmountIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -1438,7 +1436,7 @@ public final class KaminoVaultProgram {
   public record UpdateVaultConfigIxData(Discriminator discriminator, VaultConfigField entry, byte[] data) implements SerDe {
 
     public static UpdateVaultConfigIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int ENTRY_OFFSET = 8;
@@ -1619,7 +1617,7 @@ public final class KaminoVaultProgram {
   public record GiveUpPendingFeesIxData(Discriminator discriminator, long maxAmountToGiveUp) implements SerDe {
 
     public static GiveUpPendingFeesIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -1726,7 +1724,7 @@ public final class KaminoVaultProgram {
                                                String uri, byte[] _uri) implements SerDe {
 
     public static InitializeSharesMetadataIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int NAME_OFFSET = 8;
@@ -1744,19 +1742,13 @@ public final class KaminoVaultProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final int _nameLength = getInt32LE(_data, i);
-      i += 4;
-      final byte[] _name = Arrays.copyOfRange(_data, i, i + _nameLength);
+      final byte[] _name = SerDeUtil.readbyteVector(4, _data, i);
       final var name = SerDeUtil.decodeString(_name);
-      i += _name.length;
-      final int _symbolLength = getInt32LE(_data, i);
-      i += 4;
-      final byte[] _symbol = Arrays.copyOfRange(_data, i, i + _symbolLength);
+      i += 4 + _name.length;
+      final byte[] _symbol = SerDeUtil.readbyteVector(4, _data, i);
       final var symbol = SerDeUtil.decodeString(_symbol);
-      i += _symbol.length;
-      final int _uriLength = getInt32LE(_data, i);
-      i += 4;
-      final byte[] _uri = Arrays.copyOfRange(_data, i, i + _uriLength);
+      i += 4 + _symbol.length;
+      final byte[] _uri = SerDeUtil.readbyteVector(4, _data, i);
       final var uri = SerDeUtil.decodeString(_uri);
       return new InitializeSharesMetadataIxData(discriminator, name, name == null ? null : SerDeUtil.encodeString(name), symbol, symbol == null ? null : SerDeUtil.encodeString(symbol), uri, uri == null ? null : SerDeUtil.encodeString(uri));
     }
@@ -1840,7 +1832,7 @@ public final class KaminoVaultProgram {
                                            String uri, byte[] _uri) implements SerDe {
 
     public static UpdateSharesMetadataIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int NAME_OFFSET = 8;
@@ -1858,19 +1850,13 @@ public final class KaminoVaultProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final int _nameLength = getInt32LE(_data, i);
-      i += 4;
-      final byte[] _name = Arrays.copyOfRange(_data, i, i + _nameLength);
+      final byte[] _name = SerDeUtil.readbyteVector(4, _data, i);
       final var name = SerDeUtil.decodeString(_name);
-      i += _name.length;
-      final int _symbolLength = getInt32LE(_data, i);
-      i += 4;
-      final byte[] _symbol = Arrays.copyOfRange(_data, i, i + _symbolLength);
+      i += 4 + _name.length;
+      final byte[] _symbol = SerDeUtil.readbyteVector(4, _data, i);
       final var symbol = SerDeUtil.decodeString(_symbol);
-      i += _symbol.length;
-      final int _uriLength = getInt32LE(_data, i);
-      i += 4;
-      final byte[] _uri = Arrays.copyOfRange(_data, i, i + _uriLength);
+      i += 4 + _symbol.length;
+      final byte[] _uri = SerDeUtil.readbyteVector(4, _data, i);
       final var uri = SerDeUtil.decodeString(_uri);
       return new UpdateSharesMetadataIxData(discriminator, name, name == null ? null : SerDeUtil.encodeString(name), symbol, symbol == null ? null : SerDeUtil.encodeString(symbol), uri, uri == null ? null : SerDeUtil.encodeString(uri));
     }
@@ -1975,7 +1961,7 @@ public final class KaminoVaultProgram {
   public record WithdrawFromAvailableIxData(Discriminator discriminator, long sharesAmount) implements SerDe {
 
     public static WithdrawFromAvailableIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -2106,7 +2092,7 @@ public final class KaminoVaultProgram {
   public record UpdateGlobalConfigIxData(Discriminator discriminator, UpdateGlobalConfigMode update) implements SerDe {
 
     public static UpdateGlobalConfigIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int UPDATE_OFFSET = 8;
@@ -2205,7 +2191,7 @@ public final class KaminoVaultProgram {
   public record AddUpdateWhitelistedReserveIxData(Discriminator discriminator, UpdateReserveWhitelistMode update) implements SerDe {
 
     public static AddUpdateWhitelistedReserveIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int UPDATE_OFFSET = 8;
@@ -2286,7 +2272,7 @@ public final class KaminoVaultProgram {
   public record TopupRewardsIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static TopupRewardsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -2374,7 +2360,7 @@ public final class KaminoVaultProgram {
   public record WithdrawRewardsIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static WithdrawRewardsIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
@@ -2494,7 +2480,7 @@ public final class KaminoVaultProgram {
   public record RedeemInKindIxData(Discriminator discriminator, long sharesAmount) implements SerDe {
 
     public static RedeemInKindIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      return read(instruction.copyData(), 0);
     }
 
     public static final int BYTES = 16;
