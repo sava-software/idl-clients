@@ -112,14 +112,28 @@ public record Branch(PublicKey _address,
   }
 
   public static Branch read(final AccountInfo<byte[]> accountInfo) {
-    return read(accountInfo.pubKey(), accountInfo.data(), 0);
+    return readChecked(accountInfo.pubKey(), accountInfo.data(), 0);
   }
 
   public static Branch read(final PublicKey _address, final byte[] _data) {
     return read(_address, _data, 0);
   }
 
-  public static final BiFunction<PublicKey, byte[], Branch> FACTORY = Branch::read;
+  public static Branch readChecked(final PublicKey _address, final byte[] _data) {
+    return readChecked(_address, _data, 0);
+  }
+
+  public static Branch readChecked(final PublicKey _address, final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    if (!DISCRIMINATOR.equals(_data, _offset)) {
+      throw new IllegalArgumentException("Not a Branch account.");
+    }
+    return read(_address, _data, _offset);
+  }
+
+  public static final BiFunction<PublicKey, byte[], Branch> FACTORY = Branch::readChecked;
 
   public static Branch read(final PublicKey _address, final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {

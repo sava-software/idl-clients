@@ -133,14 +133,28 @@ public record BundleTempData(PublicKey _address,
   }
 
   public static BundleTempData read(final AccountInfo<byte[]> accountInfo) {
-    return read(accountInfo.pubKey(), accountInfo.data(), 0);
+    return readChecked(accountInfo.pubKey(), accountInfo.data(), 0);
   }
 
   public static BundleTempData read(final PublicKey _address, final byte[] _data) {
     return read(_address, _data, 0);
   }
 
-  public static final BiFunction<PublicKey, byte[], BundleTempData> FACTORY = BundleTempData::read;
+  public static BundleTempData readChecked(final PublicKey _address, final byte[] _data) {
+    return readChecked(_address, _data, 0);
+  }
+
+  public static BundleTempData readChecked(final PublicKey _address, final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    if (!DISCRIMINATOR.equals(_data, _offset)) {
+      throw new IllegalArgumentException("Not a BundleTempData account.");
+    }
+    return read(_address, _data, _offset);
+  }
+
+  public static final BiFunction<PublicKey, byte[], BundleTempData> FACTORY = BundleTempData::readChecked;
 
   public static BundleTempData read(final PublicKey _address, final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {

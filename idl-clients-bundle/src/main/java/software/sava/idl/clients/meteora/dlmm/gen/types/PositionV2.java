@@ -158,14 +158,28 @@ public record PositionV2(PublicKey _address,
   }
 
   public static PositionV2 read(final AccountInfo<byte[]> accountInfo) {
-    return read(accountInfo.pubKey(), accountInfo.data(), 0);
+    return readChecked(accountInfo.pubKey(), accountInfo.data(), 0);
   }
 
   public static PositionV2 read(final PublicKey _address, final byte[] _data) {
     return read(_address, _data, 0);
   }
 
-  public static final BiFunction<PublicKey, byte[], PositionV2> FACTORY = PositionV2::read;
+  public static PositionV2 readChecked(final PublicKey _address, final byte[] _data) {
+    return readChecked(_address, _data, 0);
+  }
+
+  public static PositionV2 readChecked(final PublicKey _address, final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    if (!DISCRIMINATOR.equals(_data, _offset)) {
+      throw new IllegalArgumentException("Not a PositionV2 account.");
+    }
+    return read(_address, _data, _offset);
+  }
+
+  public static final BiFunction<PublicKey, byte[], PositionV2> FACTORY = PositionV2::readChecked;
 
   public static PositionV2 read(final PublicKey _address, final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {

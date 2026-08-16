@@ -35,14 +35,28 @@ public record OraclePrices(PublicKey _address, Discriminator discriminator, Publ
   }
 
   public static OraclePrices read(final AccountInfo<byte[]> accountInfo) {
-    return read(accountInfo.pubKey(), accountInfo.data(), 0);
+    return readChecked(accountInfo.pubKey(), accountInfo.data(), 0);
   }
 
   public static OraclePrices read(final PublicKey _address, final byte[] _data) {
     return read(_address, _data, 0);
   }
 
-  public static final BiFunction<PublicKey, byte[], OraclePrices> FACTORY = OraclePrices::read;
+  public static OraclePrices readChecked(final PublicKey _address, final byte[] _data) {
+    return readChecked(_address, _data, 0);
+  }
+
+  public static OraclePrices readChecked(final PublicKey _address, final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    if (!DISCRIMINATOR.equals(_data, _offset)) {
+      throw new IllegalArgumentException("Not a OraclePrices account.");
+    }
+    return read(_address, _data, _offset);
+  }
+
+  public static final BiFunction<PublicKey, byte[], OraclePrices> FACTORY = OraclePrices::readChecked;
 
   public static OraclePrices read(final PublicKey _address, final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {

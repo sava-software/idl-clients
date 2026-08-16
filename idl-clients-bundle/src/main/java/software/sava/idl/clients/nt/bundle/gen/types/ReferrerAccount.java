@@ -139,14 +139,28 @@ public record ReferrerAccount(PublicKey _address,
   }
 
   public static ReferrerAccount read(final AccountInfo<byte[]> accountInfo) {
-    return read(accountInfo.pubKey(), accountInfo.data(), 0);
+    return readChecked(accountInfo.pubKey(), accountInfo.data(), 0);
   }
 
   public static ReferrerAccount read(final PublicKey _address, final byte[] _data) {
     return read(_address, _data, 0);
   }
 
-  public static final BiFunction<PublicKey, byte[], ReferrerAccount> FACTORY = ReferrerAccount::read;
+  public static ReferrerAccount readChecked(final PublicKey _address, final byte[] _data) {
+    return readChecked(_address, _data, 0);
+  }
+
+  public static ReferrerAccount readChecked(final PublicKey _address, final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    if (!DISCRIMINATOR.equals(_data, _offset)) {
+      throw new IllegalArgumentException("Not a ReferrerAccount account.");
+    }
+    return read(_address, _data, _offset);
+  }
+
+  public static final BiFunction<PublicKey, byte[], ReferrerAccount> FACTORY = ReferrerAccount::readChecked;
 
   public static ReferrerAccount read(final PublicKey _address, final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {

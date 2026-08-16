@@ -73,14 +73,28 @@ public record SplineCollectionHeader(PublicKey _address,
   }
 
   public static SplineCollectionHeader read(final AccountInfo<byte[]> accountInfo) {
-    return read(accountInfo.pubKey(), accountInfo.data(), 0);
+    return readChecked(accountInfo.pubKey(), accountInfo.data(), 0);
   }
 
   public static SplineCollectionHeader read(final PublicKey _address, final byte[] _data) {
     return read(_address, _data, 0);
   }
 
-  public static final BiFunction<PublicKey, byte[], SplineCollectionHeader> FACTORY = SplineCollectionHeader::read;
+  public static SplineCollectionHeader readChecked(final PublicKey _address, final byte[] _data) {
+    return readChecked(_address, _data, 0);
+  }
+
+  public static SplineCollectionHeader readChecked(final PublicKey _address, final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    if (!DISCRIMINATOR.equals(_data, _offset)) {
+      throw new IllegalArgumentException("Not a SplineCollectionHeader account.");
+    }
+    return read(_address, _data, _offset);
+  }
+
+  public static final BiFunction<PublicKey, byte[], SplineCollectionHeader> FACTORY = SplineCollectionHeader::readChecked;
 
   public static SplineCollectionHeader read(final PublicKey _address, final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {

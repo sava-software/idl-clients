@@ -140,14 +140,28 @@ public record AdaptiveFeeTier(PublicKey _address,
   }
 
   public static AdaptiveFeeTier read(final AccountInfo<byte[]> accountInfo) {
-    return read(accountInfo.pubKey(), accountInfo.data(), 0);
+    return readChecked(accountInfo.pubKey(), accountInfo.data(), 0);
   }
 
   public static AdaptiveFeeTier read(final PublicKey _address, final byte[] _data) {
     return read(_address, _data, 0);
   }
 
-  public static final BiFunction<PublicKey, byte[], AdaptiveFeeTier> FACTORY = AdaptiveFeeTier::read;
+  public static AdaptiveFeeTier readChecked(final PublicKey _address, final byte[] _data) {
+    return readChecked(_address, _data, 0);
+  }
+
+  public static AdaptiveFeeTier readChecked(final PublicKey _address, final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    if (!DISCRIMINATOR.equals(_data, _offset)) {
+      throw new IllegalArgumentException("Not a AdaptiveFeeTier account.");
+    }
+    return read(_address, _data, _offset);
+  }
+
+  public static final BiFunction<PublicKey, byte[], AdaptiveFeeTier> FACTORY = AdaptiveFeeTier::readChecked;
 
   public static AdaptiveFeeTier read(final PublicKey _address, final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {

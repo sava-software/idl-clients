@@ -35,14 +35,28 @@ public record BundleMasterAccount(PublicKey _address, Discriminator discriminato
   }
 
   public static BundleMasterAccount read(final AccountInfo<byte[]> accountInfo) {
-    return read(accountInfo.pubKey(), accountInfo.data(), 0);
+    return readChecked(accountInfo.pubKey(), accountInfo.data(), 0);
   }
 
   public static BundleMasterAccount read(final PublicKey _address, final byte[] _data) {
     return read(_address, _data, 0);
   }
 
-  public static final BiFunction<PublicKey, byte[], BundleMasterAccount> FACTORY = BundleMasterAccount::read;
+  public static BundleMasterAccount readChecked(final PublicKey _address, final byte[] _data) {
+    return readChecked(_address, _data, 0);
+  }
+
+  public static BundleMasterAccount readChecked(final PublicKey _address, final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    if (!DISCRIMINATOR.equals(_data, _offset)) {
+      throw new IllegalArgumentException("Not a BundleMasterAccount account.");
+    }
+    return read(_address, _data, _offset);
+  }
+
+  public static final BiFunction<PublicKey, byte[], BundleMasterAccount> FACTORY = BundleMasterAccount::readChecked;
 
   public static BundleMasterAccount read(final PublicKey _address, final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {

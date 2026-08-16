@@ -45,14 +45,28 @@ public record VaultRewardsInfo(PublicKey _address,
   }
 
   public static VaultRewardsInfo read(final AccountInfo<byte[]> accountInfo) {
-    return read(accountInfo.pubKey(), accountInfo.data(), 0);
+    return readChecked(accountInfo.pubKey(), accountInfo.data(), 0);
   }
 
   public static VaultRewardsInfo read(final PublicKey _address, final byte[] _data) {
     return read(_address, _data, 0);
   }
 
-  public static final BiFunction<PublicKey, byte[], VaultRewardsInfo> FACTORY = VaultRewardsInfo::read;
+  public static VaultRewardsInfo readChecked(final PublicKey _address, final byte[] _data) {
+    return readChecked(_address, _data, 0);
+  }
+
+  public static VaultRewardsInfo readChecked(final PublicKey _address, final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    if (!DISCRIMINATOR.equals(_data, _offset)) {
+      throw new IllegalArgumentException("Not a VaultRewardsInfo account.");
+    }
+    return read(_address, _data, _offset);
+  }
+
+  public static final BiFunction<PublicKey, byte[], VaultRewardsInfo> FACTORY = VaultRewardsInfo::readChecked;
 
   public static VaultRewardsInfo read(final PublicKey _address, final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {

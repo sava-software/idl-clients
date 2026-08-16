@@ -46,14 +46,28 @@ public record WhirlpoolsConfigExtension(PublicKey _address,
   }
 
   public static WhirlpoolsConfigExtension read(final AccountInfo<byte[]> accountInfo) {
-    return read(accountInfo.pubKey(), accountInfo.data(), 0);
+    return readChecked(accountInfo.pubKey(), accountInfo.data(), 0);
   }
 
   public static WhirlpoolsConfigExtension read(final PublicKey _address, final byte[] _data) {
     return read(_address, _data, 0);
   }
 
-  public static final BiFunction<PublicKey, byte[], WhirlpoolsConfigExtension> FACTORY = WhirlpoolsConfigExtension::read;
+  public static WhirlpoolsConfigExtension readChecked(final PublicKey _address, final byte[] _data) {
+    return readChecked(_address, _data, 0);
+  }
+
+  public static WhirlpoolsConfigExtension readChecked(final PublicKey _address, final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    if (!DISCRIMINATOR.equals(_data, _offset)) {
+      throw new IllegalArgumentException("Not a WhirlpoolsConfigExtension account.");
+    }
+    return read(_address, _data, _offset);
+  }
+
+  public static final BiFunction<PublicKey, byte[], WhirlpoolsConfigExtension> FACTORY = WhirlpoolsConfigExtension::readChecked;
 
   public static WhirlpoolsConfigExtension read(final PublicKey _address, final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
