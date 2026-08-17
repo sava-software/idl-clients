@@ -1,5 +1,64 @@
 # Changelog
 
+## [25.19.0](https://github.com/sava-software/idl-clients/compare/25.18.5...25.19.0) (2026-08-17)
+
+
+### ⚠ BREAKING CHANGES
+
+* **phoenix:** Phoenix Perpetuals event decoders moved to `…gen.events`, and the names they vacated in `…gen.types` now hold a different class. **Read this before upgrading if you decode Phoenix events.** In both `phoenix.perpetuals` and `phoenix.dev.perpetuals`: `EternalEvent` and the 67 tag-carrying event records now live in `gen.events`. 65 of those names still exist in `gen.types`, but as the enum's plain payload — the same fields *without* the leading Borsh tag, so e.g. `SlotContextEvent` went from `(Discriminator, long, long)`/`BYTES = 17` to `(long, long)`/`BYTES = 16`. Constructing one, calling `.discriminator()`, or holding it as an `EternalEvent` now fails to compile — but an existing `gen.types.SlotContextEvent.read(data, 0)` still compiles and silently decodes one byte off. Point event decoding at `gen.events`; `gen.types` is for `MarketEvent`'s variant payloads. This also fixes `MarketEvent` itself, which counted the tag twice and ran one byte long per event, compounding across a batch.
+* `read(AccountInfo)` and `FACTORY` now throw IllegalArgumentException where they previously returned a record built from the wrong bytes. `FACTORY` is the sharper edge — sava-rpc applies it inside the JSON parse loop with no per-element guard, so one unexpected account fails the whole response rather than yielding one bad record the caller could skip. A size-only scan is where this bites: a `getProgramAccounts` filtered on `SIZE_FILTER` alone picks up any same-sized account of that program. To keep the previous lenient behaviour substitute `X::read` for `X.FACTORY`; to make the scan precise add `X.DISCRIMINATOR_FILTER`, emitted by exactly the 196 account types this change affects — an account with no discriminator has neither the filter nor the new behaviour.
+* **jupiter:** decode the five swap routes that were throwing
+* **stake:** derive the IDL from upstream's codama pipeline
+* **metaplex:** let callers choose an optional signer's privilege
+* **metaplex:** keep optional signers in position
+* **metaplex:** omit absent optional accounts where the program counts them
+* **metaplex,spl:** dispatch on the one-byte ordinal these programs read
+* **jupiter:** declare BaseAssetV1's discriminator as its leading field
+* **exponent:** add the Exponent client, and fix narrow discriminators
+
+### Features
+
+* **exponent:** add the Exponent client, and fix narrow discriminators ([f668745](https://github.com/sava-software/idl-clients/commit/f668745960762c675b7c6f8706fcef11cdc9d66b))
+* **idl:** pick up Neutral Trade's referral tier IDL ([7d9f6a1](https://github.com/sava-software/idl-clients/commit/7d9f6a18f5eeec886ab5780285b77bda36386cab))
+* **jupiter:** decode the five swap routes that were throwing ([ed1dab2](https://github.com/sava-software/idl-clients/commit/ed1dab2f481f9b63579fb4f55cca9da7a11db52e))
+* **kamino:** add lending 1.24 preview client ([a68cc5e](https://github.com/sava-software/idl-clients/commit/a68cc5e8b188da8bebb463174e44619ed8a7b736))
+* **stake:** derive the IDL from upstream's codama pipeline ([04be718](https://github.com/sava-software/idl-clients/commit/04be718a7360495650b8ece6a4f09951ddd81922))
+* **token2022:** generate updateTokenMetadataField instead of excluding it ([b482553](https://github.com/sava-software/idl-clients/commit/b482553a62e36528b0dd25fb10bcd51e27ae995e))
+
+
+### Bug Fixes
+
+* **exponent:** pin the IDL to the commit it was generated from ([e6eb2a8](https://github.com/sava-software/idl-clients/commit/e6eb2a86ee0bb9148fc627835b3439bc30f531b4))
+* **idl:** decode an instruction from its own bytes, not the whole transaction ([bd8c280](https://github.com/sava-software/idl-clients/commit/bd8c280b2caa99c6b477190a97eebaf55e877c42))
+* **idl:** decode the accounts and arguments the programs actually write ([4a33223](https://github.com/sava-software/idl-clients/commit/4a332237755fdd7458b1704be5809cbac2c0d10c))
+* **idl:** match the presence tag when filtering and writing a COption field ([87d7601](https://github.com/sava-software/idl-clients/commit/87d7601ff0ddbde576cc42912cada2f8c3f98854))
+* **idl:** read an unknown enum ordinal as null instead of throwing ([9346a8c](https://github.com/sava-software/idl-clients/commit/9346a8c3908c2bc9a3fd873b71f58f6cccf36dc2))
+* **idl:** reject malformed UTF-8 instead of silently substituting it ([5376b75](https://github.com/sava-software/idl-clients/commit/5376b75e8da726b71f386892a9486dd7958fd2d9))
+* **jupiter:** declare BaseAssetV1's discriminator as its leading field ([c6b761c](https://github.com/sava-software/idl-clients/commit/c6b761c9fb17ad462f383bb24375e2634dd1bc96))
+* **jupiter:** escape the request fields that could add their own query parameters ([6442ad9](https://github.com/sava-software/idl-clients/commit/6442ad97b2a5b8937aef078862cd25e92d3cabf5))
+* **jupiter:** Sync offerbook program. ([97b67d2](https://github.com/sava-software/idl-clients/commit/97b67d275f2cba2a55f22ff60f956616d4bc26ec))
+* **metaplex,spl:** dispatch on the one-byte ordinal these programs read ([40e1533](https://github.com/sava-software/idl-clients/commit/40e1533bbf426a257a1a21b52fb8eee9dfbdae12))
+* **metaplex:** keep optional signers in position ([79e2f1c](https://github.com/sava-software/idl-clients/commit/79e2f1c8e39422fb9a0a1e5616eb99e3b7a805b7))
+* **metaplex:** let callers choose an optional signer's privilege ([4d90fb4](https://github.com/sava-software/idl-clients/commit/4d90fb4b2d8b65dac0f949e39f67a02d3e5171da))
+* **metaplex:** omit absent optional accounts where the program counts them ([5e58c4e](https://github.com/sava-software/idl-clients/commit/5e58c4e662661be23465f668ef97dc5937e0caa1))
+* **orca:** stop accepting a tick-index mutant that resolves the wrong tick ([7d576e0](https://github.com/sava-software/idl-clients/commit/7d576e0660bd380ef81b9ff46875fbb74de360be))
+* **phoenix:** decode AdminParameterUpdatedEvent instead of overflowing the stack ([256e640](https://github.com/sava-software/idl-clients/commit/256e640970dfd048a20d93a849806b82b429310f))
+* **token2022:** bound an UpdateField decode by the instruction, not the buffer ([5631d74](https://github.com/sava-software/idl-clients/commit/5631d74d299a07b8f0e25615cb48f4cdedef3392))
+* **tools:** a probe that cannot ask must not report success ([951a25c](https://github.com/sava-software/idl-clients/commit/951a25caf89ddd8deccffb03970efc3a2accbf75))
+* **tools:** decide dispatch by the error, not the logs ([5eff156](https://github.com/sava-software/idl-clients/commit/5eff1567a44b179a74ba0d53f6bbd610855f0be1))
+* **tools:** the account-order check no longer passes a swapped sysvar ([ece71c6](https://github.com/sava-software/idl-clients/commit/ece71c68e434bff76922e0ed03f9fc04ecce869b))
+* verify the discriminator on the paths that fetch then decode ([5081838](https://github.com/sava-software/idl-clients/commit/5081838b04384db1ce73669433d3d38a669f6b3c))
+
+
+### Miscellaneous Chores
+
+* release 25.19.0 ([5405667](https://github.com/sava-software/idl-clients/commit/540566782cb832a9c37fcf8090432e89cd1579e2))
+
+
+### Build System
+
+* **tools:** drop Python, and give the accepted Orca mutants a real checker ([d13882e](https://github.com/sava-software/idl-clients/commit/d13882ea4d7355da304585fc65239b630933dcfe))
+
 ## [25.18.5](https://github.com/sava-software/idl-clients/compare/25.18.4...25.18.5) (2026-08-07)
 
 
