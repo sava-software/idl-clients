@@ -3,18 +3,26 @@ package software.sava.idl.clients.nt.bundle.gen.events;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import java.math.BigInteger;
 
+import java.util.OptionalInt;
+
 import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
+import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param totalFeeValue: u64
+/// @param referralPfeeBps: u32
+/// @param referralMfeeBps: u32
+/// @param referralTierIndex: Option<u8> None when no bundle tier supplies an unmasked rate.
 public record ChargedFeesToUser(Discriminator discriminator,
                                 BigInteger totalFeeShares,
                                 long totalFeeValue,
@@ -25,9 +33,11 @@ public record ChargedFeesToUser(Discriminator discriminator,
                                 PublicKey user,
                                 BigInteger userSharesAfter,
                                 BigInteger managerPfeeSharesAfter,
-                                BigInteger managerMfeeSharesAfter) implements NtbundleEvent {
+                                BigInteger managerMfeeSharesAfter,
+                                long referralPfeeBps,
+                                long referralMfeeBps,
+                                OptionalInt referralTierIndex) implements NtbundleEvent {
 
-  public static final int BYTES = 192;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(201, 63, 172, 93, 230, 105, 127, 255);
 
   public static final int TOTAL_FEE_SHARES_OFFSET = 8;
@@ -40,6 +50,9 @@ public record ChargedFeesToUser(Discriminator discriminator,
   public static final int USER_SHARES_AFTER_OFFSET = 144;
   public static final int MANAGER_PFEE_SHARES_AFTER_OFFSET = 160;
   public static final int MANAGER_MFEE_SHARES_AFTER_OFFSET = 176;
+  public static final int REFERRAL_PFEE_BPS_OFFSET = 192;
+  public static final int REFERRAL_MFEE_BPS_OFFSET = 196;
+  public static final int REFERRAL_TIER_INDEX_OFFSET = 201;
 
   public static ChargedFeesToUser read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -66,6 +79,18 @@ public record ChargedFeesToUser(Discriminator discriminator,
     final var managerPfeeSharesAfter = getUInt128LE(_data, i);
     i += 16;
     final var managerMfeeSharesAfter = getUInt128LE(_data, i);
+    i += 16;
+    final var referralPfeeBps = Integer.toUnsignedLong(getInt32LE(_data, i));
+    i += 4;
+    final var referralMfeeBps = Integer.toUnsignedLong(getInt32LE(_data, i));
+    i += 4;
+    final OptionalInt referralTierIndex;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      referralTierIndex = OptionalInt.empty();
+    } else {
+      ++i;
+      referralTierIndex = OptionalInt.of(_data[i] & 0xFF);
+    }
     return new ChargedFeesToUser(discriminator,
                                  totalFeeShares,
                                  totalFeeValue,
@@ -76,7 +101,10 @@ public record ChargedFeesToUser(Discriminator discriminator,
                                  user,
                                  userSharesAfter,
                                  managerPfeeSharesAfter,
-                                 managerMfeeSharesAfter);
+                                 managerMfeeSharesAfter,
+                                 referralPfeeBps,
+                                 referralMfeeBps,
+                                 referralTierIndex);
   }
 
   @Override
@@ -102,11 +130,28 @@ public record ChargedFeesToUser(Discriminator discriminator,
     i += 16;
     putInt128LE(_data, i, managerMfeeSharesAfter);
     i += 16;
+    putInt32LE(_data, i, (int) referralPfeeBps);
+    i += 4;
+    putInt32LE(_data, i, (int) referralMfeeBps);
+    i += 4;
+    i += SerDeUtil.writeOptionalbyte(1, referralTierIndex, _data, i);
     return i - _offset;
   }
 
   @Override
   public int l() {
-    return BYTES;
+    return 8 + 16
+         + 8
+         + 16
+         + 16
+         + 16
+         + 32
+         + 32
+         + 16
+         + 16
+         + 16
+         + 4
+         + 4
+         + (referralTierIndex == null || referralTierIndex.isEmpty() ? 1 : (1 + 1));
   }
 }

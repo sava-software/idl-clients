@@ -96,7 +96,8 @@ public sealed interface NtbundleError extends ProgramError permits
     NtbundleError.ReferrerAccountMismatch,
     NtbundleError.ReferrerSharesZero,
     NtbundleError.UnauthorizedReferrerAction,
-    NtbundleError.ReferrerDepositTooLow {
+    NtbundleError.ReferrerDepositTooLow,
+    NtbundleError.InvalidReferralTierConfig {
 
   static NtbundleError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -193,6 +194,7 @@ public sealed interface NtbundleError extends ProgramError permits
       case 6090 -> ReferrerSharesZero.INSTANCE;
       case 6091 -> UnauthorizedReferrerAction.INSTANCE;
       case 6092 -> ReferrerDepositTooLow.INSTANCE;
+      case 6093 -> InvalidReferralTierConfig.INSTANCE;
       default -> null;
     };
   }
@@ -845,6 +847,13 @@ public sealed interface NtbundleError extends ProgramError permits
 
     public static final ReferrerDepositTooLow INSTANCE = new ReferrerDepositTooLow(
         6092, "Referrer deposit too low"
+    );
+  }
+
+  record InvalidReferralTierConfig(int code, String msg) implements NtbundleError {
+
+    public static final InvalidReferralTierConfig INSTANCE = new InvalidReferralTierConfig(
+        6093, "Invalid referral tier configuration"
     );
   }
 }

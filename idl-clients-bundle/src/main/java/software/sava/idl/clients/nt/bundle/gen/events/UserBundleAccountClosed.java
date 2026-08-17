@@ -3,22 +3,28 @@ package software.sava.idl.clients.nt.bundle.gen.events;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+
+import java.math.BigInteger;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param referredNetDepositsAfter: Option<i128>
 public record UserBundleAccountClosed(Discriminator discriminator,
                                       PublicKey user,
                                       PublicKey bundleAccountKey,
-                                      PublicKey userBundleAccountKey) implements NtbundleEvent {
+                                      PublicKey userBundleAccountKey,
+                                      BigInteger referredNetDepositsAfter) implements NtbundleEvent {
 
-  public static final int BYTES = 104;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(111, 102, 134, 54, 238, 23, 157, 183);
 
   public static final int USER_OFFSET = 8;
   public static final int BUNDLE_ACCOUNT_KEY_OFFSET = 40;
   public static final int USER_BUNDLE_ACCOUNT_KEY_OFFSET = 72;
+  public static final int REFERRED_NET_DEPOSITS_AFTER_OFFSET = 105;
 
   public static UserBundleAccountClosed read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -31,7 +37,19 @@ public record UserBundleAccountClosed(Discriminator discriminator,
     final var bundleAccountKey = readPubKey(_data, i);
     i += 32;
     final var userBundleAccountKey = readPubKey(_data, i);
-    return new UserBundleAccountClosed(discriminator, user, bundleAccountKey, userBundleAccountKey);
+    i += 32;
+    final BigInteger referredNetDepositsAfter;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      referredNetDepositsAfter = null;
+    } else {
+      ++i;
+      referredNetDepositsAfter = getInt128LE(_data, i);
+    }
+    return new UserBundleAccountClosed(discriminator,
+                                       user,
+                                       bundleAccountKey,
+                                       userBundleAccountKey,
+                                       referredNetDepositsAfter);
   }
 
   @Override
@@ -43,11 +61,12 @@ public record UserBundleAccountClosed(Discriminator discriminator,
     i += 32;
     userBundleAccountKey.write(_data, i);
     i += 32;
+    i += SerDeUtil.write128Optional(1, referredNetDepositsAfter, _data, i);
     return i - _offset;
   }
 
   @Override
   public int l() {
-    return BYTES;
+    return 8 + 32 + 32 + 32 + (referredNetDepositsAfter == null ? 1 : (1 + 16));
   }
 }

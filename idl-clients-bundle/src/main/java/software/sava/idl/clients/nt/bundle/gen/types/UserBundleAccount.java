@@ -35,9 +35,6 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param feeOverrideFlags: u8
 /// @param customWithdrawalDelay: u64
 /// @param withdrawalTimingOverrideFlags: u8
-/// @param referralPfeeBps: u32
-/// @param referralMfeeBps: u32
-/// @param referralFlags: u8
 public record UserBundleAccount(PublicKey _address,
                                 Discriminator discriminator,
                                 PublicKey owner,
@@ -67,13 +64,10 @@ public record UserBundleAccount(PublicKey _address,
                                 PublicKey switchTargetBundle,
                                 long switchCreatedAt,
                                 PublicKey referrer,
-                                long referralPfeeBps,
-                                long referralMfeeBps,
-                                int referralFlags,
                                 byte[] padding) implements SerDe {
 
   public static final int BYTES = 440;
-  public static final int PADDING_LEN = 136;
+  public static final int PADDING_LEN = 145;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(32, 181, 106, 26, 67, 130, 185, 241);
@@ -106,10 +100,7 @@ public record UserBundleAccount(PublicKey _address,
   public static final int SWITCH_TARGET_BUNDLE_OFFSET = 223;
   public static final int SWITCH_CREATED_AT_OFFSET = 255;
   public static final int REFERRER_OFFSET = 263;
-  public static final int REFERRAL_PFEE_BPS_OFFSET = 295;
-  public static final int REFERRAL_MFEE_BPS_OFFSET = 299;
-  public static final int REFERRAL_FLAGS_OFFSET = 303;
-  public static final int PADDING_OFFSET = 304;
+  public static final int PADDING_OFFSET = 295;
 
   public static Filter createOwnerFilter(final PublicKey owner) {
     return Filter.createMemCompFilter(OWNER_OFFSET, owner);
@@ -261,22 +252,6 @@ public record UserBundleAccount(PublicKey _address,
     return Filter.createMemCompFilter(REFERRER_OFFSET, referrer);
   }
 
-  public static Filter createReferralPfeeBpsFilter(final long referralPfeeBps) {
-    final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, (int) referralPfeeBps);
-    return Filter.createMemCompFilter(REFERRAL_PFEE_BPS_OFFSET, _data);
-  }
-
-  public static Filter createReferralMfeeBpsFilter(final long referralMfeeBps) {
-    final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, (int) referralMfeeBps);
-    return Filter.createMemCompFilter(REFERRAL_MFEE_BPS_OFFSET, _data);
-  }
-
-  public static Filter createReferralFlagsFilter(final int referralFlags) {
-    return Filter.createMemCompFilter(REFERRAL_FLAGS_OFFSET, new byte[]{(byte) referralFlags});
-  }
-
   public static UserBundleAccount read(final byte[] _data, final int _offset) {
     return read(null, _data, _offset);
   }
@@ -365,13 +340,7 @@ public record UserBundleAccount(PublicKey _address,
     i += 8;
     final var referrer = readPubKey(_data, i);
     i += 32;
-    final var referralPfeeBps = Integer.toUnsignedLong(getInt32LE(_data, i));
-    i += 4;
-    final var referralMfeeBps = Integer.toUnsignedLong(getInt32LE(_data, i));
-    i += 4;
-    final var referralFlags = _data[i] & 0xFF;
-    ++i;
-    final var padding = new byte[136];
+    final var padding = new byte[145];
     SerDeUtil.readArray(padding, _data, i);
     return new UserBundleAccount(_address,
                                  discriminator,
@@ -402,9 +371,6 @@ public record UserBundleAccount(PublicKey _address,
                                  switchTargetBundle,
                                  switchCreatedAt,
                                  referrer,
-                                 referralPfeeBps,
-                                 referralMfeeBps,
-                                 referralFlags,
                                  padding);
   }
 
@@ -465,13 +431,7 @@ public record UserBundleAccount(PublicKey _address,
     i += 8;
     referrer.write(_data, i);
     i += 32;
-    putInt32LE(_data, i, (int) referralPfeeBps);
-    i += 4;
-    putInt32LE(_data, i, (int) referralMfeeBps);
-    i += 4;
-    _data[i] = (byte) referralFlags;
-    ++i;
-    i += SerDeUtil.writeArrayChecked(padding, 136, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 145, _data, i);
     return i - _offset;
   }
 

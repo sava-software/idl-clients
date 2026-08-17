@@ -42,6 +42,7 @@ public sealed interface NtbundleEvent extends SerDe permits
     PausedDepositsWithdrawals,
     Redeemed,
     ReferralFeesAccrued,
+    ReferralTierConfigSet,
     ReferrerActiveSet,
     ReferrerConfigSet,
     ReferrerRateOverrideSet,
@@ -142,6 +143,8 @@ public sealed interface NtbundleEvent extends SerDe permits
       return Redeemed.read(_data, _offset);
     } else if (ReferralFeesAccrued.DISCRIMINATOR.equals(_data, _offset)) {
       return ReferralFeesAccrued.read(_data, _offset);
+    } else if (ReferralTierConfigSet.DISCRIMINATOR.equals(_data, _offset)) {
+      return ReferralTierConfigSet.read(_data, _offset);
     } else if (ReferrerActiveSet.DISCRIMINATOR.equals(_data, _offset)) {
       return ReferrerActiveSet.read(_data, _offset);
     } else if (ReferrerConfigSet.DISCRIMINATOR.equals(_data, _offset)) {

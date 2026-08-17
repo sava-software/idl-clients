@@ -3,10 +3,12 @@ package software.sava.idl.clients.nt.bundle.gen.events;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import java.math.BigInteger;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
@@ -19,6 +21,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param netCreditedToDestination: u64
 /// @param withdrawalFeeA: u64
 /// @param depositFeeB: u64
+/// @param sourceReferredNetDepositsAfter: Option<i128>
 public record BundleSwitchCompleted(Discriminator discriminator,
                                     PublicKey user,
                                     PublicKey sourceBundle,
@@ -34,9 +37,9 @@ public record BundleSwitchCompleted(Discriminator discriminator,
                                     BigInteger userSharesAfter,
                                     BigInteger totalSharesBefore,
                                     BigInteger totalSharesAfter,
-                                    long timestamp) implements NtbundleEvent {
+                                    long timestamp,
+                                    BigInteger sourceReferredNetDepositsAfter) implements NtbundleEvent {
 
-  public static final int BYTES = 248;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(189, 237, 164, 90, 103, 174, 64, 73);
 
   public static final int USER_OFFSET = 8;
@@ -54,6 +57,7 @@ public record BundleSwitchCompleted(Discriminator discriminator,
   public static final int TOTAL_SHARES_BEFORE_OFFSET = 208;
   public static final int TOTAL_SHARES_AFTER_OFFSET = 224;
   public static final int TIMESTAMP_OFFSET = 240;
+  public static final int SOURCE_REFERRED_NET_DEPOSITS_AFTER_OFFSET = 249;
 
   public static BundleSwitchCompleted read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -90,6 +94,14 @@ public record BundleSwitchCompleted(Discriminator discriminator,
     final var totalSharesAfter = getUInt128LE(_data, i);
     i += 16;
     final var timestamp = getInt64LE(_data, i);
+    i += 8;
+    final BigInteger sourceReferredNetDepositsAfter;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      sourceReferredNetDepositsAfter = null;
+    } else {
+      ++i;
+      sourceReferredNetDepositsAfter = getInt128LE(_data, i);
+    }
     return new BundleSwitchCompleted(discriminator,
                                      user,
                                      sourceBundle,
@@ -105,7 +117,8 @@ public record BundleSwitchCompleted(Discriminator discriminator,
                                      userSharesAfter,
                                      totalSharesBefore,
                                      totalSharesAfter,
-                                     timestamp);
+                                     timestamp,
+                                     sourceReferredNetDepositsAfter);
   }
 
   @Override
@@ -141,11 +154,27 @@ public record BundleSwitchCompleted(Discriminator discriminator,
     i += 16;
     putInt64LE(_data, i, timestamp);
     i += 8;
+    i += SerDeUtil.write128Optional(1, sourceReferredNetDepositsAfter, _data, i);
     return i - _offset;
   }
 
   @Override
   public int l() {
-    return BYTES;
+    return 8 + 32
+         + 32
+         + 32
+         + 16
+         + 8
+         + 8
+         + 8
+         + 8
+         + 8
+         + 16
+         + 16
+         + 16
+         + 16
+         + 16
+         + 8
+         + (sourceReferredNetDepositsAfter == null ? 1 : (1 + 16));
   }
 }

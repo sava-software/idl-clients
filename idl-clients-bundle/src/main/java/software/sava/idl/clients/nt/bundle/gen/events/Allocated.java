@@ -3,10 +3,12 @@ package software.sava.idl.clients.nt.bundle.gen.events;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import java.math.BigInteger;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
@@ -16,6 +18,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param amount: u64
 /// @param netAmount: u64
+/// @param referredNetDepositsAfter: Option<i128>
 public record Allocated(Discriminator discriminator,
                         PublicKey from,
                         PublicKey to,
@@ -26,9 +29,9 @@ public record Allocated(Discriminator discriminator,
                         BigInteger sharePrice,
                         BigInteger userSharesBefore,
                         BigInteger userSharesAfter,
-                        BigInteger totalShares) implements NtbundleEvent {
+                        BigInteger totalShares,
+                        BigInteger referredNetDepositsAfter) implements NtbundleEvent {
 
-  public static final int BYTES = 192;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(146, 11, 194, 76, 4, 220, 226, 43);
 
   public static final int FROM_OFFSET = 8;
@@ -41,6 +44,7 @@ public record Allocated(Discriminator discriminator,
   public static final int USER_SHARES_BEFORE_OFFSET = 144;
   public static final int USER_SHARES_AFTER_OFFSET = 160;
   public static final int TOTAL_SHARES_OFFSET = 176;
+  public static final int REFERRED_NET_DEPOSITS_AFTER_OFFSET = 193;
 
   public static Allocated read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -67,6 +71,14 @@ public record Allocated(Discriminator discriminator,
     final var userSharesAfter = getUInt128LE(_data, i);
     i += 16;
     final var totalShares = getUInt128LE(_data, i);
+    i += 16;
+    final BigInteger referredNetDepositsAfter;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      referredNetDepositsAfter = null;
+    } else {
+      ++i;
+      referredNetDepositsAfter = getInt128LE(_data, i);
+    }
     return new Allocated(discriminator,
                          from,
                          to,
@@ -77,7 +89,8 @@ public record Allocated(Discriminator discriminator,
                          sharePrice,
                          userSharesBefore,
                          userSharesAfter,
-                         totalShares);
+                         totalShares,
+                         referredNetDepositsAfter);
   }
 
   @Override
@@ -103,11 +116,22 @@ public record Allocated(Discriminator discriminator,
     i += 16;
     putInt128LE(_data, i, totalShares);
     i += 16;
+    i += SerDeUtil.write128Optional(1, referredNetDepositsAfter, _data, i);
     return i - _offset;
   }
 
   @Override
   public int l() {
-    return BYTES;
+    return 8 + 32
+         + 32
+         + 8
+         + 8
+         + 32
+         + 8
+         + 16
+         + 16
+         + 16
+         + 16
+         + (referredNetDepositsAfter == null ? 1 : (1 + 16));
   }
 }

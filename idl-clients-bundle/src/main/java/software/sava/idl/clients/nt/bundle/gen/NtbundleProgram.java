@@ -8,6 +8,7 @@ import software.sava.core.programs.Discriminator;
 import software.sava.core.tx.Instruction;
 import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
+import software.sava.idl.clients.nt.bundle.gen.types.ReferralTier;
 
 import java.math.BigInteger;
 
@@ -2905,6 +2906,68 @@ public final class NtbundleProgram {
     }
   }
 
+  public static final Discriminator SET_REFERRAL_TIER_CONFIG_DISCRIMINATOR = toDiscriminator(9, 78, 137, 136, 182, 116, 76, 138);
+
+  public static List<AccountMeta> setReferralTierConfigKeys(final PublicKey managerKey,
+                                                            final PublicKey bundleAccountKey) {
+    return List.of(
+      createWritableSigner(managerKey),
+      createWrite(bundleAccountKey)
+    );
+  }
+
+  public static Instruction setReferralTierConfig(final AccountMeta invokedNtbundleProgramMeta,
+                                                  final PublicKey managerKey,
+                                                  final PublicKey bundleAccountKey,
+                                                  final ReferralTier[] referralTiers) {
+    final var keys = setReferralTierConfigKeys(
+      managerKey,
+      bundleAccountKey
+    );
+    return setReferralTierConfig(invokedNtbundleProgramMeta, keys, referralTiers);
+  }
+
+  public static Instruction setReferralTierConfig(final AccountMeta invokedNtbundleProgramMeta,
+                                                  final List<AccountMeta> keys,
+                                                  final ReferralTier[] referralTiers) {
+    final byte[] _data = new byte[8 + SerDeUtil.lenVector(4, referralTiers)];
+    int i = SET_REFERRAL_TIER_CONFIG_DISCRIMINATOR.write(_data, 0);
+    SerDeUtil.writeVector(4, referralTiers, _data, i);
+
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
+  }
+
+  public record SetReferralTierConfigIxData(Discriminator discriminator, ReferralTier[] referralTiers) implements SerDe {
+
+    public static SetReferralTierConfigIxData read(final Instruction instruction) {
+      return read(instruction.copyData(), 0);
+    }
+
+    public static final int REFERRAL_TIERS_OFFSET = 8;
+
+    public static SetReferralTierConfigIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var referralTiers = SerDeUtil.readVector(4, ReferralTier.class, ReferralTier::read, _data, i);
+      return new SetReferralTierConfigIxData(discriminator, referralTiers);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      i += SerDeUtil.writeVector(4, referralTiers, _data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 8 + SerDeUtil.lenVector(4, referralTiers);
+    }
+  }
+
   public static final Discriminator SET_REFERRER_ACTIVE_DISCRIMINATOR = toDiscriminator(173, 21, 130, 158, 15, 1, 83, 24);
 
   public static List<AccountMeta> setReferrerActiveKeys(final PublicKey managerKey,
@@ -2984,71 +3047,44 @@ public final class NtbundleProgram {
     );
   }
 
-  /// @param referralPfeeBps: u32
-  /// @param referralMfeeBps: u32
   /// @param referrerMinDepositAmount: u64
   public static Instruction setReferrerConfig(final AccountMeta invokedNtbundleProgramMeta,
                                               final PublicKey managerKey,
                                               final PublicKey bundleAccountKey,
                                               final boolean referrerEnabled,
-                                              final long referralPfeeBps,
-                                              final long referralMfeeBps,
                                               final long referrerMinDepositAmount) {
     final var keys = setReferrerConfigKeys(
       managerKey,
       bundleAccountKey
     );
-    return setReferrerConfig(
-      invokedNtbundleProgramMeta,
-      keys,
-      referrerEnabled,
-      referralPfeeBps,
-      referralMfeeBps,
-      referrerMinDepositAmount
-    );
+    return setReferrerConfig(invokedNtbundleProgramMeta, keys, referrerEnabled, referrerMinDepositAmount);
   }
 
-  /// @param referralPfeeBps: u32
-  /// @param referralMfeeBps: u32
   /// @param referrerMinDepositAmount: u64
   public static Instruction setReferrerConfig(final AccountMeta invokedNtbundleProgramMeta,
                                               final List<AccountMeta> keys,
                                               final boolean referrerEnabled,
-                                              final long referralPfeeBps,
-                                              final long referralMfeeBps,
                                               final long referrerMinDepositAmount) {
-    final byte[] _data = new byte[25];
+    final byte[] _data = new byte[17];
     int i = SET_REFERRER_CONFIG_DISCRIMINATOR.write(_data, 0);
     _data[i] = (byte) (referrerEnabled ? 1 : 0);
     ++i;
-    putInt32LE(_data, i, (int) referralPfeeBps);
-    i += 4;
-    putInt32LE(_data, i, (int) referralMfeeBps);
-    i += 4;
     putInt64LE(_data, i, referrerMinDepositAmount);
 
     return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
   }
 
-  /// @param referralPfeeBps: u32
-  /// @param referralMfeeBps: u32
   /// @param referrerMinDepositAmount: u64
-  public record SetReferrerConfigIxData(Discriminator discriminator,
-                                        boolean referrerEnabled,
-                                        long referralPfeeBps,
-                                        long referralMfeeBps,
-                                        long referrerMinDepositAmount) implements SerDe {
+  public record SetReferrerConfigIxData(Discriminator discriminator, boolean referrerEnabled, long referrerMinDepositAmount) implements SerDe {
 
     public static SetReferrerConfigIxData read(final Instruction instruction) {
       return read(instruction.copyData(), 0);
     }
 
-    public static final int BYTES = 25;
+    public static final int BYTES = 17;
 
     public static final int REFERRER_ENABLED_OFFSET = 8;
-    public static final int REFERRAL_PFEE_BPS_OFFSET = 9;
-    public static final int REFERRAL_MFEE_BPS_OFFSET = 13;
-    public static final int REFERRER_MIN_DEPOSIT_AMOUNT_OFFSET = 17;
+    public static final int REFERRER_MIN_DEPOSIT_AMOUNT_OFFSET = 9;
 
     public static SetReferrerConfigIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -3058,16 +3094,8 @@ public final class NtbundleProgram {
       int i = _offset + discriminator.length();
       final var referrerEnabled = _data[i] == 1;
       ++i;
-      final var referralPfeeBps = Integer.toUnsignedLong(getInt32LE(_data, i));
-      i += 4;
-      final var referralMfeeBps = Integer.toUnsignedLong(getInt32LE(_data, i));
-      i += 4;
       final var referrerMinDepositAmount = getInt64LE(_data, i);
-      return new SetReferrerConfigIxData(discriminator,
-                                         referrerEnabled,
-                                         referralPfeeBps,
-                                         referralMfeeBps,
-                                         referrerMinDepositAmount);
+      return new SetReferrerConfigIxData(discriminator, referrerEnabled, referrerMinDepositAmount);
     }
 
     @Override
@@ -3075,10 +3103,6 @@ public final class NtbundleProgram {
       int i = _offset + discriminator.write(_data, _offset);
       _data[i] = (byte) (referrerEnabled ? 1 : 0);
       ++i;
-      putInt32LE(_data, i, (int) referralPfeeBps);
-      i += 4;
-      putInt32LE(_data, i, (int) referralMfeeBps);
-      i += 4;
       putInt64LE(_data, i, referrerMinDepositAmount);
       i += 8;
       return i - _offset;

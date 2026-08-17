@@ -3,10 +3,12 @@ package software.sava.idl.clients.nt.bundle.gen.events;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import java.math.BigInteger;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
@@ -18,6 +20,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param netToWallet: u64
 /// @param withdrawalFeeA: u64
 /// @param reason: u8
+/// @param sourceReferredNetDepositsAfter: Option<i128>
 public record BundleSwitchFallbackToWallet(Discriminator discriminator,
                                            PublicKey user,
                                            PublicKey sourceBundle,
@@ -27,9 +30,9 @@ public record BundleSwitchFallbackToWallet(Discriminator discriminator,
                                            long netToWallet,
                                            long withdrawalFeeA,
                                            int reason,
-                                           long timestamp) implements NtbundleEvent {
+                                           long timestamp,
+                                           BigInteger sourceReferredNetDepositsAfter) implements NtbundleEvent {
 
-  public static final int BYTES = 153;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(214, 242, 67, 218, 119, 180, 28, 139);
 
   public static final int USER_OFFSET = 8;
@@ -41,6 +44,7 @@ public record BundleSwitchFallbackToWallet(Discriminator discriminator,
   public static final int WITHDRAWAL_FEE_A_OFFSET = 136;
   public static final int REASON_OFFSET = 144;
   public static final int TIMESTAMP_OFFSET = 145;
+  public static final int SOURCE_REFERRED_NET_DEPOSITS_AFTER_OFFSET = 154;
 
   public static BundleSwitchFallbackToWallet read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -65,6 +69,14 @@ public record BundleSwitchFallbackToWallet(Discriminator discriminator,
     final var reason = _data[i] & 0xFF;
     ++i;
     final var timestamp = getInt64LE(_data, i);
+    i += 8;
+    final BigInteger sourceReferredNetDepositsAfter;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      sourceReferredNetDepositsAfter = null;
+    } else {
+      ++i;
+      sourceReferredNetDepositsAfter = getInt128LE(_data, i);
+    }
     return new BundleSwitchFallbackToWallet(discriminator,
                                             user,
                                             sourceBundle,
@@ -74,7 +86,8 @@ public record BundleSwitchFallbackToWallet(Discriminator discriminator,
                                             netToWallet,
                                             withdrawalFeeA,
                                             reason,
-                                            timestamp);
+                                            timestamp,
+                                            sourceReferredNetDepositsAfter);
   }
 
   @Override
@@ -98,11 +111,21 @@ public record BundleSwitchFallbackToWallet(Discriminator discriminator,
     ++i;
     putInt64LE(_data, i, timestamp);
     i += 8;
+    i += SerDeUtil.write128Optional(1, sourceReferredNetDepositsAfter, _data, i);
     return i - _offset;
   }
 
   @Override
   public int l() {
-    return BYTES;
+    return 8 + 32
+         + 32
+         + 32
+         + 16
+         + 8
+         + 8
+         + 8
+         + 1
+         + 8
+         + (sourceReferredNetDepositsAfter == null ? 1 : (1 + 16));
   }
 }

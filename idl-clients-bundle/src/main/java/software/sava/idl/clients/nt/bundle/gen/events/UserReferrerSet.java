@@ -3,6 +3,9 @@ package software.sava.idl.clients.nt.bundle.gen.events;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+
+import java.util.OptionalInt;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
@@ -14,15 +17,16 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param referralPfeeBps: u32
 /// @param referralMfeeBps: u32
+/// @param referralTierIndex: Option<u8> None when no bundle tier supplies an unmasked rate.
 public record UserReferrerSet(Discriminator discriminator,
                               PublicKey user,
                               PublicKey referrer,
                               PublicKey bundleAccountKey,
                               long referralPfeeBps,
                               long referralMfeeBps,
-                              long timestamp) implements NtbundleEvent {
+                              long timestamp,
+                              OptionalInt referralTierIndex) implements NtbundleEvent {
 
-  public static final int BYTES = 120;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(142, 193, 234, 134, 173, 80, 184, 232);
 
   public static final int USER_OFFSET = 8;
@@ -31,6 +35,7 @@ public record UserReferrerSet(Discriminator discriminator,
   public static final int REFERRAL_PFEE_BPS_OFFSET = 104;
   public static final int REFERRAL_MFEE_BPS_OFFSET = 108;
   public static final int TIMESTAMP_OFFSET = 112;
+  public static final int REFERRAL_TIER_INDEX_OFFSET = 121;
 
   public static UserReferrerSet read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -49,13 +54,22 @@ public record UserReferrerSet(Discriminator discriminator,
     final var referralMfeeBps = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var timestamp = getInt64LE(_data, i);
+    i += 8;
+    final OptionalInt referralTierIndex;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      referralTierIndex = OptionalInt.empty();
+    } else {
+      ++i;
+      referralTierIndex = OptionalInt.of(_data[i] & 0xFF);
+    }
     return new UserReferrerSet(discriminator,
                                user,
                                referrer,
                                bundleAccountKey,
                                referralPfeeBps,
                                referralMfeeBps,
-                               timestamp);
+                               timestamp,
+                               referralTierIndex);
   }
 
   @Override
@@ -73,11 +87,18 @@ public record UserReferrerSet(Discriminator discriminator,
     i += 4;
     putInt64LE(_data, i, timestamp);
     i += 8;
+    i += SerDeUtil.writeOptionalbyte(1, referralTierIndex, _data, i);
     return i - _offset;
   }
 
   @Override
   public int l() {
-    return BYTES;
+    return 8 + 32
+         + 32
+         + 32
+         + 4
+         + 4
+         + 8
+         + (referralTierIndex == null || referralTierIndex.isEmpty() ? 1 : (1 + 1));
   }
 }

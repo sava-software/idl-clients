@@ -36,9 +36,8 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param assetPrecision: u64
 /// @param assetDecimals: u8
 /// @param minDepositAmount: u64
-/// @param referralPfeeBps: u32
-/// @param referralMfeeBps: u32
 /// @param referrerMinDepositAmount: u64
+/// @param tierCount: u8
 public record Bundle(PublicKey _address,
                      Discriminator discriminator,
                      byte[] name,
@@ -71,14 +70,15 @@ public record Bundle(PublicKey _address,
                      long withdrawalRedemptionRequestCutoffTs,
                      long withdrawalRedemptionUnlockCurrentCycleTs,
                      long withdrawalRedemptionUnlockNextCycleTs,
-                     long referralPfeeBps,
-                     long referralMfeeBps,
                      boolean referrerEnabled,
                      long referrerMinDepositAmount,
+                     ReferralTier[] referralTiers,
+                     int tierCount,
                      byte[] padding) implements SerDe {
 
   public static final int NAME_LEN = 32;
-  public static final int PADDING_LEN = 190;
+  public static final int REFERRAL_TIERS_LEN = 5;
+  public static final int PADDING_LEN = 117;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(15, 82, 167, 230, 37, 214, 82, 80);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 
@@ -194,15 +194,15 @@ public record Bundle(PublicKey _address,
     i += 8;
     final var withdrawalRedemptionUnlockNextCycleTs = getInt64LE(_data, i);
     i += 8;
-    final var referralPfeeBps = Integer.toUnsignedLong(getInt32LE(_data, i));
-    i += 4;
-    final var referralMfeeBps = Integer.toUnsignedLong(getInt32LE(_data, i));
-    i += 4;
     final var referrerEnabled = _data[i] == 1;
     ++i;
     final var referrerMinDepositAmount = getInt64LE(_data, i);
     i += 8;
-    final var padding = new byte[190];
+    final var referralTiers = new ReferralTier[5];
+    i += SerDeUtil.readArray(referralTiers, ReferralTier::read, _data, i);
+    final var tierCount = _data[i] & 0xFF;
+    ++i;
+    final var padding = new byte[117];
     SerDeUtil.readArray(padding, _data, i);
     return new Bundle(_address,
                       discriminator,
@@ -236,10 +236,10 @@ public record Bundle(PublicKey _address,
                       withdrawalRedemptionRequestCutoffTs,
                       withdrawalRedemptionUnlockCurrentCycleTs,
                       withdrawalRedemptionUnlockNextCycleTs,
-                      referralPfeeBps,
-                      referralMfeeBps,
                       referrerEnabled,
                       referrerMinDepositAmount,
+                      referralTiers,
+                      tierCount,
                       padding);
   }
 
@@ -304,15 +304,14 @@ public record Bundle(PublicKey _address,
     i += 8;
     putInt64LE(_data, i, withdrawalRedemptionUnlockNextCycleTs);
     i += 8;
-    putInt32LE(_data, i, (int) referralPfeeBps);
-    i += 4;
-    putInt32LE(_data, i, (int) referralMfeeBps);
-    i += 4;
     _data[i] = (byte) (referrerEnabled ? 1 : 0);
     ++i;
     putInt64LE(_data, i, referrerMinDepositAmount);
     i += 8;
-    i += SerDeUtil.writeArrayChecked(padding, 190, _data, i);
+    i += SerDeUtil.writeArrayChecked(referralTiers, 5, _data, i);
+    _data[i] = (byte) tierCount;
+    ++i;
+    i += SerDeUtil.writeArrayChecked(padding, 117, _data, i);
     return i - _offset;
   }
 
@@ -348,10 +347,10 @@ public record Bundle(PublicKey _address,
          + 8
          + 8
          + 8
-         + 4
-         + 4
          + 1
          + 8
+         + SerDeUtil.lenArray(referralTiers)
+         + 1
          + SerDeUtil.lenArray(padding);
   }
 }

@@ -5,35 +5,27 @@ import software.sava.core.accounts.PublicKey;
 import software.sava.core.programs.Discriminator;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
-import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// @param referralPfeeBps: u32
-/// @param referralMfeeBps: u32
 /// @param referrerMinDepositAmount: u64
 public record ReferrerConfigSet(Discriminator discriminator,
                                 PublicKey manager,
                                 PublicKey bundleAccountKey,
                                 boolean referrerEnabled,
-                                long referralPfeeBps,
-                                long referralMfeeBps,
                                 long referrerMinDepositAmount,
                                 long timestamp) implements NtbundleEvent {
 
-  public static final int BYTES = 97;
+  public static final int BYTES = 89;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(21, 123, 218, 66, 121, 117, 89, 200);
 
   public static final int MANAGER_OFFSET = 8;
   public static final int BUNDLE_ACCOUNT_KEY_OFFSET = 40;
   public static final int REFERRER_ENABLED_OFFSET = 72;
-  public static final int REFERRAL_PFEE_BPS_OFFSET = 73;
-  public static final int REFERRAL_MFEE_BPS_OFFSET = 77;
-  public static final int REFERRER_MIN_DEPOSIT_AMOUNT_OFFSET = 81;
-  public static final int TIMESTAMP_OFFSET = 89;
+  public static final int REFERRER_MIN_DEPOSIT_AMOUNT_OFFSET = 73;
+  public static final int TIMESTAMP_OFFSET = 81;
 
   public static ReferrerConfigSet read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -47,10 +39,6 @@ public record ReferrerConfigSet(Discriminator discriminator,
     i += 32;
     final var referrerEnabled = _data[i] == 1;
     ++i;
-    final var referralPfeeBps = Integer.toUnsignedLong(getInt32LE(_data, i));
-    i += 4;
-    final var referralMfeeBps = Integer.toUnsignedLong(getInt32LE(_data, i));
-    i += 4;
     final var referrerMinDepositAmount = getInt64LE(_data, i);
     i += 8;
     final var timestamp = getInt64LE(_data, i);
@@ -58,8 +46,6 @@ public record ReferrerConfigSet(Discriminator discriminator,
                                  manager,
                                  bundleAccountKey,
                                  referrerEnabled,
-                                 referralPfeeBps,
-                                 referralMfeeBps,
                                  referrerMinDepositAmount,
                                  timestamp);
   }
@@ -73,10 +59,6 @@ public record ReferrerConfigSet(Discriminator discriminator,
     i += 32;
     _data[i] = (byte) (referrerEnabled ? 1 : 0);
     ++i;
-    putInt32LE(_data, i, (int) referralPfeeBps);
-    i += 4;
-    putInt32LE(_data, i, (int) referralMfeeBps);
-    i += 4;
     putInt64LE(_data, i, referrerMinDepositAmount);
     i += 8;
     putInt64LE(_data, i, timestamp);

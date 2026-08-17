@@ -13,6 +13,7 @@ import java.math.BigInteger;
 import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.getUInt128LE;
@@ -42,10 +43,11 @@ public record ReferrerAccount(PublicKey _address,
                               long estimatedPendingWithdrawalValue,
                               long withdrawalAvailableTimestamp,
                               long lastWithdrawalProcessTimestamp,
+                              BigInteger referredNetDeposits,
                               byte[] padding) implements SerDe {
 
   public static final int BYTES = 219;
-  public static final int PADDING_LEN = 64;
+  public static final int PADDING_LEN = 48;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(48, 19, 160, 54, 76, 220, 70, 9);
@@ -64,7 +66,8 @@ public record ReferrerAccount(PublicKey _address,
   public static final int ESTIMATED_PENDING_WITHDRAWAL_VALUE_OFFSET = 131;
   public static final int WITHDRAWAL_AVAILABLE_TIMESTAMP_OFFSET = 139;
   public static final int LAST_WITHDRAWAL_PROCESS_TIMESTAMP_OFFSET = 147;
-  public static final int PADDING_OFFSET = 155;
+  public static final int REFERRED_NET_DEPOSITS_OFFSET = 155;
+  public static final int PADDING_OFFSET = 171;
 
   public static Filter createBundleFilter(final PublicKey bundle) {
     return Filter.createMemCompFilter(BUNDLE_OFFSET, bundle);
@@ -134,6 +137,12 @@ public record ReferrerAccount(PublicKey _address,
     return Filter.createMemCompFilter(LAST_WITHDRAWAL_PROCESS_TIMESTAMP_OFFSET, _data);
   }
 
+  public static Filter createReferredNetDepositsFilter(final BigInteger referredNetDeposits) {
+    final byte[] _data = new byte[16];
+    putInt128LE(_data, 0, referredNetDeposits);
+    return Filter.createMemCompFilter(REFERRED_NET_DEPOSITS_OFFSET, _data);
+  }
+
   public static ReferrerAccount read(final byte[] _data, final int _offset) {
     return read(null, _data, _offset);
   }
@@ -194,7 +203,9 @@ public record ReferrerAccount(PublicKey _address,
     i += 8;
     final var lastWithdrawalProcessTimestamp = getInt64LE(_data, i);
     i += 8;
-    final var padding = new byte[64];
+    final var referredNetDeposits = getInt128LE(_data, i);
+    i += 16;
+    final var padding = new byte[48];
     SerDeUtil.readArray(padding, _data, i);
     return new ReferrerAccount(_address,
                                discriminator,
@@ -211,6 +222,7 @@ public record ReferrerAccount(PublicKey _address,
                                estimatedPendingWithdrawalValue,
                                withdrawalAvailableTimestamp,
                                lastWithdrawalProcessTimestamp,
+                               referredNetDeposits,
                                padding);
   }
 
@@ -243,7 +255,9 @@ public record ReferrerAccount(PublicKey _address,
     i += 8;
     putInt64LE(_data, i, lastWithdrawalProcessTimestamp);
     i += 8;
-    i += SerDeUtil.writeArrayChecked(padding, 64, _data, i);
+    putInt128LE(_data, i, referredNetDeposits);
+    i += 16;
+    i += SerDeUtil.writeArrayChecked(padding, 48, _data, i);
     return i - _offset;
   }
 
