@@ -2,41 +2,34 @@
 package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
-import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// MarketEvent::EscrowRequestAccepted Borsh variant 54.
-/// Payload type: EscrowRequestAcceptedEvent.
-///
 /// @param sequenceNumber: u64
-public record EscrowRequestAcceptedEvent(Discriminator discriminator, PublicKey receiverAuthority, long sequenceNumber) implements EternalEvent {
+public record EscrowRequestAcceptedEvent(PublicKey receiverAuthority, long sequenceNumber) implements SerDe {
 
-  public static final int BYTES = 41;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(54);
+  public static final int BYTES = 40;
 
-  public static final int RECEIVER_AUTHORITY_OFFSET = 1;
-  public static final int SEQUENCE_NUMBER_OFFSET = 33;
+  public static final int RECEIVER_AUTHORITY_OFFSET = 0;
+  public static final int SEQUENCE_NUMBER_OFFSET = 32;
 
   public static EscrowRequestAcceptedEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 1);
-    int i = _offset + discriminator.length();
+    int i = _offset;
     final var receiverAuthority = readPubKey(_data, i);
     i += 32;
     final var sequenceNumber = getInt64LE(_data, i);
-    return new EscrowRequestAcceptedEvent(discriminator, receiverAuthority, sequenceNumber);
+    return new EscrowRequestAcceptedEvent(receiverAuthority, sequenceNumber);
   }
 
   @Override
   public int write(final byte[] _data, final int _offset) {
-    int i = _offset + discriminator.write(_data, _offset);
+    int i = _offset;
     receiverAuthority.write(_data, i);
     i += 32;
     putInt64LE(_data, i, sequenceNumber);

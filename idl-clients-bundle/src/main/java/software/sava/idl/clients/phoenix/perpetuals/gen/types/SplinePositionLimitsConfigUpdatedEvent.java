@@ -2,7 +2,7 @@
 package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import java.util.OptionalLong;
@@ -12,18 +12,12 @@ import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
-import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// MarketEvent::SplinePositionLimitsConfigUpdated Borsh variant 63.
-/// Payload type: SplinePositionLimitsConfigUpdatedEvent.
-///
 /// @param sequenceNumber: u64
 /// @param prevSequenceNumberSlot: u64
 /// @param leverageDecreaseInBps: Option<u32>
 /// @param prevLeverageDecreaseInBps: u32
-public record SplinePositionLimitsConfigUpdatedEvent(Discriminator discriminator,
-                                                     PublicKey trader,
+public record SplinePositionLimitsConfigUpdatedEvent(PublicKey trader,
                                                      long sequenceNumber,
                                                      long prevSequenceNumberSlot,
                                                      PublicKey authority,
@@ -32,24 +26,21 @@ public record SplinePositionLimitsConfigUpdatedEvent(Discriminator discriminator
                                                      PositionSizeLimit maxPositionSize,
                                                      PositionSizeLimit prevMaxPositionSize,
                                                      OptionalLong leverageDecreaseInBps,
-                                                     long prevLeverageDecreaseInBps) implements EternalEvent {
+                                                     long prevLeverageDecreaseInBps) implements SerDe {
 
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(63);
-
-  public static final int TRADER_OFFSET = 1;
-  public static final int SEQUENCE_NUMBER_OFFSET = 33;
-  public static final int PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 41;
-  public static final int AUTHORITY_OFFSET = 49;
-  public static final int MARKET_OFFSET = 81;
-  public static final int SYMBOL_OFFSET = 113;
-  public static final int MAX_POSITION_SIZE_OFFSET = 130;
+  public static final int TRADER_OFFSET = 0;
+  public static final int SEQUENCE_NUMBER_OFFSET = 32;
+  public static final int PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 40;
+  public static final int AUTHORITY_OFFSET = 48;
+  public static final int MARKET_OFFSET = 80;
+  public static final int SYMBOL_OFFSET = 112;
+  public static final int MAX_POSITION_SIZE_OFFSET = 129;
 
   public static SplinePositionLimitsConfigUpdatedEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 1);
-    int i = _offset + discriminator.length();
+    int i = _offset;
     final var trader = readPubKey(_data, i);
     i += 32;
     final var sequenceNumber = getInt64LE(_data, i);
@@ -83,8 +74,7 @@ public record SplinePositionLimitsConfigUpdatedEvent(Discriminator discriminator
       i += 4;
     }
     final var prevLeverageDecreaseInBps = Integer.toUnsignedLong(getInt32LE(_data, i));
-    return new SplinePositionLimitsConfigUpdatedEvent(discriminator,
-                                                      trader,
+    return new SplinePositionLimitsConfigUpdatedEvent(trader,
                                                       sequenceNumber,
                                                       prevSequenceNumberSlot,
                                                       authority,
@@ -98,7 +88,7 @@ public record SplinePositionLimitsConfigUpdatedEvent(Discriminator discriminator
 
   @Override
   public int write(final byte[] _data, final int _offset) {
-    int i = _offset + discriminator.write(_data, _offset);
+    int i = _offset;
     trader.write(_data, i);
     i += 32;
     putInt64LE(_data, i, sequenceNumber);
@@ -120,7 +110,7 @@ public record SplinePositionLimitsConfigUpdatedEvent(Discriminator discriminator
 
   @Override
   public int l() {
-    return 1 + 32
+    return 32
          + 8
          + 8
          + 32

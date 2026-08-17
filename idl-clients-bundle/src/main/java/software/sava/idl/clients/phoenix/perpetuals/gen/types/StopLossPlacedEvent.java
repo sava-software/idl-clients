@@ -2,24 +2,18 @@
 package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
-import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// MarketEvent::StopLossPlaced Borsh variant 38.
-/// Payload type: StopLossPlacedEvent.
-///
 /// @param sequenceNumber: u64
 /// @param prevSequenceNumberSlot: u64
 /// @param assetId: u64
 /// @param positionSequenceNumber: u8
 /// @param placeSlot: u64
-public record StopLossPlacedEvent(Discriminator discriminator,
-                                  PublicKey trader,
+public record StopLossPlacedEvent(PublicKey trader,
                                   long sequenceNumber,
                                   long prevSequenceNumberSlot,
                                   long assetId,
@@ -31,31 +25,29 @@ public record StopLossPlacedEvent(Discriminator discriminator,
                                   int positionSequenceNumber,
                                   long placeSlot,
                                   PublicKey fundingKey,
-                                  StopLossOrderKind orderKind) implements EternalEvent {
+                                  StopLossOrderKind orderKind) implements SerDe {
 
-  public static final int BYTES = 125;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(38);
+  public static final int BYTES = 124;
 
-  public static final int TRADER_OFFSET = 1;
-  public static final int SEQUENCE_NUMBER_OFFSET = 33;
-  public static final int PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 41;
-  public static final int ASSET_ID_OFFSET = 49;
-  public static final int TRIGGER_PRICE_OFFSET = 57;
-  public static final int EXECUTION_PRICE_OFFSET = 65;
-  public static final int TRADE_SIZE_OFFSET = 73;
-  public static final int TRADE_SIDE_OFFSET = 81;
-  public static final int EXECUTION_DIRECTION_OFFSET = 82;
-  public static final int POSITION_SEQUENCE_NUMBER_OFFSET = 83;
-  public static final int PLACE_SLOT_OFFSET = 84;
-  public static final int FUNDING_KEY_OFFSET = 92;
-  public static final int ORDER_KIND_OFFSET = 124;
+  public static final int TRADER_OFFSET = 0;
+  public static final int SEQUENCE_NUMBER_OFFSET = 32;
+  public static final int PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 40;
+  public static final int ASSET_ID_OFFSET = 48;
+  public static final int TRIGGER_PRICE_OFFSET = 56;
+  public static final int EXECUTION_PRICE_OFFSET = 64;
+  public static final int TRADE_SIZE_OFFSET = 72;
+  public static final int TRADE_SIDE_OFFSET = 80;
+  public static final int EXECUTION_DIRECTION_OFFSET = 81;
+  public static final int POSITION_SEQUENCE_NUMBER_OFFSET = 82;
+  public static final int PLACE_SLOT_OFFSET = 83;
+  public static final int FUNDING_KEY_OFFSET = 91;
+  public static final int ORDER_KIND_OFFSET = 123;
 
   public static StopLossPlacedEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 1);
-    int i = _offset + discriminator.length();
+    int i = _offset;
     final var trader = readPubKey(_data, i);
     i += 32;
     final var sequenceNumber = getInt64LE(_data, i);
@@ -81,8 +73,7 @@ public record StopLossPlacedEvent(Discriminator discriminator,
     final var fundingKey = readPubKey(_data, i);
     i += 32;
     final var orderKind = StopLossOrderKind.read(_data, i);
-    return new StopLossPlacedEvent(discriminator,
-                                   trader,
+    return new StopLossPlacedEvent(trader,
                                    sequenceNumber,
                                    prevSequenceNumberSlot,
                                    assetId,
@@ -99,7 +90,7 @@ public record StopLossPlacedEvent(Discriminator discriminator,
 
   @Override
   public int write(final byte[] _data, final int _offset) {
-    int i = _offset + discriminator.write(_data, _offset);
+    int i = _offset;
     trader.write(_data, i);
     i += 32;
     putInt64LE(_data, i, sequenceNumber);

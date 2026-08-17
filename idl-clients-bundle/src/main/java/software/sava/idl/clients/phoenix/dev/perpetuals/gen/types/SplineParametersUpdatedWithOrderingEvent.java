@@ -2,24 +2,18 @@
 package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
-import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// MarketEvent::SplineParametersUpdatedWithOrdering Borsh variant 57.
-/// Payload type: SplineParametersUpdatedWithOrderingEvent.
-///
 /// @param sequenceNumber: u64
 /// @param prevSequenceNumberSlot: u64
 /// @param midPrice: u64
 /// @param userSequenceNumber: u64
-public record SplineParametersUpdatedWithOrderingEvent(Discriminator discriminator,
-                                                       PublicKey trader,
+public record SplineParametersUpdatedWithOrderingEvent(PublicKey trader,
                                                        long sequenceNumber,
                                                        long prevSequenceNumberSlot,
                                                        PublicKey authority,
@@ -29,32 +23,30 @@ public record SplineParametersUpdatedWithOrderingEvent(Discriminator discriminat
                                                        TickRegion[] bidRegions,
                                                        TickRegion[] askRegions,
                                                        long userSequenceNumber,
-                                                       byte[] clientOrderId) implements EternalEvent {
+                                                       byte[] clientOrderId) implements SerDe {
 
-  public static final int BYTES = 1121;
+  public static final int BYTES = 1120;
   public static final int BID_REGIONS_LEN = 10;
   public static final int ASK_REGIONS_LEN = 10;
   public static final int CLIENT_ORDER_ID_LEN = 16;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(57);
 
-  public static final int TRADER_OFFSET = 1;
-  public static final int SEQUENCE_NUMBER_OFFSET = 33;
-  public static final int PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 41;
-  public static final int AUTHORITY_OFFSET = 49;
-  public static final int MARKET_OFFSET = 81;
-  public static final int SYMBOL_OFFSET = 113;
-  public static final int MID_PRICE_OFFSET = 129;
-  public static final int BID_REGIONS_OFFSET = 137;
-  public static final int ASK_REGIONS_OFFSET = 617;
-  public static final int USER_SEQUENCE_NUMBER_OFFSET = 1097;
-  public static final int CLIENT_ORDER_ID_OFFSET = 1105;
+  public static final int TRADER_OFFSET = 0;
+  public static final int SEQUENCE_NUMBER_OFFSET = 32;
+  public static final int PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 40;
+  public static final int AUTHORITY_OFFSET = 48;
+  public static final int MARKET_OFFSET = 80;
+  public static final int SYMBOL_OFFSET = 112;
+  public static final int MID_PRICE_OFFSET = 128;
+  public static final int BID_REGIONS_OFFSET = 136;
+  public static final int ASK_REGIONS_OFFSET = 616;
+  public static final int USER_SEQUENCE_NUMBER_OFFSET = 1096;
+  public static final int CLIENT_ORDER_ID_OFFSET = 1104;
 
   public static SplineParametersUpdatedWithOrderingEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 1);
-    int i = _offset + discriminator.length();
+    int i = _offset;
     final var trader = readPubKey(_data, i);
     i += 32;
     final var sequenceNumber = getInt64LE(_data, i);
@@ -77,8 +69,7 @@ public record SplineParametersUpdatedWithOrderingEvent(Discriminator discriminat
     i += 8;
     final var clientOrderId = new byte[16];
     SerDeUtil.readArray(clientOrderId, _data, i);
-    return new SplineParametersUpdatedWithOrderingEvent(discriminator,
-                                                        trader,
+    return new SplineParametersUpdatedWithOrderingEvent(trader,
                                                         sequenceNumber,
                                                         prevSequenceNumberSlot,
                                                         authority,
@@ -93,7 +84,7 @@ public record SplineParametersUpdatedWithOrderingEvent(Discriminator discriminat
 
   @Override
   public int write(final byte[] _data, final int _offset) {
-    int i = _offset + discriminator.write(_data, _offset);
+    int i = _offset;
     trader.write(_data, i);
     i += 32;
     putInt64LE(_data, i, sequenceNumber);

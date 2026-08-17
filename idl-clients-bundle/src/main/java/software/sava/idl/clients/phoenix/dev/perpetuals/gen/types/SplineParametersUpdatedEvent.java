@@ -2,23 +2,17 @@
 package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
-import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// MarketEvent::SplineParametersUpdated Borsh variant 23.
-/// Payload type: SplineParametersUpdatedEvent.
-///
 /// @param sequenceNumber: u64
 /// @param prevSequenceNumberSlot: u64
 /// @param midPrice: u64
-public record SplineParametersUpdatedEvent(Discriminator discriminator,
-                                           PublicKey trader,
+public record SplineParametersUpdatedEvent(PublicKey trader,
                                            long sequenceNumber,
                                            long prevSequenceNumberSlot,
                                            PublicKey authority,
@@ -26,29 +20,27 @@ public record SplineParametersUpdatedEvent(Discriminator discriminator,
                                            Symbol symbol,
                                            long midPrice,
                                            TickRegion[] bidRegions,
-                                           TickRegion[] askRegions) implements EternalEvent {
+                                           TickRegion[] askRegions) implements SerDe {
 
-  public static final int BYTES = 1097;
+  public static final int BYTES = 1096;
   public static final int BID_REGIONS_LEN = 10;
   public static final int ASK_REGIONS_LEN = 10;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(23);
 
-  public static final int TRADER_OFFSET = 1;
-  public static final int SEQUENCE_NUMBER_OFFSET = 33;
-  public static final int PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 41;
-  public static final int AUTHORITY_OFFSET = 49;
-  public static final int MARKET_OFFSET = 81;
-  public static final int SYMBOL_OFFSET = 113;
-  public static final int MID_PRICE_OFFSET = 129;
-  public static final int BID_REGIONS_OFFSET = 137;
-  public static final int ASK_REGIONS_OFFSET = 617;
+  public static final int TRADER_OFFSET = 0;
+  public static final int SEQUENCE_NUMBER_OFFSET = 32;
+  public static final int PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 40;
+  public static final int AUTHORITY_OFFSET = 48;
+  public static final int MARKET_OFFSET = 80;
+  public static final int SYMBOL_OFFSET = 112;
+  public static final int MID_PRICE_OFFSET = 128;
+  public static final int BID_REGIONS_OFFSET = 136;
+  public static final int ASK_REGIONS_OFFSET = 616;
 
   public static SplineParametersUpdatedEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 1);
-    int i = _offset + discriminator.length();
+    int i = _offset;
     final var trader = readPubKey(_data, i);
     i += 32;
     final var sequenceNumber = getInt64LE(_data, i);
@@ -67,8 +59,7 @@ public record SplineParametersUpdatedEvent(Discriminator discriminator,
     i += SerDeUtil.readArray(bidRegions, TickRegion::read, _data, i);
     final var askRegions = new TickRegion[10];
     SerDeUtil.readArray(askRegions, TickRegion::read, _data, i);
-    return new SplineParametersUpdatedEvent(discriminator,
-                                            trader,
+    return new SplineParametersUpdatedEvent(trader,
                                             sequenceNumber,
                                             prevSequenceNumberSlot,
                                             authority,
@@ -81,7 +72,7 @@ public record SplineParametersUpdatedEvent(Discriminator discriminator,
 
   @Override
   public int write(final byte[] _data, final int _offset) {
-    int i = _offset + discriminator.write(_data, _offset);
+    int i = _offset;
     trader.write(_data, i);
     i += 32;
     putInt64LE(_data, i, sequenceNumber);

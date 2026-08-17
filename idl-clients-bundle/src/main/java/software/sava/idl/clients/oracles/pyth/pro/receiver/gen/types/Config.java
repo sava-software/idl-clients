@@ -137,4 +137,61 @@ public record Config(PublicKey _address,
          + 8
          + 1;
   }
+
+  /// The fields alone, as an instruction argument carries them — no discriminator is
+  /// read, and none is on the wire; the record's is the account constant, and its
+  /// `_address` is null because no account backs an argument.
+  public static Config readFields(final byte[] _data, final int _offset) {
+    int i = _offset;
+    final var governanceAuthority = readPubKey(_data, i);
+    i += 32;
+    final PublicKey targetGovernanceAuthority;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      targetGovernanceAuthority = null;
+      ++i;
+    } else {
+      ++i;
+      targetGovernanceAuthority = readPubKey(_data, i);
+      i += 32;
+    }
+    final var wormhole = readPubKey(_data, i);
+    i += 32;
+    final var validDataSources = SerDeUtil.readVector(4, DataSource.class, DataSource::read, _data, i);
+    i += SerDeUtil.lenVector(4, validDataSources);
+    final var singleUpdateFeeInLamports = getInt64LE(_data, i);
+    i += 8;
+    final var minimumSignatures = _data[i] & 0xFF;
+    return new Config(null,
+                      DISCRIMINATOR,
+                      governanceAuthority,
+                      targetGovernanceAuthority,
+                      wormhole,
+                      validDataSources,
+                      singleUpdateFeeInLamports,
+                      minimumSignatures);
+  }
+
+  public int writeFields(final byte[] _data, final int _offset) {
+    int i = _offset;
+    governanceAuthority.write(_data, i);
+    i += 32;
+    i += SerDeUtil.writeOptional(1, targetGovernanceAuthority, _data, i);
+    wormhole.write(_data, i);
+    i += 32;
+    i += SerDeUtil.writeVector(4, validDataSources, _data, i);
+    putInt64LE(_data, i, singleUpdateFeeInLamports);
+    i += 8;
+    _data[i] = (byte) minimumSignatures;
+    ++i;
+    return i - _offset;
+  }
+
+  public int lFields() {
+    return 32
+         + (targetGovernanceAuthority == null ? 1 : (1 + 32))
+         + 32
+         + SerDeUtil.lenVector(4, validDataSources)
+         + 8
+         + 1;
+  }
 }

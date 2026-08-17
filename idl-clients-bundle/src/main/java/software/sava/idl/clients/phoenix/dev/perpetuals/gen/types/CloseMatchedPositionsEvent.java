@@ -2,20 +2,14 @@
 package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
-import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// MarketEvent::CloseMatchedPositions Borsh variant 33.
-/// Payload type: CloseMatchedPositionsEvent.
-///
 /// @param assetId: u64
-public record CloseMatchedPositionsEvent(Discriminator discriminator,
-                                         PublicKey caller,
+public record CloseMatchedPositionsEvent(PublicKey caller,
                                          PublicKey closedShort,
                                          PublicKey closedLong,
                                          PublicKey inProfitAccount,
@@ -24,28 +18,26 @@ public record CloseMatchedPositionsEvent(Discriminator discriminator,
                                          SignedQuoteLots atLossCloseValue,
                                          SignedQuoteLots inProfitCloseValue,
                                          SignedQuoteLots atLossCollateralChange,
-                                         SignedQuoteLots inProfitCollateralChange) implements EternalEvent {
+                                         SignedQuoteLots inProfitCollateralChange) implements SerDe {
 
-  public static final int BYTES = 177;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(33);
+  public static final int BYTES = 176;
 
-  public static final int CALLER_OFFSET = 1;
-  public static final int CLOSED_SHORT_OFFSET = 33;
-  public static final int CLOSED_LONG_OFFSET = 65;
-  public static final int IN_PROFIT_ACCOUNT_OFFSET = 97;
-  public static final int ASSET_ID_OFFSET = 129;
-  public static final int BASE_LOTS_CLOSED_OFFSET = 137;
-  public static final int AT_LOSS_CLOSE_VALUE_OFFSET = 145;
-  public static final int IN_PROFIT_CLOSE_VALUE_OFFSET = 153;
-  public static final int AT_LOSS_COLLATERAL_CHANGE_OFFSET = 161;
-  public static final int IN_PROFIT_COLLATERAL_CHANGE_OFFSET = 169;
+  public static final int CALLER_OFFSET = 0;
+  public static final int CLOSED_SHORT_OFFSET = 32;
+  public static final int CLOSED_LONG_OFFSET = 64;
+  public static final int IN_PROFIT_ACCOUNT_OFFSET = 96;
+  public static final int ASSET_ID_OFFSET = 128;
+  public static final int BASE_LOTS_CLOSED_OFFSET = 136;
+  public static final int AT_LOSS_CLOSE_VALUE_OFFSET = 144;
+  public static final int IN_PROFIT_CLOSE_VALUE_OFFSET = 152;
+  public static final int AT_LOSS_COLLATERAL_CHANGE_OFFSET = 160;
+  public static final int IN_PROFIT_COLLATERAL_CHANGE_OFFSET = 168;
 
   public static CloseMatchedPositionsEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 1);
-    int i = _offset + discriminator.length();
+    int i = _offset;
     final var caller = readPubKey(_data, i);
     i += 32;
     final var closedShort = readPubKey(_data, i);
@@ -65,8 +57,7 @@ public record CloseMatchedPositionsEvent(Discriminator discriminator,
     final var atLossCollateralChange = SignedQuoteLots.read(_data, i);
     i += 8;
     final var inProfitCollateralChange = SignedQuoteLots.read(_data, i);
-    return new CloseMatchedPositionsEvent(discriminator,
-                                          caller,
+    return new CloseMatchedPositionsEvent(caller,
                                           closedShort,
                                           closedLong,
                                           inProfitAccount,
@@ -80,7 +71,7 @@ public record CloseMatchedPositionsEvent(Discriminator discriminator,
 
   @Override
   public int write(final byte[] _data, final int _offset) {
-    int i = _offset + discriminator.write(_data, _offset);
+    int i = _offset;
     caller.write(_data, i);
     i += 32;
     closedShort.write(_data, i);

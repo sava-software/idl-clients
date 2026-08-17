@@ -2,25 +2,19 @@
 package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
-import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// MarketEvent::TriggerOrderPlaced Borsh variant 58.
-/// Payload type: TriggerOrderPlacedEvent.
-///
 /// @param sequenceNumber: u64
 /// @param prevSequenceNumberSlot: u64
 /// @param assetId: u64
 /// @param conditionalOrderIndex: u8
 /// @param percent: u8
 /// @param positionSequenceNumber: u8
-public record TriggerOrderPlacedEvent(Discriminator discriminator,
-                                      PublicKey trader,
+public record TriggerOrderPlacedEvent(PublicKey trader,
                                       long sequenceNumber,
                                       long prevSequenceNumberSlot,
                                       long assetId,
@@ -36,35 +30,33 @@ public record TriggerOrderPlacedEvent(Discriminator discriminator,
                                       boolean usePercent,
                                       int percent,
                                       int positionSequenceNumber,
-                                      OptionalFIFOOrderId attachedOrderId) implements EternalEvent {
+                                      OptionalFIFOOrderId attachedOrderId) implements SerDe {
 
-  public static final int BYTES = 120;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(58);
+  public static final int BYTES = 119;
 
-  public static final int TRADER_OFFSET = 1;
-  public static final int SEQUENCE_NUMBER_OFFSET = 33;
-  public static final int PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 41;
-  public static final int ASSET_ID_OFFSET = 49;
-  public static final int CONDITIONAL_ORDER_INDEX_OFFSET = 57;
-  public static final int TRIGGER_PRICE_OFFSET = 58;
-  public static final int EXECUTION_PRICE_OFFSET = 66;
-  public static final int TRADE_SIDE_OFFSET = 74;
-  public static final int TRIGGER_DIRECTION_OFFSET = 75;
-  public static final int ORDER_KIND_OFFSET = 76;
-  public static final int MAX_SIZE_OFFSET = 77;
-  public static final int FILLABLE_SIZE_OFFSET = 85;
-  public static final int FILLED_SIZE_OFFSET = 93;
-  public static final int USE_PERCENT_OFFSET = 101;
-  public static final int PERCENT_OFFSET = 102;
-  public static final int POSITION_SEQUENCE_NUMBER_OFFSET = 103;
-  public static final int ATTACHED_ORDER_ID_OFFSET = 104;
+  public static final int TRADER_OFFSET = 0;
+  public static final int SEQUENCE_NUMBER_OFFSET = 32;
+  public static final int PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 40;
+  public static final int ASSET_ID_OFFSET = 48;
+  public static final int CONDITIONAL_ORDER_INDEX_OFFSET = 56;
+  public static final int TRIGGER_PRICE_OFFSET = 57;
+  public static final int EXECUTION_PRICE_OFFSET = 65;
+  public static final int TRADE_SIDE_OFFSET = 73;
+  public static final int TRIGGER_DIRECTION_OFFSET = 74;
+  public static final int ORDER_KIND_OFFSET = 75;
+  public static final int MAX_SIZE_OFFSET = 76;
+  public static final int FILLABLE_SIZE_OFFSET = 84;
+  public static final int FILLED_SIZE_OFFSET = 92;
+  public static final int USE_PERCENT_OFFSET = 100;
+  public static final int PERCENT_OFFSET = 101;
+  public static final int POSITION_SEQUENCE_NUMBER_OFFSET = 102;
+  public static final int ATTACHED_ORDER_ID_OFFSET = 103;
 
   public static TriggerOrderPlacedEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 1);
-    int i = _offset + discriminator.length();
+    int i = _offset;
     final var trader = readPubKey(_data, i);
     i += 32;
     final var sequenceNumber = getInt64LE(_data, i);
@@ -98,8 +90,7 @@ public record TriggerOrderPlacedEvent(Discriminator discriminator,
     final var positionSequenceNumber = _data[i] & 0xFF;
     ++i;
     final var attachedOrderId = OptionalFIFOOrderId.read(_data, i);
-    return new TriggerOrderPlacedEvent(discriminator,
-                                       trader,
+    return new TriggerOrderPlacedEvent(trader,
                                        sequenceNumber,
                                        prevSequenceNumberSlot,
                                        assetId,
@@ -120,7 +111,7 @@ public record TriggerOrderPlacedEvent(Discriminator discriminator,
 
   @Override
   public int write(final byte[] _data, final int _offset) {
-    int i = _offset + discriminator.write(_data, _offset);
+    int i = _offset;
     trader.write(_data, i);
     i += 32;
     putInt64LE(_data, i, sequenceNumber);

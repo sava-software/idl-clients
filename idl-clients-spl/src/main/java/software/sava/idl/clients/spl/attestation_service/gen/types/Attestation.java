@@ -13,7 +13,7 @@ import java.util.function.BiFunction;
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 public record Attestation(PublicKey _address,
@@ -26,13 +26,13 @@ public record Attestation(PublicKey _address,
                           long expiry,
                           PublicKey tokenAccount) implements SerDe {
 
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(152, 125, 183, 86, 36, 146, 121, 73);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(2);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 
-  public static final int NONCE_OFFSET = 8;
-  public static final int CREDENTIAL_OFFSET = 40;
-  public static final int SCHEMA_OFFSET = 72;
-  public static final int DATA_OFFSET = 104;
+  public static final int NONCE_OFFSET = 1;
+  public static final int CREDENTIAL_OFFSET = 33;
+  public static final int SCHEMA_OFFSET = 65;
+  public static final int DATA_OFFSET = 97;
 
   public static Filter createNonceFilter(final PublicKey nonce) {
     return Filter.createMemCompFilter(NONCE_OFFSET, nonce);
@@ -78,7 +78,7 @@ public record Attestation(PublicKey _address,
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var nonce = readPubKey(_data, i);
     i += 32;
@@ -125,7 +125,7 @@ public record Attestation(PublicKey _address,
 
   @Override
   public int l() {
-    return 8 + 32
+    return 1 + 32
          + 32
          + 32
          + SerDeUtil.lenVector(4, data)

@@ -2,47 +2,38 @@
 package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
-import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// MarketEvent::PingActivated Borsh variant 62.
-/// Payload type: PingActivatedEvent.
-///
 /// @param sequenceNumber: u64
 /// @param prevSequenceNumberSlot: u64
 /// @param assetId: u64
 /// @param conditionalOrderIndex: u8
-public record PingActivatedEvent(Discriminator discriminator,
-                                 PublicKey trader,
+public record PingActivatedEvent(PublicKey trader,
                                  long sequenceNumber,
                                  long prevSequenceNumberSlot,
                                  long assetId,
                                  int conditionalOrderIndex,
                                  ConditionalOrderPingSnapshot pre,
                                  ConditionalOrderPingSnapshot post,
-                                 BaseLots bookOrderRemainingBaseLots) implements EternalEvent {
+                                 BaseLots bookOrderRemainingBaseLots) implements SerDe {
 
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(62);
-
-  public static final int TRADER_OFFSET = 1;
-  public static final int SEQUENCE_NUMBER_OFFSET = 33;
-  public static final int PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 41;
-  public static final int ASSET_ID_OFFSET = 49;
-  public static final int CONDITIONAL_ORDER_INDEX_OFFSET = 57;
-  public static final int PRE_OFFSET = 58;
+  public static final int TRADER_OFFSET = 0;
+  public static final int SEQUENCE_NUMBER_OFFSET = 32;
+  public static final int PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 40;
+  public static final int ASSET_ID_OFFSET = 48;
+  public static final int CONDITIONAL_ORDER_INDEX_OFFSET = 56;
+  public static final int PRE_OFFSET = 57;
 
   public static PingActivatedEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 1);
-    int i = _offset + discriminator.length();
+    int i = _offset;
     final var trader = readPubKey(_data, i);
     i += 32;
     final var sequenceNumber = getInt64LE(_data, i);
@@ -64,8 +55,7 @@ public record PingActivatedEvent(Discriminator discriminator,
       ++i;
       bookOrderRemainingBaseLots = BaseLots.read(_data, i);
     }
-    return new PingActivatedEvent(discriminator,
-                                  trader,
+    return new PingActivatedEvent(trader,
                                   sequenceNumber,
                                   prevSequenceNumberSlot,
                                   assetId,
@@ -77,7 +67,7 @@ public record PingActivatedEvent(Discriminator discriminator,
 
   @Override
   public int write(final byte[] _data, final int _offset) {
-    int i = _offset + discriminator.write(_data, _offset);
+    int i = _offset;
     trader.write(_data, i);
     i += 32;
     putInt64LE(_data, i, sequenceNumber);
@@ -96,7 +86,7 @@ public record PingActivatedEvent(Discriminator discriminator,
 
   @Override
   public int l() {
-    return 1 + 32
+    return 32
          + 8
          + 8
          + 8

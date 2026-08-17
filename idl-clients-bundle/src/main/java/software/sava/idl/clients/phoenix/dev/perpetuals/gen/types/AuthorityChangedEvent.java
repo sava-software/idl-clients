@@ -2,44 +2,36 @@
 package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
-import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// MarketEvent::AuthorityChanged Borsh variant 46.
-/// Payload type: AuthorityChangedEvent.
-///
-public record AuthorityChangedEvent(Discriminator discriminator,
-                                    PublicKey previousAuthority,
+public record AuthorityChangedEvent(PublicKey previousAuthority,
                                     PublicKey newAuthority,
-                                    AuthorityType authorityType) implements EternalEvent {
+                                    AuthorityType authorityType) implements SerDe {
 
-  public static final int BYTES = 66;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(46);
+  public static final int BYTES = 65;
 
-  public static final int PREVIOUS_AUTHORITY_OFFSET = 1;
-  public static final int NEW_AUTHORITY_OFFSET = 33;
-  public static final int AUTHORITY_TYPE_OFFSET = 65;
+  public static final int PREVIOUS_AUTHORITY_OFFSET = 0;
+  public static final int NEW_AUTHORITY_OFFSET = 32;
+  public static final int AUTHORITY_TYPE_OFFSET = 64;
 
   public static AuthorityChangedEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 1);
-    int i = _offset + discriminator.length();
+    int i = _offset;
     final var previousAuthority = readPubKey(_data, i);
     i += 32;
     final var newAuthority = readPubKey(_data, i);
     i += 32;
     final var authorityType = AuthorityType.read(_data, i);
-    return new AuthorityChangedEvent(discriminator, previousAuthority, newAuthority, authorityType);
+    return new AuthorityChangedEvent(previousAuthority, newAuthority, authorityType);
   }
 
   @Override
   public int write(final byte[] _data, final int _offset) {
-    int i = _offset + discriminator.write(_data, _offset);
+    int i = _offset;
     previousAuthority.write(_data, i);
     i += 32;
     newAuthority.write(_data, i);

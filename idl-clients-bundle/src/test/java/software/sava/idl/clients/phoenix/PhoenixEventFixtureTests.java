@@ -1,8 +1,8 @@
 package software.sava.idl.clients.phoenix;
 
 import org.junit.jupiter.api.Test;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.EternalEvent;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.SlotContextEvent;
+import software.sava.idl.clients.phoenix.perpetuals.gen.events.EternalEvent;
+import software.sava.idl.clients.phoenix.perpetuals.gen.events.SlotContextEvent;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;

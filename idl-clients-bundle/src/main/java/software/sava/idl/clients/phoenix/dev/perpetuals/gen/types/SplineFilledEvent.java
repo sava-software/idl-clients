@@ -2,20 +2,14 @@
 package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
-import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// MarketEvent::SplineFilled Borsh variant 5.
-/// Payload type: SplineFilledEvent.
-///
 /// @param splineSequenceNumber: u64
-public record SplineFilledEvent(Discriminator discriminator,
-                                long splineSequenceNumber,
+public record SplineFilledEvent(long splineSequenceNumber,
                                 Side side,
                                 Ticks price,
                                 BaseLots baseLotsFilled,
@@ -25,29 +19,27 @@ public record SplineFilledEvent(Discriminator discriminator,
                                 SignedBaseLots makerBaseLotPosition,
                                 SignedQuoteLots makerVirtualQuoteLotPosition,
                                 SignedQuoteLots makerQuoteLotCollateral,
-                                SignedQuoteLotsPerBaseLot makerCumulativeFundingSnapshot) implements EternalEvent {
+                                SignedQuoteLotsPerBaseLot makerCumulativeFundingSnapshot) implements SerDe {
 
-  public static final int BYTES = 102;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(5);
+  public static final int BYTES = 101;
 
-  public static final int SPLINE_SEQUENCE_NUMBER_OFFSET = 1;
-  public static final int SIDE_OFFSET = 9;
-  public static final int PRICE_OFFSET = 10;
-  public static final int BASE_LOTS_FILLED_OFFSET = 18;
-  public static final int QUOTE_LOTS_FILLED_OFFSET = 26;
-  public static final int MAKER_OFFSET = 34;
-  public static final int MAKER_FEE_RATE_OFFSET = 66;
-  public static final int MAKER_BASE_LOT_POSITION_OFFSET = 70;
-  public static final int MAKER_VIRTUAL_QUOTE_LOT_POSITION_OFFSET = 78;
-  public static final int MAKER_QUOTE_LOT_COLLATERAL_OFFSET = 86;
-  public static final int MAKER_CUMULATIVE_FUNDING_SNAPSHOT_OFFSET = 94;
+  public static final int SPLINE_SEQUENCE_NUMBER_OFFSET = 0;
+  public static final int SIDE_OFFSET = 8;
+  public static final int PRICE_OFFSET = 9;
+  public static final int BASE_LOTS_FILLED_OFFSET = 17;
+  public static final int QUOTE_LOTS_FILLED_OFFSET = 25;
+  public static final int MAKER_OFFSET = 33;
+  public static final int MAKER_FEE_RATE_OFFSET = 65;
+  public static final int MAKER_BASE_LOT_POSITION_OFFSET = 69;
+  public static final int MAKER_VIRTUAL_QUOTE_LOT_POSITION_OFFSET = 77;
+  public static final int MAKER_QUOTE_LOT_COLLATERAL_OFFSET = 85;
+  public static final int MAKER_CUMULATIVE_FUNDING_SNAPSHOT_OFFSET = 93;
 
   public static SplineFilledEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 1);
-    int i = _offset + discriminator.length();
+    int i = _offset;
     final var splineSequenceNumber = getInt64LE(_data, i);
     i += 8;
     final var side = Side.read(_data, i);
@@ -69,8 +61,7 @@ public record SplineFilledEvent(Discriminator discriminator,
     final var makerQuoteLotCollateral = SignedQuoteLots.read(_data, i);
     i += 8;
     final var makerCumulativeFundingSnapshot = SignedQuoteLotsPerBaseLot.read(_data, i);
-    return new SplineFilledEvent(discriminator,
-                                 splineSequenceNumber,
+    return new SplineFilledEvent(splineSequenceNumber,
                                  side,
                                  price,
                                  baseLotsFilled,
@@ -85,7 +76,7 @@ public record SplineFilledEvent(Discriminator discriminator,
 
   @Override
   public int write(final byte[] _data, final int _offset) {
-    int i = _offset + discriminator.write(_data, _offset);
+    int i = _offset;
     putInt64LE(_data, i, splineSequenceNumber);
     i += 8;
     i += side.write(_data, i);

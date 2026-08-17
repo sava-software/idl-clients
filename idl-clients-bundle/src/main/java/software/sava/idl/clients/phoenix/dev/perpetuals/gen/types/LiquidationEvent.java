@@ -2,46 +2,38 @@
 package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
-import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// MarketEvent::Liquidation Borsh variant 32.
-/// Payload type: LiquidationEvent.
-///
 /// @param assetId: u32
-public record LiquidationEvent(Discriminator discriminator,
-                               PublicKey liquidator,
+public record LiquidationEvent(PublicKey liquidator,
                                PublicKey liquidatedTrader,
                                long assetId,
                                BaseLots liquidationSize,
                                Ticks markPrice,
                                BaseLots baseLotsFilled,
                                QuoteLots quoteLotsFilled,
-                               boolean positionClosed) implements EternalEvent {
+                               boolean positionClosed) implements SerDe {
 
-  public static final int BYTES = 102;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(32);
+  public static final int BYTES = 101;
 
-  public static final int LIQUIDATOR_OFFSET = 1;
-  public static final int LIQUIDATED_TRADER_OFFSET = 33;
-  public static final int ASSET_ID_OFFSET = 65;
-  public static final int LIQUIDATION_SIZE_OFFSET = 69;
-  public static final int MARK_PRICE_OFFSET = 77;
-  public static final int BASE_LOTS_FILLED_OFFSET = 85;
-  public static final int QUOTE_LOTS_FILLED_OFFSET = 93;
-  public static final int POSITION_CLOSED_OFFSET = 101;
+  public static final int LIQUIDATOR_OFFSET = 0;
+  public static final int LIQUIDATED_TRADER_OFFSET = 32;
+  public static final int ASSET_ID_OFFSET = 64;
+  public static final int LIQUIDATION_SIZE_OFFSET = 68;
+  public static final int MARK_PRICE_OFFSET = 76;
+  public static final int BASE_LOTS_FILLED_OFFSET = 84;
+  public static final int QUOTE_LOTS_FILLED_OFFSET = 92;
+  public static final int POSITION_CLOSED_OFFSET = 100;
 
   public static LiquidationEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 1);
-    int i = _offset + discriminator.length();
+    int i = _offset;
     final var liquidator = readPubKey(_data, i);
     i += 32;
     final var liquidatedTrader = readPubKey(_data, i);
@@ -57,8 +49,7 @@ public record LiquidationEvent(Discriminator discriminator,
     final var quoteLotsFilled = QuoteLots.read(_data, i);
     i += 8;
     final var positionClosed = _data[i] == 1;
-    return new LiquidationEvent(discriminator,
-                                liquidator,
+    return new LiquidationEvent(liquidator,
                                 liquidatedTrader,
                                 assetId,
                                 liquidationSize,
@@ -70,7 +61,7 @@ public record LiquidationEvent(Discriminator discriminator,
 
   @Override
   public int write(final byte[] _data, final int _offset) {
-    int i = _offset + discriminator.write(_data, _offset);
+    int i = _offset;
     liquidator.write(_data, i);
     i += 32;
     liquidatedTrader.write(_data, i);

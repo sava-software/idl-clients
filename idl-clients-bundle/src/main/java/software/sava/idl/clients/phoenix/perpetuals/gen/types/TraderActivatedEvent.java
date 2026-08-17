@@ -2,41 +2,34 @@
 package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
-import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// MarketEvent::TraderActivated Borsh variant 11.
-/// Payload type: TraderActivatedEvent.
-///
 /// @param globalTraderIndex: u32
-public record TraderActivatedEvent(Discriminator discriminator, long globalTraderIndex, PublicKey authority) implements EternalEvent {
+public record TraderActivatedEvent(long globalTraderIndex, PublicKey authority) implements SerDe {
 
-  public static final int BYTES = 37;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(11);
+  public static final int BYTES = 36;
 
-  public static final int GLOBAL_TRADER_INDEX_OFFSET = 1;
-  public static final int AUTHORITY_OFFSET = 5;
+  public static final int GLOBAL_TRADER_INDEX_OFFSET = 0;
+  public static final int AUTHORITY_OFFSET = 4;
 
   public static TraderActivatedEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 1);
-    int i = _offset + discriminator.length();
+    int i = _offset;
     final var globalTraderIndex = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var authority = readPubKey(_data, i);
-    return new TraderActivatedEvent(discriminator, globalTraderIndex, authority);
+    return new TraderActivatedEvent(globalTraderIndex, authority);
   }
 
   @Override
   public int write(final byte[] _data, final int _offset) {
-    int i = _offset + discriminator.write(_data, _offset);
+    int i = _offset;
     putInt32LE(_data, i, (int) globalTraderIndex);
     i += 4;
     authority.write(_data, i);

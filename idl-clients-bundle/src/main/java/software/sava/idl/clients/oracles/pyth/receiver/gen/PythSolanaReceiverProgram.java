@@ -55,9 +55,9 @@ public final class PythSolanaReceiverProgram {
   public static Instruction initialize(final AccountMeta invokedPythSolanaReceiverProgramMeta,
                                        final List<AccountMeta> keys,
                                        final Config initialConfig) {
-    final byte[] _data = new byte[8 + initialConfig.l()];
+    final byte[] _data = new byte[8 + initialConfig.lFields()];
     int i = INITIALIZE_DISCRIMINATOR.write(_data, 0);
-    initialConfig.write(_data, i);
+    initialConfig.writeFields(_data, i);
 
     return Instruction.createInstruction(invokedPythSolanaReceiverProgramMeta, keys, _data);
   }
@@ -76,20 +76,20 @@ public final class PythSolanaReceiverProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var initialConfig = Config.read(_data, i);
+      final var initialConfig = Config.readFields(_data, i);
       return new InitializeIxData(discriminator, initialConfig);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += initialConfig.write(_data, i);
+      i += initialConfig.writeFields(_data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + initialConfig.l();
+      return 8 + initialConfig.lFields();
     }
   }
 

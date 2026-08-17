@@ -2,47 +2,39 @@
 package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
-import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// MarketEvent::WithdrawStateTransition Borsh variant 36.
-/// Payload type: WithdrawStateTransitionEvent.
-///
 /// @param fromState: u8
 /// @param toState: u8
 /// @param reason: u8
 /// @param transitionCount: u16
-public record WithdrawStateTransitionEvent(Discriminator discriminator,
-                                           PublicKey trader,
+public record WithdrawStateTransitionEvent(PublicKey trader,
                                            QuoteLots amount,
                                            int fromState,
                                            int toState,
                                            int reason,
                                            int transitionCount,
-                                           NodePointer nodeIndex) implements EternalEvent {
+                                           NodePointer nodeIndex) implements SerDe {
 
-  public static final int BYTES = 50;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(36);
+  public static final int BYTES = 49;
 
-  public static final int TRADER_OFFSET = 1;
-  public static final int AMOUNT_OFFSET = 33;
-  public static final int FROM_STATE_OFFSET = 41;
-  public static final int TO_STATE_OFFSET = 42;
-  public static final int REASON_OFFSET = 43;
-  public static final int TRANSITION_COUNT_OFFSET = 44;
-  public static final int NODE_INDEX_OFFSET = 46;
+  public static final int TRADER_OFFSET = 0;
+  public static final int AMOUNT_OFFSET = 32;
+  public static final int FROM_STATE_OFFSET = 40;
+  public static final int TO_STATE_OFFSET = 41;
+  public static final int REASON_OFFSET = 42;
+  public static final int TRANSITION_COUNT_OFFSET = 43;
+  public static final int NODE_INDEX_OFFSET = 45;
 
   public static WithdrawStateTransitionEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 1);
-    int i = _offset + discriminator.length();
+    int i = _offset;
     final var trader = readPubKey(_data, i);
     i += 32;
     final var amount = QuoteLots.read(_data, i);
@@ -56,8 +48,7 @@ public record WithdrawStateTransitionEvent(Discriminator discriminator,
     final var transitionCount = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var nodeIndex = NodePointer.read(_data, i);
-    return new WithdrawStateTransitionEvent(discriminator,
-                                            trader,
+    return new WithdrawStateTransitionEvent(trader,
                                             amount,
                                             fromState,
                                             toState,
@@ -68,7 +59,7 @@ public record WithdrawStateTransitionEvent(Discriminator discriminator,
 
   @Override
   public int write(final byte[] _data, final int _offset) {
-    int i = _offset + discriminator.write(_data, _offset);
+    int i = _offset;
     trader.write(_data, i);
     i += 32;
     i += amount.write(_data, i);

@@ -2,45 +2,37 @@
 package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
-import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// MarketEvent::TraderRegistered Borsh variant 9.
-/// Payload type: TraderRegisteredEvent.
-///
 /// @param traderSequenceNumber: u64
 /// @param maxPositions: u64
 /// @param traderPdaIndex: u8
 /// @param traderSubaccountIndex: u8
-public record TraderRegisteredEvent(Discriminator discriminator,
-                                    long traderSequenceNumber,
+public record TraderRegisteredEvent(long traderSequenceNumber,
                                     PublicKey trader,
                                     PublicKey authority,
                                     long maxPositions,
                                     int traderPdaIndex,
-                                    int traderSubaccountIndex) implements EternalEvent {
+                                    int traderSubaccountIndex) implements SerDe {
 
-  public static final int BYTES = 83;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(9);
+  public static final int BYTES = 82;
 
-  public static final int TRADER_SEQUENCE_NUMBER_OFFSET = 1;
-  public static final int TRADER_OFFSET = 9;
-  public static final int AUTHORITY_OFFSET = 41;
-  public static final int MAX_POSITIONS_OFFSET = 73;
-  public static final int TRADER_PDA_INDEX_OFFSET = 81;
-  public static final int TRADER_SUBACCOUNT_INDEX_OFFSET = 82;
+  public static final int TRADER_SEQUENCE_NUMBER_OFFSET = 0;
+  public static final int TRADER_OFFSET = 8;
+  public static final int AUTHORITY_OFFSET = 40;
+  public static final int MAX_POSITIONS_OFFSET = 72;
+  public static final int TRADER_PDA_INDEX_OFFSET = 80;
+  public static final int TRADER_SUBACCOUNT_INDEX_OFFSET = 81;
 
   public static TraderRegisteredEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 1);
-    int i = _offset + discriminator.length();
+    int i = _offset;
     final var traderSequenceNumber = getInt64LE(_data, i);
     i += 8;
     final var trader = readPubKey(_data, i);
@@ -52,8 +44,7 @@ public record TraderRegisteredEvent(Discriminator discriminator,
     final var traderPdaIndex = _data[i] & 0xFF;
     ++i;
     final var traderSubaccountIndex = _data[i] & 0xFF;
-    return new TraderRegisteredEvent(discriminator,
-                                     traderSequenceNumber,
+    return new TraderRegisteredEvent(traderSequenceNumber,
                                      trader,
                                      authority,
                                      maxPositions,
@@ -63,7 +54,7 @@ public record TraderRegisteredEvent(Discriminator discriminator,
 
   @Override
   public int write(final byte[] _data, final int _offset) {
-    int i = _offset + discriminator.write(_data, _offset);
+    int i = _offset;
     putInt64LE(_data, i, traderSequenceNumber);
     i += 8;
     trader.write(_data, i);

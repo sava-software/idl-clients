@@ -2,21 +2,15 @@
 package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
-import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// MarketEvent::SetPermission Borsh variant 45.
-/// Payload type: SetPermissionEvent.
-///
 /// @param previousPermission: u64
 /// @param newPermission: u64
-public record SetPermissionEvent(Discriminator discriminator,
-                                 PublicKey authority,
+public record SetPermissionEvent(PublicKey authority,
                                  PublicKey user,
                                  long previousPermission,
                                  long newPermission,
@@ -24,27 +18,25 @@ public record SetPermissionEvent(Discriminator discriminator,
                                  long newExpiresAtTimestamp,
                                  long previousNumSignerActionsRemaining,
                                  long newNumSignerActionsRemaining,
-                                 boolean created) implements EternalEvent {
+                                 boolean created) implements SerDe {
 
-  public static final int BYTES = 114;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(45);
+  public static final int BYTES = 113;
 
-  public static final int AUTHORITY_OFFSET = 1;
-  public static final int USER_OFFSET = 33;
-  public static final int PREVIOUS_PERMISSION_OFFSET = 65;
-  public static final int NEW_PERMISSION_OFFSET = 73;
-  public static final int PREVIOUS_EXPIRES_AT_TIMESTAMP_OFFSET = 81;
-  public static final int NEW_EXPIRES_AT_TIMESTAMP_OFFSET = 89;
-  public static final int PREVIOUS_NUM_SIGNER_ACTIONS_REMAINING_OFFSET = 97;
-  public static final int NEW_NUM_SIGNER_ACTIONS_REMAINING_OFFSET = 105;
-  public static final int CREATED_OFFSET = 113;
+  public static final int AUTHORITY_OFFSET = 0;
+  public static final int USER_OFFSET = 32;
+  public static final int PREVIOUS_PERMISSION_OFFSET = 64;
+  public static final int NEW_PERMISSION_OFFSET = 72;
+  public static final int PREVIOUS_EXPIRES_AT_TIMESTAMP_OFFSET = 80;
+  public static final int NEW_EXPIRES_AT_TIMESTAMP_OFFSET = 88;
+  public static final int PREVIOUS_NUM_SIGNER_ACTIONS_REMAINING_OFFSET = 96;
+  public static final int NEW_NUM_SIGNER_ACTIONS_REMAINING_OFFSET = 104;
+  public static final int CREATED_OFFSET = 112;
 
   public static SetPermissionEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 1);
-    int i = _offset + discriminator.length();
+    int i = _offset;
     final var authority = readPubKey(_data, i);
     i += 32;
     final var user = readPubKey(_data, i);
@@ -62,8 +54,7 @@ public record SetPermissionEvent(Discriminator discriminator,
     final var newNumSignerActionsRemaining = getInt64LE(_data, i);
     i += 8;
     final var created = _data[i] == 1;
-    return new SetPermissionEvent(discriminator,
-                                  authority,
+    return new SetPermissionEvent(authority,
                                   user,
                                   previousPermission,
                                   newPermission,
@@ -76,7 +67,7 @@ public record SetPermissionEvent(Discriminator discriminator,
 
   @Override
   public int write(final byte[] _data, final int _offset) {
-    int i = _offset + discriminator.write(_data, _offset);
+    int i = _offset;
     authority.write(_data, i);
     i += 32;
     user.write(_data, i);

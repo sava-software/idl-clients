@@ -2,37 +2,28 @@
 package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import java.util.OptionalLong;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
-import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// MarketEvent::AdminParameterUpdated Borsh variant 48.
-/// Payload type: AdminParameterUpdatedEvent.
-///
 /// @param assetId: Option<u32>
-public record AdminParameterUpdatedEvent(Discriminator discriminator,
-                                         PublicKey authority,
+public record AdminParameterUpdatedEvent(PublicKey authority,
                                          Symbol assetSymbol,
                                          OptionalLong assetId,
-                                         AdminParameterUpdateKind updateKind) implements EternalEvent {
+                                         AdminParameterUpdateKind updateKind) implements SerDe {
 
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(48);
-
-  public static final int AUTHORITY_OFFSET = 1;
-  public static final int ASSET_SYMBOL_OFFSET = 34;
+  public static final int AUTHORITY_OFFSET = 0;
+  public static final int ASSET_SYMBOL_OFFSET = 33;
 
   public static AdminParameterUpdatedEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 1);
-    int i = _offset + discriminator.length();
+    int i = _offset;
     final var authority = readPubKey(_data, i);
     i += 32;
     final Symbol assetSymbol;
@@ -54,8 +45,7 @@ public record AdminParameterUpdatedEvent(Discriminator discriminator,
       i += 4;
     }
     final var updateKind = AdminParameterUpdateKind.read(_data, i);
-    return new AdminParameterUpdatedEvent(discriminator,
-                                          authority,
+    return new AdminParameterUpdatedEvent(authority,
                                           assetSymbol,
                                           assetId,
                                           updateKind);
@@ -63,7 +53,7 @@ public record AdminParameterUpdatedEvent(Discriminator discriminator,
 
   @Override
   public int write(final byte[] _data, final int _offset) {
-    int i = _offset + discriminator.write(_data, _offset);
+    int i = _offset;
     authority.write(_data, i);
     i += 32;
     i += SerDeUtil.writeOptional(1, assetSymbol, _data, i);
@@ -74,6 +64,6 @@ public record AdminParameterUpdatedEvent(Discriminator discriminator,
 
   @Override
   public int l() {
-    return 1 + 32 + (assetSymbol == null ? 1 : (1 + assetSymbol.l())) + (assetId == null || assetId.isEmpty() ? 1 : (1 + 4)) + updateKind.l();
+    return 32 + (assetSymbol == null ? 1 : (1 + assetSymbol.l())) + (assetId == null || assetId.isEmpty() ? 1 : (1 + 4)) + updateKind.l();
   }
 }

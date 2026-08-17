@@ -2,46 +2,38 @@
 package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
-import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// MarketEvent::ExchangeStatusChanged Borsh variant 41.
-/// Payload type: ExchangeStatusChangedEvent.
-///
 /// @param previousBits: u8
 /// @param newBits: u8
-public record ExchangeStatusChangedEvent(Discriminator discriminator,
-                                         int previousBits,
+public record ExchangeStatusChangedEvent(int previousBits,
                                          int newBits,
-                                         PublicKey authority) implements EternalEvent {
+                                         PublicKey authority) implements SerDe {
 
-  public static final int BYTES = 35;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(41);
+  public static final int BYTES = 34;
 
-  public static final int PREVIOUS_BITS_OFFSET = 1;
-  public static final int NEW_BITS_OFFSET = 2;
-  public static final int AUTHORITY_OFFSET = 3;
+  public static final int PREVIOUS_BITS_OFFSET = 0;
+  public static final int NEW_BITS_OFFSET = 1;
+  public static final int AUTHORITY_OFFSET = 2;
 
   public static ExchangeStatusChangedEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 1);
-    int i = _offset + discriminator.length();
+    int i = _offset;
     final var previousBits = _data[i] & 0xFF;
     ++i;
     final var newBits = _data[i] & 0xFF;
     ++i;
     final var authority = readPubKey(_data, i);
-    return new ExchangeStatusChangedEvent(discriminator, previousBits, newBits, authority);
+    return new ExchangeStatusChangedEvent(previousBits, newBits, authority);
   }
 
   @Override
   public int write(final byte[] _data, final int _offset) {
-    int i = _offset + discriminator.write(_data, _offset);
+    int i = _offset;
     _data[i] = (byte) previousBits;
     ++i;
     _data[i] = (byte) newBits;

@@ -974,19 +974,35 @@ that the IDL's seeds do *not* reach them, so the two cannot be confused again.
 This is upstream's own published metadata (`sources.json` resolves the IDL from
 program-metadata account `HBWQuFtc…`, `matchesDeployed: true`) — the check
 confirms the IDL is the one the program published, not that it describes the
-program. **The same IDL is stale about `EmberState` itself**, which the generated
-code inherits and which is *not* fixed here:
+program. **The same IDL is stale about `EmberState` itself**, in two ways, only
+one of which is fixed (2026-08-16):
 
-| | IDL / generated | on chain |
-|---|---|---|
-| discriminator | `[0, 208, 11, 177, 63, 157, 55, 98]` | `[142, 206, 11, 177, 63, 157, 55, 98]` |
-| size | 104 | 136 |
+| | IDL | generated | on chain |
+|---|---|---|---|
+| discriminator | `[0, 208, 11, 177, 63, 157, 55, 98]` | `[142, 206, 11, 177, 63, 157, 55, 98]` | `[142, 206, 11, 177, 63, 157, 55, 98]` |
+| size | 104 | 104 | 136 |
 
 Both live accounts agree, and the trailing 32 bytes are the Phoenix program the
-state is keyed on — a fourth field the IDL does not declare. `EmberState.read`
-still returns the right `authority`, `inputMint` and `outputMint` (their offsets
-are unchanged) but `BYTES`, `SIZE_FILTER` and `DISCRIMINATOR_FILTER` match
-nothing, so any account *scan* for Ember state silently returns empty.
+state is keyed on — a fourth field the IDL does not declare.
+
+The **discriminator is overridden** — `accountDiscriminators` in
+`main_net_programs.json` supplies the seed `state_account`, which the generator
+hashes to the value the program writes, the same one Phoenix's own SDK computes
+in `EmberStateView::load`. Without it `readChecked` threw for 100% of live
+accounts, and the correct value is independently derivable, so carrying it costs
+one line and settles it. `DISCRIMINATOR_FILTER` now matches both live accounts.
+
+The **short layout is deliberately not fixed**. `BYTES` stays 104, so
+`SIZE_FILTER` still asks for a size no account has and a size-filtered scan still
+returns empty; scan on `DISCRIMINATOR_FILTER` instead. A field-list override
+would be a private fork of someone else's account definition maintained forever,
+and Phoenix publishes no IDL in their repo to track — that fix belongs upstream.
+`EmberState.read` returns the right `authority`, `inputMint` and `outputMint`
+(their offsets are unchanged) and drops the fourth key.
+
+`EmberStateTests` pins all of this against a committed mainnet fixture, including
+the shortfall, so if `BYTES` ever becomes 136 the test fails and says upstream
+shipped a corrected IDL.
 
 #### kvault: the lending-market block was missing entirely (2026-08-06)
 

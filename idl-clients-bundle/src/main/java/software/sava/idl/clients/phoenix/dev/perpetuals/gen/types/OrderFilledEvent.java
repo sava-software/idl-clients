@@ -2,20 +2,14 @@
 package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
-import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// MarketEvent::OrderFilled Borsh variant 3.
-/// Payload type: OrderFilledEvent.
-///
 /// @param orderSequenceNumber: u64
-public record OrderFilledEvent(Discriminator discriminator,
-                               long orderSequenceNumber,
+public record OrderFilledEvent(long orderSequenceNumber,
                                Side side,
                                Ticks price,
                                BaseLots baseLotsFilled,
@@ -26,30 +20,28 @@ public record OrderFilledEvent(Discriminator discriminator,
                                SignedBaseLots makerBaseLotPosition,
                                SignedQuoteLots makerVirtualQuoteLotPosition,
                                SignedQuoteLots makerQuoteLotCollateral,
-                               SignedQuoteLotsPerBaseLot makerCumulativeFundingSnapshot) implements EternalEvent {
+                               SignedQuoteLotsPerBaseLot makerCumulativeFundingSnapshot) implements SerDe {
 
-  public static final int BYTES = 110;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(3);
+  public static final int BYTES = 109;
 
-  public static final int ORDER_SEQUENCE_NUMBER_OFFSET = 1;
-  public static final int SIDE_OFFSET = 9;
-  public static final int PRICE_OFFSET = 10;
-  public static final int BASE_LOTS_FILLED_OFFSET = 18;
-  public static final int QUOTE_LOTS_FILLED_OFFSET = 26;
-  public static final int QUANTITY_REMAINING_OFFSET = 34;
-  public static final int MAKER_OFFSET = 42;
-  public static final int MAKER_FEE_RATE_OFFSET = 74;
-  public static final int MAKER_BASE_LOT_POSITION_OFFSET = 78;
-  public static final int MAKER_VIRTUAL_QUOTE_LOT_POSITION_OFFSET = 86;
-  public static final int MAKER_QUOTE_LOT_COLLATERAL_OFFSET = 94;
-  public static final int MAKER_CUMULATIVE_FUNDING_SNAPSHOT_OFFSET = 102;
+  public static final int ORDER_SEQUENCE_NUMBER_OFFSET = 0;
+  public static final int SIDE_OFFSET = 8;
+  public static final int PRICE_OFFSET = 9;
+  public static final int BASE_LOTS_FILLED_OFFSET = 17;
+  public static final int QUOTE_LOTS_FILLED_OFFSET = 25;
+  public static final int QUANTITY_REMAINING_OFFSET = 33;
+  public static final int MAKER_OFFSET = 41;
+  public static final int MAKER_FEE_RATE_OFFSET = 73;
+  public static final int MAKER_BASE_LOT_POSITION_OFFSET = 77;
+  public static final int MAKER_VIRTUAL_QUOTE_LOT_POSITION_OFFSET = 85;
+  public static final int MAKER_QUOTE_LOT_COLLATERAL_OFFSET = 93;
+  public static final int MAKER_CUMULATIVE_FUNDING_SNAPSHOT_OFFSET = 101;
 
   public static OrderFilledEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 1);
-    int i = _offset + discriminator.length();
+    int i = _offset;
     final var orderSequenceNumber = getInt64LE(_data, i);
     i += 8;
     final var side = Side.read(_data, i);
@@ -73,8 +65,7 @@ public record OrderFilledEvent(Discriminator discriminator,
     final var makerQuoteLotCollateral = SignedQuoteLots.read(_data, i);
     i += 8;
     final var makerCumulativeFundingSnapshot = SignedQuoteLotsPerBaseLot.read(_data, i);
-    return new OrderFilledEvent(discriminator,
-                                orderSequenceNumber,
+    return new OrderFilledEvent(orderSequenceNumber,
                                 side,
                                 price,
                                 baseLotsFilled,
@@ -90,7 +81,7 @@ public record OrderFilledEvent(Discriminator discriminator,
 
   @Override
   public int write(final byte[] _data, final int _offset) {
-    int i = _offset + discriminator.write(_data, _offset);
+    int i = _offset;
     putInt64LE(_data, i, orderSequenceNumber);
     i += 8;
     i += side.write(_data, i);

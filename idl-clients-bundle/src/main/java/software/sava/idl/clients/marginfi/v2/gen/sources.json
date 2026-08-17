@@ -3,7 +3,7 @@
   "deployed": "vcs",
   "lastDeploySlot": 432875565,
   "programDataState": "upgradeable",
-  "programDataStateSlot": 439302329,
+  "programDataStateSlot": 439866759,
   "programDataPayloadSha256": "3bd87af555409683247bf144b67680e3f5537f8fcf60af05c67c8cf8b0c86927",
   "programDataPayloadLength": 10485715,
   "channels": {

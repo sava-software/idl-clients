@@ -2,45 +2,37 @@
 package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
-import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// MarketEvent::TraderFundsDeposited Borsh variant 13.
-/// Payload type: TraderFundsDepositedEvent.
-///
 /// @param traderSequenceNumber: u64
 /// @param prevSequenceNumberSlot: u64
-public record TraderFundsDepositedEvent(Discriminator discriminator,
-                                        PublicKey trader,
+public record TraderFundsDepositedEvent(PublicKey trader,
                                         PublicKey authority,
                                         QuoteLots amount,
                                         TraderCapabilityFlags traderFlags,
                                         SignedQuoteLots newCollateralBalance,
                                         long traderSequenceNumber,
-                                        long prevSequenceNumberSlot) implements EternalEvent {
+                                        long prevSequenceNumberSlot) implements SerDe {
 
-  public static final int BYTES = 101;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(13);
+  public static final int BYTES = 100;
 
-  public static final int TRADER_OFFSET = 1;
-  public static final int AUTHORITY_OFFSET = 33;
-  public static final int AMOUNT_OFFSET = 65;
-  public static final int TRADER_FLAGS_OFFSET = 73;
-  public static final int NEW_COLLATERAL_BALANCE_OFFSET = 77;
-  public static final int TRADER_SEQUENCE_NUMBER_OFFSET = 85;
-  public static final int PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 93;
+  public static final int TRADER_OFFSET = 0;
+  public static final int AUTHORITY_OFFSET = 32;
+  public static final int AMOUNT_OFFSET = 64;
+  public static final int TRADER_FLAGS_OFFSET = 72;
+  public static final int NEW_COLLATERAL_BALANCE_OFFSET = 76;
+  public static final int TRADER_SEQUENCE_NUMBER_OFFSET = 84;
+  public static final int PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 92;
 
   public static TraderFundsDepositedEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 1);
-    int i = _offset + discriminator.length();
+    int i = _offset;
     final var trader = readPubKey(_data, i);
     i += 32;
     final var authority = readPubKey(_data, i);
@@ -54,8 +46,7 @@ public record TraderFundsDepositedEvent(Discriminator discriminator,
     final var traderSequenceNumber = getInt64LE(_data, i);
     i += 8;
     final var prevSequenceNumberSlot = getInt64LE(_data, i);
-    return new TraderFundsDepositedEvent(discriminator,
-                                         trader,
+    return new TraderFundsDepositedEvent(trader,
                                          authority,
                                          amount,
                                          traderFlags,
@@ -66,7 +57,7 @@ public record TraderFundsDepositedEvent(Discriminator discriminator,
 
   @Override
   public int write(final byte[] _data, final int _offset) {
-    int i = _offset + discriminator.write(_data, _offset);
+    int i = _offset;
     trader.write(_data, i);
     i += 32;
     authority.write(_data, i);

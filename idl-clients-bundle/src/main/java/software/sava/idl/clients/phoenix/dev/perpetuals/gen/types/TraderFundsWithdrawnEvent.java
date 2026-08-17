@@ -2,17 +2,12 @@
 package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
-import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// MarketEvent::TraderFundsWithdrawn Borsh variant 14.
-/// Payload type: TraderFundsWithdrawnEvent.
-///
 /// @param amount: u64
 /// @param traderSequenceNumber: u64
 /// @param traderPrevSequenceNumberSlot: u64
@@ -21,8 +16,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param totalQueuedAmount: u64
 /// @param withdrawQueueSequenceNumber: u64
 /// @param withdrawQueuePrevSequenceNumberSlot: u64
-public record TraderFundsWithdrawnEvent(Discriminator discriminator,
-                                        PublicKey trader,
+public record TraderFundsWithdrawnEvent(PublicKey trader,
                                         PublicKey authority,
                                         long amount,
                                         long traderSequenceNumber,
@@ -31,28 +25,26 @@ public record TraderFundsWithdrawnEvent(Discriminator discriminator,
                                         long postQueueSize,
                                         long totalQueuedAmount,
                                         long withdrawQueueSequenceNumber,
-                                        long withdrawQueuePrevSequenceNumberSlot) implements EternalEvent {
+                                        long withdrawQueuePrevSequenceNumberSlot) implements SerDe {
 
-  public static final int BYTES = 129;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(14);
+  public static final int BYTES = 128;
 
-  public static final int TRADER_OFFSET = 1;
-  public static final int AUTHORITY_OFFSET = 33;
-  public static final int AMOUNT_OFFSET = 65;
-  public static final int TRADER_SEQUENCE_NUMBER_OFFSET = 73;
-  public static final int TRADER_PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 81;
-  public static final int POST_WITHDRAWAL_BUDGET_OFFSET = 89;
-  public static final int POST_QUEUE_SIZE_OFFSET = 97;
-  public static final int TOTAL_QUEUED_AMOUNT_OFFSET = 105;
-  public static final int WITHDRAW_QUEUE_SEQUENCE_NUMBER_OFFSET = 113;
-  public static final int WITHDRAW_QUEUE_PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 121;
+  public static final int TRADER_OFFSET = 0;
+  public static final int AUTHORITY_OFFSET = 32;
+  public static final int AMOUNT_OFFSET = 64;
+  public static final int TRADER_SEQUENCE_NUMBER_OFFSET = 72;
+  public static final int TRADER_PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 80;
+  public static final int POST_WITHDRAWAL_BUDGET_OFFSET = 88;
+  public static final int POST_QUEUE_SIZE_OFFSET = 96;
+  public static final int TOTAL_QUEUED_AMOUNT_OFFSET = 104;
+  public static final int WITHDRAW_QUEUE_SEQUENCE_NUMBER_OFFSET = 112;
+  public static final int WITHDRAW_QUEUE_PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 120;
 
   public static TraderFundsWithdrawnEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 1);
-    int i = _offset + discriminator.length();
+    int i = _offset;
     final var trader = readPubKey(_data, i);
     i += 32;
     final var authority = readPubKey(_data, i);
@@ -72,8 +64,7 @@ public record TraderFundsWithdrawnEvent(Discriminator discriminator,
     final var withdrawQueueSequenceNumber = getInt64LE(_data, i);
     i += 8;
     final var withdrawQueuePrevSequenceNumberSlot = getInt64LE(_data, i);
-    return new TraderFundsWithdrawnEvent(discriminator,
-                                         trader,
+    return new TraderFundsWithdrawnEvent(trader,
                                          authority,
                                          amount,
                                          traderSequenceNumber,
@@ -87,7 +78,7 @@ public record TraderFundsWithdrawnEvent(Discriminator discriminator,
 
   @Override
   public int write(final byte[] _data, final int _offset) {
-    int i = _offset + discriminator.write(_data, _offset);
+    int i = _offset;
     trader.write(_data, i);
     i += 32;
     authority.write(_data, i);

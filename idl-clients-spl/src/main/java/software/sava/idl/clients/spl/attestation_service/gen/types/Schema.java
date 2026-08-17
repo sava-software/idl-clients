@@ -11,7 +11,7 @@ import software.sava.rpc.json.http.response.AccountInfo;
 import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param version: u8
@@ -25,11 +25,11 @@ public record Schema(PublicKey _address,
                      boolean isPaused,
                      int version) implements SerDe {
 
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(197, 41, 118, 109, 215, 189, 52, 105);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(1);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 
-  public static final int CREDENTIAL_OFFSET = 8;
-  public static final int NAME_OFFSET = 40;
+  public static final int CREDENTIAL_OFFSET = 1;
+  public static final int NAME_OFFSET = 33;
 
   public static Filter createCredentialFilter(final PublicKey credential) {
     return Filter.createMemCompFilter(CREDENTIAL_OFFSET, credential);
@@ -67,7 +67,7 @@ public record Schema(PublicKey _address,
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var credential = readPubKey(_data, i);
     i += 32;
@@ -111,7 +111,7 @@ public record Schema(PublicKey _address,
 
   @Override
   public int l() {
-    return 8 + 32
+    return 1 + 32
          + SerDeUtil.lenVector(4, name)
          + SerDeUtil.lenVector(4, description)
          + SerDeUtil.lenVector(4, layout)

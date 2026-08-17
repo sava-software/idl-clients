@@ -2,7 +2,7 @@
 package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -10,18 +10,12 @@ import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
-import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// MarketEvent::PricesUpdated Borsh variant 29.
-/// Payload type: PricesUpdatedEvent.
-///
 /// @param oracleSigner: Option<publicKey>
 /// @param assetId: u32
 /// @param assetSequenceNumber: u64
 /// @param prevAssetSequenceNumberSlot: u64
-public record PricesUpdatedEvent(Discriminator discriminator,
-                                 PublicKey oracleSigner,
+public record PricesUpdatedEvent(PublicKey oracleSigner,
                                  Symbol assetSymbol,
                                  long assetId,
                                  Ticks newBestBid,
@@ -35,18 +29,15 @@ public record PricesUpdatedEvent(Discriminator discriminator,
                                  SignedQuoteLotsPerBaseLot settledContribution,
                                  SignedQuoteLotsPerBaseLotUpcasted intervalAccumulator,
                                  long assetSequenceNumber,
-                                 long prevAssetSequenceNumberSlot) implements EternalEvent {
+                                 long prevAssetSequenceNumberSlot) implements SerDe {
 
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(29);
-
-  public static final int ORACLE_SIGNER_OFFSET = 2;
+  public static final int ORACLE_SIGNER_OFFSET = 1;
 
   public static PricesUpdatedEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 1);
-    int i = _offset + discriminator.length();
+    int i = _offset;
     final PublicKey oracleSigner;
     if (SerDeUtil.isAbsent(1, _data, i)) {
       oracleSigner = null;
@@ -146,8 +137,7 @@ public record PricesUpdatedEvent(Discriminator discriminator,
     final var assetSequenceNumber = getInt64LE(_data, i);
     i += 8;
     final var prevAssetSequenceNumberSlot = getInt64LE(_data, i);
-    return new PricesUpdatedEvent(discriminator,
-                                  oracleSigner,
+    return new PricesUpdatedEvent(oracleSigner,
                                   assetSymbol,
                                   assetId,
                                   newBestBid,
@@ -166,7 +156,7 @@ public record PricesUpdatedEvent(Discriminator discriminator,
 
   @Override
   public int write(final byte[] _data, final int _offset) {
-    int i = _offset + discriminator.write(_data, _offset);
+    int i = _offset;
     i += SerDeUtil.writeOptional(1, oracleSigner, _data, i);
     i += assetSymbol.write(_data, i);
     putInt32LE(_data, i, (int) assetId);
@@ -190,7 +180,7 @@ public record PricesUpdatedEvent(Discriminator discriminator,
 
   @Override
   public int l() {
-    return 1 + (oracleSigner == null ? 1 : (1 + 32))
+    return (oracleSigner == null ? 1 : (1 + 32))
          + assetSymbol.l()
          + 4
          + (newBestBid == null ? 1 : (1 + newBestBid.l()))

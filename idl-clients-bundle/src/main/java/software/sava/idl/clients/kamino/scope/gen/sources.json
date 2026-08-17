@@ -3,7 +3,7 @@
   "deployed": "anchor",
   "lastDeploySlot": 436334375,
   "programDataState": "upgradeable",
-  "programDataStateSlot": 439302329,
+  "programDataStateSlot": 439866759,
   "programDataPayloadSha256": "86fb81f4f0dd1f6ec24f753e897b633eac1546821711474da4856d983cd8d842",
   "programDataPayloadLength": 10485715,
   "channels": {

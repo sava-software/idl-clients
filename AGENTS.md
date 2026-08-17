@@ -78,12 +78,28 @@ Both affected programs here are fixed — **Metaplex Token Metadata (58)** and *
 Service (12)**, every instruction each declares: **70 in this repository**, which is the maintained
 share of the defect and the whole of the work that was outstanding.
 
-Nothing else in this repo is affected, and no work is outstanding. A third program exists —
-Jito Tip Router, 35 instructions, in the **unmaintained** `anchor-programs` — and it is recorded
-as evidence rather than as a task: it shows the defect is a property of the generator, not of
-these two IDLs, so any project generating from a Shank IDL with a pre-fix generator carries it.
-The check is whether a `gen/idl.json` declares `"origin": "shank"` with per-instruction
-`"discriminant"`.
+A third program exists — Jito Tip Router, 35 instructions, in the **unmaintained**
+`anchor-programs` — and it is recorded as evidence rather than as a task: it shows the defect is a
+property of the generator, not of these two IDLs, so any project generating from a Shank IDL with
+a pre-fix generator carries it.
+
+**The same defect had an account-side twin, found 2026-08-16 and fixed then.** The instruction fix
+above did not touch accounts, where the Anchor fallback synthesized `sha256("account:<Name>")[0..8]`
+for any IDL declaring no account discriminator. Solana Attestation Service carried it: its three
+accounts got eight-byte constants over a Pinocchio program that writes a single `0`/`1`/`2` tag
+with fields at offset 1, and none of 12,340 live accounts matched. It went unnoticed because a
+wrong constant was inert until `readChecked` began comparing it. Metaplex Token Metadata escaped
+only because it sets `accountsHaveDiscriminators: false` and models its tag as a `key` field.
+The generator now refuses to synthesize for `"origin": "shank"`, and per-account values are
+supplied by `accountDiscriminators` in `main_net_programs.json` — either literal bytes
+(`{"Credential": [0]}`) or a seed string hashed as `sha256("account:<seed>")[0..8]`
+(`{"EmberState": "state_account"}`). `AttestationAccountTests` pins it against live bytes.
+
+So the check is two-part: whether a `gen/idl.json` declares `"origin": "shank"` with
+per-instruction `"discriminant"`, **and** whether any of its `accounts[]` entries omit
+`"discriminator"`. A Shank program added without an `accountDiscriminators` entry gets no
+discriminator constant and no `readChecked`, but its fields are still laid out from offset 8 —
+silently wrong rather than loudly, which is the reverse of how this one was caught.
 
 Mutation coverage for the *dispatch-key parsing* lives in idl-src-gen's `anchorDispatch` suite,
 promoted out of the `jsonParse` package exclusions on 2026-08-13 — `AnchorInstruction`,

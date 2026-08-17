@@ -2,38 +2,31 @@
 package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
-import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// MarketEvent::ClaimAuthority Borsh variant 35.
-/// Payload type: ClaimAuthorityEvent.
-///
-public record ClaimAuthorityEvent(Discriminator discriminator, PublicKey previousAuthority, PublicKey newAuthority) implements EternalEvent {
+public record ClaimAuthorityEvent(PublicKey previousAuthority, PublicKey newAuthority) implements SerDe {
 
-  public static final int BYTES = 65;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(35);
+  public static final int BYTES = 64;
 
-  public static final int PREVIOUS_AUTHORITY_OFFSET = 1;
-  public static final int NEW_AUTHORITY_OFFSET = 33;
+  public static final int PREVIOUS_AUTHORITY_OFFSET = 0;
+  public static final int NEW_AUTHORITY_OFFSET = 32;
 
   public static ClaimAuthorityEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 1);
-    int i = _offset + discriminator.length();
+    int i = _offset;
     final var previousAuthority = readPubKey(_data, i);
     i += 32;
     final var newAuthority = readPubKey(_data, i);
-    return new ClaimAuthorityEvent(discriminator, previousAuthority, newAuthority);
+    return new ClaimAuthorityEvent(previousAuthority, newAuthority);
   }
 
   @Override
   public int write(final byte[] _data, final int _offset) {
-    int i = _offset + discriminator.write(_data, _offset);
+    int i = _offset;
     previousAuthority.write(_data, i);
     i += 32;
     newAuthority.write(_data, i);

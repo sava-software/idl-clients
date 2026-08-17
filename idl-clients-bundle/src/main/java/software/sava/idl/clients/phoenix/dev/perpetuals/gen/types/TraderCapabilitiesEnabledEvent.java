@@ -2,40 +2,32 @@
 package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
-import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// MarketEvent::TraderCapabilitiesEnabled Borsh variant 42.
-/// Payload type: TraderCapabilitiesEnabledEvent.
-///
 /// @param globalTraderIndex: u32
-public record TraderCapabilitiesEnabledEvent(Discriminator discriminator,
-                                             PublicKey trader,
+public record TraderCapabilitiesEnabledEvent(PublicKey trader,
                                              PublicKey authority,
                                              TraderCapabilityFlags previousFlags,
                                              TraderCapabilityFlags newFlags,
-                                             long globalTraderIndex) implements EternalEvent {
+                                             long globalTraderIndex) implements SerDe {
 
-  public static final int BYTES = 77;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(42);
+  public static final int BYTES = 76;
 
-  public static final int TRADER_OFFSET = 1;
-  public static final int AUTHORITY_OFFSET = 33;
-  public static final int PREVIOUS_FLAGS_OFFSET = 65;
-  public static final int NEW_FLAGS_OFFSET = 69;
-  public static final int GLOBAL_TRADER_INDEX_OFFSET = 73;
+  public static final int TRADER_OFFSET = 0;
+  public static final int AUTHORITY_OFFSET = 32;
+  public static final int PREVIOUS_FLAGS_OFFSET = 64;
+  public static final int NEW_FLAGS_OFFSET = 68;
+  public static final int GLOBAL_TRADER_INDEX_OFFSET = 72;
 
   public static TraderCapabilitiesEnabledEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 1);
-    int i = _offset + discriminator.length();
+    int i = _offset;
     final var trader = readPubKey(_data, i);
     i += 32;
     final var authority = readPubKey(_data, i);
@@ -45,8 +37,7 @@ public record TraderCapabilitiesEnabledEvent(Discriminator discriminator,
     final var newFlags = TraderCapabilityFlags.read(_data, i);
     i += 4;
     final var globalTraderIndex = Integer.toUnsignedLong(getInt32LE(_data, i));
-    return new TraderCapabilitiesEnabledEvent(discriminator,
-                                              trader,
+    return new TraderCapabilitiesEnabledEvent(trader,
                                               authority,
                                               previousFlags,
                                               newFlags,
@@ -55,7 +46,7 @@ public record TraderCapabilitiesEnabledEvent(Discriminator discriminator,
 
   @Override
   public int write(final byte[] _data, final int _offset) {
-    int i = _offset + discriminator.write(_data, _offset);
+    int i = _offset;
     trader.write(_data, i);
     i += 32;
     authority.write(_data, i);

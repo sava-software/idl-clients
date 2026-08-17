@@ -303,7 +303,8 @@
       "package": "phoenix.ember",
       "program": "EMBERpYNE6ehWmXymZZS2skiFmCa9V5dp14e1iduM5qy",
       "idlAccountProgramOwner": "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S",
-      "idlType": "anchor"
+      "idlType": "anchor",
+      "accountDiscriminators": {"EmberState": "state_account"}
     },
     {
       "name": "Phoenix Perpetuals",
@@ -312,8 +313,7 @@
       "package": "phoenix.perpetuals",
       "program": "EtrnLzgbS7nMMy5fbD42kXiUzGg8XQzJ972Xtk1cjWih",
       "idlAccountProgramOwner": "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S",
-      "idlType": "anchor",
-      "eventsInTypesPackage": true
+      "idlType": "anchor"
     },
     {
       "name": "Phoenix Perpetuals Dev",
@@ -322,8 +322,7 @@
       "package": "phoenix.dev.perpetuals",
       "program": "phDEVv4w6BcfkLrLNeXr8HhhgQxnxziVGXpGPcaadMf",
       "idlAccountProgramOwner": "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S",
-      "idlType": "anchor",
-      "eventsInTypesPackage": true
+      "idlType": "anchor"
     },
     {
       "name": "Pyth Lazer",
@@ -395,7 +394,8 @@
       "module": "spl",
       "package": "spl.attestation_service",
       "program": "22zoJMtdu4tQc2PzL74ZUT7FrwgB1Udec8DdW4yw4BdG",
-      "idlURL": "https://raw.githubusercontent.com/solana-foundation/solana-attestation-service/refs/heads/master/idl/solana_attestation_service.json"
+      "idlURL": "https://raw.githubusercontent.com/solana-foundation/solana-attestation-service/refs/heads/master/idl/solana_attestation_service.json",
+      "accountDiscriminators": {"Credential": [0], "Schema": [1], "Attestation": [2]}
     },
     {
       "name": "Squads V4",

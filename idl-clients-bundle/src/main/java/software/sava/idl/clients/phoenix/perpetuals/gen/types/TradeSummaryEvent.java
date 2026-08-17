@@ -2,21 +2,15 @@
 package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
-import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// MarketEvent::TradeSummary Borsh variant 6.
-/// Payload type: TradeSummaryEvent.
-///
 /// @param tradeSequenceNumber: u64
 /// @param prevTradeSequenceNumberSlot: u64
-public record TradeSummaryEvent(Discriminator discriminator,
-                                PublicKey trader,
+public record TradeSummaryEvent(PublicKey trader,
                                 long tradeSequenceNumber,
                                 long prevTradeSequenceNumberSlot,
                                 Side side,
@@ -26,29 +20,27 @@ public record TradeSummaryEvent(Discriminator discriminator,
                                 SignedBaseLots baseLotPosition,
                                 SignedQuoteLots virtualQuoteLotPosition,
                                 SignedQuoteLots quoteLotCollateral,
-                                SignedQuoteLotsPerBaseLot cumulativeFundingSnapshot) implements EternalEvent {
+                                SignedQuoteLotsPerBaseLot cumulativeFundingSnapshot) implements SerDe {
 
-  public static final int BYTES = 106;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(6);
+  public static final int BYTES = 105;
 
-  public static final int TRADER_OFFSET = 1;
-  public static final int TRADE_SEQUENCE_NUMBER_OFFSET = 33;
-  public static final int PREV_TRADE_SEQUENCE_NUMBER_SLOT_OFFSET = 41;
-  public static final int SIDE_OFFSET = 49;
-  public static final int BASE_LOTS_FILLED_OFFSET = 50;
-  public static final int QUOTE_LOTS_FILLED_OFFSET = 58;
-  public static final int FEE_IN_QUOTE_LOTS_OFFSET = 66;
-  public static final int BASE_LOT_POSITION_OFFSET = 74;
-  public static final int VIRTUAL_QUOTE_LOT_POSITION_OFFSET = 82;
-  public static final int QUOTE_LOT_COLLATERAL_OFFSET = 90;
-  public static final int CUMULATIVE_FUNDING_SNAPSHOT_OFFSET = 98;
+  public static final int TRADER_OFFSET = 0;
+  public static final int TRADE_SEQUENCE_NUMBER_OFFSET = 32;
+  public static final int PREV_TRADE_SEQUENCE_NUMBER_SLOT_OFFSET = 40;
+  public static final int SIDE_OFFSET = 48;
+  public static final int BASE_LOTS_FILLED_OFFSET = 49;
+  public static final int QUOTE_LOTS_FILLED_OFFSET = 57;
+  public static final int FEE_IN_QUOTE_LOTS_OFFSET = 65;
+  public static final int BASE_LOT_POSITION_OFFSET = 73;
+  public static final int VIRTUAL_QUOTE_LOT_POSITION_OFFSET = 81;
+  public static final int QUOTE_LOT_COLLATERAL_OFFSET = 89;
+  public static final int CUMULATIVE_FUNDING_SNAPSHOT_OFFSET = 97;
 
   public static TradeSummaryEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 1);
-    int i = _offset + discriminator.length();
+    int i = _offset;
     final var trader = readPubKey(_data, i);
     i += 32;
     final var tradeSequenceNumber = getInt64LE(_data, i);
@@ -70,8 +62,7 @@ public record TradeSummaryEvent(Discriminator discriminator,
     final var quoteLotCollateral = SignedQuoteLots.read(_data, i);
     i += 8;
     final var cumulativeFundingSnapshot = SignedQuoteLotsPerBaseLot.read(_data, i);
-    return new TradeSummaryEvent(discriminator,
-                                 trader,
+    return new TradeSummaryEvent(trader,
                                  tradeSequenceNumber,
                                  prevTradeSequenceNumberSlot,
                                  side,
@@ -86,7 +77,7 @@ public record TradeSummaryEvent(Discriminator discriminator,
 
   @Override
   public int write(final byte[] _data, final int _offset) {
-    int i = _offset + discriminator.write(_data, _offset);
+    int i = _offset;
     trader.write(_data, i);
     i += 32;
     putInt64LE(_data, i, tradeSequenceNumber);

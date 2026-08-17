@@ -2,23 +2,17 @@
 package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
-import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// MarketEvent::SplinePriceUpdated Borsh variant 22.
-/// Payload type: SplinePriceUpdatedEvent.
-///
 /// @param sequenceNumber: u64
 /// @param prevSequenceNumberSlot: u64
 /// @param priceInTicks: u64
 /// @param userUpdateSlot: u64
-public record SplinePriceUpdatedEvent(Discriminator discriminator,
-                                      PublicKey trader,
+public record SplinePriceUpdatedEvent(PublicKey trader,
                                       long sequenceNumber,
                                       long prevSequenceNumberSlot,
                                       PublicKey authority,
@@ -26,27 +20,25 @@ public record SplinePriceUpdatedEvent(Discriminator discriminator,
                                       Symbol symbol,
                                       long priceInTicks,
                                       long userUpdateSlot,
-                                      boolean refreshRegions) implements EternalEvent {
+                                      boolean refreshRegions) implements SerDe {
 
-  public static final int BYTES = 146;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(22);
+  public static final int BYTES = 145;
 
-  public static final int TRADER_OFFSET = 1;
-  public static final int SEQUENCE_NUMBER_OFFSET = 33;
-  public static final int PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 41;
-  public static final int AUTHORITY_OFFSET = 49;
-  public static final int MARKET_OFFSET = 81;
-  public static final int SYMBOL_OFFSET = 113;
-  public static final int PRICE_IN_TICKS_OFFSET = 129;
-  public static final int USER_UPDATE_SLOT_OFFSET = 137;
-  public static final int REFRESH_REGIONS_OFFSET = 145;
+  public static final int TRADER_OFFSET = 0;
+  public static final int SEQUENCE_NUMBER_OFFSET = 32;
+  public static final int PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 40;
+  public static final int AUTHORITY_OFFSET = 48;
+  public static final int MARKET_OFFSET = 80;
+  public static final int SYMBOL_OFFSET = 112;
+  public static final int PRICE_IN_TICKS_OFFSET = 128;
+  public static final int USER_UPDATE_SLOT_OFFSET = 136;
+  public static final int REFRESH_REGIONS_OFFSET = 144;
 
   public static SplinePriceUpdatedEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 1);
-    int i = _offset + discriminator.length();
+    int i = _offset;
     final var trader = readPubKey(_data, i);
     i += 32;
     final var sequenceNumber = getInt64LE(_data, i);
@@ -64,8 +56,7 @@ public record SplinePriceUpdatedEvent(Discriminator discriminator,
     final var userUpdateSlot = getInt64LE(_data, i);
     i += 8;
     final var refreshRegions = _data[i] == 1;
-    return new SplinePriceUpdatedEvent(discriminator,
-                                       trader,
+    return new SplinePriceUpdatedEvent(trader,
                                        sequenceNumber,
                                        prevSequenceNumberSlot,
                                        authority,
@@ -78,7 +69,7 @@ public record SplinePriceUpdatedEvent(Discriminator discriminator,
 
   @Override
   public int write(final byte[] _data, final int _offset) {
-    int i = _offset + discriminator.write(_data, _offset);
+    int i = _offset;
     trader.write(_data, i);
     i += 32;
     putInt64LE(_data, i, sequenceNumber);

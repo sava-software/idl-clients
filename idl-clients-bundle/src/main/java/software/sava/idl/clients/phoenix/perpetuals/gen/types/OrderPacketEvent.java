@@ -2,44 +2,35 @@
 package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
-import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// MarketEvent::OrderPacket Borsh variant 44.
-/// Payload type: OrderPacketEvent.
-///
 /// @param nextOrderSequenceNumber: u64
-public record OrderPacketEvent(Discriminator discriminator,
-                               OrderPacket orderPacket,
+public record OrderPacketEvent(OrderPacket orderPacket,
                                PublicKey trader,
-                               long nextOrderSequenceNumber) implements EternalEvent {
+                               long nextOrderSequenceNumber) implements SerDe {
 
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(44);
-
-  public static final int ORDER_PACKET_OFFSET = 1;
+  public static final int ORDER_PACKET_OFFSET = 0;
 
   public static OrderPacketEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 1);
-    int i = _offset + discriminator.length();
+    int i = _offset;
     final var orderPacket = OrderPacket.read(_data, i);
     i += orderPacket.l();
     final var trader = readPubKey(_data, i);
     i += 32;
     final var nextOrderSequenceNumber = getInt64LE(_data, i);
-    return new OrderPacketEvent(discriminator, orderPacket, trader, nextOrderSequenceNumber);
+    return new OrderPacketEvent(orderPacket, trader, nextOrderSequenceNumber);
   }
 
   @Override
   public int write(final byte[] _data, final int _offset) {
-    int i = _offset + discriminator.write(_data, _offset);
+    int i = _offset;
     i += orderPacket.write(_data, i);
     trader.write(_data, i);
     i += 32;
@@ -50,6 +41,6 @@ public record OrderPacketEvent(Discriminator discriminator,
 
   @Override
   public int l() {
-    return 1 + orderPacket.l() + 32 + 8;
+    return orderPacket.l() + 32 + 8;
   }
 }

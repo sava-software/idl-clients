@@ -2,7 +2,7 @@
 package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -10,12 +10,7 @@ import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
-import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// MarketEvent::EscrowRequestCreated Borsh variant 53.
-/// Payload type: EscrowRequestCreatedEvent.
-///
 /// @param sequenceNumber: u64
 /// @param senderPdaIndex: u8
 /// @param senderSubaccountIndex: u8
@@ -23,8 +18,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param receiverSubaccountIndex: u8
 /// @param expirationOffset: u32
 /// @param initialSlot: u64
-public record EscrowRequestCreatedEvent(Discriminator discriminator,
-                                        PublicKey receiverAuthority,
+public record EscrowRequestCreatedEvent(PublicKey receiverAuthority,
                                         PublicKey senderAuthority,
                                         long sequenceNumber,
                                         int senderPdaIndex,
@@ -33,28 +27,25 @@ public record EscrowRequestCreatedEvent(Discriminator discriminator,
                                         int receiverSubaccountIndex,
                                         long expirationOffset,
                                         long initialSlot,
-                                        EscrowAction[] actions) implements EternalEvent {
+                                        EscrowAction[] actions) implements SerDe {
 
   public static final int ACTIONS_LEN = 4;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(53);
-
-  public static final int RECEIVER_AUTHORITY_OFFSET = 1;
-  public static final int SENDER_AUTHORITY_OFFSET = 33;
-  public static final int SEQUENCE_NUMBER_OFFSET = 65;
-  public static final int SENDER_PDA_INDEX_OFFSET = 73;
-  public static final int SENDER_SUBACCOUNT_INDEX_OFFSET = 74;
-  public static final int RECEIVER_PDA_INDEX_OFFSET = 75;
-  public static final int RECEIVER_SUBACCOUNT_INDEX_OFFSET = 76;
-  public static final int EXPIRATION_OFFSET_OFFSET = 77;
-  public static final int INITIAL_SLOT_OFFSET = 81;
-  public static final int ACTIONS_OFFSET = 89;
+  public static final int RECEIVER_AUTHORITY_OFFSET = 0;
+  public static final int SENDER_AUTHORITY_OFFSET = 32;
+  public static final int SEQUENCE_NUMBER_OFFSET = 64;
+  public static final int SENDER_PDA_INDEX_OFFSET = 72;
+  public static final int SENDER_SUBACCOUNT_INDEX_OFFSET = 73;
+  public static final int RECEIVER_PDA_INDEX_OFFSET = 74;
+  public static final int RECEIVER_SUBACCOUNT_INDEX_OFFSET = 75;
+  public static final int EXPIRATION_OFFSET_OFFSET = 76;
+  public static final int INITIAL_SLOT_OFFSET = 80;
+  public static final int ACTIONS_OFFSET = 88;
 
   public static EscrowRequestCreatedEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 1);
-    int i = _offset + discriminator.length();
+    int i = _offset;
     final var receiverAuthority = readPubKey(_data, i);
     i += 32;
     final var senderAuthority = readPubKey(_data, i);
@@ -75,8 +66,7 @@ public record EscrowRequestCreatedEvent(Discriminator discriminator,
     i += 8;
     final var actions = new EscrowAction[4];
     SerDeUtil.readArray(actions, EscrowAction::read, _data, i);
-    return new EscrowRequestCreatedEvent(discriminator,
-                                         receiverAuthority,
+    return new EscrowRequestCreatedEvent(receiverAuthority,
                                          senderAuthority,
                                          sequenceNumber,
                                          senderPdaIndex,
@@ -90,7 +80,7 @@ public record EscrowRequestCreatedEvent(Discriminator discriminator,
 
   @Override
   public int write(final byte[] _data, final int _offset) {
-    int i = _offset + discriminator.write(_data, _offset);
+    int i = _offset;
     receiverAuthority.write(_data, i);
     i += 32;
     senderAuthority.write(_data, i);
@@ -115,7 +105,7 @@ public record EscrowRequestCreatedEvent(Discriminator discriminator,
 
   @Override
   public int l() {
-    return 1 + 32
+    return 32
          + 32
          + 8
          + 1

@@ -2,48 +2,40 @@
 package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
-import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// MarketEvent::TraderFundsWithdrawnFeePayment Borsh variant 43.
-/// Payload type: TraderFundsWithdrawnFeePaymentEvent.
-///
 /// @param fee: u64
 /// @param traderSequenceNumber: u64
 /// @param traderPrevSequenceNumberSlot: u64
 /// @param withdrawQueueSequenceNumber: u64
 /// @param withdrawQueuePrevSequenceNumberSlot: u64
-public record TraderFundsWithdrawnFeePaymentEvent(Discriminator discriminator,
-                                                  PublicKey trader,
+public record TraderFundsWithdrawnFeePaymentEvent(PublicKey trader,
                                                   PublicKey authority,
                                                   long fee,
                                                   long traderSequenceNumber,
                                                   long traderPrevSequenceNumberSlot,
                                                   long withdrawQueueSequenceNumber,
-                                                  long withdrawQueuePrevSequenceNumberSlot) implements EternalEvent {
+                                                  long withdrawQueuePrevSequenceNumberSlot) implements SerDe {
 
-  public static final int BYTES = 105;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(43);
+  public static final int BYTES = 104;
 
-  public static final int TRADER_OFFSET = 1;
-  public static final int AUTHORITY_OFFSET = 33;
-  public static final int FEE_OFFSET = 65;
-  public static final int TRADER_SEQUENCE_NUMBER_OFFSET = 73;
-  public static final int TRADER_PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 81;
-  public static final int WITHDRAW_QUEUE_SEQUENCE_NUMBER_OFFSET = 89;
-  public static final int WITHDRAW_QUEUE_PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 97;
+  public static final int TRADER_OFFSET = 0;
+  public static final int AUTHORITY_OFFSET = 32;
+  public static final int FEE_OFFSET = 64;
+  public static final int TRADER_SEQUENCE_NUMBER_OFFSET = 72;
+  public static final int TRADER_PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 80;
+  public static final int WITHDRAW_QUEUE_SEQUENCE_NUMBER_OFFSET = 88;
+  public static final int WITHDRAW_QUEUE_PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 96;
 
   public static TraderFundsWithdrawnFeePaymentEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 1);
-    int i = _offset + discriminator.length();
+    int i = _offset;
     final var trader = readPubKey(_data, i);
     i += 32;
     final var authority = readPubKey(_data, i);
@@ -57,8 +49,7 @@ public record TraderFundsWithdrawnFeePaymentEvent(Discriminator discriminator,
     final var withdrawQueueSequenceNumber = getInt64LE(_data, i);
     i += 8;
     final var withdrawQueuePrevSequenceNumberSlot = getInt64LE(_data, i);
-    return new TraderFundsWithdrawnFeePaymentEvent(discriminator,
-                                                   trader,
+    return new TraderFundsWithdrawnFeePaymentEvent(trader,
                                                    authority,
                                                    fee,
                                                    traderSequenceNumber,
@@ -69,7 +60,7 @@ public record TraderFundsWithdrawnFeePaymentEvent(Discriminator discriminator,
 
   @Override
   public int write(final byte[] _data, final int _offset) {
-    int i = _offset + discriminator.write(_data, _offset);
+    int i = _offset;
     trader.write(_data, i);
     i += 32;
     authority.write(_data, i);

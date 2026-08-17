@@ -2,49 +2,41 @@
 package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
-import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// MarketEvent::LiquidationTransfer Borsh variant 31.
-/// Payload type: LiquidationTransferEvent.
-///
 /// @param assetId: u64
 /// @param haircutRate: u16
-public record LiquidationTransferEvent(Discriminator discriminator,
-                                       PublicKey liquidatee,
+public record LiquidationTransferEvent(PublicKey liquidatee,
                                        PublicKey liquidator,
                                        long assetId,
                                        SignedBaseLots baseLotsTransferred,
                                        SignedQuoteLots virtualQuoteLotsTransferred,
                                        int haircutRate,
                                        SignedQuoteLots liquidateeCollateralChange,
-                                       SignedQuoteLots liquidatorCollateralChange) implements EternalEvent {
+                                       SignedQuoteLots liquidatorCollateralChange) implements SerDe {
 
-  public static final int BYTES = 107;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(31);
+  public static final int BYTES = 106;
 
-  public static final int LIQUIDATEE_OFFSET = 1;
-  public static final int LIQUIDATOR_OFFSET = 33;
-  public static final int ASSET_ID_OFFSET = 65;
-  public static final int BASE_LOTS_TRANSFERRED_OFFSET = 73;
-  public static final int VIRTUAL_QUOTE_LOTS_TRANSFERRED_OFFSET = 81;
-  public static final int HAIRCUT_RATE_OFFSET = 89;
-  public static final int LIQUIDATEE_COLLATERAL_CHANGE_OFFSET = 91;
-  public static final int LIQUIDATOR_COLLATERAL_CHANGE_OFFSET = 99;
+  public static final int LIQUIDATEE_OFFSET = 0;
+  public static final int LIQUIDATOR_OFFSET = 32;
+  public static final int ASSET_ID_OFFSET = 64;
+  public static final int BASE_LOTS_TRANSFERRED_OFFSET = 72;
+  public static final int VIRTUAL_QUOTE_LOTS_TRANSFERRED_OFFSET = 80;
+  public static final int HAIRCUT_RATE_OFFSET = 88;
+  public static final int LIQUIDATEE_COLLATERAL_CHANGE_OFFSET = 90;
+  public static final int LIQUIDATOR_COLLATERAL_CHANGE_OFFSET = 98;
 
   public static LiquidationTransferEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 1);
-    int i = _offset + discriminator.length();
+    int i = _offset;
     final var liquidatee = readPubKey(_data, i);
     i += 32;
     final var liquidator = readPubKey(_data, i);
@@ -60,8 +52,7 @@ public record LiquidationTransferEvent(Discriminator discriminator,
     final var liquidateeCollateralChange = SignedQuoteLots.read(_data, i);
     i += 8;
     final var liquidatorCollateralChange = SignedQuoteLots.read(_data, i);
-    return new LiquidationTransferEvent(discriminator,
-                                        liquidatee,
+    return new LiquidationTransferEvent(liquidatee,
                                         liquidator,
                                         assetId,
                                         baseLotsTransferred,
@@ -73,7 +64,7 @@ public record LiquidationTransferEvent(Discriminator discriminator,
 
   @Override
   public int write(final byte[] _data, final int _offset) {
-    int i = _offset + discriminator.write(_data, _offset);
+    int i = _offset;
     liquidatee.write(_data, i);
     i += 32;
     liquidator.write(_data, i);

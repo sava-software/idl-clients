@@ -11,7 +11,7 @@ import software.sava.rpc.json.http.response.AccountInfo;
 import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 public record Credential(PublicKey _address,
@@ -20,11 +20,11 @@ public record Credential(PublicKey _address,
                          byte[] name,
                          PublicKey[] authorizedSigners) implements SerDe {
 
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(145, 44, 68, 220, 67, 46, 100, 135);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(0);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 
-  public static final int AUTHORITY_OFFSET = 8;
-  public static final int NAME_OFFSET = 40;
+  public static final int AUTHORITY_OFFSET = 1;
+  public static final int NAME_OFFSET = 33;
 
   public static Filter createAuthorityFilter(final PublicKey authority) {
     return Filter.createMemCompFilter(AUTHORITY_OFFSET, authority);
@@ -62,7 +62,7 @@ public record Credential(PublicKey _address,
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var authority = readPubKey(_data, i);
     i += 32;
@@ -84,6 +84,6 @@ public record Credential(PublicKey _address,
 
   @Override
   public int l() {
-    return 8 + 32 + SerDeUtil.lenVector(4, name) + SerDeUtil.lenVector(4, authorizedSigners);
+    return 1 + 32 + SerDeUtil.lenVector(4, name) + SerDeUtil.lenVector(4, authorizedSigners);
   }
 }

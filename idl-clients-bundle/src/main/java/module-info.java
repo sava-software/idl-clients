@@ -107,10 +107,12 @@ module software.sava.idl.clients.bundle {
   exports software.sava.idl.clients.orca.whirlpools.gen.types;
   exports software.sava.idl.clients.orca.whirlpools.gen;
   exports software.sava.idl.clients.orca;
+  exports software.sava.idl.clients.phoenix.dev.perpetuals.gen.events;
   exports software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
   exports software.sava.idl.clients.phoenix.dev.perpetuals.gen;
   exports software.sava.idl.clients.phoenix.ember.gen.types;
   exports software.sava.idl.clients.phoenix.ember.gen;
+  exports software.sava.idl.clients.phoenix.perpetuals.gen.events;
   exports software.sava.idl.clients.phoenix.perpetuals.gen.types;
   exports software.sava.idl.clients.phoenix.perpetuals.gen;
   exports software.sava.idl.clients.phoenix;

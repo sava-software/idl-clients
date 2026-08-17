@@ -22,7 +22,7 @@ public record EmberState(PublicKey _address,
   public static final int BYTES = 104;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(0, 208, 11, 177, 63, 157, 55, 98);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(142, 206, 11, 177, 63, 157, 55, 98);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 
   public static final int AUTHORITY_OFFSET = 8;
