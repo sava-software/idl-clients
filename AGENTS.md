@@ -327,6 +327,14 @@ before it existed, each discovered a generation later, by which point the eviden
 unrecoverable. A record moved with no generation behind it — a hand-fixed hash, a
 package repointed at another address — says so in a `Report-Evidence:` commit trailer.
 
+`.github/hooks/pre-push` runs the same audit over the commits a push would publish,
+which is the one moment the fix is still free: a pushed commit is an ancestor of a
+remote ref and must not be rewritten, so CI can only report what is already permanent.
+Install it with `git config core.hooksPath .github/hooks`, which runs the tracked file
+itself rather than a copy that can drift from it. It does not replace the workflow —
+a hook lives in one clone, `--no-verify` skips it, and pushes reach this repository
+from other machines and sessions — so the two answer different halves.
+
 ### Diffing account order against the Rust
 
 ```shell

@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+# Refuses a push carrying a moved channel record with no movement report behind it.
+#
+# The same audit CI runs (.github/report-evidence.sh), moved to the one moment where the
+# fix is still free. Once a commit is pushed it is an ancestor of a remote ref and must
+# not be rewritten, so the CI run can only report what is already permanent; here the
+# commit is still local and `git commit --amend` is a legal answer.
+#
+# It is not a replacement for the workflow. A hook lives in one clone, and pushes reach
+# this repository from more than one — other machines, Remote Control sessions, cloud
+# agents — and `--no-verify` skips it by design. The workflow is what covers those.
+#
+# Installed by pointing git at this directory, which keeps the tracked file and the
+# running hook the same file:
+#
+#     git config core.hooksPath .github/hooks
+set -uo pipefail
+
+repo="$(git rev-parse --show-toplevel)"
+audit="$repo/.github/report-evidence.sh"
+
+if [ ! -x "$audit" ]; then
+  # Loudly, not silently. A gate that disables itself when its checker goes missing is
+  # the failure this one exists to catch, one level up.
+  echo "pre-push: $audit is missing or not executable; cannot audit this push." >&2
+  echo "          Fix it, or push with --no-verify if you know it does not apply." >&2
+  exit 1
+fi
+
+status=0
+audited=0
+while read -r _local_ref local_sha _remote_ref remote_sha; do
+  # A deletion pushes no commits.
+  if [[ "$local_sha" =~ ^0+$ ]]; then
+    continue
+  fi
+  audited=1
+  if [[ "$remote_sha" =~ ^0+$ ]]; then
+    # The remote has no such branch yet, so there is no far end to subtract. Everything
+    # this push would publish is everything not already on some remote.
+    "$audit" "$local_sha" --not --remotes || status=1
+  else
+    "$audit" "$remote_sha..$local_sha" || status=1
+  fi
+done
+
+if [ "$status" -ne 0 ]; then
+  cat >&2 <<'MSG'
+
+pre-push: refusing to push — a commit above moves a generated channel record with no
+change to idl-change-report.txt beside it, so the generation's movement evidence is not
+in the commit. Movement is an event: the next run reports nothing, and then what this
+one saw cannot be recovered from anything.
+
+  * the report is probably still in your working tree — `git add idl-change-report.txt
+    idl-change-report-gap.txt` and `git commit --amend`
+  * a record moved with no generation behind it (a hand-fixed hash, a package repointed
+    at another address) belongs in a `Report-Evidence:` trailer on that commit
+  * `git push --no-verify` overrides this, and CI will still say so
+
+MSG
+fi
+[ "$audited" -eq 1 ] || exit 0
+exit "$status"

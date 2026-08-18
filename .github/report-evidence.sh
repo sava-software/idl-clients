@@ -21,23 +21,30 @@
 # Only modified records count. An *added* `sources.json` is a program's first generation:
 # it has no baseline to have moved against, and reports no movement by construction.
 #
-# Usage:  .github/report-evidence.sh <range>     # e.g. HEAD~30..HEAD, or $before..$after
-#         .github/report-evidence.sh <commit>    # a single commit
+# Usage:  .github/report-evidence.sh <range>          # e.g. HEAD~30..HEAD, or $before..$after
+#         .github/report-evidence.sh <commit>         # that commit alone
+#         .github/report-evidence.sh <sha> --not --remotes   # everything not yet published
+#
+# Arguments are handed to `git rev-list` as given, so any commit set it names can be
+# audited; the single-commit form is the one convenience on top of that.
 #
 # A commit that legitimately moves a record without a generation behind it — a hand-fixed
 # hash, a package repointed at another address — says so in a `Report-Evidence:` trailer,
 # which the audit trail then carries with it.
 set -uo pipefail
 
-RANGE="${1:-}"
-if [ -z "$RANGE" ]; then
-  echo "usage: $0 <range|commit>" >&2
+if [ "$#" -eq 0 ]; then
+  echo "usage: $0 <range|commit|rev-list arguments...>" >&2
   exit 2
 fi
-case "$RANGE" in
-  *..*) ;;
-  *) RANGE="${RANGE}^!" ;;   # a single commit, as a range
-esac
+# One bare commit means that commit alone. Without this it would read as "everything
+# reachable from it", which on a mature branch audits the entire history every time.
+if [ "$#" -eq 1 ]; then
+  case "$1" in
+    *..*|-*) ;;
+    *) set -- "$1^!" ;;
+  esac
+fi
 
 # The movement report. Named explicitly rather than globbed: after idl-src-gen#3 splits
 # the file, the standing-gap dashboard becomes `idl-change-report-gap.txt` and is NOT
@@ -69,7 +76,7 @@ while read -r commit; do
   echo "      $moving movement-implying line(s) in $(git show --format='' --name-only --diff-filter=M "$commit" -- '*/gen/sources.json' | wc -l | tr -d ' ') record(s), and no change to $REPORT"
   git show --format='' --unified=0 --diff-filter=M "$commit" -- '*/gen/sources.json' \
     | grep -E "^[+-][[:space:]]*${KEYS}" | sed 's/^/        /' | head -4
-done < <(git rev-list --no-merges "$RANGE")
+done < <(git rev-list --no-merges "$@")
 
 echo
 echo "checked $checked commit(s); $violations without movement evidence"
