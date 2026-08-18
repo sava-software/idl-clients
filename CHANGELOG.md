@@ -1,5 +1,12 @@
 # Changelog
 
+## [25.19.1](https://github.com/sava-software/idl-clients/compare/25.19.0...25.19.1) (2026-08-18)
+
+
+### Bug Fixes
+
+* **gen:** sync latest kamino scope program ([dca7f6c](https://github.com/sava-software/idl-clients/commit/dca7f6c8e22ab26b3530318ecb4c83b189c5874e))
+
 ## [25.19.0](https://github.com/sava-software/idl-clients/compare/25.18.5...25.19.0) (2026-08-17)
 
 
