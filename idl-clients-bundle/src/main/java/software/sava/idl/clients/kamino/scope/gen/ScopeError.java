@@ -78,7 +78,9 @@ public sealed interface ScopeError extends ProgramError permits
     ScopeError.PythLazerEmaConfidenceNotPresent,
     ScopeError.PythLazerEmaNotEnabledOnSource,
     ScopeError.UnauthorizedResume,
-    ScopeError.PythLazerConfidenceNotPresent {
+    ScopeError.PythLazerConfidenceNotPresent,
+    ScopeError.KlendCTokenExchangeRateCPIError,
+    ScopeError.KlendReserveDeprecated {
 
   static ScopeError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -157,6 +159,8 @@ public sealed interface ScopeError extends ProgramError permits
       case 6072 -> PythLazerEmaNotEnabledOnSource.INSTANCE;
       case 6073 -> UnauthorizedResume.INSTANCE;
       case 6074 -> PythLazerConfidenceNotPresent.INSTANCE;
+      case 6075 -> KlendCTokenExchangeRateCPIError.INSTANCE;
+      case 6076 -> KlendReserveDeprecated.INSTANCE;
       default -> null;
     };
   }
@@ -683,6 +687,20 @@ public sealed interface ScopeError extends ProgramError permits
 
     public static final PythLazerConfidenceNotPresent INSTANCE = new PythLazerConfidenceNotPresent(
         6074, "Property fields in the feed of the PythLazer payload do not contain a confidence"
+    );
+  }
+
+  record KlendCTokenExchangeRateCPIError(int code, String msg) implements ScopeError {
+
+    public static final KlendCTokenExchangeRateCPIError INSTANCE = new KlendCTokenExchangeRateCPIError(
+        6075, "Klend cToken exchange rate CPI call failed"
+    );
+  }
+
+  record KlendReserveDeprecated(int code, String msg) implements ScopeError {
+
+    public static final KlendReserveDeprecated INSTANCE = new KlendReserveDeprecated(
+        6076, "Klend reserve version does not match the expected program version (deprecated reserve)"
     );
   }
 }

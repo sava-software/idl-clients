@@ -115,6 +115,10 @@ public final class ScopeProgram {
 
   public static final Discriminator REFRESH_PRICE_LIST_DISCRIMINATOR = toDiscriminator(83, 186, 207, 131, 203, 254, 198, 130);
 
+  /// Note: an entry whose refresh CPIs into another program (e.g. `KlendCTokenExchangeRate`) must
+  /// be refreshed in its own single-entry call, not batched with other tokens — a CPI failure
+  /// aborts the whole transaction and cannot be skipped per-entry.
+  ///
   public static List<AccountMeta> refreshPriceListKeys(final PublicKey oraclePricesKey,
                                                        final PublicKey oracleMappingsKey,
                                                        final PublicKey oracleTwapsKey,
@@ -127,6 +131,10 @@ public final class ScopeProgram {
     );
   }
 
+  /// Note: an entry whose refresh CPIs into another program (e.g. `KlendCTokenExchangeRate`) must
+  /// be refreshed in its own single-entry call, not batched with other tokens — a CPI failure
+  /// aborts the whole transaction and cannot be skipped per-entry.
+  ///
   /// @param tokens: Vec<u16>
   public static Instruction refreshPriceList(final AccountMeta invokedScopeProgramMeta,
                                              final PublicKey oraclePricesKey,
@@ -143,6 +151,10 @@ public final class ScopeProgram {
     return refreshPriceList(invokedScopeProgramMeta, keys, tokens);
   }
 
+  /// Note: an entry whose refresh CPIs into another program (e.g. `KlendCTokenExchangeRate`) must
+  /// be refreshed in its own single-entry call, not batched with other tokens — a CPI failure
+  /// aborts the whole transaction and cannot be skipped per-entry.
+  ///
   /// @param tokens: Vec<u16>
   public static Instruction refreshPriceList(final AccountMeta invokedScopeProgramMeta,
                                              final List<AccountMeta> keys,

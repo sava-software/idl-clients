@@ -54,7 +54,8 @@ public enum OracleType implements RustEnum {
   StakedSolBalance,
   TotalMintSupply,
   Conditional,
-  PythLazerEMA;
+  PythLazerEMA,
+  KlendCTokenExchangeRate;
 
   public static OracleType read(final byte[] _data, final int _offset) {
     return SerDeUtil.read(1, OracleType.values(), _data, _offset);
