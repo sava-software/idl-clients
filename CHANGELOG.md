@@ -1,5 +1,12 @@
 # Changelog
 
+## [25.19.2](https://github.com/sava-software/idl-clients/compare/25.19.1...25.19.2) (2026-08-18)
+
+
+### Bug Fixes
+
+* **gen:** update marginfi vcs IDL and generat=e. ([fe6f1a2](https://github.com/sava-software/idl-clients/commit/fe6f1a26aed5dad40948d147b024e5edbbe126ab))
+
 ## [25.19.1](https://github.com/sava-software/idl-clients/compare/25.19.0...25.19.1) (2026-08-18)
 
 
