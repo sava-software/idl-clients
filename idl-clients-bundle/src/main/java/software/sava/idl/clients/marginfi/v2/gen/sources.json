@@ -3,7 +3,7 @@
   "deployed": "vcs",
   "lastDeploySlot": 432875565,
   "programDataState": "upgradeable",
-  "programDataStateSlot": 439866759,
+  "programDataStateSlot": 440077852,
   "programDataPayloadSha256": "3bd87af555409683247bf144b67680e3f5537f8fcf60af05c67c8cf8b0c86927",
   "programDataPayloadLength": 10485715,
   "channels": {
@@ -15,8 +15,8 @@
       "verbatim": "anchor.json"
     },
     "vcs": {
-      "origin": "https://raw.githubusercontent.com/0dotxyz/p0-ts-sdk/refs/heads/main/src/idl/marginfi_0.1.9.json",
-      "hash": "da5708f80f979e729ace989f797b9b92646300ca458893cdd4dffca8277faa15",
+      "origin": "https://raw.githubusercontent.com/0dotxyz/p0-ts-sdk/refs/heads/main/src/idl/marginfi_0.1.10.json",
+      "hash": "e4a589b6da349963df9ea9b614dff197f1791fc5c3c9109eaa2ab4f92cc1aa58",
       "matchesDeployed": true,
       "verbatim": "idl.json"
     }

@@ -5,6 +5,9 @@ import software.sava.idl.clients.core.gen.SerDe;
 
 public sealed interface MarginfiEvent extends SerDe permits
     AdminCloseAccountEvent,
+    CircuitBreakerAutoBrokenEvent,
+    CircuitBreakerClearedEvent,
+    CircuitBreakerTrippedEvent,
     DeleverageEvent,
     DeleverageWithdrawFlowEvent,
     DriftClaimBadDebtEvent,
@@ -24,6 +27,7 @@ public sealed interface MarginfiEvent extends SerDe permits
     LendingPoolBankCreateEvent,
     LendingPoolBankHandleBankruptcyEvent,
     LendingPoolBankSetFixedOraclePriceEvent,
+    LendingPoolBankSetSameAssetEmodeEligibilityEvent,
     LendingPoolSuperAdminDepositEvent,
     LendingPoolSuperAdminWithdrawEvent,
     LiquidationReceiverEvent,
@@ -40,6 +44,12 @@ public sealed interface MarginfiEvent extends SerDe permits
   static MarginfiEvent read(final byte[] _data, final int _offset) {
     if (AdminCloseAccountEvent.DISCRIMINATOR.equals(_data, _offset)) {
       return AdminCloseAccountEvent.read(_data, _offset);
+    } else if (CircuitBreakerAutoBrokenEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return CircuitBreakerAutoBrokenEvent.read(_data, _offset);
+    } else if (CircuitBreakerClearedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return CircuitBreakerClearedEvent.read(_data, _offset);
+    } else if (CircuitBreakerTrippedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return CircuitBreakerTrippedEvent.read(_data, _offset);
     } else if (DeleverageEvent.DISCRIMINATOR.equals(_data, _offset)) {
       return DeleverageEvent.read(_data, _offset);
     } else if (DeleverageWithdrawFlowEvent.DISCRIMINATOR.equals(_data, _offset)) {
@@ -78,6 +88,8 @@ public sealed interface MarginfiEvent extends SerDe permits
       return LendingPoolBankHandleBankruptcyEvent.read(_data, _offset);
     } else if (LendingPoolBankSetFixedOraclePriceEvent.DISCRIMINATOR.equals(_data, _offset)) {
       return LendingPoolBankSetFixedOraclePriceEvent.read(_data, _offset);
+    } else if (LendingPoolBankSetSameAssetEmodeEligibilityEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return LendingPoolBankSetSameAssetEmodeEligibilityEvent.read(_data, _offset);
     } else if (LendingPoolSuperAdminDepositEvent.DISCRIMINATOR.equals(_data, _offset)) {
       return LendingPoolSuperAdminDepositEvent.read(_data, _offset);
     } else if (LendingPoolSuperAdminWithdrawEvent.DISCRIMINATOR.equals(_data, _offset)) {

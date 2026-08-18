@@ -13,7 +13,7 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Used to configure Drift banks. A simplified version of `BankConfigCompact` which omits most
-/// values related to interest since Drift banks cannot earn interest or be borrowed against.
+/// values related to interest since Drift banks cannot earn interest or be borrowed from.
 ///
 /// @param depositLimit: u64
 /// @param oracleSetup Either `DriftPythPull` or `DriftSwitchboardPull`

@@ -20,6 +20,16 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 /// @param permissionlessBadDebtSettlement: Option<bool>
 /// @param freezeSettings: Option<bool>
 /// @param tokenlessRepaymentsAllowed: Option<bool>
+/// @param liquidationLiquidatorFee: Option<u32> Per-bank liquidation fees, encoded as `u32_to_centi` (`u32::MAX` = 100%; 0 => default 2.5%).
+/// @param liquidationInsuranceFee: Option<u32>
+/// @param circuitBreakerEnabled: Option<bool>
+/// @param cbDeviationBpsTiers: Option<u16[]>
+/// @param cbTierDurationsSeconds: Option<u16[]>
+/// @param cbEscalationWindowMult: Option<u8>
+/// @param cbEmaAlphaBps: Option<u16>
+/// @param cbWindowSeconds: Option<u32>
+/// @param cbWindowMaxUpBps: Option<u16>
+/// @param cbWindowMaxDownBps: Option<u16>
 public record BankConfigOpt(WrappedI80F48 assetWeightInit,
                             WrappedI80F48 assetWeightMaint,
                             WrappedI80F48 liabilityWeightInit,
@@ -35,7 +45,17 @@ public record BankConfigOpt(WrappedI80F48 assetWeightInit,
                             OptionalInt oracleMaxAge,
                             Boolean permissionlessBadDebtSettlement,
                             Boolean freezeSettings,
-                            Boolean tokenlessRepaymentsAllowed) implements SerDe {
+                            Boolean tokenlessRepaymentsAllowed,
+                            OptionalLong liquidationLiquidatorFee,
+                            OptionalLong liquidationInsuranceFee,
+                            Boolean circuitBreakerEnabled,
+                            int[] cbDeviationBpsTiers,
+                            int[] cbTierDurationsSeconds,
+                            OptionalInt cbEscalationWindowMult,
+                            OptionalInt cbEmaAlphaBps,
+                            OptionalLong cbWindowSeconds,
+                            OptionalInt cbWindowMaxUpBps,
+                            OptionalInt cbWindowMaxDownBps) implements SerDe {
 
   public static final int ASSET_WEIGHT_INIT_OFFSET = 1;
 
@@ -182,9 +202,99 @@ public record BankConfigOpt(WrappedI80F48 assetWeightInit,
     final Boolean tokenlessRepaymentsAllowed;
     if (SerDeUtil.isAbsent(1, _data, i)) {
       tokenlessRepaymentsAllowed = null;
+      ++i;
     } else {
       ++i;
       tokenlessRepaymentsAllowed = _data[i] == 1;
+      ++i;
+    }
+    final OptionalLong liquidationLiquidatorFee;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      liquidationLiquidatorFee = OptionalLong.empty();
+      ++i;
+    } else {
+      ++i;
+      liquidationLiquidatorFee = OptionalLong.of(Integer.toUnsignedLong(getInt32LE(_data, i)));
+      i += 4;
+    }
+    final OptionalLong liquidationInsuranceFee;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      liquidationInsuranceFee = OptionalLong.empty();
+      ++i;
+    } else {
+      ++i;
+      liquidationInsuranceFee = OptionalLong.of(Integer.toUnsignedLong(getInt32LE(_data, i)));
+      i += 4;
+    }
+    final Boolean circuitBreakerEnabled;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      circuitBreakerEnabled = null;
+      ++i;
+    } else {
+      ++i;
+      circuitBreakerEnabled = _data[i] == 1;
+      ++i;
+    }
+    final int[] cbDeviationBpsTiers;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      cbDeviationBpsTiers = null;
+      ++i;
+    } else {
+      ++i;
+      cbDeviationBpsTiers = new int[3];
+      i += SerDeUtil.readUnsignedShortArray(cbDeviationBpsTiers, _data, i);
+    }
+    final int[] cbTierDurationsSeconds;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      cbTierDurationsSeconds = null;
+      ++i;
+    } else {
+      ++i;
+      cbTierDurationsSeconds = new int[3];
+      i += SerDeUtil.readUnsignedShortArray(cbTierDurationsSeconds, _data, i);
+    }
+    final OptionalInt cbEscalationWindowMult;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      cbEscalationWindowMult = OptionalInt.empty();
+      ++i;
+    } else {
+      ++i;
+      cbEscalationWindowMult = OptionalInt.of(_data[i] & 0xFF);
+      ++i;
+    }
+    final OptionalInt cbEmaAlphaBps;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      cbEmaAlphaBps = OptionalInt.empty();
+      ++i;
+    } else {
+      ++i;
+      cbEmaAlphaBps = OptionalInt.of(Short.toUnsignedInt(getInt16LE(_data, i)));
+      i += 2;
+    }
+    final OptionalLong cbWindowSeconds;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      cbWindowSeconds = OptionalLong.empty();
+      ++i;
+    } else {
+      ++i;
+      cbWindowSeconds = OptionalLong.of(Integer.toUnsignedLong(getInt32LE(_data, i)));
+      i += 4;
+    }
+    final OptionalInt cbWindowMaxUpBps;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      cbWindowMaxUpBps = OptionalInt.empty();
+      ++i;
+    } else {
+      ++i;
+      cbWindowMaxUpBps = OptionalInt.of(Short.toUnsignedInt(getInt16LE(_data, i)));
+      i += 2;
+    }
+    final OptionalInt cbWindowMaxDownBps;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      cbWindowMaxDownBps = OptionalInt.empty();
+    } else {
+      ++i;
+      cbWindowMaxDownBps = OptionalInt.of(Short.toUnsignedInt(getInt16LE(_data, i)));
     }
     return new BankConfigOpt(assetWeightInit,
                              assetWeightMaint,
@@ -201,7 +311,17 @@ public record BankConfigOpt(WrappedI80F48 assetWeightInit,
                              oracleMaxAge,
                              permissionlessBadDebtSettlement,
                              freezeSettings,
-                             tokenlessRepaymentsAllowed);
+                             tokenlessRepaymentsAllowed,
+                             liquidationLiquidatorFee,
+                             liquidationInsuranceFee,
+                             circuitBreakerEnabled,
+                             cbDeviationBpsTiers,
+                             cbTierDurationsSeconds,
+                             cbEscalationWindowMult,
+                             cbEmaAlphaBps,
+                             cbWindowSeconds,
+                             cbWindowMaxUpBps,
+                             cbWindowMaxDownBps);
   }
 
   @Override
@@ -223,6 +343,26 @@ public record BankConfigOpt(WrappedI80F48 assetWeightInit,
     i += SerDeUtil.writeOptional(1, permissionlessBadDebtSettlement, _data, i);
     i += SerDeUtil.writeOptional(1, freezeSettings, _data, i);
     i += SerDeUtil.writeOptional(1, tokenlessRepaymentsAllowed, _data, i);
+    i += SerDeUtil.writeOptionalUnsignedInt(1, liquidationLiquidatorFee, _data, i);
+    i += SerDeUtil.writeOptionalUnsignedInt(1, liquidationInsuranceFee, _data, i);
+    i += SerDeUtil.writeOptional(1, circuitBreakerEnabled, _data, i);
+    if (cbDeviationBpsTiers == null || cbDeviationBpsTiers.length == 0) {
+      _data[i++] = 0;
+    } else {
+      _data[i++] = 1;
+      i += SerDeUtil.writeUnsignedShortArrayChecked(cbDeviationBpsTiers, 3, _data, i);
+    }
+    if (cbTierDurationsSeconds == null || cbTierDurationsSeconds.length == 0) {
+      _data[i++] = 0;
+    } else {
+      _data[i++] = 1;
+      i += SerDeUtil.writeUnsignedShortArrayChecked(cbTierDurationsSeconds, 3, _data, i);
+    }
+    i += SerDeUtil.writeOptionalbyte(1, cbEscalationWindowMult, _data, i);
+    i += SerDeUtil.writeOptionalshort(1, cbEmaAlphaBps, _data, i);
+    i += SerDeUtil.writeOptionalUnsignedInt(1, cbWindowSeconds, _data, i);
+    i += SerDeUtil.writeOptionalshort(1, cbWindowMaxUpBps, _data, i);
+    i += SerDeUtil.writeOptionalshort(1, cbWindowMaxDownBps, _data, i);
     return i - _offset;
   }
 
@@ -243,6 +383,16 @@ public record BankConfigOpt(WrappedI80F48 assetWeightInit,
          + (oracleMaxAge == null || oracleMaxAge.isEmpty() ? 1 : (1 + 2))
          + (permissionlessBadDebtSettlement == null ? 1 : (1 + 1))
          + (freezeSettings == null ? 1 : (1 + 1))
-         + (tokenlessRepaymentsAllowed == null ? 1 : (1 + 1));
+         + (tokenlessRepaymentsAllowed == null ? 1 : (1 + 1))
+         + (liquidationLiquidatorFee == null || liquidationLiquidatorFee.isEmpty() ? 1 : (1 + 4))
+         + (liquidationInsuranceFee == null || liquidationInsuranceFee.isEmpty() ? 1 : (1 + 4))
+         + (circuitBreakerEnabled == null ? 1 : (1 + 1))
+         + (cbDeviationBpsTiers == null || cbDeviationBpsTiers.length == 0 ? 1 : (1 + SerDeUtil.lenUnsignedShortArray(cbDeviationBpsTiers)))
+         + (cbTierDurationsSeconds == null || cbTierDurationsSeconds.length == 0 ? 1 : (1 + SerDeUtil.lenUnsignedShortArray(cbTierDurationsSeconds)))
+         + (cbEscalationWindowMult == null || cbEscalationWindowMult.isEmpty() ? 1 : (1 + 1))
+         + (cbEmaAlphaBps == null || cbEmaAlphaBps.isEmpty() ? 1 : (1 + 2))
+         + (cbWindowSeconds == null || cbWindowSeconds.isEmpty() ? 1 : (1 + 4))
+         + (cbWindowMaxUpBps == null || cbWindowMaxUpBps.isEmpty() ? 1 : (1 + 2))
+         + (cbWindowMaxDownBps == null || cbWindowMaxDownBps.isEmpty() ? 1 : (1 + 2));
   }
 }

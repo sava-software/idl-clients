@@ -3,7 +3,7 @@
   "deployed": "vcs",
   "lastDeploySlot": 419311653,
   "programDataState": "upgradeable",
-  "programDataStateSlot": 439866759,
+  "programDataStateSlot": 440077852,
   "programDataPayloadSha256": "da24871272cc63323e05143d5073c21cbe76bd87c4c76e662c98cc741af319b8",
   "programDataPayloadLength": 2023961,
   "channels": {
@@ -15,9 +15,10 @@
     },
     "vcsHead": {
       "origin": "github:exponent-finance/exponent-core@main/target/idl/exponent_core.json",
-      "hash": "74d944dcba74ef73e7d933757dd6bf7f271d2e9005f1a15cfdb6f2f13e950c85",
-      "matchesDeployed": true,
-      "verbatim": "idl.json"
+      "hash": "b4759e9964d8b354635c372707c580d079e073e71789b7a689d215ed24dba119",
+      "matchesDeployed": false,
+      "file": "vcsHead.json",
+      "verbatim": "vcsHead.json"
     }
   }
 }

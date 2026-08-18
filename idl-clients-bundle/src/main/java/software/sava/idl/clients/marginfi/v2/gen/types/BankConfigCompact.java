@@ -36,10 +36,15 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///
 ///                                 Value is UI USD value, for example value 100 -> $100
 /// @param oracleMaxAge: u16 Time window in seconds for the oracle price feed to be considered live.
-/// @param oracleMaxConfidence: u32 From 0-100%, if the confidence exceeds this value, the oracle is considered invalid. Note:
-///                            the confidence adjustment is capped at 5% regardless of this value.
-///                            * 0% = use the default (10%)
-///                            * A %, as u32, e.g. 100% = u32::MAX, 50% = u32::MAX/2, etc.
+/// @param oracleMaxConfidence: u32 A %, as u32, e.g. 100% = u32::MAX, 50% = u32::MAX/2, etc.
+///
+///                            Oracle confidence configuration. Semantics depend on the oracle type.
+///                            * Pyth: Maximum allowed confidence interval. Prices exceeding this threshold are rejected.
+///                            - 0 defaults to 10%.
+///                            * Switchboard: Confidence spread used for price biasing.
+///                            - 0 disables confidence adjustment.
+///                            - Non-zero: confidence = price * oracle_max_confidence / U32_MAX.
+///                            - Clamped to MAX_CONF_INTERVAL (5% of price).
 public record BankConfigCompact(WrappedI80F48 assetWeightInit,
                                 WrappedI80F48 assetWeightMaint,
                                 WrappedI80F48 liabilityWeightInit,

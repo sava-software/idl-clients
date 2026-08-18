@@ -203,6 +203,7 @@ final class MarginfiClientTests {
     assertEquals(FEE_PAYER, accounts.get(4), "[4] fee payer");
     assertEquals(newAuthority, accounts.get(5), "[5] new authority");
     assertEquals(GLOBAL_FEE_WALLET, accounts.get(6), "[6] global fee wallet");
+    assertEquals(ACCOUNTS.feeState(), accounts.get(7), "[7] fee state");
 
     assertEquals(
         keys(CLIENT.transferToNewAccount(MARGINFI_ACCOUNT, newAccount, OWNER, FEE_PAYER, newAuthority, GLOBAL_FEE_WALLET)),
@@ -361,7 +362,7 @@ final class MarginfiClientTests {
   void permissionlessInstructionsTakeNoAuthority() {
     final var pulse = CLIENT.pulseHealth(MARGINFI_ACCOUNT);
 
-    assertEquals(List.of(MARGINFI_ACCOUNT), keys(pulse));
+    assertEquals(List.of(MARGINFI_ACCOUNT, ACCOUNTS.marginfiGroup()), keys(pulse));
     assertFalse(keys(pulse).contains(OWNER));
     assertTrue(pulse.accounts().stream().noneMatch(AccountMeta::signer), "no signer");
 
@@ -391,7 +392,7 @@ final class MarginfiClientTests {
     // start carries the instructions sysvar so the program can inspect the tail
     assertTrue(keys(start).contains(SOLANA_ACCOUNTS.instructionsSysVar()));
     assertFalse(keys(end).contains(SOLANA_ACCOUNTS.instructionsSysVar()));
-    assertEquals(List.of(MARGINFI_ACCOUNT, OWNER), keys(end));
+    assertEquals(List.of(MARGINFI_ACCOUNT, ACCOUNTS.marginfiGroup(), OWNER), keys(end));
   }
 
   // ---------------------------------------------------------------------------

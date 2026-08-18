@@ -5,11 +5,14 @@ question, and an empty section is this run's answer rather than a report nobody 
 Ordered by program and channel, and carrying no timestamp, so consecutive runs are worth
 diffing against each other.
 
-== Next gap (14) ==
+== Next gap (15) ==
 
 Every channel that disagrees with the idl.json this run generated from. A standing state: it
 is true again on the next run, and on every run after that until someone deploys what the
 divergent channel already publishes.
+
+Exponent: the vcsHead IDL at github:exponent-finance/exponent-core@main/target/idl/exponent_core.json differs from the deployed idl.json: types ~2
+  types changed (2): Number, Principles
 
 Jupiter Order Engine: the anchor IDL at ARpUTgSk6XR8aoHGxmQ7RnVvSTFw8mtW6j9Xuxwj9HW1 differs from the deployed idl.json: address 61DFfeTKM7trxYcPQCM78bJ794ddZprZpAwAnLiwTpYH -> RderEngine111111111111111111111111111111112
 
@@ -32,45 +35,45 @@ Kamino Lend: the vcs IDL at https://cdn.jsdelivr.net/npm/@kamino-finance/klend-s
   instructions changed (17): abort_obligation_ownership_transfer, accept_obligation_ownership, approve_obligation_ownership_transfer, cancel_withdraw_ticket, clone_reserve_config, enqueue_to_withdraw, fill_borrow_order, fill_borrow_order_v2, initiate_obligation_ownership_transfer, recover_invalid_ticket_collateral, refresh_obligation_farms_for_reserve, rollover_fixed_term_borrow, set_borrow_order, set_borrow_order_v2, topup_reserve_rewards, update_obligation_config, withdraw_queued_liquidity
   types changed (31): BorrowOrder, BorrowOrderConfigArgs, ElevationGroup, ExchangeRateWithDecimals, FeeCalculation, FixedTermBorrowRolloverConfig, GlobalConfig, LastUpdate, LendingMarket, Obligation, ObligationCollateral, ObligationLiquidity, ObligationOrder, PriceHeuristic, ProgressCallbackType, PythConfiguration, ReferrerTokenState, Reserve, ReserveCollateral, ReserveConfig, ReserveConfigCustomizationArgs, ReserveFees, ReserveLiquidity, ScopeConfiguration, SwitchboardConfiguration, TokenInfo, UpdateObligationConfigMode, UserMetadata, WithdrawalCaps, WithdrawQueue, WithdrawTicket
 
-Kamino Scope: the vcs IDL at github:Kamino-Finance/scope-sdk@master/src/idl/scope.json differs from the deployed idl.json: instructions +2 -5 ~2, types +6 -15 ~13, errors +4 -23 ~1; version 0.39.0 -> 0.26.1
+Kamino Scope: the vcs IDL at github:Kamino-Finance/scope-sdk@master/src/idl/scope.json differs from the deployed idl.json: instructions +2 -5 ~3, types +6 -15 ~13, errors +4 -25 ~1; version 0.40.0 -> 0.26.1
   instructions added (2): update_mapping, update_token_metadata
   instructions removed (5): freeze_price, resume_chainlinkx_price, set_emergency_council, set_resume_authority, update_mapping_and_metadata
-  instructions changed (2): refresh_chainlink_price, refresh_pyth_lazer_price
+  instructions changed (3): refresh_chainlink_price, refresh_price_list, refresh_pyth_lazer_price
   types added (6): AggregatorAccountData, AggregatorRound, Hash, ReportDataV8MarketStatus, SwitchboardDecimal, UpdateTokenMetadataMode
   types removed (15): ChainlinkStandardPriceData, ChainlinkXPriceData, Condition, ConditionalData, MultiplicationChainData, PriceUpdateResult, PythLazerEmaRefData, PythLazerStoredData, RefPriceToleranceOrTwapSource, ReportDataMarketStatus, TwapEnabledBitmask, UpdateOracleMappingAndMetadataEntriesWithId, UpdateOracleMappingAndMetadataEntry, V3, V8V10
   types changed (13): Configuration, EmaTwap, EmaType, LiqPool, MintsToScopeChains, OracleMappings, OracleType, PythLazerData, ReportDataV9RipcordFlag, ScopeChainError, StakeSystem, State, ValidatorSystem
   errors added (4): InvalidTokenUpdateMode, MostRecentOfInvalidMaxAge, MostRecentOfInvalidSourceIndices, MostRecentOfMaxAgeViolated
-  errors removed (23): ChainlinkXPriceNotSuspended, CompositeOracleInvalidMaxAge, CompositeOracleMaxAgeViolated, InvalidConversionToEmaTypeForOracleType, InvalidUpdateSequenceOrAccounts, MissingPriceAccount, OperationNotSupported, OracleConfigInvalidSourceIndices, OutsideMarketHours, PriceAlreadyFrozen, PriceFrozen, PriceNotFrozen, PythLazerConfidenceNotPresent, PythLazerEmaConfidenceNotPresent, PythLazerEmaNotEnabledOnSource, PythLazerEmaPriceNotPresent, PythLazerExponentNotPresent, PythLazerFeedUpdateTimestampNotPresent, PythLazerUnexpectedExponent, TwapEnabledBitmaskConversionFailure, TwapSourceIndexNotSet, UnauthorizedFreeze, UnauthorizedResume
+  errors removed (25): ChainlinkXPriceNotSuspended, CompositeOracleInvalidMaxAge, CompositeOracleMaxAgeViolated, InvalidConversionToEmaTypeForOracleType, InvalidUpdateSequenceOrAccounts, KlendCTokenExchangeRateCPIError, KlendReserveDeprecated, MissingPriceAccount, OperationNotSupported, OracleConfigInvalidSourceIndices, OutsideMarketHours, PriceAlreadyFrozen, PriceFrozen, PriceNotFrozen, PythLazerConfidenceNotPresent, PythLazerEmaConfidenceNotPresent, PythLazerEmaNotEnabledOnSource, PythLazerEmaPriceNotPresent, PythLazerExponentNotPresent, PythLazerFeedUpdateTimestampNotPresent, PythLazerUnexpectedExponent, TwapEnabledBitmaskConversionFailure, TwapSourceIndexNotSet, UnauthorizedFreeze, UnauthorizedResume
   errors changed (1): PriceAccountNotExpected
 
 Kamino Vaults: the vcs IDL at https://cdn.jsdelivr.net/npm/@kamino-finance/klend-sdk@latest/src/idl/kvault.json differs from the deployed idl.json: instructions ~5, types ~17
   instructions changed (5): invest, invest_with_max_amount, update_reserve_allocation, update_reserve_allocation_v2, withdraw_pending_fees
   types changed (17): LastUpdate, PriceHeuristic, PythConfiguration, Reserve, ReserveCollateral, ReserveConfig, ReserveFees, ReserveLiquidity, ReserveWhitelistEntry, ScopeConfiguration, SwitchboardConfiguration, TokenInfo, VaultAllocation, VaultRewardInfo, VaultState, WithdrawalCaps, WithdrawQueue
 
-Marginfi V2: the anchor IDL at 9tb2tzSkQqDng2h8dC2xbuKHfQpmPoZP4vnd5Y1rkmmK differs from the deployed idl.json: instructions +3 -12 ~20, accounts +6 -1, types -4 ~15, events -2, errors +1 -5 ~1; version 0.1.9 -> 0.1.8
+Marginfi V2: the anchor IDL at 9tb2tzSkQqDng2h8dC2xbuKHfQpmPoZP4vnd5Y1rkmmK differs from the deployed idl.json: instructions +3 -15 ~28, accounts +6 -1, types -10 ~21, events -6, errors +1 -11 ~1; version 0.1.10 -> 0.1.8
   instructions added (3): lending_account_clear_emissions, lending_pool_reclaim_emissions_vault, migrate_curve
-  instructions removed (12): admin_close_account, copy_fee_state_to_v2, disable_staked_oracles, drift_claim_bad_debt, enable_staked_oracle_onramp, init_global_fee_state_v2, lending_pool_backfill_bank_is_t22_flag, lending_pool_backfill_staked_bank_validator_vote_account, lending_pool_emissions_deposit, marginfi_account_close_liq_record, sync_indexer_flags, write_bank_metadata_pre_init
-  instructions changed (20): drift_withdraw, edit_global_fee_state, init_bank_metadata, juplend_deposit, juplend_init_position, juplend_withdraw, kamino_deposit, kamino_init_obligation, kamino_withdraw, lending_account_borrow, lending_account_withdraw, lending_pool_add_bank_permissionless, marginfi_account_close_order, marginfi_account_keeper_close_order, marginfi_account_set_keeper_close_flags, marginfi_group_configure, panic_pause, panic_unpause, solend_withdraw, write_bank_metadata
+  instructions removed (15): admin_close_account, disable_staked_oracles, drift_claim_bad_debt, enable_staked_oracle_onramp, lending_pool_backfill_bank_is_t22_flag, lending_pool_backfill_staked_bank_validator_vote_account, lending_pool_clear_circuit_breaker, lending_pool_emissions_deposit, lending_pool_init_same_asset_emode_registry, lending_pool_resize_group_account, lending_pool_set_bank_same_asset_emode_eligibility, marginfi_account_close_liq_record, resize_global_fee_state, sync_indexer_flags, write_bank_metadata_pre_init
+  instructions changed (28): drift_withdraw, edit_global_fee_state, end_liquidation, init_bank_metadata, juplend_deposit, juplend_init_position, juplend_withdraw, kamino_deposit, kamino_init_obligation, kamino_withdraw, lending_account_borrow, lending_account_end_flashloan, lending_account_pulse_health, lending_account_withdraw, lending_pool_add_bank_permissionless, lending_pool_close_bank, marginfi_account_close_order, marginfi_account_keeper_close_order, marginfi_account_set_keeper_close_flags, marginfi_group_configure, panic_pause, panic_unpause, purge_deleverage_balance, solend_withdraw, start_liquidation, transfer_to_new_account, transfer_to_new_account_pda, write_bank_metadata
   accounts added (6): Lending, MinimalObligation, MinimalReserve, MinimalSpotMarket, MinimalUser, SolendMinimalReserve
-  accounts removed (1): FeeStateV2
-  types removed (4): AdminCloseAccountEvent, DriftClaimBadDebtEvent, FeeStateV2, IndexerFlags
-  types changed (15): Bank, BankCache, BankOperationalState, FeeState, InterestRateConfig, JuplendConfigCompact, KaminoConfigCompact, LendingAccountBorrowEvent, LendingAccountDepositEvent, LendingAccountRepayEvent, LendingAccountWithdrawEvent, MarginfiAccount, MarginfiGroup, SolendConfigCompact, StakedSettings
-  events removed (2): AdminCloseAccountEvent, DriftClaimBadDebtEvent
+  accounts removed (1): SameAssetEmodeRegistry
+  types removed (10): AdminCloseAccountEvent, CircuitBreakerAutoBrokenEvent, CircuitBreakerClearedEvent, CircuitBreakerTrippedEvent, DriftClaimBadDebtEvent, IndexerFlags, LendingPoolBankSetSameAssetEmodeEligibilityEvent, SameAssetEmodeBank, SameAssetEmodeGroup, SameAssetEmodeRegistry
+  types changed (21): Bank, BankCache, BankConfig, BankConfigCompact, BankConfigOpt, BankOperationalState, DriftConfigCompact, FeeState, InterestRateConfig, JuplendConfigCompact, KaminoConfigCompact, LendingAccountBorrowEvent, LendingAccountDepositEvent, LendingAccountRepayEvent, LendingAccountWithdrawEvent, LiquidationBalances, MarginfiAccount, MarginfiGroup, Order, SolendConfigCompact, StakedSettings
+  events removed (6): AdminCloseAccountEvent, CircuitBreakerAutoBrokenEvent, CircuitBreakerClearedEvent, CircuitBreakerTrippedEvent, DriftClaimBadDebtEvent, LendingPoolBankSetSameAssetEmodeEligibilityEvent
   errors added (1): Vacated2
-  errors removed (5): BankUninitialized, InvalidGlobalFeeWallet, SlippageTooHigh, StakeOraclesDisabled, UseSetFixedOraclePrice
+  errors removed (11): BankCircuitBreakerHalted, BankUninitialized, CircuitBreakerAdminOnly, CircuitBreakerInvalidConfig, CircuitBreakerPriceJump, CircuitBreakerRequiresWarmCache, InvalidGlobalFeeWallet, InvalidResize, SlippageTooHigh, StakeOraclesDisabled, UseSetFixedOraclePrice
   errors changed (1): UnexpectedOrderExecutionState
 
 Meteora DLMM: the vcs IDL at github:MeteoraAg/dlmm-sdk@main/idls/dlmm.json differs from the deployed idl.json: types +1 ~1
   types added (1): LimitOrderBinData
   types changed (1): DummyZcAccount
 
-Neutral Trade: the metadata IDL at 3vhS1co9J1Av1TeHwxSNtjmcf77csfD2z92jfU5jVfvZ differs from the deployed idl.json: instructions -14, accounts -1, types -17 ~6, events -16, errors -22
-  instructions removed (14): clear_user_fee_override, clear_user_withdrawal_timing_override, manager_withdraw_with_split, process_referrer_withdrawal, process_switch, referrer_request_withdraw, register_referrer, request_bundle_switch, set_referrer_active, set_referrer_config, set_referrer_rate_override, set_user_fee_override, set_user_referrer, set_user_withdrawal_timing_override
+Neutral Trade: the metadata IDL at 3vhS1co9J1Av1TeHwxSNtjmcf77csfD2z92jfU5jVfvZ differs from the deployed idl.json: instructions -15, accounts -1, types -19 ~10, events -17, errors -23
+  instructions removed (15): clear_user_fee_override, clear_user_withdrawal_timing_override, manager_withdraw_with_split, process_referrer_withdrawal, process_switch, referrer_request_withdraw, register_referrer, request_bundle_switch, set_referral_tier_config, set_referrer_active, set_referrer_config, set_referrer_rate_override, set_user_fee_override, set_user_referrer, set_user_withdrawal_timing_override
   accounts removed (1): ReferrerAccount
-  types removed (17): BundleSwitchCompleted, BundleSwitchFallbackToWallet, BundleSwitchRequested, ManagerWithdrawalWithSplit, ReferralFeesAccrued, ReferrerAccount, ReferrerActiveSet, ReferrerConfigSet, ReferrerRateOverrideSet, ReferrerRegistered, ReferrerWithdrawalProcessed, ReferrerWithdrawalRequested, UserFeeOverrideCleared, UserFeeOverrideSet, UserReferrerSet, UserWithdrawalTimingOverrideCleared, UserWithdrawalTimingOverrideSet
-  types changed (6): every one type changed
-  events removed (16): BundleSwitchCompleted, BundleSwitchFallbackToWallet, BundleSwitchRequested, ManagerWithdrawalWithSplit, ReferralFeesAccrued, ReferrerActiveSet, ReferrerConfigSet, ReferrerRateOverrideSet, ReferrerRegistered, ReferrerWithdrawalProcessed, ReferrerWithdrawalRequested, UserFeeOverrideCleared, UserFeeOverrideSet, UserReferrerSet, UserWithdrawalTimingOverrideCleared, UserWithdrawalTimingOverrideSet
-  errors removed (22): EmptyUserFeeClearRequest, EmptyUserWithdrawalTimingClearRequest, InvalidFeeSplit, InvalidReferralConfig, InvalidUserFeeConfig, InvalidUserWithdrawalTimingConfig, NoPendingSwitch, NoUserFeeOverrideToClear, NoUserWithdrawalTimingOverrideToClear, ReferralAlreadySet, ReferralsDisabled, ReferrerAccountMismatch, ReferrerAccountMissing, ReferrerDepositTooLow, ReferrerSharesZero, SwitchAlreadyActive, SwitchAssetMintMismatch, SwitchTargetAccountMismatch, SwitchTargetAccountsMissing, SwitchTargetSameAsSource, UnauthorizedReferrerAction, UserBundleAccountHasActivity
+  types removed (19): BundleSwitchCompleted, BundleSwitchFallbackToWallet, BundleSwitchRequested, ManagerWithdrawalWithSplit, ReferralFeesAccrued, ReferralTier, ReferralTierConfigSet, ReferrerAccount, ReferrerActiveSet, ReferrerConfigSet, ReferrerRateOverrideSet, ReferrerRegistered, ReferrerWithdrawalProcessed, ReferrerWithdrawalRequested, UserFeeOverrideCleared, UserFeeOverrideSet, UserReferrerSet, UserWithdrawalTimingOverrideCleared, UserWithdrawalTimingOverrideSet
+  types changed (10): every one type changed
+  events removed (17): BundleSwitchCompleted, BundleSwitchFallbackToWallet, BundleSwitchRequested, ManagerWithdrawalWithSplit, ReferralFeesAccrued, ReferralTierConfigSet, ReferrerActiveSet, ReferrerConfigSet, ReferrerRateOverrideSet, ReferrerRegistered, ReferrerWithdrawalProcessed, ReferrerWithdrawalRequested, UserFeeOverrideCleared, UserFeeOverrideSet, UserReferrerSet, UserWithdrawalTimingOverrideCleared, UserWithdrawalTimingOverrideSet
+  errors removed (23): EmptyUserFeeClearRequest, EmptyUserWithdrawalTimingClearRequest, InvalidFeeSplit, InvalidReferralConfig, InvalidReferralTierConfig, InvalidUserFeeConfig, InvalidUserWithdrawalTimingConfig, NoPendingSwitch, NoUserFeeOverrideToClear, NoUserWithdrawalTimingOverrideToClear, ReferralAlreadySet, ReferralsDisabled, ReferrerAccountMismatch, ReferrerAccountMissing, ReferrerDepositTooLow, ReferrerSharesZero, SwitchAlreadyActive, SwitchAssetMintMismatch, SwitchTargetAccountMismatch, SwitchTargetAccountsMissing, SwitchTargetSameAsSource, UnauthorizedReferrerAction, UserBundleAccountHasActivity
 
 Orca Whirlpools: the metadata IDL at 9fQgUeE2BpGXLHopvZhDKTskXV2druezgX6hpmscbya5 differs from the deployed idl.json: instructions ~66, types ~1
   instructions changed (66): close_bundled_position, close_position, close_position_with_token_extensions, collect_fees, collect_fees_v2, collect_protocol_fees, collect_protocol_fees_v2, collect_reward, collect_reward_v2, decrease_liquidity, decrease_liquidity_v2, delete_position_bundle, delete_token_badge, idl_include, increase_liquidity, increase_liquidity_by_token_amounts_v2, increase_liquidity_v2, initialize_adaptive_fee_tier, initialize_config, initialize_config_extension, initialize_dynamic_tick_array, initialize_fee_tier, initialize_pool, initialize_pool_v2, initialize_pool_with_adaptive_fee, initialize_position_bundle, initialize_position_bundle_with_metadata, initialize_reward, initialize_reward_v2, initialize_tick_array, initialize_token_badge, lock_position, migrate_repurpose_reward_authority_space, open_bundled_position, open_position, open_position_with_metadata, open_position_with_token_extensions, reposition_liquidity_v2, reset_position_range, set_adaptive_fee_constants, set_collect_protocol_fees_authority, set_config_extension_authority, set_config_feature_flag, set_default_base_fee_rate, set_default_fee_rate, set_default_protocol_fee_rate, set_delegated_fee_authority, set_fee_authority, set_fee_rate, set_fee_rate_by_delegated_fee_authority, set_initialize_pool_authority, set_preset_adaptive_fee_constants, set_protocol_fee_rate, set_reward_authority, set_reward_authority_by_super_authority, set_reward_emissions, set_reward_emissions_super_authority, set_reward_emissions_v2, set_token_badge_attribute, set_token_badge_authority, swap, swap_v2, transfer_locked_position, two_hop_swap, two_hop_swap_v2, update_fees_and_rewards
@@ -100,10 +103,23 @@ Stake: the vcs IDL at github:solana-program/stake@main/idl.json differs from the
   types added (4): authorizeCheckedWithSeedParams, authorizeWithSeedParams, lockupCheckedParams, lockupParams
   types removed (2): epoch, unixTimestamp
 
-== Movement (0) ==
+== Movement (2) ==
 
 Every channel that is not what the previous sources.json recorded for it. An event: it fires
 on the run that first sees a change and is silent afterwards, so nothing here means nothing
 moved and not that nothing was compared.
 
-Nothing moved since the last generation.
+Exponent: the vcsHead IDL at github:exponent-finance/exponent-core@main/target/idl/exponent_core.json moved since the last generation: types ~2
+  types changed (2): Number, Principles
+
+Marginfi V2: the vcs IDL at https://raw.githubusercontent.com/0dotxyz/p0-ts-sdk/refs/heads/main/src/idl/marginfi_0.1.10.json moved since the last generation: instructions +5 -2 ~10, accounts +1 -1, types +7 -1 ~12, events +4, errors +6; version 0.1.9 -> 0.1.10
+  instructions added (5): lending_pool_clear_circuit_breaker, lending_pool_init_same_asset_emode_registry, lending_pool_resize_group_account, lending_pool_set_bank_same_asset_emode_eligibility, resize_global_fee_state
+  instructions removed (2): copy_fee_state_to_v2, init_global_fee_state_v2
+  instructions changed (10): edit_global_fee_state, end_liquidation, lending_account_end_flashloan, lending_account_pulse_health, lending_pool_close_bank, marginfi_group_configure, purge_deleverage_balance, start_liquidation, transfer_to_new_account, transfer_to_new_account_pda
+  accounts added (1): SameAssetEmodeRegistry
+  accounts removed (1): FeeStateV2
+  types added (7): CircuitBreakerAutoBrokenEvent, CircuitBreakerClearedEvent, CircuitBreakerTrippedEvent, LendingPoolBankSetSameAssetEmodeEligibilityEvent, SameAssetEmodeBank, SameAssetEmodeGroup, SameAssetEmodeRegistry
+  types removed (1): FeeStateV2
+  types changed (12): Bank, BankCache, BankConfig, BankConfigCompact, BankConfigOpt, BankOperationalState, DriftConfigCompact, FeeState, JuplendConfigCompact, LiquidationBalances, MarginfiGroup, Order
+  events added (4): CircuitBreakerAutoBrokenEvent, CircuitBreakerClearedEvent, CircuitBreakerTrippedEvent, LendingPoolBankSetSameAssetEmodeEligibilityEvent
+  errors added (6): BankCircuitBreakerHalted, CircuitBreakerAdminOnly, CircuitBreakerInvalidConfig, CircuitBreakerPriceJump, CircuitBreakerRequiresWarmCache, InvalidResize

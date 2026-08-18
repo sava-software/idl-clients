@@ -123,7 +123,8 @@ final class MarginfiClientImpl implements MarginfiClient {
         authority,
         feePayer,
         newAuthority,
-        globalFeeWallet
+        globalFeeWallet,
+        accounts.feeState()
     );
   }
 
@@ -146,6 +147,7 @@ final class MarginfiClientImpl implements MarginfiClient {
         feePayer,
         newAuthority,
         globalFeeWallet,
+        accounts.feeState(),
         accountIndex,
         thirdPartyId
     );
@@ -262,7 +264,8 @@ final class MarginfiClientImpl implements MarginfiClient {
   public Instruction pulseHealth(final PublicKey marginfiAccount) {
     return MarginfiProgram.lendingAccountPulseHealth(
         accounts.invokedMarginfiProgram(),
-        marginfiAccount
+        marginfiAccount,
+        accounts.marginfiGroup()
     );
   }
 
@@ -284,6 +287,7 @@ final class MarginfiClientImpl implements MarginfiClient {
     return MarginfiProgram.lendingAccountEndFlashloan(
         accounts.invokedMarginfiProgram(),
         marginfiAccount,
+        accounts.marginfiGroup(),
         authority
     );
   }
