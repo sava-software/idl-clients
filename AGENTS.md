@@ -309,9 +309,23 @@ that deploy, because the SDK copy still differs from the deployed document at th
 *same* version string — 1.24.0 on both sides, different content. Read the record,
 not the version.
 
-Always generate with `--report=idl-change-report.txt` and commit the report. A
-change to a generated `sources.json` hash without a matching report change means
-the generation was run without retaining its channel-movement evidence.
+Always generate with `--report=idl-change-report.txt` and commit **both** reports one
+run writes: that file, which carries the movement this run saw, and
+`idl-change-report-gap.txt` beside it, the standing gap dashboard. A change to a
+generated `sources.json` hash without a matching change to the *movement* report means
+the generation was run without retaining its channel-movement evidence. The gap report
+is not evidence of anything — it re-renders whether or not this run saw movement, which
+is why it was split out (idl-src-gen#3) and why only the movement file is gated.
+
+`.github/report-evidence.sh` is that sentence as a gate, run over every pushed range
+by the `Report Evidence` workflow. It keys on the movement-implying *lines* of a
+**modified** record — a channel `hash`, `lastDeploySlot`, `programDataPayloadSha256` —
+and not on the file being touched: `programDataStateSlot` can be restamped fleet-wide
+with no movement anywhere (idl-src-gen#4), and an *added* record is a first generation
+with no baseline to have moved against. It had fired on six of the thirty commits
+before it existed, each discovered a generation later, by which point the evidence was
+unrecoverable. A record moved with no generation behind it — a hand-fixed hash, a
+package repointed at another address — says so in a `Report-Evidence:` commit trailer.
 
 ### Diffing account order against the Rust
 

@@ -1,0 +1,54 @@
+# Repo-local rather than a `sava-software/sava-build` reusable workflow: the invariant is
+# about an idl-clients artifact — the committed channel-movement report — and no other
+# consumer of idl-src-gen commits one.
+#
+# On push, not on pull_request. Work lands on main directly here; the only pull requests
+# are release-please's, and those never touch a generated record, so a PR-gated check
+# would never run on the commits it exists for. It reports after the fact rather than
+# blocking, which is still the whole point: movement is an event, and one generation
+# later the evidence is gone for good.
+name: Report Evidence
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      range:
+        description: 'Commit range to audit (default: the last 30 commits)'
+        required: false
+        default: HEAD~30..HEAD
+
+concurrency:
+  group: report-evidence-${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      # Full history: the audit reads the pushed range, and a shallow clone would leave
+      # `before` unfetched — which reads as "nothing to check" rather than as an error.
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+
+      - name: Audit the pushed range for movement evidence
+        env:
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
+          DISPATCH_RANGE: ${{ inputs.range }}
+        run: |
+          if [ -n "${DISPATCH_RANGE:-}" ]; then
+            range="$DISPATCH_RANGE"
+          elif [ -n "${BEFORE:-}" ] && git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+            range="$BEFORE..$AFTER"
+          else
+            # A new branch, a force push, or a first push: there is no meaningful range to
+            # walk, so audit the tip alone rather than silently checking nothing.
+            echo "::notice::no usable push range (before=${BEFORE:-unset}); auditing $AFTER alone"
+            range="$AFTER"
+          fi
+          echo "auditing $range"
+          .github/report-evidence.sh "$range"

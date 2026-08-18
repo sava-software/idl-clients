@@ -42,8 +42,12 @@
 # pipeline; committed because the derivation is the provenance of a tracked artifact.
 !/tools/*.mjs
 
-# Deterministic channel movement report emitted by idl-src-gen.
+# Both reports idl-src-gen emits from one run: the movement events this run saw, and the
+# standing gap dashboard beside it. The gap file needs its own rule — it is named by the
+# generator rather than by the --report flag, so nothing here would have re-included it and
+# the catch-all above would swallow a committed deliverable silently.
 !/idl-change-report.txt
+!/idl-change-report-gap.txt
 
 # Modules: sources (hand-written and generated), build scripts, docs, the idl.json
 # each generated package was produced from, test fixtures and fuzz seed corpora,
