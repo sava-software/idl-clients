@@ -1,5 +1,12 @@
 # Changelog
 
+## [25.19.3](https://github.com/sava-software/idl-clients/compare/25.19.2...25.19.3) (2026-08-19)
+
+
+### Bug Fixes
+
+* **gen:** revert marginfi IDL reference to match the onchain program. ([001ce2e](https://github.com/sava-software/idl-clients/commit/001ce2ea1a122a0179d532bb5c539cd304b522b5))
+
 ## [25.19.2](https://github.com/sava-software/idl-clients/compare/25.19.1...25.19.2) (2026-08-18)
 
 
