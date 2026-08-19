@@ -55,7 +55,9 @@ one saw cannot be recovered from anything.
   * the report is probably still in your working tree — `git add idl-change-report.txt
     idl-change-report-gap.txt` and `git commit --amend`
   * a record moved with no generation behind it (a hand-fixed hash, a package repointed
-    at another address) belongs in a `Report-Evidence:` trailer on that commit
+    at another address) says so on that commit: a `Report-Evidence:` trailer carrying
+    the why, plus one `Report-Evidence-Path:` trailer per moved record — the audit
+    output above prints the exact set it expects, ready to paste
   * `git push --no-verify` overrides this, and CI will still say so
 
 MSG

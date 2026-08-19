@@ -325,7 +325,13 @@ with no movement anywhere (idl-src-gen#4), and an *added* record is a first gene
 with no baseline to have moved against. It had fired on six of the thirty commits
 before it existed, each discovered a generation later, by which point the evidence was
 unrecoverable. A record moved with no generation behind it — a hand-fixed hash, a
-package repointed at another address — says so in a `Report-Evidence:` commit trailer.
+package repointed at another address — says so in commit trailers the gate verifies
+rather than merely requires: a `Report-Evidence:` trailer carrying the why in prose,
+plus one `Report-Evidence-Path:` trailer per moved record, whose set must equal exactly
+the records the gate detects. The split is deliberate — prose cannot be validated, so
+the checkable half of the claim lives in the paths, and the first excused commit
+written here proved the need by summarizing four redeploys while omitting a fifth
+record's channel-hash move. On failure the gate prints the set it detected.
 
 `.github/hooks/pre-push` runs the same audit over the commits a push would publish,
 which is the one moment the fix is still free: a pushed commit is an ancestor of a
