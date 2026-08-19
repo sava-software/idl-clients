@@ -25,8 +25,6 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param operationalState Current operational state of the bank (Paused, Operational, ReduceOnly, KilledByBankruptcy)
 /// @param oracleSetup Oracle type used for price feeds
 /// @param oracleKeys Oracle account keys (usage depends on oracle_setup type)
-/// @param cbWindowMaxUpBps: u16 CB long-window upward move cap in bps; `0` uses the `CB_WINDOW_MAX_UP_BPS` default.
-/// @param cbWindowMaxDownBps: u16 CB long-window downward move cap in bps; `0` uses the `CB_WINDOW_MAX_DOWN_BPS` default.
 /// @param borrowLimit: u64 Maximum total borrows allowed in this bank, in native token units (0 = no limit)
 /// @param riskTier Risk tier for this bank (Collateral or Isolated)
 /// @param assetTag: u8 Determines what kinds of assets users of this bank can interact with. Options:
@@ -44,7 +42,6 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///                    setup from a prior version. Not set in 0.1.3 or earlier banks using pyth that have not yet
 ///                    migrated. Does nothing for banks that use switchboard.
 ///                    * 2, 4, 8, 16, etc - reserved for future use.
-/// @param cbWindowSeconds: u32 CB long-window length in seconds; `0` uses the `CB_WINDOW_SECONDS` default.
 /// @param totalAssetValueInitLimit: u64 USD denominated limit for calculating asset value for initialization margin requirements.
 ///                                 Example, if total SOL deposits are equal to $1M and the limit it set to $500K, then SOL
 ///                                 assets will be discounted by 50%.
@@ -54,22 +51,11 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///
 ///                                 Value is UI USD value, for example value 100 -> $100
 /// @param oracleMaxAge: u16 Time window in seconds for the oracle price feed to be considered live.
-/// @param oracleMaxConfidence: u32 A %, as u32, e.g. 100% = u32::MAX, 50% = u32::MAX/2, etc.
-///
-///                            Oracle confidence configuration. Semantics depend on the oracle type:
-///                            * Pyth: Maximum allowed confidence interval. Prices exceeding this threshold are rejected.
-///                            - 0 defaults to 10%.
-///                            * Switchboard: Confidence spread used for price biasing.
-///                            - 0 disables confidence adjustment.
-///                            - Non-zero: confidence = price * oracle_max_confidence / U32_MAX.
-///                            - Clamped to MAX_CONF_INTERVAL (5% of price).
+/// @param oracleMaxConfidence: u32 From 0-100%, if the confidence exceeds this value, the oracle is considered invalid. Note:
+///                            the confidence adjustment is capped at 5% regardless of this value.
+///                            * 0 falls back to using the default 10% instead, i.e., U32_MAX_DIV_10
+///                            * A %, as u32, e.g. 100% = u32::MAX, 50% = u32::MAX/2, etc.
 /// @param fixedPrice Stored oracle price for `OracleSetup::Fixed`, otherwise does nothing
-/// @param cbDeviationBpsTiers: u16[] Deviation thresholds in basis points for tiers 1/2/3, strictly monotonic.
-/// @param cbTierDurationsSeconds: u16[] Halt durations in seconds for tiers 1/2/3, strictly monotonic.
-/// @param cbEscalationWindowMult: u8 Escalation window multiplier: a re-breach within `prev_tier_duration * mult` seconds
-///                               after a halt ends ratchets to the next tier.
-/// @param cbConfigPad: u8
-/// @param cbEmaAlphaBps: u16 EMA smoothing factor for the reference price, in basis points (e.g. 1000 = α=0.1).
 public record BankConfig(WrappedI80F48 assetWeightInit,
                          WrappedI80F48 assetWeightMaint,
                          WrappedI80F48 liabilityWeightInit,
@@ -79,33 +65,25 @@ public record BankConfig(WrappedI80F48 assetWeightInit,
                          BankOperationalState operationalState,
                          OracleSetup oracleSetup,
                          PublicKey[] oracleKeys,
-                         int cbWindowMaxUpBps,
-                         int cbWindowMaxDownBps,
                          byte[] pad0,
                          long borrowLimit,
                          RiskTier riskTier,
                          int assetTag,
                          int configFlags,
                          byte[] pad1,
-                         long cbWindowSeconds,
                          long totalAssetValueInitLimit,
                          int oracleMaxAge,
                          byte[] padding0,
                          long oracleMaxConfidence,
                          WrappedI80F48 fixedPrice,
-                         int[] cbDeviationBpsTiers,
-                         int[] cbTierDurationsSeconds,
-                         int cbEscalationWindowMult,
-                         int cbConfigPad,
-                         int cbEmaAlphaBps) implements SerDe {
+                         byte[] padding1) implements SerDe {
 
   public static final int BYTES = 544;
   public static final int ORACLE_KEYS_LEN = 5;
-  public static final int PAD_0_LEN = 2;
-  public static final int PAD_1_LEN = 1;
+  public static final int PAD_0_LEN = 6;
+  public static final int PAD_1_LEN = 5;
   public static final int PADDING_0_LEN = 2;
-  public static final int CB_DEVIATION_BPS_TIERS_LEN = 3;
-  public static final int CB_TIER_DURATIONS_SECONDS_LEN = 3;
+  public static final int PADDING_1_LEN = 16;
 
   public static final int ASSET_WEIGHT_INIT_OFFSET = 0;
   public static final int ASSET_WEIGHT_MAINT_OFFSET = 16;
@@ -116,25 +94,18 @@ public record BankConfig(WrappedI80F48 assetWeightInit,
   public static final int OPERATIONAL_STATE_OFFSET = 312;
   public static final int ORACLE_SETUP_OFFSET = 313;
   public static final int ORACLE_KEYS_OFFSET = 314;
-  public static final int CB_WINDOW_MAX_UP_BPS_OFFSET = 474;
-  public static final int CB_WINDOW_MAX_DOWN_BPS_OFFSET = 476;
-  public static final int PAD_0_OFFSET = 478;
+  public static final int PAD_0_OFFSET = 474;
   public static final int BORROW_LIMIT_OFFSET = 480;
   public static final int RISK_TIER_OFFSET = 488;
   public static final int ASSET_TAG_OFFSET = 489;
   public static final int CONFIG_FLAGS_OFFSET = 490;
   public static final int PAD_1_OFFSET = 491;
-  public static final int CB_WINDOW_SECONDS_OFFSET = 492;
   public static final int TOTAL_ASSET_VALUE_INIT_LIMIT_OFFSET = 496;
   public static final int ORACLE_MAX_AGE_OFFSET = 504;
   public static final int PADDING_0_OFFSET = 506;
   public static final int ORACLE_MAX_CONFIDENCE_OFFSET = 508;
   public static final int FIXED_PRICE_OFFSET = 512;
-  public static final int CB_DEVIATION_BPS_TIERS_OFFSET = 528;
-  public static final int CB_TIER_DURATIONS_SECONDS_OFFSET = 534;
-  public static final int CB_ESCALATION_WINDOW_MULT_OFFSET = 540;
-  public static final int CB_CONFIG_PAD_OFFSET = 541;
-  public static final int CB_EMA_ALPHA_BPS_OFFSET = 542;
+  public static final int PADDING_1_OFFSET = 528;
 
   public static BankConfig read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -159,11 +130,7 @@ public record BankConfig(WrappedI80F48 assetWeightInit,
     i += 1;
     final var oracleKeys = new PublicKey[5];
     i += SerDeUtil.readArray(oracleKeys, _data, i);
-    final var cbWindowMaxUpBps = Short.toUnsignedInt(getInt16LE(_data, i));
-    i += 2;
-    final var cbWindowMaxDownBps = Short.toUnsignedInt(getInt16LE(_data, i));
-    i += 2;
-    final var pad0 = new byte[2];
+    final var pad0 = new byte[6];
     i += SerDeUtil.readArray(pad0, _data, i);
     final var borrowLimit = getInt64LE(_data, i);
     i += 8;
@@ -173,10 +140,8 @@ public record BankConfig(WrappedI80F48 assetWeightInit,
     ++i;
     final var configFlags = _data[i] & 0xFF;
     ++i;
-    final var pad1 = new byte[1];
+    final var pad1 = new byte[5];
     i += SerDeUtil.readArray(pad1, _data, i);
-    final var cbWindowSeconds = Integer.toUnsignedLong(getInt32LE(_data, i));
-    i += 4;
     final var totalAssetValueInitLimit = getInt64LE(_data, i);
     i += 8;
     final var oracleMaxAge = Short.toUnsignedInt(getInt16LE(_data, i));
@@ -187,15 +152,8 @@ public record BankConfig(WrappedI80F48 assetWeightInit,
     i += 4;
     final var fixedPrice = WrappedI80F48.read(_data, i);
     i += 16;
-    final var cbDeviationBpsTiers = new int[3];
-    i += SerDeUtil.readUnsignedShortArray(cbDeviationBpsTiers, _data, i);
-    final var cbTierDurationsSeconds = new int[3];
-    i += SerDeUtil.readUnsignedShortArray(cbTierDurationsSeconds, _data, i);
-    final var cbEscalationWindowMult = _data[i] & 0xFF;
-    ++i;
-    final var cbConfigPad = _data[i] & 0xFF;
-    ++i;
-    final var cbEmaAlphaBps = Short.toUnsignedInt(getInt16LE(_data, i));
+    final var padding1 = new byte[16];
+    SerDeUtil.readArray(padding1, _data, i);
     return new BankConfig(assetWeightInit,
                           assetWeightMaint,
                           liabilityWeightInit,
@@ -205,25 +163,18 @@ public record BankConfig(WrappedI80F48 assetWeightInit,
                           operationalState,
                           oracleSetup,
                           oracleKeys,
-                          cbWindowMaxUpBps,
-                          cbWindowMaxDownBps,
                           pad0,
                           borrowLimit,
                           riskTier,
                           assetTag,
                           configFlags,
                           pad1,
-                          cbWindowSeconds,
                           totalAssetValueInitLimit,
                           oracleMaxAge,
                           padding0,
                           oracleMaxConfidence,
                           fixedPrice,
-                          cbDeviationBpsTiers,
-                          cbTierDurationsSeconds,
-                          cbEscalationWindowMult,
-                          cbConfigPad,
-                          cbEmaAlphaBps);
+                          padding1);
   }
 
   @Override
@@ -239,11 +190,7 @@ public record BankConfig(WrappedI80F48 assetWeightInit,
     i += operationalState.write(_data, i);
     i += oracleSetup.write(_data, i);
     i += SerDeUtil.writeArrayChecked(oracleKeys, 5, _data, i);
-    putInt16LE(_data, i, cbWindowMaxUpBps);
-    i += 2;
-    putInt16LE(_data, i, cbWindowMaxDownBps);
-    i += 2;
-    i += SerDeUtil.writeArrayChecked(pad0, 2, _data, i);
+    i += SerDeUtil.writeArrayChecked(pad0, 6, _data, i);
     putInt64LE(_data, i, borrowLimit);
     i += 8;
     i += riskTier.write(_data, i);
@@ -251,9 +198,7 @@ public record BankConfig(WrappedI80F48 assetWeightInit,
     ++i;
     _data[i] = (byte) configFlags;
     ++i;
-    i += SerDeUtil.writeArrayChecked(pad1, 1, _data, i);
-    putInt32LE(_data, i, (int) cbWindowSeconds);
-    i += 4;
+    i += SerDeUtil.writeArrayChecked(pad1, 5, _data, i);
     putInt64LE(_data, i, totalAssetValueInitLimit);
     i += 8;
     putInt16LE(_data, i, oracleMaxAge);
@@ -262,14 +207,7 @@ public record BankConfig(WrappedI80F48 assetWeightInit,
     putInt32LE(_data, i, (int) oracleMaxConfidence);
     i += 4;
     i += fixedPrice.write(_data, i);
-    i += SerDeUtil.writeUnsignedShortArrayChecked(cbDeviationBpsTiers, 3, _data, i);
-    i += SerDeUtil.writeUnsignedShortArrayChecked(cbTierDurationsSeconds, 3, _data, i);
-    _data[i] = (byte) cbEscalationWindowMult;
-    ++i;
-    _data[i] = (byte) cbConfigPad;
-    ++i;
-    putInt16LE(_data, i, cbEmaAlphaBps);
-    i += 2;
+    i += SerDeUtil.writeArrayChecked(padding1, 16, _data, i);
     return i - _offset;
   }
 

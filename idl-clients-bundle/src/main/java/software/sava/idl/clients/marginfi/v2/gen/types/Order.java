@@ -18,8 +18,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// @param createdAt Unix timestamp (seconds) when the order was created. Reads 0 for orders created before this
-///                  field existed (it was previously a reserved placeholder; same 8 bytes, so layout-compatible).
+/// @param placeholder: u64 Reserved for future use
 /// @param maxSlippage: u32 * a %, as u32, out of 100%, e.g. 50% = .5 * u32::MAX
 /// @param tags: u16[] Active tags (currently 2). Remaining capacity is stored in padding for layout compatibility.
 ///             Padding byte `ORDER_TAG_PADDING - 1` stores the tag count for forward compatibility. (u16 *
@@ -31,7 +30,7 @@ public record Order(PublicKey _address,
                     PublicKey marginfiAccount,
                     WrappedI80F48 stopLoss,
                     WrappedI80F48 takeProfit,
-                    long createdAt,
+                    long placeholder,
                     long maxSlippage,
                     byte[] pad0,
                     int[] tags,
@@ -57,7 +56,7 @@ public record Order(PublicKey _address,
   public static final int MARGINFI_ACCOUNT_OFFSET = 8;
   public static final int STOP_LOSS_OFFSET = 40;
   public static final int TAKE_PROFIT_OFFSET = 56;
-  public static final int CREATED_AT_OFFSET = 72;
+  public static final int PLACEHOLDER_OFFSET = 72;
   public static final int MAX_SLIPPAGE_OFFSET = 80;
   public static final int PAD_0_OFFSET = 84;
   public static final int TAGS_OFFSET = 88;
@@ -80,10 +79,10 @@ public record Order(PublicKey _address,
     return Filter.createMemCompFilter(TAKE_PROFIT_OFFSET, takeProfit.write());
   }
 
-  public static Filter createCreatedAtFilter(final long createdAt) {
+  public static Filter createPlaceholderFilter(final long placeholder) {
     final byte[] _data = new byte[8];
-    putInt64LE(_data, 0, createdAt);
-    return Filter.createMemCompFilter(CREATED_AT_OFFSET, _data);
+    putInt64LE(_data, 0, placeholder);
+    return Filter.createMemCompFilter(PLACEHOLDER_OFFSET, _data);
   }
 
   public static Filter createMaxSlippageFilter(final long maxSlippage) {
@@ -140,7 +139,7 @@ public record Order(PublicKey _address,
     i += 16;
     final var takeProfit = WrappedI80F48.read(_data, i);
     i += 16;
-    final var createdAt = getInt64LE(_data, i);
+    final var placeholder = getInt64LE(_data, i);
     i += 8;
     final var maxSlippage = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
@@ -165,7 +164,7 @@ public record Order(PublicKey _address,
                      marginfiAccount,
                      stopLoss,
                      takeProfit,
-                     createdAt,
+                     placeholder,
                      maxSlippage,
                      pad0,
                      tags,
@@ -184,7 +183,7 @@ public record Order(PublicKey _address,
     i += 32;
     i += stopLoss.write(_data, i);
     i += takeProfit.write(_data, i);
-    putInt64LE(_data, i, createdAt);
+    putInt64LE(_data, i, placeholder);
     i += 8;
     putInt32LE(_data, i, (int) maxSlippage);
     i += 4;

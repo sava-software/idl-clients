@@ -49,7 +49,8 @@
       "vcs": {
         "repo": "exponent-finance/exponent-core",
         "path": "target/idl/exponent_core.json",
-        "commit": "2897c660eeef647002b62ba971e19457182e0b37"
+        "commit": "2897c660eeef647002b62ba971e19457182e0b37",
+        "head": true
       },
       "deployed": "vcs"
     },
@@ -237,7 +238,13 @@
       "module": "bundle",
       "package": "marginfi.v2",
       "program": "MFv2hWf31Z9kbCa1snEPYctwafyhdvnV7FZnsebVacA",
-      "idlURL": "https://raw.githubusercontent.com/0dotxyz/p0-ts-sdk/refs/heads/main/src/idl/marginfi_0.1.10.json"
+      "vcs": {
+        "repo": "0dotxyz/p0-ts-sdk",
+        "path": "src/idl/marginfi_0.1.9.json",
+        "ref": "main",
+        "commit": "a33b98018984412693fb7b9dadc2794af5392ab8"
+      },
+      "deployed": "vcs"
     },
     {
       "name": "Marinade Stake Pool",

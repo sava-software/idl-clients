@@ -84,6 +84,14 @@ the requirement is on the evidence, not on the method.
 (`marginfi_0.1.9.json`) silently freezes at that release and fails closed into
 the staleness the override was meant to fix.
 
+**It fails the other way too, and that is the one that shipped.** A pinned
+filename can also be *chased*: when upstream deletes it, the URL starts
+answering 404, and the obvious repair — repoint at the new filename beside it —
+generates the client from the version the team is preparing rather than the one
+they deployed. Marginfi did exactly this on 2026-08-18 with no deploy behind it,
+and the `.json` diff read as an ordinary IDL update. Neither direction is
+detectable from the document; only `lastDeploySlot` distinguishes them.
+
 A `vcs` source pinned with `commit` freezes deliberately, and does not fail closed:
 the generator also reads the branch behind the pin as the `vcsHead` channel, so the
 frozen input still generates while upstream movement is still reported. That is the
@@ -91,6 +99,16 @@ combination to reach for when a repository copy is the *deployed* description �
 program with no on-chain IDL — where an unpinned source would let an upstream edit
 become the deployed client on the next regeneration with nothing to compare it
 against. A pinned *filename* has no such counterpart and is still the trap above.
+
+**That reporting half holds only while the pinned path still exists upstream.**
+`headURL()` asks for the *same path* on the tracked branch, so a pin over a
+deleted file — marginfi's `src/idl/marginfi_0.1.9.json`, gone from `main` since
+p0's `d769882` — resolves to a 404, which `Entrypoint` logs as a WARNING and
+skips. The run stays green, the client still generates from the pin, and no
+`vcsHead` channel is ever recorded: change detection is gone, silently, in the
+one case where the pin was forced rather than chosen. Where that happens, the
+deploy-slot and payload-hash fields in `sources.json` are the whole of the
+signal, which is the right thing to be watching anyway.
 
 Current overrides and the evidence for each: `idl-clients-bundle/config/pitest/README.md`.
 

@@ -1089,20 +1089,62 @@ Everything else the client wraps — deposit, repay, withdraw, borrow, flashloan
 `placeOrder`, the account lifecycle — is byte-identical across the two versions.
 
 Fixed by pointing the config at the IDL the team publishes in their TS SDK and
-regenerating (31 files, 0.1.8 → 0.1.9):
+regenerating (31 files, 0.1.8 → 0.1.9). The source is now the commit that
+published it, because upstream deleted the file:
 
 ```json
-"idlURL": "https://raw.githubusercontent.com/0dotxyz/p0-ts-sdk/refs/heads/main/src/idl/marginfi_0.1.9.json"
+"vcs": {
+  "repo": "0dotxyz/p0-ts-sdk",
+  "path": "src/idl/marginfi_0.1.9.json",
+  "ref": "main",
+  "commit": "a33b98018984412693fb7b9dadc2794af5392ab8"
+},
+"deployed": "vcs"
 ```
 
-⚠️ **This URL is version-pinned.** Unlike Marinade's `marinade_finance.json`,
-which tracks `main`, a future 0.1.10 lands at a *new filename* and this override
-silently freezes at 0.1.9 — failing closed into exactly the staleness it was
-added to fix. After any marginfi deploy, simulate one 0.1.9-only instruction by
-hand — its declared key, no accounts, against a control discriminator the program
-does not declare — and bump the path when the version changes.
+⚠️ **The version-pinned filename went wrong in the direction this warning did
+not name.** The original note predicted a *freeze*: 0.1.10 lands at a new
+filename and the override silently keeps serving 0.1.9. What happened on
+2026-08-18 (`fe6f1a26`) was the opposite — the path was *chased* to
+`marginfi_0.1.10.json` because p0 deleted `marginfi_0.1.9.json` from `main` the
+day before (their `d769882`), so the old URL began answering 404. There was no
+deploy behind it: `lastDeploySlot` sat at 432875565 across the switch, and the
+client spent 2026-08-18 → 2026-08-19 generated from an undeployed version. A
+version-pinned filename fails in both directions, and upstream deleting it is
+the one an unpinned `ref` cannot survive.
+
+**The trigger is the deploy, never the filename.** Bump only after
+`ProgramData.last_deploy_slot` moves off 432875565, confirmed by simulating one
+version-exclusive discriminator against a control the program does not declare.
+Upstream schedules the 0.1.10 mainnet upgrade for **2026-08-25T15:00:00Z**
+(`p0-ts-sdk/src/dialect.ts`, `MARGINFI_V0_1_10_ACTIVATION`), and it is
+explicitly reschedulable — the date is a heads-up, not the signal.
 `docs/PROGRAM_VERIFICATION.md` has the procedure; the tool that automated it was
 removed on 2026-08-14.
+
+**What 0.1.10 costs while it is not deployed** (measured 2026-08-19, the reason
+for the revert): `MarginfiGroup` grows 1064 → 9256 bytes and `FeeState` 264 →
+520, so both readers throw on every live account and both `SIZE_FILTER`s match
+nothing — 162 live groups at 1064, one `FeeState` at 264, zero at either 0.1.10
+size. Five builders are dead on chain; five more insert an account mid-list —
+`lending_account_end_flashloan` puts `group` where the deployed program requires
+`authority: Signer`. `lending_account_pulse_health` is the quiet one: 0.1.9
+declares one account and reads the rest as `remaining_accounts`, and its handler
+swallows the engine error, so the extra key shifts the bank/oracle list and the
+transaction *succeeds* with a bogus health cache.
+
+**The deployed image is identified at artifact level, not inferred.** The
+`ProgramData` payload, trailing zeros stripped, is byte-identical to upstream's
+own `mrgn-0.1.9-rc3` release `marginfi.so` — sha256
+`26dda5e1a060d8fa5d8cf122518f26be3bdaab68e1dc525f74061e2e74cb38f4`, whose prefix
+is verbatim the entry in marginfi-v2's `guides/ADMIN/DEPLOY_GUIDE.md`: "0.1.9
+July 14, 2026 ~11am ET -- Hash 26dda5e". An on-chain otter-verify record
+(`GRJ6g9JSPBjYRBRB54ej9YJrURKcHnw3mnmPXaFk5iAp`, seeds `["otter_verify",
+<upgrade authority>, <program>]`, owner `verifycLy8mB96wd9wqq3WDXQwM4oU6r42Th37Db9fC`)
+names the build commit, `d4c70c84f8a9692405a2c32cbd7095bb1fe3f428`, and the same
+deploy slot. That deploy log is a checkable oracle for the next upgrade, and the
+hash only reconciles once the trailing zeros are stripped — `sources.json`
+records `programDataPayloadSha256` over the padded payload.
 
 Techniques that did *not* settle this, for the record: grepping the deployed
 `.so` for account-name string literals found all three disputed names, but a

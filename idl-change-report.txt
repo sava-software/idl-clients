@@ -7,6 +7,6 @@ nobody took. The standing disagreements live beside this file, at its name with 
 before the extension. Ordered by program and channel, and carrying no timestamp, so
 consecutive runs are worth diffing against each other.
 
-== Movement (0) ==
+== Movement (1) ==
 
-Nothing moved since the last generation.
+Exponent: the vcsHead IDL at github:exponent-finance/exponent-core@main/target/idl/exponent_core.json appeared since the last generation

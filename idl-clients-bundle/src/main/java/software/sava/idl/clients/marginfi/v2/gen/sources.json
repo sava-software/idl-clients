@@ -15,8 +15,8 @@
       "verbatim": "anchor.json"
     },
     "vcs": {
-      "origin": "https://raw.githubusercontent.com/0dotxyz/p0-ts-sdk/refs/heads/main/src/idl/marginfi_0.1.10.json",
-      "hash": "e4a589b6da349963df9ea9b614dff197f1791fc5c3c9109eaa2ab4f92cc1aa58",
+      "origin": "github:0dotxyz/p0-ts-sdk@main#a33b98018984412693fb7b9dadc2794af5392ab8/src/idl/marginfi_0.1.9.json",
+      "hash": "da5708f80f979e729ace989f797b9b92646300ca458893cdd4dffca8277faa15",
       "matchesDeployed": true,
       "verbatim": "idl.json"
     }

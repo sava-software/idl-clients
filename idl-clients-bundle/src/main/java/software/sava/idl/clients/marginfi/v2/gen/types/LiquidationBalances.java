@@ -9,16 +9,14 @@ import static software.sava.core.encoding.ByteUtil.putFloat64LE;
 public record LiquidationBalances(double liquidateeAssetBalance,
                                   double liquidateeLiabilityBalance,
                                   double liquidatorAssetBalance,
-                                  double liquidatorLiabilityBalance,
-                                  double liquidatorLiabilityBankAssetBalance) implements SerDe {
+                                  double liquidatorLiabilityBalance) implements SerDe {
 
-  public static final int BYTES = 40;
+  public static final int BYTES = 32;
 
   public static final int LIQUIDATEE_ASSET_BALANCE_OFFSET = 0;
   public static final int LIQUIDATEE_LIABILITY_BALANCE_OFFSET = 8;
   public static final int LIQUIDATOR_ASSET_BALANCE_OFFSET = 16;
   public static final int LIQUIDATOR_LIABILITY_BALANCE_OFFSET = 24;
-  public static final int LIQUIDATOR_LIABILITY_BANK_ASSET_BALANCE_OFFSET = 32;
 
   public static LiquidationBalances read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -32,13 +30,10 @@ public record LiquidationBalances(double liquidateeAssetBalance,
     final var liquidatorAssetBalance = getFloat64LE(_data, i);
     i += 8;
     final var liquidatorLiabilityBalance = getFloat64LE(_data, i);
-    i += 8;
-    final var liquidatorLiabilityBankAssetBalance = getFloat64LE(_data, i);
     return new LiquidationBalances(liquidateeAssetBalance,
                                    liquidateeLiabilityBalance,
                                    liquidatorAssetBalance,
-                                   liquidatorLiabilityBalance,
-                                   liquidatorLiabilityBankAssetBalance);
+                                   liquidatorLiabilityBalance);
   }
 
   @Override
@@ -51,8 +46,6 @@ public record LiquidationBalances(double liquidateeAssetBalance,
     putFloat64LE(_data, i, liquidatorAssetBalance);
     i += 8;
     putFloat64LE(_data, i, liquidatorLiabilityBalance);
-    i += 8;
-    putFloat64LE(_data, i, liquidatorLiabilityBankAssetBalance);
     i += 8;
     return i - _offset;
   }

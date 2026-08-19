@@ -65,8 +65,6 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///              - Bit 9 (512): `STAKED_ORACLE_DISABLED` — staked oracle pricing is temporarily disabled.
 ///              - Bit 10 (1024): `STAKED_ORACLE_PRICE_USES_ONRAMP` — staked oracle pricing includes the SPL
 ///              single-pool on-ramp account in NAV.
-///              - Bit 11 (2048): `CIRCUIT_BREAKER_ENABLED` — oracle deviation breaker active on this bank
-///              - Bit 12 (4096): `BANK_SAME_ASSET_EMODE_ELIGIBLE` — bank may participate in same-asset e-mode.
 /// @param emissionsRate: u64 Emissions APR. Number of emitted tokens (emissions_mint) per 1e(bank.mint_decimal) tokens
 ///                      (bank mint) (native amount) per 1 YEAR.
 /// @param emissionsRemaining Remaining emissions tokens available for distribution
@@ -88,12 +86,6 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                               0.1.4 goes live, and may be negative.
 ///                               * For banks created in 0.1.4 or later, this is the number of positions open in total, and
 ///                               the bank may safely be closed if this is zero. Will never go negative.
-/// @param liquidationLiquidatorFee: u32 Fee the liquidator earns when liquidating against this bank's liability. Decode with
-///                                 `u32_to_centi` (`u32::MAX` = 100%).
-///                                 * 0 falls back to the default (`DEFAULT_LIQUIDATION_FEE` = 2.5%).
-/// @param liquidationInsuranceFee: u32 Fee routed to this bank's insurance fund on a liquidation against its liability. Decode
-///                                with `u32_to_centi` (`u32::MAX` = 100%).
-///                                * 0 falls back to the default (`DEFAULT_LIQUIDATION_FEE` = 2.5%).
 /// @param padding0 Reserved for future use
 /// @param integrationAcc1 Integration account slot 1 (default Pubkey for non-integrations).
 ///                        - Kamino: reserve
@@ -115,27 +107,6 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                 or pre-backfill banks (1.8 or earlier) where seed remains unknown.
 ///                 * Otherwise the `bank_seed: u64` argument passed when creating the bank.
 ///                 * Use `flags & BANK_SEED_KNOWN` to verify this value has known seed provenance.
-/// @param cbHaltStartedAt Unix-seconds when the current halt started, zero if not halted.
-/// @param cbHaltEndedAt Unix-seconds when the current halt's tier duration ends. Tier stays sticky past this for
-///                      the escalation window; a fresh breach within the window ratchets to the next tier.
-/// @param cbTier: u8 0 = operational, 1..=3 = escalating halt severity.
-/// @param cbTier3ConsecutiveTrips: u8 Consecutive tier-3 trips with no clean escalation-window between them. Hitting
-///                                `CB_MAX_TIER3_BEFORE_CIRCUIT_BREAK` forces the bank to `CircuitBroken`.
-/// @param cbPreBreakState: u8 `BankOperationalState` (as `u8`) the bank held before the breaker forced it to
-///                        `CircuitBroken`. Restored by `clear_circuit_breaker`. Meaningless unless
-///                        `operational_state == CircuitBroken`.
-/// @param cbLastObservedSlot: u64 Solana slot of the last counted CB observation; used for slot-level dedup.
-/// @param cbLastOracleSourceTime Publisher-side timestamp of the last counted CB observation; rejects re-reads of the same
-///                               publication across multiple Solana slots. Zero when the adapter doesn't expose one.
-/// @param cbReferencePrice EMA reference price used by the circuit breaker, in the multiplier-adjusted effective-price
-///                         domain the risk engine uses. Frozen while halted, zero until the first observation after
-///                         enable.
-/// @param cbWindowReferencePrice Long-window reference price (same multiplier-adjusted domain as `cb_reference_price`) used
-///                               to catch slow oracle walking that stays below the per-observation breaker threshold.
-/// @param cbWindowStartedAt Unix-seconds when `cb_window_reference_price` was anchored.
-/// @param cbFrozenSecondsPending: u64 Frozen halt seconds from halt intervals overwritten or cleared before `accrue_interest`
-///                               consumed them. Non-zero only when the halt record changes without a preceding accrual, i.e.
-///                               a paused pulse; the next accrual excludes these on top of the current halt. Zero normally.
 /// @param padding1: u64[]
 public record Bank(PublicKey _address,
                    Discriminator discriminator,
@@ -172,8 +143,6 @@ public record Bank(PublicKey _address,
                    BankCache cache,
                    int lendingPositionCount,
                    int borrowingPositionCount,
-                   long liquidationLiquidatorFee,
-                   long liquidationInsuranceFee,
                    byte[] padding0,
                    PublicKey integrationAcc1,
                    PublicKey integrationAcc2,
@@ -181,28 +150,15 @@ public record Bank(PublicKey _address,
                    BankRateLimiter rateLimiter,
                    byte[] pad01,
                    long bankSeed,
-                   long cbHaltStartedAt,
-                   long cbHaltEndedAt,
-                   int cbTier,
-                   int cbTier3ConsecutiveTrips,
-                   int cbPreBreakState,
-                   byte[] cbPad,
-                   long cbLastObservedSlot,
-                   long cbLastOracleSourceTime,
-                   WrappedI80F48 cbReferencePrice,
-                   WrappedI80F48 cbWindowReferencePrice,
-                   long cbWindowStartedAt,
-                   long cbFrozenSecondsPending,
                    long[] padding1) implements SerDe {
 
   public static final int BYTES = 1864;
   public static final int PAD_0_LEN = 7;
   public static final int PAD_1_LEN = 4;
   public static final int PAD_2_LEN = 6;
-  public static final int PADDING_0_LEN = 8;
+  public static final int PADDING_0_LEN = 16;
   public static final int PAD_01_LEN = 16;
-  public static final int CB_PAD_LEN = 5;
-  public static final int PADDING_1_LEN = 2;
+  public static final int PADDING_1_LEN = 13;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(142, 49, 166, 242, 50, 66, 97, 188);
@@ -241,28 +197,14 @@ public record Bank(PublicKey _address,
   public static final int CACHE_OFFSET = 1376;
   public static final int LENDING_POSITION_COUNT_OFFSET = 1536;
   public static final int BORROWING_POSITION_COUNT_OFFSET = 1540;
-  public static final int LIQUIDATION_LIQUIDATOR_FEE_OFFSET = 1544;
-  public static final int LIQUIDATION_INSURANCE_FEE_OFFSET = 1548;
-  public static final int PADDING_0_OFFSET = 1552;
+  public static final int PADDING_0_OFFSET = 1544;
   public static final int INTEGRATION_ACC_1_OFFSET = 1560;
   public static final int INTEGRATION_ACC_2_OFFSET = 1592;
   public static final int INTEGRATION_ACC_3_OFFSET = 1624;
   public static final int RATE_LIMITER_OFFSET = 1656;
   public static final int PAD_01_OFFSET = 1736;
   public static final int BANK_SEED_OFFSET = 1752;
-  public static final int CB_HALT_STARTED_AT_OFFSET = 1760;
-  public static final int CB_HALT_ENDED_AT_OFFSET = 1768;
-  public static final int CB_TIER_OFFSET = 1776;
-  public static final int CB_TIER_3_CONSECUTIVE_TRIPS_OFFSET = 1777;
-  public static final int CB_PRE_BREAK_STATE_OFFSET = 1778;
-  public static final int CB_PAD_OFFSET = 1779;
-  public static final int CB_LAST_OBSERVED_SLOT_OFFSET = 1784;
-  public static final int CB_LAST_ORACLE_SOURCE_TIME_OFFSET = 1792;
-  public static final int CB_REFERENCE_PRICE_OFFSET = 1800;
-  public static final int CB_WINDOW_REFERENCE_PRICE_OFFSET = 1816;
-  public static final int CB_WINDOW_STARTED_AT_OFFSET = 1832;
-  public static final int CB_FROZEN_SECONDS_PENDING_OFFSET = 1840;
-  public static final int PADDING_1_OFFSET = 1848;
+  public static final int PADDING_1_OFFSET = 1760;
 
   public static Filter createMintFilter(final PublicKey mint) {
     return Filter.createMemCompFilter(MINT_OFFSET, mint);
@@ -382,18 +324,6 @@ public record Bank(PublicKey _address,
     return Filter.createMemCompFilter(BORROWING_POSITION_COUNT_OFFSET, _data);
   }
 
-  public static Filter createLiquidationLiquidatorFeeFilter(final long liquidationLiquidatorFee) {
-    final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, (int) liquidationLiquidatorFee);
-    return Filter.createMemCompFilter(LIQUIDATION_LIQUIDATOR_FEE_OFFSET, _data);
-  }
-
-  public static Filter createLiquidationInsuranceFeeFilter(final long liquidationInsuranceFee) {
-    final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, (int) liquidationInsuranceFee);
-    return Filter.createMemCompFilter(LIQUIDATION_INSURANCE_FEE_OFFSET, _data);
-  }
-
   public static Filter createIntegrationAcc1Filter(final PublicKey integrationAcc1) {
     return Filter.createMemCompFilter(INTEGRATION_ACC_1_OFFSET, integrationAcc1);
   }
@@ -414,62 +344,6 @@ public record Bank(PublicKey _address,
     final byte[] _data = new byte[8];
     putInt64LE(_data, 0, bankSeed);
     return Filter.createMemCompFilter(BANK_SEED_OFFSET, _data);
-  }
-
-  public static Filter createCbHaltStartedAtFilter(final long cbHaltStartedAt) {
-    final byte[] _data = new byte[8];
-    putInt64LE(_data, 0, cbHaltStartedAt);
-    return Filter.createMemCompFilter(CB_HALT_STARTED_AT_OFFSET, _data);
-  }
-
-  public static Filter createCbHaltEndedAtFilter(final long cbHaltEndedAt) {
-    final byte[] _data = new byte[8];
-    putInt64LE(_data, 0, cbHaltEndedAt);
-    return Filter.createMemCompFilter(CB_HALT_ENDED_AT_OFFSET, _data);
-  }
-
-  public static Filter createCbTierFilter(final int cbTier) {
-    return Filter.createMemCompFilter(CB_TIER_OFFSET, new byte[]{(byte) cbTier});
-  }
-
-  public static Filter createCbTier3ConsecutiveTripsFilter(final int cbTier3ConsecutiveTrips) {
-    return Filter.createMemCompFilter(CB_TIER_3_CONSECUTIVE_TRIPS_OFFSET, new byte[]{(byte) cbTier3ConsecutiveTrips});
-  }
-
-  public static Filter createCbPreBreakStateFilter(final int cbPreBreakState) {
-    return Filter.createMemCompFilter(CB_PRE_BREAK_STATE_OFFSET, new byte[]{(byte) cbPreBreakState});
-  }
-
-  public static Filter createCbLastObservedSlotFilter(final long cbLastObservedSlot) {
-    final byte[] _data = new byte[8];
-    putInt64LE(_data, 0, cbLastObservedSlot);
-    return Filter.createMemCompFilter(CB_LAST_OBSERVED_SLOT_OFFSET, _data);
-  }
-
-  public static Filter createCbLastOracleSourceTimeFilter(final long cbLastOracleSourceTime) {
-    final byte[] _data = new byte[8];
-    putInt64LE(_data, 0, cbLastOracleSourceTime);
-    return Filter.createMemCompFilter(CB_LAST_ORACLE_SOURCE_TIME_OFFSET, _data);
-  }
-
-  public static Filter createCbReferencePriceFilter(final WrappedI80F48 cbReferencePrice) {
-    return Filter.createMemCompFilter(CB_REFERENCE_PRICE_OFFSET, cbReferencePrice.write());
-  }
-
-  public static Filter createCbWindowReferencePriceFilter(final WrappedI80F48 cbWindowReferencePrice) {
-    return Filter.createMemCompFilter(CB_WINDOW_REFERENCE_PRICE_OFFSET, cbWindowReferencePrice.write());
-  }
-
-  public static Filter createCbWindowStartedAtFilter(final long cbWindowStartedAt) {
-    final byte[] _data = new byte[8];
-    putInt64LE(_data, 0, cbWindowStartedAt);
-    return Filter.createMemCompFilter(CB_WINDOW_STARTED_AT_OFFSET, _data);
-  }
-
-  public static Filter createCbFrozenSecondsPendingFilter(final long cbFrozenSecondsPending) {
-    final byte[] _data = new byte[8];
-    putInt64LE(_data, 0, cbFrozenSecondsPending);
-    return Filter.createMemCompFilter(CB_FROZEN_SECONDS_PENDING_OFFSET, _data);
   }
 
   public static Bank read(final byte[] _data, final int _offset) {
@@ -572,11 +446,7 @@ public record Bank(PublicKey _address,
     i += 4;
     final var borrowingPositionCount = getInt32LE(_data, i);
     i += 4;
-    final var liquidationLiquidatorFee = Integer.toUnsignedLong(getInt32LE(_data, i));
-    i += 4;
-    final var liquidationInsuranceFee = Integer.toUnsignedLong(getInt32LE(_data, i));
-    i += 4;
-    final var padding0 = new byte[8];
+    final var padding0 = new byte[16];
     i += SerDeUtil.readArray(padding0, _data, i);
     final var integrationAcc1 = readPubKey(_data, i);
     i += 32;
@@ -590,31 +460,7 @@ public record Bank(PublicKey _address,
     i += SerDeUtil.readArray(pad01, _data, i);
     final var bankSeed = getInt64LE(_data, i);
     i += 8;
-    final var cbHaltStartedAt = getInt64LE(_data, i);
-    i += 8;
-    final var cbHaltEndedAt = getInt64LE(_data, i);
-    i += 8;
-    final var cbTier = _data[i] & 0xFF;
-    ++i;
-    final var cbTier3ConsecutiveTrips = _data[i] & 0xFF;
-    ++i;
-    final var cbPreBreakState = _data[i] & 0xFF;
-    ++i;
-    final var cbPad = new byte[5];
-    i += SerDeUtil.readArray(cbPad, _data, i);
-    final var cbLastObservedSlot = getInt64LE(_data, i);
-    i += 8;
-    final var cbLastOracleSourceTime = getInt64LE(_data, i);
-    i += 8;
-    final var cbReferencePrice = WrappedI80F48.read(_data, i);
-    i += 16;
-    final var cbWindowReferencePrice = WrappedI80F48.read(_data, i);
-    i += 16;
-    final var cbWindowStartedAt = getInt64LE(_data, i);
-    i += 8;
-    final var cbFrozenSecondsPending = getInt64LE(_data, i);
-    i += 8;
-    final var padding1 = new long[2];
+    final var padding1 = new long[13];
     SerDeUtil.readArray(padding1, _data, i);
     return new Bank(_address,
                     discriminator,
@@ -651,8 +497,6 @@ public record Bank(PublicKey _address,
                     cache,
                     lendingPositionCount,
                     borrowingPositionCount,
-                    liquidationLiquidatorFee,
-                    liquidationInsuranceFee,
                     padding0,
                     integrationAcc1,
                     integrationAcc2,
@@ -660,18 +504,6 @@ public record Bank(PublicKey _address,
                     rateLimiter,
                     pad01,
                     bankSeed,
-                    cbHaltStartedAt,
-                    cbHaltEndedAt,
-                    cbTier,
-                    cbTier3ConsecutiveTrips,
-                    cbPreBreakState,
-                    cbPad,
-                    cbLastObservedSlot,
-                    cbLastOracleSourceTime,
-                    cbReferencePrice,
-                    cbWindowReferencePrice,
-                    cbWindowStartedAt,
-                    cbFrozenSecondsPending,
                     padding1);
   }
 
@@ -730,11 +562,7 @@ public record Bank(PublicKey _address,
     i += 4;
     putInt32LE(_data, i, borrowingPositionCount);
     i += 4;
-    putInt32LE(_data, i, (int) liquidationLiquidatorFee);
-    i += 4;
-    putInt32LE(_data, i, (int) liquidationInsuranceFee);
-    i += 4;
-    i += SerDeUtil.writeArrayChecked(padding0, 8, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding0, 16, _data, i);
     integrationAcc1.write(_data, i);
     i += 32;
     integrationAcc2.write(_data, i);
@@ -745,28 +573,7 @@ public record Bank(PublicKey _address,
     i += SerDeUtil.writeArrayChecked(pad01, 16, _data, i);
     putInt64LE(_data, i, bankSeed);
     i += 8;
-    putInt64LE(_data, i, cbHaltStartedAt);
-    i += 8;
-    putInt64LE(_data, i, cbHaltEndedAt);
-    i += 8;
-    _data[i] = (byte) cbTier;
-    ++i;
-    _data[i] = (byte) cbTier3ConsecutiveTrips;
-    ++i;
-    _data[i] = (byte) cbPreBreakState;
-    ++i;
-    i += SerDeUtil.writeArrayChecked(cbPad, 5, _data, i);
-    putInt64LE(_data, i, cbLastObservedSlot);
-    i += 8;
-    putInt64LE(_data, i, cbLastOracleSourceTime);
-    i += 8;
-    i += cbReferencePrice.write(_data, i);
-    i += cbWindowReferencePrice.write(_data, i);
-    putInt64LE(_data, i, cbWindowStartedAt);
-    i += 8;
-    putInt64LE(_data, i, cbFrozenSecondsPending);
-    i += 8;
-    i += SerDeUtil.writeArrayChecked(padding1, 2, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding1, 13, _data, i);
     return i - _offset;
   }
 

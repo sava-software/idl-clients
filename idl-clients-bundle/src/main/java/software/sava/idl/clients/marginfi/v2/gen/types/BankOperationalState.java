@@ -11,8 +11,7 @@ public enum BankOperationalState implements RustEnum {
   ReduceOnly,
   KilledByBankruptcy,
   Uninitialized,
-  ReduceOnlyWithBorrowingPower,
-  CircuitBroken;
+  ReduceOnlyWithBorrowingPower;
 
   public static BankOperationalState read(final byte[] _data, final int _offset) {
     return SerDeUtil.read(1, BankOperationalState.values(), _data, _offset);

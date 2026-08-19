@@ -190,15 +190,13 @@ final class MarginfiRemainingAccountsTests {
                                     final OracleSetup oracleSetup,
                                     final int assetTag) {
     final var config = new BankConfig(
-        null, null, null, null, 0L, null, null, oracleSetup, null, 0,
-        0, null, 0L, null, assetTag, 0, null, 0L, 0L, 0,
-        null, 0L, null, null, null, 0, 0, 0);
+        null, null, null, null, 0L, null, null, oracleSetup, null, null,
+        0L, null, assetTag, 0, null, 0L, 0, null, 0L, null, null);
     return new Bank(
         address, null, null, 0, null, null, null, null, null, 0,
         0, null, 0, 0, null, null, null, 0, 0, null,
         null, null, null, 0L, config, 0L, 0L, null, null, null,
-        null, null, null, 0, 0, 0L, 0L, null, null, null,
-        null, null, null, 0L, 0L, 0L, 0, 0, 0, null,
-        0L, 0L, null, null, 0L, 0L, null);
+        null, null, null, 0, 0, null, null, null, null, null,
+        null, 0L, null);
   }
 }
