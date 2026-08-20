@@ -34,15 +34,8 @@ Kamino Lend: the vcs IDL at https://cdn.jsdelivr.net/npm/@kamino-finance/klend-s
   types changed (31): BorrowOrder, BorrowOrderConfigArgs, ElevationGroup, ExchangeRateWithDecimals, FeeCalculation, FixedTermBorrowRolloverConfig, GlobalConfig, LastUpdate, LendingMarket, Obligation, ObligationCollateral, ObligationLiquidity, ObligationOrder, PriceHeuristic, ProgressCallbackType, PythConfiguration, ReferrerTokenState, Reserve, ReserveCollateral, ReserveConfig, ReserveConfigCustomizationArgs, ReserveFees, ReserveLiquidity, ScopeConfiguration, SwitchboardConfiguration, TokenInfo, UpdateObligationConfigMode, UserMetadata, WithdrawalCaps, WithdrawQueue, WithdrawTicket
 
 Kamino Scope: the vcs IDL at github:Kamino-Finance/scope-sdk@master/src/idl/scope.json differs from the deployed idl.json
-  instructions added (2): update_mapping, update_token_metadata
-  instructions removed (5): freeze_price, resume_chainlinkx_price, set_emergency_council, set_resume_authority, update_mapping_and_metadata
-  instructions changed (3): refresh_chainlink_price, refresh_price_list, refresh_pyth_lazer_price
-  types added (6): AggregatorAccountData, AggregatorRound, Hash, ReportDataV8MarketStatus, SwitchboardDecimal, UpdateTokenMetadataMode
-  types removed (15): ChainlinkStandardPriceData, ChainlinkXPriceData, Condition, ConditionalData, MultiplicationChainData, PriceUpdateResult, PythLazerEmaRefData, PythLazerStoredData, RefPriceToleranceOrTwapSource, ReportDataMarketStatus, TwapEnabledBitmask, UpdateOracleMappingAndMetadataEntriesWithId, UpdateOracleMappingAndMetadataEntry, V3, V8V10
-  types changed (13): Configuration, EmaTwap, EmaType, LiqPool, MintsToScopeChains, OracleMappings, OracleType, PythLazerData, ReportDataV9RipcordFlag, ScopeChainError, StakeSystem, State, ValidatorSystem
-  errors added (4): InvalidTokenUpdateMode, MostRecentOfInvalidMaxAge, MostRecentOfInvalidSourceIndices, MostRecentOfMaxAgeViolated
-  errors removed (25): ChainlinkXPriceNotSuspended, CompositeOracleInvalidMaxAge, CompositeOracleMaxAgeViolated, InvalidConversionToEmaTypeForOracleType, InvalidUpdateSequenceOrAccounts, KlendCTokenExchangeRateCPIError, KlendReserveDeprecated, MissingPriceAccount, OperationNotSupported, OracleConfigInvalidSourceIndices, OutsideMarketHours, PriceAlreadyFrozen, PriceFrozen, PriceNotFrozen, PythLazerConfidenceNotPresent, PythLazerEmaConfidenceNotPresent, PythLazerEmaNotEnabledOnSource, PythLazerEmaPriceNotPresent, PythLazerExponentNotPresent, PythLazerFeedUpdateTimestampNotPresent, PythLazerUnexpectedExponent, TwapEnabledBitmaskConversionFailure, TwapSourceIndexNotSet, UnauthorizedFreeze, UnauthorizedResume
-  errors changed (1): PriceAccountNotExpected
+  instructions changed (4): refresh_chainlink_price, refresh_price_list, refresh_pyth_lazer_price, update_mapping_and_metadata
+  types changed (14): ChainlinkStandardPriceData, ChainlinkXPriceData, ConditionalData, EmaTwap, LiqPool, MintsToScopeChains, PythLazerData, PythLazerEmaRefData, PythLazerStoredData, ReportDataV9RipcordFlag, ScopeChainError, StakeSystem, State, ValidatorSystem
 
 Kamino Vaults: the vcs IDL at https://cdn.jsdelivr.net/npm/@kamino-finance/klend-sdk@latest/src/idl/kvault.json differs from the deployed idl.json
   instructions changed (5): invest, invest_with_max_amount, update_reserve_allocation, update_reserve_allocation_v2, withdraw_pending_fees

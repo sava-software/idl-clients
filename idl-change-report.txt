@@ -9,4 +9,12 @@ consecutive runs are worth diffing against each other.
 
 == Movement (1) ==
 
-Kamino Lend: the program was redeployed at slot 440486775, up from 438843135, and no IDL channel moved with it; the stored program image changed: 10485715 payload bytes, was 10485715 — review required
+Kamino Scope: the vcs IDL at github:Kamino-Finance/scope-sdk@master/src/idl/scope.json moved since the last generation: instructions +5 -2, types +15 -6 ~6, errors +25 -4 ~1; version 0.26.1 -> 0.40.0
+  instructions added (5): freeze_price, resume_chainlinkx_price, set_emergency_council, set_resume_authority, update_mapping_and_metadata
+  instructions removed (2): update_mapping, update_token_metadata
+  types added (15): ChainlinkStandardPriceData, ChainlinkXPriceData, Condition, ConditionalData, MultiplicationChainData, PriceUpdateResult, PythLazerEmaRefData, PythLazerStoredData, RefPriceToleranceOrTwapSource, ReportDataMarketStatus, TwapEnabledBitmask, UpdateOracleMappingAndMetadataEntriesWithId, UpdateOracleMappingAndMetadataEntry, V3, V8V10
+  types removed (6): AggregatorAccountData, AggregatorRound, Hash, ReportDataV8MarketStatus, SwitchboardDecimal, UpdateTokenMetadataMode
+  types changed (6): every one type changed
+  errors added (25): ChainlinkXPriceNotSuspended, CompositeOracleInvalidMaxAge, CompositeOracleMaxAgeViolated, InvalidConversionToEmaTypeForOracleType, InvalidUpdateSequenceOrAccounts, KlendCTokenExchangeRateCPIError, KlendReserveDeprecated, MissingPriceAccount, OperationNotSupported, OracleConfigInvalidSourceIndices, OutsideMarketHours, PriceAlreadyFrozen, PriceFrozen, PriceNotFrozen, PythLazerConfidenceNotPresent, PythLazerEmaConfidenceNotPresent, PythLazerEmaNotEnabledOnSource, PythLazerEmaPriceNotPresent, PythLazerExponentNotPresent, PythLazerFeedUpdateTimestampNotPresent, PythLazerUnexpectedExponent, TwapEnabledBitmaskConversionFailure, TwapSourceIndexNotSet, UnauthorizedFreeze, UnauthorizedResume
+  errors removed (4): InvalidTokenUpdateMode, MostRecentOfInvalidMaxAge, MostRecentOfInvalidSourceIndices, MostRecentOfMaxAgeViolated
+  errors changed (1): PriceAccountNotExpected

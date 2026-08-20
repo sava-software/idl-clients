@@ -15,7 +15,7 @@
     },
     "vcs": {
       "origin": "github:Kamino-Finance/scope-sdk@master/src/idl/scope.json",
-      "hash": "38ba9d82084b9a01b53fc50e74d698b9f91e4828c7a732d523110c6adbf40f38",
+      "hash": "7fa01dee7edf3c958432144f1a1c7edc8290b970755359e4614b9b7af61baf11",
       "matchesDeployed": false,
       "file": "vcs.json",
       "verbatim": "vcs.original.json"
