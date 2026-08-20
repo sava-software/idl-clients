@@ -9,4 +9,4 @@ consecutive runs are worth diffing against each other.
 
 == Movement (1) ==
 
-Exponent: the vcsHead IDL at github:exponent-finance/exponent-core@main/target/idl/exponent_core.json appeared since the last generation
+Kamino Lend: the program was redeployed at slot 440486775, up from 438843135, and no IDL channel moved with it; the stored program image changed: 10485715 payload bytes, was 10485715 — review required
