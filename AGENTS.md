@@ -319,27 +319,42 @@ is why it was split out (idl-src-gen#3) and why only the movement file is gated.
 
 `.github/report-evidence.sh` is that sentence as a gate, run over every pushed range
 by the `Report Evidence` workflow. It keys on the movement-implying *lines* of a
-**modified** record — a channel `hash`, `lastDeploySlot`, `programDataPayloadSha256` —
+**modified** record — a channel `hash`, `lastDeploySlot`, `programDataState`,
+`programDataPayloadSha256` —
 and not on the file being touched: `programDataStateSlot` can be restamped fleet-wide
-with no movement anywhere (idl-src-gen#4), and an *added* record is a first generation
-with no baseline to have moved against. It had fired on six of the thirty commits
-before it existed, each discovered a generation later, by which point the evidence was
-unrecoverable. A record moved with no generation behind it — a hand-fixed hash, a
-package repointed at another address — says so in commit trailers the gate verifies
-rather than merely requires: a `Report-Evidence:` trailer carrying the why in prose,
-plus one `Report-Evidence-Path:` trailer per moved record, whose set must equal exactly
-the records the gate detects. The split is deliberate — prose cannot be validated, so
-the checkable half of the claim lives in the paths, and the first excused commit
-written here proved the need by summarizing four redeploys while omitting a fifth
-record's channel-hash move. On failure the gate prints the set it detected.
+with no movement anywhere (idl-src-gen#4), an *added* record is a first generation
+with no baseline to have moved against, and a top-level key *appearing* with no `-`
+line is the record format growing a field (`7910437a` stamped a first
+`lastDeploySlot` into 42 records that way), not the program moving — a channel `hash`
+still counts on any sign, because a channel appearing is movement. It had fired on six
+of the thirty commits before it existed, each discovered a generation later, by which
+point the evidence was unrecoverable. A record moved with no generation behind it — a
+hand-fixed hash, a package repointed at another address — says so in commit trailers
+the gate verifies rather than merely requires: a `Report-Evidence:` trailer carrying
+the why in prose, plus one `Report-Evidence-Path:` trailer per moved record, whose set
+must equal exactly the records the gate detects. The split is deliberate — prose
+cannot be validated, so the checkable half of the claim lives in the paths, and the
+first excused commit written here proved the need by summarizing four redeploys while
+omitting a fifth record's channel-hash move. On failure the gate prints the set it
+detected.
 
-`.github/hooks/pre-push` runs the same audit over the commits a push would publish,
-which is the one moment the fix is still free: a pushed commit is an ancestor of a
-remote ref and must not be rewritten, so CI can only report what is already permanent.
-Install it with `git config core.hooksPath .github/hooks`, which runs the tracked file
-itself rather than a copy that can drift from it. It does not replace the workflow —
-a hook lives in one clone, `--no-verify` skips it, and pushes reach this repository
-from other machines and sessions — so the two answer different halves.
+The script and `.github/hooks/pre-push` are **vendored, byte-identical copies** of
+`consumer/` in sava-software/idl-src-gen, which is canonical: the audit's key set and
+line-anchored greps are contracts with the serializer there
+(`IdlChannels.sourcesJson`), and `ReportEvidenceScriptTests` in that repository holds
+the two together — a serializer change that would blind the audit fails that build.
+Never edit the copies here: fix canonically, then re-vendor with idl-src-gen's
+`consumer/sync.sh`. Both the `Report Evidence` workflow and the scheduled monitor
+diff the copies against canonical and fail on drift, so a stale gate is caught within
+hours rather than trusted.
+
+The pre-push hook runs the same audit over the commits a push would publish, which is
+the one moment the fix is still free: a pushed commit is an ancestor of a remote ref
+and must not be rewritten, so CI can only report what is already permanent. Install it
+with `git config core.hooksPath .github/hooks`, noting that this redirects *all* hook
+lookups to that directory. It does not replace the workflow — a hook lives in one
+clone, `--no-verify` skips it, and pushes reach this repository from other machines
+and sessions — so the two answer different halves.
 
 ### Diffing account order against the Rust
 
