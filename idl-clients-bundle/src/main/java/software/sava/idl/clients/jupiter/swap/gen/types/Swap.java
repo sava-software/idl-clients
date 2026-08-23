@@ -191,7 +191,9 @@ public sealed interface Swap extends RustEnum permits
   Swap.SanctumPamm,
   Swap.Archer,
   Swap.TrenchWrappedBuy,
-  Swap.TrenchWrappedSell {
+  Swap.TrenchWrappedSell,
+  Swap.BisonFiMarketBacked,
+  Swap.TesseraVV2 {
 
   static Swap read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -374,6 +376,8 @@ public sealed interface Swap extends RustEnum permits
       case 174 -> Archer.read(_data, i);
       case 175 -> TrenchWrappedBuy.INSTANCE;
       case 176 -> TrenchWrappedSell.INSTANCE;
+      case 177 -> BisonFiMarketBacked.read(_data, i);
+      case 178 -> TesseraVV2.read(_data, i);
       default -> null;
     };
   }
@@ -3028,6 +3032,33 @@ public sealed interface Swap extends RustEnum permits
     @Override
     public int ordinal() {
       return 176;
+    }
+  }
+
+  record BisonFiMarketBacked(boolean val) implements EnumBool, Swap {
+
+    public static final BisonFiMarketBacked TRUE = new BisonFiMarketBacked(true);
+    public static final BisonFiMarketBacked FALSE = new BisonFiMarketBacked(false);
+
+    public static BisonFiMarketBacked read(final byte[] _data, int i) {
+      return _data[i] == 1 ? BisonFiMarketBacked.TRUE : BisonFiMarketBacked.FALSE;
+    }
+
+    @Override
+    public int ordinal() {
+      return 177;
+    }
+  }
+
+  record TesseraVV2(Side val) implements SerDeEnum, Swap {
+
+    public static TesseraVV2 read(final byte[] _data, final int _offset) {
+      return new TesseraVV2(Side.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 178;
     }
   }
 }

@@ -9,4 +9,5 @@ consecutive runs are worth diffing against each other.
 
 == Movement (1) ==
 
-Phoenix Perpetuals: the program was redeployed at slot 440735150, up from 437447068, and no IDL channel moved with it; the stored program image changed: 3162136 payload bytes, was 3151896 — review required
+Jupiter Swap: the anchor IDL at C88XWfp26heEmDkmfSzeXP7Fd7GQJ2j9dDTUsyiZbUTa moved since the last generation: types ~3
+  types changed (3): CandidateSwap, Swap, SwapEventV2

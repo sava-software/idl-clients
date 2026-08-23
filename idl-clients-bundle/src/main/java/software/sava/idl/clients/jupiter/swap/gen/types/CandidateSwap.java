@@ -19,7 +19,10 @@ public sealed interface CandidateSwap extends RustEnum permits
   CandidateSwap.GoonFiV2,
   CandidateSwap.GoonFiV3,
   CandidateSwap.WhirlpoolV2,
-  CandidateSwap.ZeroFiSwapV2 {
+  CandidateSwap.ZeroFiSwapV2,
+  CandidateSwap.BisonFiMarketBacked,
+  CandidateSwap.RaydiumClmmV2,
+  CandidateSwap.TesseraVV2 {
 
   static CandidateSwap read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -37,6 +40,9 @@ public sealed interface CandidateSwap extends RustEnum permits
       case 9 -> GoonFiV3.read(_data, i);
       case 10 -> WhirlpoolV2.read(_data, i);
       case 11 -> ZeroFiSwapV2.INSTANCE;
+      case 12 -> BisonFiMarketBacked.read(_data, i);
+      case 13 -> RaydiumClmmV2.INSTANCE;
+      case 14 -> TesseraVV2.read(_data, i);
       default -> null;
     };
   }
@@ -272,6 +278,43 @@ public sealed interface CandidateSwap extends RustEnum permits
     @Override
     public int ordinal() {
       return 11;
+    }
+  }
+
+  record BisonFiMarketBacked(boolean val) implements EnumBool, CandidateSwap {
+
+    public static final BisonFiMarketBacked TRUE = new BisonFiMarketBacked(true);
+    public static final BisonFiMarketBacked FALSE = new BisonFiMarketBacked(false);
+
+    public static BisonFiMarketBacked read(final byte[] _data, int i) {
+      return _data[i] == 1 ? BisonFiMarketBacked.TRUE : BisonFiMarketBacked.FALSE;
+    }
+
+    @Override
+    public int ordinal() {
+      return 12;
+    }
+  }
+
+  record RaydiumClmmV2() implements EnumNone, CandidateSwap {
+
+    public static final RaydiumClmmV2 INSTANCE = new RaydiumClmmV2();
+
+    @Override
+    public int ordinal() {
+      return 13;
+    }
+  }
+
+  record TesseraVV2(Side val) implements SerDeEnum, CandidateSwap {
+
+    public static TesseraVV2 read(final byte[] _data, final int _offset) {
+      return new TesseraVV2(Side.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 14;
     }
   }
 }

@@ -8,6 +8,10 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// Changing these fields breaks downstream IDL users and Ultra, which parses
+/// this event by hardcoded byte offset. Ship the matching `parseSwapEvents`
+/// change in jup-ag/swap-api first.
+///
 /// @param inputAmount: u64
 /// @param outputAmount: u64
 public record SwapEventV2(PublicKey inputMint,
