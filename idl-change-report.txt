@@ -9,5 +9,4 @@ consecutive runs are worth diffing against each other.
 
 == Movement (1) ==
 
-Jupiter Swap: the anchor IDL at C88XWfp26heEmDkmfSzeXP7Fd7GQJ2j9dDTUsyiZbUTa moved since the last generation: types ~3
-  types changed (3): CandidateSwap, Swap, SwapEventV2
+Jupiter Swap: the program was redeployed at slot 441316428, up from 440628275, and no IDL channel moved with it; the stored program image changed: 2892224 payload bytes, was 2892224 — review required
