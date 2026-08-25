@@ -46,8 +46,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /// that structurally cannot see this class of change.
 ///
 /// The bytes in `/stake/reference-vectors.txt` come from `solana-program/stake`'s own generated
-/// JavaScript client, which `@codama/renderers-js` renders from the pipeline
-/// `tools/stake-idl.mjs` runs — an independent implementation of the same specification.
+/// JavaScript client, which `@codama/renderers-js` renders from the same `idl.json` this
+/// repository generates from — an independent implementation of the same specification.
 /// `tools/stake-vectors.mjs` regenerates them.
 ///
 /// What this does **not** establish is that upstream's encoder matches the deployed program.

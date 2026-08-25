@@ -6,7 +6,7 @@ time, and each re-derivation reintroduced the same false positives.
 
 **Everything here needs something outside the repository.** That is the rule for what
 belongs in `tools/` rather than in a test: `GroundTruth.java` needs a checkout of the
-program's Rust, and the two `.mjs` scripts need a `solana-program/stake` checkout to
+program's Rust, and `stake-vectors.mjs` needs a `solana-program/stake` checkout to
 resolve against. A check that needs nothing outside the repo is a test, and lives with
 the code it reasons about — `tick_margin_sweep.py` was here until 2026-08-15 and is
 now `OrcaTickMarginSweep` in `idl-clients-bundle`'s test sources, beside the
@@ -16,7 +16,7 @@ now `OrcaTickMarginSweep` in `idl-clients-bundle`'s test sources, beside the
 `java tools/GroundTruth.java`, no build step — and is deliberately **not** a Gradle
 module: a module would join the publish and would owe `mutationOwnershipAudit` either
 a mutation suite or an argued decline, which is a lot of ceremony for a diff tool.
-Neither `.mjs` script installs anything here.
+`stake-vectors.mjs` installs nothing here.
 
 These were Python until 2026-08-14. The port was verified byte-for-byte against the
 scripts it replaced, over every invocation recorded below plus three error paths, with
@@ -35,10 +35,25 @@ using it. It also had known defects and no tests. `docs/PROGRAM_VERIFICATION.md`
 has the manual procedure and its limits; the reasoning and the coverage
 measurements are in the commits that removed it.
 
+`stake-idl.mjs` was removed on 2026-08-25, and it was never a check — it *produced*
+the IDL Stake was generated from. It applied `solana-program/stake`'s own `before`
+visitors to the intermediate `idl.json` at that repository's root, and committed the
+result as `idls/codama/spl/stake.json` for idl-src-gen to read, because that root
+`idl.json` was not a usable IDL on its own. Upstream's #501 split the intermediate
+out to `interface-idl.json` and now publishes the *visited* tree as `idl.json`,
+leaving the derivation nothing to do: the file it wrote and the file upstream
+publishes differ only in JSON key order and one empty `accounts: []` that idl-src-gen
+defaults anyway, and regenerating across the switch changed no Java. Stake now reads
+`idlURL` off `refs/heads/main` like every other codama program in
+`main_net_programs.json`, which it had been the sole exception to. What that gives up
+is the pin: the derived file was committed, so upstream could not reach generated code
+until someone re-ran the script and reviewed the diff. Stake tracks upstream head on
+every run now, and what catches a change is the movement report plus the two Stake
+tests.
+
 | Script | Answers | Cost |
 |---|---|---|
 | `GroundTruth.java` | Does our account order match the program's Rust? | instant, local |
-| `stake-idl.mjs` | Derives Stake's IDL by running upstream's own codama pipeline | seconds, needs their checkout |
 | `stake-vectors.mjs` | Does our Stake encoder agree with upstream's generated JS client? | seconds, needs their checkout |
 
 
@@ -126,12 +141,31 @@ round trip through code this repository generated — a builder and the reader
 beside it come from one IDL and agree by construction, so on their own they cannot
 see a systematic change to the wire format.
 
-Two things it is not. It is not ground truth: upstream's client descends from the
-same pipeline `stake-idl.mjs` runs, and the only evidence that pipeline matches the
-deployed program is the mainnet fixture in `StakeOnChainInstructionTests`. And it
-is not a check you run — the bytes are committed, `qualityGate` compares against
-them on every build, and this script exists to regenerate them when upstream moves.
-The diff is the review.
+Two things it is not. It is not ground truth: since 2026-08-25 our client and
+upstream's JavaScript one are generated from the same file — the visited `idl.json`
+upstream publishes — so they share an input exactly rather than merely descending
+from a common pipeline, and the only evidence that input matches the deployed
+program is the mainnet fixture in `StakeOnChainInstructionTests`. And it is not a
+check you run — the bytes are committed and `qualityGate` compares against them on
+every build.
+
+**Do not re-run this on a schedule.** The deployed Stake program is immutable: its
+programData account `6WU8Nxarf9fudRK5atWwjLY4vFaw5UrrWhL88qz7iCMJ` carries
+`authority: null`, checked against mainnet on 2026-08-25 at slot 441627724. The
+instruction set is frozen at seventeen and the wire format cannot change, so these
+vectors are permanent rather than a moving target, and upstream's repository moving
+is not a reason to refresh them. Measured: regenerating on 2026-08-25 across
+upstream #498, #500 and #501 and a client bump from 0.8.0 to 0.9.0
+(`@solana/kit` 7 to 8) reproduced all 38 vectors byte for byte, changing only the
+three provenance lines in the header.
+
+Two things would justify running it. If the comparison ever fails, the committed
+bytes say *that* the generated encoder diverged and re-deriving says *who is right*.
+And if upstream's IDL grows an instruction, `everyInstructionHasAVector` fails until
+one has a vector — hand-authoring those bytes would void the whole point, which is
+that they come from an implementation neither this repository nor its generator
+produced. For an immutable program a new instruction is itself worth a look before
+it is worth a vector. Either way the diff is the review.
 
 ## Adding to these
 
@@ -139,10 +173,9 @@ First ask whether it belongs here at all: if the check needs nothing outside thi
 repository, it is a test, and it should live next to the code it reasons about where
 `check` will run it. Otherwise keep it runnable from the repo root, and keep what it
 needs out of the repo — `GroundTruth.java` uses nothing but the JDK and stays out of
-`settings.gradle.kts`, and the
-`.mjs` ones borrow a checkout's `node_modules` rather than adding a package manifest
-here. A new language is a decision, not a convenience: it needs a `.gitignore`
-whitelist rule, and whoever runs the tool next has to already have it. If a script starts
-needing per-program special cases beyond a flag, that is a sign the case belongs
-in `docs/PROGRAM_VERIFICATION.md` as prose rather than in code — the analysis is
-the durable part, the parsing is not.
+`settings.gradle.kts`, and `stake-vectors.mjs` borrows a checkout's `node_modules`
+rather than adding a package manifest here. A new language is a decision, not a
+convenience: it needs a `.gitignore` whitelist rule, and whoever runs the tool next
+has to already have it. If a script starts needing per-program special cases beyond
+a flag, that is a sign the case belongs in `docs/PROGRAM_VERIFICATION.md` as prose
+rather than in code — the analysis is the durable part, the parsing is not.

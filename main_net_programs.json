@@ -311,7 +311,9 @@
       "program": "EMBERpYNE6ehWmXymZZS2skiFmCa9V5dp14e1iduM5qy",
       "idlAccountProgramOwner": "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S",
       "idlType": "anchor",
-      "accountDiscriminators": {"EmberState": "state_account"}
+      "accountDiscriminators": {
+        "EmberState": "state_account"
+      }
     },
     {
       "name": "Phoenix Perpetuals",
@@ -402,7 +404,17 @@
       "package": "spl.attestation_service",
       "program": "22zoJMtdu4tQc2PzL74ZUT7FrwgB1Udec8DdW4yw4BdG",
       "idlURL": "https://raw.githubusercontent.com/solana-foundation/solana-attestation-service/refs/heads/master/idl/solana_attestation_service.json",
-      "accountDiscriminators": {"Credential": [0], "Schema": [1], "Attestation": [2]}
+      "accountDiscriminators": {
+        "Credential": [
+          0
+        ],
+        "Schema": [
+          1
+        ],
+        "Attestation": [
+          2
+        ]
+      }
     },
     {
       "name": "Squads V4",
@@ -422,12 +434,8 @@
       "module": "spl",
       "package": "spl.stake",
       "program": "Stake11111111111111111111111111111111111111",
-      "vcs": {
-        "repo": "solana-program/stake",
-        "path": "idl.json"
-      },
-      "idlFile": "idls/codama/spl/stake.json",
-      "idlType": "codama"
+      "idlType": "codama",
+      "idlURL": "https://raw.githubusercontent.com/solana-program/stake/refs/heads/main/idl.json"
     },
     {
       "name": "Switchboard On-Demand",

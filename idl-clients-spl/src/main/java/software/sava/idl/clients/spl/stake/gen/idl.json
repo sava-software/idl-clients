@@ -73,8 +73,8 @@
               "name": "authorized"
             },
             "display": {
-              "flatten": true,
-              "kind": "structFieldDisplayNode"
+              "kind": "structFieldDisplayNode",
+              "flatten": true
             }
           },
           {
@@ -85,8 +85,8 @@
               "name": "lockup"
             },
             "display": {
-              "flatten": true,
-              "kind": "structFieldDisplayNode"
+              "kind": "structFieldDisplayNode",
+              "flatten": true
             }
           }
         ],
@@ -98,9 +98,9 @@
           }
         ],
         "display": {
+          "kind": "instructionDisplayNode",
           "intent": "Initialize stake account",
-          "interpolatedIntent": "Initialize stake account ${accounts.stake}",
-          "kind": "instructionDisplayNode"
+          "interpolatedIntent": "Initialize stake account ${accounts.stake}"
         }
       },
       {
@@ -212,9 +212,9 @@
           }
         ],
         "display": {
+          "kind": "instructionDisplayNode",
           "intent": "Update stake authority",
-          "interpolatedIntent": "Set the ${data.arg1} authority of ${accounts.stake} to ${data.arg0}",
-          "kind": "instructionDisplayNode"
+          "interpolatedIntent": "Set the ${data.arg1} authority of ${accounts.stake} to ${data.arg0}"
         }
       },
       {
@@ -339,9 +339,9 @@
           }
         ],
         "display": {
+          "kind": "instructionDisplayNode",
           "intent": "Delegate stake",
-          "interpolatedIntent": "Delegate ${accounts.stake} to vote account ${accounts.vote}",
-          "kind": "instructionDisplayNode"
+          "interpolatedIntent": "Delegate ${accounts.stake} to vote account ${accounts.vote}"
         }
       },
       {
@@ -440,9 +440,9 @@
           }
         ],
         "display": {
+          "kind": "instructionDisplayNode",
           "intent": "Split stake",
-          "interpolatedIntent": "Split ${data.args} from ${accounts.stake} into ${accounts.splitStake}",
-          "kind": "instructionDisplayNode"
+          "interpolatedIntent": "Split ${data.args} from ${accounts.stake} into ${accounts.splitStake}"
         }
       },
       {
@@ -583,9 +583,9 @@
           }
         ],
         "display": {
+          "kind": "instructionDisplayNode",
           "intent": "Withdraw stake",
-          "interpolatedIntent": "Withdraw ${data.args} from ${accounts.stake} to ${accounts.recipient}",
-          "kind": "instructionDisplayNode"
+          "interpolatedIntent": "Withdraw ${data.args} from ${accounts.stake} to ${accounts.recipient}"
         }
       },
       {
@@ -664,9 +664,9 @@
           }
         ],
         "display": {
+          "kind": "instructionDisplayNode",
           "intent": "Deactivate stake",
-          "interpolatedIntent": "Deactivate ${accounts.stake}",
-          "kind": "instructionDisplayNode"
+          "interpolatedIntent": "Deactivate ${accounts.stake}"
         }
       },
       {
@@ -785,9 +785,9 @@
           }
         ],
         "display": {
+          "kind": "instructionDisplayNode",
           "intent": "Set stake lockup",
-          "interpolatedIntent": "Update the lockup of ${accounts.stake}",
-          "kind": "instructionDisplayNode"
+          "interpolatedIntent": "Update the lockup of ${accounts.stake}"
         }
       },
       {
@@ -898,9 +898,9 @@
           }
         ],
         "display": {
+          "kind": "instructionDisplayNode",
           "intent": "Merge stake accounts",
-          "interpolatedIntent": "Merge ${accounts.sourceStake} into ${accounts.destinationStake}",
-          "kind": "instructionDisplayNode"
+          "interpolatedIntent": "Merge ${accounts.sourceStake} into ${accounts.destinationStake}"
         }
       },
       {
@@ -1039,9 +1039,9 @@
           }
         ],
         "display": {
+          "kind": "instructionDisplayNode",
           "intent": "Update stake authority",
-          "interpolatedIntent": "Change an authority of ${accounts.stake}",
-          "kind": "instructionDisplayNode"
+          "interpolatedIntent": "Change an authority of ${accounts.stake}"
         }
       },
       {
@@ -1130,9 +1130,9 @@
           }
         ],
         "display": {
+          "kind": "instructionDisplayNode",
           "intent": "Initialize stake account",
-          "interpolatedIntent": "Initialize stake account ${accounts.stake}",
-          "kind": "instructionDisplayNode"
+          "interpolatedIntent": "Initialize stake account ${accounts.stake}"
         }
       },
       {
@@ -1243,9 +1243,9 @@
           }
         ],
         "display": {
+          "kind": "instructionDisplayNode",
           "intent": "Update stake authority",
-          "interpolatedIntent": "Set the ${data.stakeAuthorize} authority of ${accounts.stake} to ${accounts.newAuthority}",
-          "kind": "instructionDisplayNode"
+          "interpolatedIntent": "Set the ${data.stakeAuthorize} authority of ${accounts.stake} to ${accounts.newAuthority}"
         }
       },
       {
@@ -1383,9 +1383,9 @@
           }
         ],
         "display": {
+          "kind": "instructionDisplayNode",
           "intent": "Update stake authority",
-          "interpolatedIntent": "Set an authority of ${accounts.stake} to ${accounts.newAuthority}",
-          "kind": "instructionDisplayNode"
+          "interpolatedIntent": "Set an authority of ${accounts.stake} to ${accounts.newAuthority}"
         }
       },
       {
@@ -1498,9 +1498,9 @@
           }
         ],
         "display": {
+          "kind": "instructionDisplayNode",
           "intent": "Set stake lockup",
-          "interpolatedIntent": "Update the lockup of ${accounts.stake}",
-          "kind": "instructionDisplayNode"
+          "interpolatedIntent": "Update the lockup of ${accounts.stake}"
         }
       },
       {
@@ -1535,10 +1535,9 @@
           }
         ],
         "display": {
-          "intent": "Get minimum stake delegation",
-          "kind": "instructionDisplayNode"
-        },
-        "accounts": []
+          "kind": "instructionDisplayNode",
+          "intent": "Get minimum stake delegation"
+        }
       },
       {
         "kind": "instructionNode",
@@ -1616,9 +1615,9 @@
           }
         ],
         "display": {
+          "kind": "instructionDisplayNode",
           "intent": "Deactivate delinquent stake",
-          "interpolatedIntent": "Deactivate delinquent stake ${accounts.stake}",
-          "kind": "instructionDisplayNode"
+          "interpolatedIntent": "Deactivate delinquent stake ${accounts.stake}"
         }
       },
       {
@@ -1717,9 +1716,9 @@
           }
         ],
         "display": {
+          "kind": "instructionDisplayNode",
           "intent": "Move stake",
-          "interpolatedIntent": "Move ${data.args} of active stake from ${accounts.sourceStake} to ${accounts.destinationStake}",
-          "kind": "instructionDisplayNode"
+          "interpolatedIntent": "Move ${data.args} of active stake from ${accounts.sourceStake} to ${accounts.destinationStake}"
         }
       },
       {
@@ -1818,9 +1817,9 @@
           }
         ],
         "display": {
+          "kind": "instructionDisplayNode",
           "intent": "Move unstaked SOL",
-          "interpolatedIntent": "Move ${data.args} from ${accounts.sourceStake} to ${accounts.destinationStake}",
-          "kind": "instructionDisplayNode"
+          "interpolatedIntent": "Move ${data.args} from ${accounts.sourceStake} to ${accounts.destinationStake}"
         }
       }
     ],
@@ -2211,106 +2210,106 @@
     ],
     "errors": [
       {
+        "kind": "errorNode",
+        "name": "noCreditsToRedeem",
         "code": 0,
-        "kind": "errorNode",
-        "message": "Not enough credits to redeem",
-        "name": "noCreditsToRedeem"
+        "message": "Not enough credits to redeem"
       },
       {
+        "kind": "errorNode",
+        "name": "lockupInForce",
         "code": 1,
-        "kind": "errorNode",
-        "message": "Lockup has not yet expired",
-        "name": "lockupInForce"
+        "message": "Lockup has not yet expired"
       },
       {
+        "kind": "errorNode",
+        "name": "alreadyDeactivated",
         "code": 2,
-        "kind": "errorNode",
-        "message": "Stake already deactivated",
-        "name": "alreadyDeactivated"
+        "message": "Stake already deactivated"
       },
       {
+        "kind": "errorNode",
+        "name": "tooSoonToRedelegate",
         "code": 3,
-        "kind": "errorNode",
-        "message": "One re-delegation permitted per epoch",
-        "name": "tooSoonToRedelegate"
+        "message": "One re-delegation permitted per epoch"
       },
       {
+        "kind": "errorNode",
+        "name": "insufficientStake",
         "code": 4,
-        "kind": "errorNode",
-        "message": "Split amount is more than is staked",
-        "name": "insufficientStake"
+        "message": "Split amount is more than is staked"
       },
       {
+        "kind": "errorNode",
+        "name": "mergeTransientStake",
         "code": 5,
-        "kind": "errorNode",
-        "message": "Stake account with transient stake cannot be merged",
-        "name": "mergeTransientStake"
+        "message": "Stake account with transient stake cannot be merged"
       },
       {
+        "kind": "errorNode",
+        "name": "mergeMismatch",
         "code": 6,
-        "kind": "errorNode",
-        "message": "Stake account merge failed due to different authority, lockups or state",
-        "name": "mergeMismatch"
+        "message": "Stake account merge failed due to different authority, lockups or state"
       },
       {
+        "kind": "errorNode",
+        "name": "custodianMissing",
         "code": 7,
-        "kind": "errorNode",
-        "message": "Custodian address not present",
-        "name": "custodianMissing"
+        "message": "Custodian address not present"
       },
       {
+        "kind": "errorNode",
+        "name": "custodianSignatureMissing",
         "code": 8,
-        "kind": "errorNode",
-        "message": "Custodian signature not present",
-        "name": "custodianSignatureMissing"
+        "message": "Custodian signature not present"
       },
       {
+        "kind": "errorNode",
+        "name": "insufficientReferenceVotes",
         "code": 9,
-        "kind": "errorNode",
-        "message": "Insufficient voting activity in the reference vote account",
-        "name": "insufficientReferenceVotes"
+        "message": "Insufficient voting activity in the reference vote account"
       },
       {
+        "kind": "errorNode",
+        "name": "voteAddressMismatch",
         "code": 10,
-        "kind": "errorNode",
-        "message": "Stake account is not delegated to the provided vote account",
-        "name": "voteAddressMismatch"
+        "message": "Stake account is not delegated to the provided vote account"
       },
       {
+        "kind": "errorNode",
+        "name": "minimumDelinquentEpochsForDeactivationNotMet",
         "code": 11,
-        "kind": "errorNode",
-        "message": "Stake account has not been delinquent for the minimum epochs required for deactivation",
-        "name": "minimumDelinquentEpochsForDeactivationNotMet"
+        "message": "Stake account has not been delinquent for the minimum epochs required for deactivation"
       },
       {
+        "kind": "errorNode",
+        "name": "insufficientDelegation",
         "code": 12,
-        "kind": "errorNode",
-        "message": "Delegation amount is less than the minimum",
-        "name": "insufficientDelegation"
+        "message": "Delegation amount is less than the minimum"
       },
       {
+        "kind": "errorNode",
+        "name": "redelegateTransientOrInactiveStake",
         "code": 13,
-        "kind": "errorNode",
-        "message": "Stake account with transient or inactive stake cannot be redelegated",
-        "name": "redelegateTransientOrInactiveStake"
+        "message": "Stake account with transient or inactive stake cannot be redelegated"
       },
       {
+        "kind": "errorNode",
+        "name": "redelegateToSameVoteAccount",
         "code": 14,
-        "kind": "errorNode",
-        "message": "Stake redelegation to the same vote account is not permitted",
-        "name": "redelegateToSameVoteAccount"
+        "message": "Stake redelegation to the same vote account is not permitted"
       },
       {
+        "kind": "errorNode",
+        "name": "redelegatedStakeMustFullyActivateBeforeDeactivationIsPermitted",
         "code": 15,
-        "kind": "errorNode",
-        "message": "Redelegated stake must be fully activated before deactivation",
-        "name": "redelegatedStakeMustFullyActivateBeforeDeactivationIsPermitted"
+        "message": "Redelegated stake must be fully activated before deactivation"
       },
       {
-        "code": 16,
         "kind": "errorNode",
-        "message": "Stake action is not permitted while the epoch rewards period is active",
-        "name": "epochRewardsActive"
+        "name": "epochRewardsActive",
+        "code": 16,
+        "message": "Stake action is not permitted while the epoch rewards period is active"
       }
     ],
     "accounts": [

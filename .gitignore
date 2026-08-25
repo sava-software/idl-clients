@@ -28,7 +28,10 @@
 !/.github/**
 !/gradle/**
 
-# IDLs the client sources are generated from
+# IDLs a program is generated from when its config names a committed file rather than a
+# URL — `idlFile` in main_net_programs.json. Empty since 2026-08-25, when Stake became the
+# last program to move to `idlURL`. The rule stays: a future `idlFile` would land here and,
+# with nothing re-including it, be swallowed silently.
 !/idls/**
 
 # Agent/developer tooling and the long-form docs AGENTS.md links to. Both are a
@@ -38,8 +41,8 @@
 # Run straight from source (`java tools/GroundTruth.java`) — deliberately not Gradle
 # modules, so they stay out of the build, the publish, and the mutation-ownership audit.
 !/tools/*.java
-# stake-idl.mjs derives Stake's IDL by running solana-program/stake's own codama
-# pipeline; committed because the derivation is the provenance of a tracked artifact.
+# stake-vectors.mjs renders the committed Stake reference encodings from upstream's own
+# generated JS client; committed because the script is the provenance of a tracked fixture.
 !/tools/*.mjs
 
 # Both reports idl-src-gen emits from one run: the movement events this run saw, and the

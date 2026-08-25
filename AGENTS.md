@@ -465,13 +465,12 @@ Integration-style tests named `Integ.*` are git-ignored scratch files.
 `tools/` holds standalone scripts for checks otherwise re-derived by hand, and the
 rule for what belongs there is that it needs something outside the repository — a
 check that does not is a test. `GroundTruth.java` diffs a generated client's account
-order against the program's Rust, and two
-`.mjs` scripts run against a `solana-program/stake` checkout — `stake-idl.mjs`
-derives Stake's IDL from upstream's codama pipeline, `stake-vectors.mjs`
-regenerates the reference encodings `StakeReferenceEncodingTests` compares
-against. The `.java` ones run straight from source (`java tools/GroundTruth.java`)
-and are deliberately not Gradle modules, so they stay out of the build, the
-publish, and `mutationOwnershipAudit`. None is wired into Gradle or CI —
+order against the program's Rust, and `stake-vectors.mjs` runs against a
+`solana-program/stake` checkout to regenerate the reference encodings
+`StakeReferenceEncodingTests` compares against. The `.java` ones run straight
+from source (`java tools/GroundTruth.java`) and are deliberately not Gradle
+modules, so they stay out of the build, the publish, and
+`mutationOwnershipAudit`. None is wired into Gradle or CI —
 `hardeningCertify` is the release gate; they are investigative aids whose output
 needs triage, except that what `stake-vectors.mjs` writes is a committed fixture
 and so is checked on every build. `GroundTruth.java` and those vectors are also

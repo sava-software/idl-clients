@@ -1,13 +1,13 @@
 # Differential encoding vectors for the Stake program. Generated — do not hand-edit.
 #
 # Produced by tools/stake-vectors.mjs from solana-program/stake's own generated JavaScript
-# client, which @codama/renderers-js renders from the pipeline tools/stake-idl.mjs runs. It
-# is an independent encoder, not ground truth: the mainnet fixture in
-# StakeOnChainInstructionTests is what ties that pipeline to the deployed program.
+# client, which @codama/renderers-js renders from the same idl.json this repository generates
+# from. It is an independent encoder, not ground truth: the mainnet fixture in
+# StakeOnChainInstructionTests is what ties that IDL to the deployed program.
 #
-# upstream: solana-program/stake @ 5f22394ed81333e1e9cb65715e64dd7111d4ad1b
-# client:   @solana-program/stake 0.8.0, generated at ce816f799ad53f1fe946922a99a68d71e8904b9b
-# lockfile: sha256 e618b7247ac834c90e257428a2271eb15423042d00f876d501c64d5aa6ccf344
+# upstream: solana-program/stake @ f113bf831e2f944d87ae1eeab84b706770f80060
+# client:   @solana-program/stake 0.9.0, generated at ce816f799ad53f1fe946922a99a68d71e8904b9b
+# lockfile: sha256 41810e191f8a6ecdc36ae25c9cf19439020b9b66cb0301ebf11e40a9979b3dc4
 #
 # One vector per line, "<instruction>.<case> <base64 instruction data>", preceded by the
 # arguments it encodes. k(0xNN) is the 32-byte key whose byte i is (0xNN + i * 7) & 0xff.

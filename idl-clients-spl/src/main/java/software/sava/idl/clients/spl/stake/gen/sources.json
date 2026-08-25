@@ -1,6 +1,6 @@
 {
   "program": "Stake11111111111111111111111111111111111111",
-  "deployed": null,
+  "deployed": "vcs",
   "lastDeploySlot": 427248000,
   "programDataState": "upgradeable",
   "programDataStateSlot": 440077852,
@@ -8,11 +8,10 @@
   "programDataPayloadLength": 202280,
   "channels": {
     "vcs": {
-      "origin": "github:solana-program/stake@main/idl.json",
-      "hash": "8b8b51ebf1c98a79b0c020529e8d708bcd50fb760cb780fc16345cb39eb3e6d9",
-      "matchesDeployed": false,
-      "file": "vcs.json",
-      "verbatim": "vcs.json"
+      "origin": "https://raw.githubusercontent.com/solana-program/stake/refs/heads/main/idl.json",
+      "hash": "f04acbc551dafdaf472d6f759eae6bd4e4ad01577e57a7f027f07089933c8655",
+      "matchesDeployed": true,
+      "verbatim": "idl.json"
     }
   }
 }

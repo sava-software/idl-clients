@@ -7,6 +7,6 @@ nobody took. The standing disagreements live beside this file, at its name with 
 before the extension. Ordered by program and channel, and carrying no timestamp, so
 consecutive runs are worth diffing against each other.
 
-== Movement (1) ==
+== Movement (0) ==
 
-Jupiter Swap: the program was redeployed at slot 441316428, up from 440628275, and no IDL channel moved with it; the stored program image changed: 2892224 payload bytes, was 2892224 — review required
+Nothing moved since the last generation.

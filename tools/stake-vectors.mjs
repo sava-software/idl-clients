@@ -8,10 +8,11 @@
 // Only a *second, independent* encoder can see it.
 //
 // That encoder is upstream's: `clients/js/src/generated/instructions/*.ts` is rendered by
-// @codama/renderers-js from the same pipeline `tools/stake-idl.mjs` runs, so it is the closest
-// thing to a peer implementation that exists. It is not ground truth — for that see the mainnet
-// fixture in StakeOnChainInstructionTests, which is the only thing here that says upstream's
-// encoder matches what is actually deployed.
+// @codama/renderers-js from the same `idl.json` this repository generates from, so it is the
+// closest thing to a peer implementation that exists — closer than it was, since as of 2026-08-25
+// the two clients share one input file rather than a common pipeline. It is not ground truth —
+// for that see the mainnet fixture in StakeOnChainInstructionTests, which is the only thing here
+// that says upstream's encoder matches what is actually deployed.
 //
 //   cd <solana-program/stake checkout>/clients/js && pnpm install --frozen-lockfile
 //   node tools/stake-vectors.mjs <that checkout> [output path]
@@ -21,8 +22,16 @@
 // checkout's own `tsc` into a temporary directory (removed on exit) whose `node_modules` is a
 // symlink back into `clients/js`. Nothing is written inside the checkout.
 //
-// The output is committed as a test resource; regenerate when upstream moves, and the diff is
-// the review. A vector's name is `<instruction>.<case>`; StakeReferenceEncodingTests requires
+// The output is committed as a test resource, and the diff is the review. Do not regenerate on a
+// schedule: the deployed program is immutable — its programData account
+// 6WU8Nxarf9fudRK5atWwjLY4vFaw5UrrWhL88qz7iCMJ carries `authority: null`, checked against mainnet
+// on 2026-08-25 at slot 441627724 — so the wire format cannot change, and upstream's repository
+// moving is not a reason to refresh. Re-running on 2026-08-25 across upstream #498/#500/#501 and
+// a client bump from 0.8.0 to 0.9.0 reproduced all 38 vectors byte for byte. Run it to adjudicate
+// a comparison that has failed, or to cover an instruction the IDL has grown — hand-authoring
+// those bytes would void the point of them. See tools/README.md.
+//
+// A vector's name is `<instruction>.<case>`; StakeReferenceEncodingTests requires
 // every instruction StakeProgram declares to have at least one.
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
@@ -272,9 +281,9 @@ function render(client, kit, { head, generated, lock, version }) {
     '# Differential encoding vectors for the Stake program. Generated — do not hand-edit.',
     '#',
     "# Produced by tools/stake-vectors.mjs from solana-program/stake's own generated JavaScript",
-    '# client, which @codama/renderers-js renders from the pipeline tools/stake-idl.mjs runs. It',
-    '# is an independent encoder, not ground truth: the mainnet fixture in',
-    '# StakeOnChainInstructionTests is what ties that pipeline to the deployed program.',
+    '# client, which @codama/renderers-js renders from the same idl.json this repository generates',
+    '# from. It is an independent encoder, not ground truth: the mainnet fixture in',
+    '# StakeOnChainInstructionTests is what ties that IDL to the deployed program.',
     '#',
     `# upstream: solana-program/stake @ ${head}`,
     `# client:   @solana-program/stake ${version}, generated at ${generated}`,
