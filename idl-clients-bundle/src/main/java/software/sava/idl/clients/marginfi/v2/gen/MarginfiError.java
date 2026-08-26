@@ -211,7 +211,13 @@ public sealed interface MarginfiError extends ProgramError permits
     MarginfiError.JuplendDepositFailed,
     MarginfiError.JuplendWithdrawFailed,
     MarginfiError.JuplendInitPositionDepositInsufficient,
-    MarginfiError.InvalidJuplendWithdrawIntermediaryAta {
+    MarginfiError.InvalidJuplendWithdrawIntermediaryAta,
+    MarginfiError.InvalidResize,
+    MarginfiError.BankCircuitBreakerHalted,
+    MarginfiError.CircuitBreakerAdminOnly,
+    MarginfiError.CircuitBreakerInvalidConfig,
+    MarginfiError.CircuitBreakerRequiresWarmCache,
+    MarginfiError.CircuitBreakerPriceJump {
 
   static MarginfiError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -423,6 +429,12 @@ public sealed interface MarginfiError extends ProgramError permits
       case 6510 -> JuplendWithdrawFailed.INSTANCE;
       case 6511 -> JuplendInitPositionDepositInsufficient.INSTANCE;
       case 6512 -> InvalidJuplendWithdrawIntermediaryAta.INSTANCE;
+      case 6513 -> InvalidResize.INSTANCE;
+      case 6600 -> BankCircuitBreakerHalted.INSTANCE;
+      case 6601 -> CircuitBreakerAdminOnly.INSTANCE;
+      case 6602 -> CircuitBreakerInvalidConfig.INSTANCE;
+      case 6603 -> CircuitBreakerRequiresWarmCache.INSTANCE;
+      case 6604 -> CircuitBreakerPriceJump.INSTANCE;
       default -> null;
     };
   }
@@ -1880,6 +1892,48 @@ public sealed interface MarginfiError extends ProgramError permits
 
     public static final InvalidJuplendWithdrawIntermediaryAta INSTANCE = new InvalidJuplendWithdrawIntermediaryAta(
         6512, "Invalid Juplend withdraw intermediary ATA"
+    );
+  }
+
+  record InvalidResize(int code, String msg) implements MarginfiError {
+
+    public static final InvalidResize INSTANCE = new InvalidResize(
+        6513, "Account is already at (or above) the target size"
+    );
+  }
+
+  record BankCircuitBreakerHalted(int code, String msg) implements MarginfiError {
+
+    public static final BankCircuitBreakerHalted INSTANCE = new BankCircuitBreakerHalted(
+        6600, "Bank is halted by oracle circuit breaker"
+    );
+  }
+
+  record CircuitBreakerAdminOnly(int code, String msg) implements MarginfiError {
+
+    public static final CircuitBreakerAdminOnly INSTANCE = new CircuitBreakerAdminOnly(
+        6601, "Action requires risk admin while bank is circuit-breaker halted"
+    );
+  }
+
+  record CircuitBreakerInvalidConfig(int code, String msg) implements MarginfiError {
+
+    public static final CircuitBreakerInvalidConfig INSTANCE = new CircuitBreakerInvalidConfig(
+        6602, "Invalid circuit breaker config"
+    );
+  }
+
+  record CircuitBreakerRequiresWarmCache(int code, String msg) implements MarginfiError {
+
+    public static final CircuitBreakerRequiresWarmCache INSTANCE = new CircuitBreakerRequiresWarmCache(
+        6603, "Circuit breaker cannot be enabled until the oracle price cache is warm (call pulse first)"
+    );
+  }
+
+  record CircuitBreakerPriceJump(int code, String msg) implements MarginfiError {
+
+    public static final CircuitBreakerPriceJump INSTANCE = new CircuitBreakerPriceJump(
+        6604, "Oracle price deviates too far from the circuit breaker reference; action rejected"
     );
   }
 }

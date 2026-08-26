@@ -36,7 +36,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param lastOraclePriceConfidence Confidence interval reported by the oracle when last_oracle_price was fetched
 ///                                  * Always non-negative
 ///                                  * Zero if never updated
-///                                  * Note: this value is the confidence reported by oracles, multiplied by `STD_DEV_MULTIPLE`
+///                                  * Pyth: confidence * 2.12
+///                                  * Switchboard: price * oracle_max_confidence / U32_MAX
 /// @param liqCacheFlags: u8 Liquidation cache flags, set during receivership flow.
 ///                      * 1 (LIQ_CACHE_LOCKED_FLAG) - We "lock" the liquidation cache when writing to it in Start
 ///                      Liquidate as an additional safeguard, if the liquidation prices stored here were to be
@@ -63,7 +64,7 @@ public record BankCache(long baseRate,
                         long lastOraclePriceTimestamp,
                         WrappedI80F48 lastOraclePriceConfidence,
                         int liqCacheFlags,
-                        byte[] pad0,
+                        byte[] cbCachePad,
                         WrappedI80F48 priceMultiplier,
                         WrappedI80F48 liquidationPriceRt,
                         WrappedI80F48 liquidationPriceRtConfidence,
@@ -71,7 +72,7 @@ public record BankCache(long baseRate,
                         WrappedI80F48 liquidationPriceTwapConfidence) implements SerDe {
 
   public static final int BYTES = 160;
-  public static final int PAD_0_LEN = 7;
+  public static final int CB_CACHE_PAD_LEN = 7;
 
   public static final int BASE_RATE_OFFSET = 0;
   public static final int LENDING_RATE_OFFSET = 4;
@@ -82,7 +83,7 @@ public record BankCache(long baseRate,
   public static final int LAST_ORACLE_PRICE_TIMESTAMP_OFFSET = 48;
   public static final int LAST_ORACLE_PRICE_CONFIDENCE_OFFSET = 56;
   public static final int LIQ_CACHE_FLAGS_OFFSET = 72;
-  public static final int PAD_0_OFFSET = 73;
+  public static final int CB_CACHE_PAD_OFFSET = 73;
   public static final int PRICE_MULTIPLIER_OFFSET = 80;
   public static final int LIQUIDATION_PRICE_RT_OFFSET = 96;
   public static final int LIQUIDATION_PRICE_RT_CONFIDENCE_OFFSET = 112;
@@ -112,8 +113,8 @@ public record BankCache(long baseRate,
     i += 16;
     final var liqCacheFlags = _data[i] & 0xFF;
     ++i;
-    final var pad0 = new byte[7];
-    i += SerDeUtil.readArray(pad0, _data, i);
+    final var cbCachePad = new byte[7];
+    i += SerDeUtil.readArray(cbCachePad, _data, i);
     final var priceMultiplier = WrappedI80F48.read(_data, i);
     i += 16;
     final var liquidationPriceRt = WrappedI80F48.read(_data, i);
@@ -132,7 +133,7 @@ public record BankCache(long baseRate,
                          lastOraclePriceTimestamp,
                          lastOraclePriceConfidence,
                          liqCacheFlags,
-                         pad0,
+                         cbCachePad,
                          priceMultiplier,
                          liquidationPriceRt,
                          liquidationPriceRtConfidence,
@@ -158,7 +159,7 @@ public record BankCache(long baseRate,
     i += lastOraclePriceConfidence.write(_data, i);
     _data[i] = (byte) liqCacheFlags;
     ++i;
-    i += SerDeUtil.writeArrayChecked(pad0, 7, _data, i);
+    i += SerDeUtil.writeArrayChecked(cbCachePad, 7, _data, i);
     i += priceMultiplier.write(_data, i);
     i += liquidationPriceRt.write(_data, i);
     i += liquidationPriceRtConfidence.write(_data, i);

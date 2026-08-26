@@ -48,7 +48,11 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                             Use `u32_to_basis` to convert to I80F48. Range: 1-100.
 /// @param emodeMaxMaintLeverage: u32 Maximum leverage allowed for emode positions (maintenance margin), stored as u32 basis.
 ///                              Must be > emode_max_init_leverage. Range: 1-100.
-/// @param padding Reserved for future use
+/// @param sameAssetEmodeInitLeverage: u32 Encoded same-asset automatic emode leverage for initial margin.
+///                                   Decode with `u32_to_basis`. Same-asset treatment is disabled when the decoded leverage is
+///                                   less than or equal to 1 and also requires each participating bank to opt in.
+/// @param sameAssetEmodeMaintLeverage: u32 Encoded same-asset automatic emode leverage for maintenance margin.
+///                                    Decode with `u32_to_basis`. Ordering is validated in decoded space.
 /// @param rateLimiter Rate limiter for controlling aggregate withdraw/borrow outflow across all banks.
 ///                    Tracks net outflow in USD.
 /// @param rateLimiterLastAdminUpdateSlot: u64 Last slot covered by an admin group rate limiter aggregation update.
@@ -63,6 +67,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                          does not itself compromise any funds, and is merely annoying.
 /// @param padding0: u64[][]
 /// @param padding1: u64[][]
+/// @param padding2: u64[][]
 public record MarginfiGroup(PublicKey _address,
                             Discriminator discriminator,
                             PublicKey admin,
@@ -80,7 +85,8 @@ public record MarginfiGroup(PublicKey _address,
                             PublicKey metadataAdmin,
                             long emodeMaxInitLeverage,
                             long emodeMaxMaintLeverage,
-                            byte[] padding,
+                            long sameAssetEmodeInitLeverage,
+                            long sameAssetEmodeMaintLeverage,
                             GroupRateLimiter rateLimiter,
                             long rateLimiterLastAdminUpdateSlot,
                             long rateLimiterLastAdminUpdateSeq,
@@ -88,13 +94,14 @@ public record MarginfiGroup(PublicKey _address,
                             long deleverageWithdrawLastAdminUpdateSeq,
                             PublicKey delegateFlowAdmin,
                             long[][] padding0,
-                            long[][] padding1) implements SerDe {
+                            long[][] padding1,
+                            long[][] padding2) implements SerDe {
 
-  public static final int BYTES = 1064;
+  public static final int BYTES = 9256;
   public static final int PAD_0_LEN = 6;
-  public static final int PADDING_LEN = 8;
   public static final int PADDING_0_LEN = 2;
   public static final int PADDING_1_LEN = 32;
+  public static final int PADDING_2_LEN = 32;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(182, 23, 173, 240, 151, 206, 182, 67);
@@ -115,7 +122,8 @@ public record MarginfiGroup(PublicKey _address,
   public static final int METADATA_ADMIN_OFFSET = 328;
   public static final int EMODE_MAX_INIT_LEVERAGE_OFFSET = 360;
   public static final int EMODE_MAX_MAINT_LEVERAGE_OFFSET = 364;
-  public static final int PADDING_OFFSET = 368;
+  public static final int SAME_ASSET_EMODE_INIT_LEVERAGE_OFFSET = 368;
+  public static final int SAME_ASSET_EMODE_MAINT_LEVERAGE_OFFSET = 372;
   public static final int RATE_LIMITER_OFFSET = 376;
   public static final int RATE_LIMITER_LAST_ADMIN_UPDATE_SLOT_OFFSET = 456;
   public static final int RATE_LIMITER_LAST_ADMIN_UPDATE_SEQ_OFFSET = 464;
@@ -124,6 +132,7 @@ public record MarginfiGroup(PublicKey _address,
   public static final int DELEGATE_FLOW_ADMIN_OFFSET = 488;
   public static final int PADDING_0_OFFSET = 520;
   public static final int PADDING_1_OFFSET = 552;
+  public static final int PADDING_2_OFFSET = 1064;
 
   public static Filter createAdminFilter(final PublicKey admin) {
     return Filter.createMemCompFilter(ADMIN_OFFSET, admin);
@@ -187,6 +196,18 @@ public record MarginfiGroup(PublicKey _address,
     final byte[] _data = new byte[4];
     putInt32LE(_data, 0, (int) emodeMaxMaintLeverage);
     return Filter.createMemCompFilter(EMODE_MAX_MAINT_LEVERAGE_OFFSET, _data);
+  }
+
+  public static Filter createSameAssetEmodeInitLeverageFilter(final long sameAssetEmodeInitLeverage) {
+    final byte[] _data = new byte[4];
+    putInt32LE(_data, 0, (int) sameAssetEmodeInitLeverage);
+    return Filter.createMemCompFilter(SAME_ASSET_EMODE_INIT_LEVERAGE_OFFSET, _data);
+  }
+
+  public static Filter createSameAssetEmodeMaintLeverageFilter(final long sameAssetEmodeMaintLeverage) {
+    final byte[] _data = new byte[4];
+    putInt32LE(_data, 0, (int) sameAssetEmodeMaintLeverage);
+    return Filter.createMemCompFilter(SAME_ASSET_EMODE_MAINT_LEVERAGE_OFFSET, _data);
   }
 
   public static Filter createRateLimiterFilter(final GroupRateLimiter rateLimiter) {
@@ -285,8 +306,10 @@ public record MarginfiGroup(PublicKey _address,
     i += 4;
     final var emodeMaxMaintLeverage = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var padding = new byte[8];
-    i += SerDeUtil.readArray(padding, _data, i);
+    final var sameAssetEmodeInitLeverage = Integer.toUnsignedLong(getInt32LE(_data, i));
+    i += 4;
+    final var sameAssetEmodeMaintLeverage = Integer.toUnsignedLong(getInt32LE(_data, i));
+    i += 4;
     final var rateLimiter = GroupRateLimiter.read(_data, i);
     i += 80;
     final var rateLimiterLastAdminUpdateSlot = getInt64LE(_data, i);
@@ -302,7 +325,9 @@ public record MarginfiGroup(PublicKey _address,
     final var padding0 = new long[2][2];
     i += SerDeUtil.readArray(padding0, _data, i);
     final var padding1 = new long[32][2];
-    SerDeUtil.readArray(padding1, _data, i);
+    i += SerDeUtil.readArray(padding1, _data, i);
+    final var padding2 = new long[32][32];
+    SerDeUtil.readArray(padding2, _data, i);
     return new MarginfiGroup(_address,
                              discriminator,
                              admin,
@@ -320,7 +345,8 @@ public record MarginfiGroup(PublicKey _address,
                              metadataAdmin,
                              emodeMaxInitLeverage,
                              emodeMaxMaintLeverage,
-                             padding,
+                             sameAssetEmodeInitLeverage,
+                             sameAssetEmodeMaintLeverage,
                              rateLimiter,
                              rateLimiterLastAdminUpdateSlot,
                              rateLimiterLastAdminUpdateSeq,
@@ -328,7 +354,8 @@ public record MarginfiGroup(PublicKey _address,
                              deleverageWithdrawLastAdminUpdateSeq,
                              delegateFlowAdmin,
                              padding0,
-                             padding1);
+                             padding1,
+                             padding2);
   }
 
   @Override
@@ -360,7 +387,10 @@ public record MarginfiGroup(PublicKey _address,
     i += 4;
     putInt32LE(_data, i, (int) emodeMaxMaintLeverage);
     i += 4;
-    i += SerDeUtil.writeArrayChecked(padding, 8, _data, i);
+    putInt32LE(_data, i, (int) sameAssetEmodeInitLeverage);
+    i += 4;
+    putInt32LE(_data, i, (int) sameAssetEmodeMaintLeverage);
+    i += 4;
     i += rateLimiter.write(_data, i);
     putInt64LE(_data, i, rateLimiterLastAdminUpdateSlot);
     i += 8;
@@ -374,6 +404,7 @@ public record MarginfiGroup(PublicKey _address,
     i += 32;
     i += SerDeUtil.writeArrayChecked(padding0, 2, 2, _data, i);
     i += SerDeUtil.writeArrayChecked(padding1, 32, 2, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding2, 32, 32, _data, i);
     return i - _offset;
   }
 

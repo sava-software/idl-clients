@@ -9,4 +9,4 @@ consecutive runs are worth diffing against each other.
 
 == Movement (1) ==
 
-1 program(s) carried generated sources with no usable channel record beside them, so this run had no baseline for them and re-established one; what moved since the last recorded generation cannot be said: Stake Pool
+Marginfi V2: the vcs IDL at github:0dotxyz/p0-ts-sdk@main#a33b98018984412693fb7b9dadc2794af5392ab8/src/idl/marginfi_0.1.9.json disappeared since the last generation

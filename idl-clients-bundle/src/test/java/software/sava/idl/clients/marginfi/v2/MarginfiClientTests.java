@@ -361,7 +361,8 @@ final class MarginfiClientTests {
   void permissionlessInstructionsTakeNoAuthority() {
     final var pulse = CLIENT.pulseHealth(MARGINFI_ACCOUNT);
 
-    assertEquals(List.of(MARGINFI_ACCOUNT), keys(pulse));
+    // 0.1.10 (deployed 2026-08-25) added the group to pulse_health; still no authority.
+    assertEquals(List.of(MARGINFI_ACCOUNT, ACCOUNTS.marginfiGroup()), keys(pulse));
     assertFalse(keys(pulse).contains(OWNER));
     assertTrue(pulse.accounts().stream().noneMatch(AccountMeta::signer), "no signer");
 
@@ -391,7 +392,8 @@ final class MarginfiClientTests {
     // start carries the instructions sysvar so the program can inspect the tail
     assertTrue(keys(start).contains(SOLANA_ACCOUNTS.instructionsSysVar()));
     assertFalse(keys(end).contains(SOLANA_ACCOUNTS.instructionsSysVar()));
-    assertEquals(List.of(MARGINFI_ACCOUNT, OWNER), keys(end));
+    // 0.1.10 (deployed 2026-08-25) added the group to end_flashloan.
+    assertEquals(List.of(MARGINFI_ACCOUNT, ACCOUNTS.marginfiGroup(), OWNER), keys(end));
   }
 
   // ---------------------------------------------------------------------------

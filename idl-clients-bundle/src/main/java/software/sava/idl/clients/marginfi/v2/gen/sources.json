@@ -1,6 +1,6 @@
 {
   "program": "MFv2hWf31Z9kbCa1snEPYctwafyhdvnV7FZnsebVacA",
-  "deployed": "vcs",
+  "deployed": "metadata",
   "lastDeploySlot": 441655269,
   "programDataState": "upgradeable",
   "programDataStateSlot": 440077852,
@@ -14,9 +14,9 @@
       "file": "anchor.json",
       "verbatim": "anchor.json"
     },
-    "vcs": {
-      "origin": "github:0dotxyz/p0-ts-sdk@main#a33b98018984412693fb7b9dadc2794af5392ab8/src/idl/marginfi_0.1.9.json",
-      "hash": "da5708f80f979e729ace989f797b9b92646300ca458893cdd4dffca8277faa15",
+    "metadata": {
+      "origin": "B66dYmjB9pJ3unjp3QMiEpySb8i44Zhev3qaYj5SfLPG",
+      "hash": "e4a589b6da349963df9ea9b614dff197f1791fc5c3c9109eaa2ab4f92cc1aa58",
       "matchesDeployed": true,
       "verbatim": "idl.json"
     }
