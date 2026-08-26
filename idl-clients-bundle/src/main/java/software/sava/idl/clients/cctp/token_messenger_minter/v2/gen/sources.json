@@ -1,0 +1,23 @@
+{
+  "program": "CCTPV2vPZJS2u2BBsUoscuikbYjnpFmbFsvVuJdgUMQe",
+  "deployed": "anchor",
+  "lastDeploySlot": 343322709,
+  "programDataState": "upgradeable",
+  "programDataStateSlot": 441933856,
+  "programDataPayloadSha256": "ccdac46adb68c570556bd15f7caddc52dd16fb96e0bbc8f5a46129555adbeeb2",
+  "programDataPayloadLength": 716232,
+  "channels": {
+    "anchor": {
+      "origin": "2kCVppn7yBVracH1T3rBPNTxXSds884gEWUvmyKWzjBu",
+      "hash": "2cd2ef2ded97c565660722ebb20de68e98e83cda6791638f3925a85f051c34af",
+      "matchesDeployed": true,
+      "verbatim": "idl.json"
+    },
+    "vcs": {
+      "origin": "github:circlefin/solana-cctp-contracts@master/examples/target/idl/token_messenger_minter_v2.json",
+      "hash": "2cd2ef2ded97c565660722ebb20de68e98e83cda6791638f3925a85f051c34af",
+      "matchesDeployed": true,
+      "verbatim": "vcs.original.json"
+    }
+  }
+}

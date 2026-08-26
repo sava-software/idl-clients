@@ -32,6 +32,18 @@
       }
     },
     {
+      "name": "CCTP Token Messenger Minter V2",
+      "source": "idl-clients-bundle",
+      "package": "cctp.token_messenger_minter.v2",
+      "module": "bundle",
+      "program": "CCTPV2vPZJS2u2BBsUoscuikbYjnpFmbFsvVuJdgUMQe",
+      "vcs": {
+        "repo": "circlefin/solana-cctp-contracts",
+        "path": "examples/target/idl/token_messenger_minter_v2.json",
+        "ref": "master"
+      }
+    },
+    {
       "name": "Compute Budget",
       "source": "idl-clients-spl",
       "module": "spl",
