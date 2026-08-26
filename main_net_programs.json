@@ -438,6 +438,15 @@
       "idlURL": "https://raw.githubusercontent.com/solana-program/stake/refs/heads/main/idl.json"
     },
     {
+      "name": "Stake Pool",
+      "source": "idl-clients-spl",
+      "module": "spl",
+      "package": "spl.stakepool",
+      "program": "SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy",
+      "idlType": "codama",
+      "idlFile": "idls/spl_stake_pool.json"
+    },
+    {
       "name": "Switchboard On-Demand",
       "source": "idl-clients-bundle",
       "module": "bundle",

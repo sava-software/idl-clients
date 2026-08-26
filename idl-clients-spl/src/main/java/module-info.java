@@ -13,6 +13,8 @@ module software.sava.idl.clients.spl {
   exports software.sava.idl.clients.spl.stake.gen.types;
   exports software.sava.idl.clients.spl.stake.gen;
   exports software.sava.idl.clients.spl.stake;
+  exports software.sava.idl.clients.spl.stakepool.gen.types;
+  exports software.sava.idl.clients.spl.stakepool.gen;
   exports software.sava.idl.clients.spl.stakepool;
   exports software.sava.idl.clients.spl.system.gen.types;
   exports software.sava.idl.clients.spl.system.gen;

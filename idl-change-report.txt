@@ -9,4 +9,4 @@ consecutive runs are worth diffing against each other.
 
 == Movement (1) ==
 
-Marginfi V2: the program was redeployed at slot 441655269, up from 432875565, and no IDL channel moved with it; the stored program image changed: 10485715 payload bytes, was 10485715 — review required
+1 program(s) carried generated sources with no usable channel record beside them, so this run had no baseline for them and re-established one; what moved since the last recorded generation cannot be said: Stake Pool
