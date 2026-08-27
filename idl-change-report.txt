@@ -7,6 +7,6 @@ nobody took. The standing disagreements live beside this file, at its name with 
 before the extension. Ordered by program and channel, and carrying no timestamp, so
 consecutive runs are worth diffing against each other.
 
-== Movement (1) ==
+== Movement (0) ==
 
-Marginfi V2: the vcs IDL at github:0dotxyz/p0-ts-sdk@main#a33b98018984412693fb7b9dadc2794af5392ab8/src/idl/marginfi_0.1.9.json disappeared since the last generation
+Nothing moved since the last generation.

@@ -29,16 +29,6 @@ hardening {
     // test root from the main root once they are merged for the recompile, so
     // any such helper has to be named here or it gets mutated
     "software.sava.idl.clients.kamino.scope.entries.ResourceUtil",
-    // The two accepted-baseline equivalence sweeps. They are deliberately named
-    // outside '*Test*' so the orca suite's targetTests does not re-run a
-    // 900k-iteration sweep against every mutant — which would cost minutes per
-    // certification and inflate the timeout budget that orca-timeouts.csv already
-    // records a liveness kill against. That same naming puts them inside
-    // targetClasses, so they have to be named here too: without this, PIT mutates
-    // them and the orca suite reports 822 mutants instead of 634, the extra 188
-    // all no_coverage.
-    "software.sava.idl.clients.orca.OrcaTickMarginSweep",
-    "software.sava.idl.clients.orca.OrcaSqrtFloorSweep",
     "software.sava.idl.clients.*.Integ"
   )
   // The exclusion audit reports production classes a glob swallows, per suite, and
@@ -83,6 +73,18 @@ hardening {
     // 41 orca.whirlpools.gen.* classes; no orca Integ.java, so no Integ decline here
     declineExclusionAudit("software.sava.idl.clients.*.gen.*", generatedDecline)
     targetTests = "software.sava.idl.clients.orca.*Test*"
+    excludeTestClass(
+      "software.sava.idl.clients.orca.OrcaTickMarginSweepTests",
+      "Accepted-equivalence sweep: it runs under the normal test task, but its roughly " +
+          "900k-iteration work must not run against every Orca mutant or distort the " +
+          "suite's audited timeout budget."
+    )
+    excludeTestClass(
+      "software.sava.idl.clients.orca.OrcaSqrtFloorSweepTests",
+      "Accepted-equivalence sweep: it runs under the normal test task, but its roughly " +
+          "900k-iteration work must not run against every Orca mutant or distort the " +
+          "suite's audited timeout budget."
+    )
   }
   mutation.register("scope") {
     // the oracle price readers: a fixed-layout account walked by offset, where a

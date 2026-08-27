@@ -639,8 +639,10 @@ The generated operator rules follow verbatim; the repo-specific facts are in
   all current line-full candidates, but lines cannot define identity: moving imports,
   adding a method, or reflowing code never warns, fails, or requires re-anchoring.
   **Retire.** Remove an admissible liveness member only after the tool reports 3+
-  distinct fresh full-run quiet observations over identical inputs, confirmed under
-  solo/gate load. Plugin bytes are an input; a changed JAR restarts the streak. A
+  distinct fresh full-run quiet observations over identical execution inputs,
+  confirmed under solo/gate load. When retirement semantics are unchanged, a plugin
+  fingerprint change alone does not reset this advisory; captured PIT-input changes
+  do, and unmodeled semantic changes require a timeout-quiet format bump. A
   finite `KILLED`↔`TIMED_OUT` race never certifies: repair it instead of waiting on
   liveness retirement. The quiet stash is a machine-local nomination; never copy or
   merge it, and retain the row without same-input gate confirmation. Assisted
@@ -752,7 +754,7 @@ The generated operator rules follow verbatim; the repo-specific facts are in
   waiting. Give test clocks a non-zero origin — a clock starting at 0 makes
   every "start timestamp mutated to 0" mutant equivalent by accident.
 <!-- hardening-template block:end -->
-<!-- hardening-template sha256:90537d1eb1dd -->
+<!-- hardening-template sha256:f866084114e0 -->
 
 #### This repository
 
@@ -783,13 +785,12 @@ carry no stale rows.
 `agentsTemplateInSync` but no mutation suite. `hardeningCertify` and a local
 `fuzzAll` are therefore release-checklist items here, not CI's.
 
-**What `agentsTemplateInSync` actually proves** — measured 2026-08-07 on
-sava-build 21.5.25, and still true of the marker check on 21.5.26. It compares
-only the `<!-- hardening-template sha256:… -->` marker against the installed
-plugin's digest. It passed with one rule reworded to state its own opposite, and
-passed again with the entire template body deleted; it fails only when the digest
-itself is wrong. So the marker remains an *acknowledgement*, and moving it is
-still not the adoption.
+**What `agentsTemplateInSync` actually proves.** On sava-build 21.5.27+ it
+requires exactly one ordered boundary pair around a non-empty shared block and
+exactly one current `<!-- hardening-template sha256:… -->` marker outside it.
+The marker remains an *acknowledgement*, not a checksum of the bounded body;
+`hardeningAgentTemplateDiff` remains the content review. Moving the marker alone
+is still not the adoption.
 
 What changed on 21.5.26 is that the body delta is no longer hand work.
 `hardeningAgentTemplateDiff` reports it directly, bounded by the

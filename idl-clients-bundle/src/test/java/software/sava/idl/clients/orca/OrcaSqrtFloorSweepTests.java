@@ -27,9 +27,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /// description and the reference is `BigInteger.sqrt()`, so the claim now has something that
 /// re-derives it rather than a sentence asserting someone once did.
 ///
-/// Named outside `*Test*` for the same reason as [OrcaTickMarginSweep]: `check` runs it, the
-/// `orca` mutation suite does not re-run it per mutant.
-final class OrcaSqrtFloorSweep {
+/// This now follows the `*Tests` naming convention and runs under the normal test task. As with
+/// [OrcaTickMarginSweepTests], the `orca` mutation suite uses a reason-bearing `excludeTestClass`
+/// record so these accepted-equivalence sweeps' roughly 900k-iteration work does not run against
+/// every mutant or distort the audited timeout budget.
+final class OrcaSqrtFloorSweepTests {
 
   private static final BigInteger TWO = BigInteger.valueOf(2L);
 

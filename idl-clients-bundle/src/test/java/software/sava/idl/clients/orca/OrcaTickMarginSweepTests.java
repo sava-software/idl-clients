@@ -30,12 +30,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /// ladder below stays an independent mirror, because it is the oracle the refinement consults, and
 /// [#theMirrorStillMatchesTheProduction] holds it to `tickIndexToSqrtPriceX64`.
 ///
-/// Named outside `*Test*` on purpose. JUnit discovers it by annotation so `check` runs it, but the
-/// `orca` mutation suite selects tests by `software.sava.idl.clients.orca.*Test*`, so PIT does not
-/// re-run this sweep against every mutant — which would both cost minutes and inflate the timeout
-/// budget that `orca-timeouts.csv` already records a liveness kill against. It can describe a
-/// divergence; it can never kill anything.
-final class OrcaTickMarginSweep {
+/// This now follows the `*Tests` naming convention and runs under the normal test task. The
+/// `orca` mutation suite uses a reason-bearing `excludeTestClass` record to keep this
+/// accepted-equivalence sweep's roughly 900k-iteration work from running against every mutant or
+/// distorting the audited timeout budget. It can describe a divergence; it can never kill anything.
+final class OrcaTickMarginSweepTests {
 
   private static final BigInteger U128 = BigInteger.ONE.shiftLeft(128).subtract(BigInteger.ONE);
 
