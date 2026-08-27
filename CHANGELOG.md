@@ -1,5 +1,14 @@
 # Changelog
 
+## [25.19.4](https://github.com/sava-software/idl-clients/compare/25.19.3...25.19.4) (2026-08-27)
+
+
+### Features
+
+* **cctp:** add the CCTP Token Messenger Minter V2 client ([e96bf75](https://github.com/sava-software/idl-clients/commit/e96bf751243ed8a2a37480addd3b54c7ae8d2c5e))
+* **gen:** add new swaps to Jupiter candidate types and event handling ([363683f](https://github.com/sava-software/idl-clients/commit/363683fc3f3939161e0e15b433f89729a18e06eb))
+* **marginfi:** generate from the deployed 0.1.10 via the Program Metadata channel ([591de13](https://github.com/sava-software/idl-clients/commit/591de130e704c23c6f78f6dcbc69b4e590b0e8c0))
+
 ## [25.19.3](https://github.com/sava-software/idl-clients/compare/25.19.2...25.19.3) (2026-08-19)
 
 
