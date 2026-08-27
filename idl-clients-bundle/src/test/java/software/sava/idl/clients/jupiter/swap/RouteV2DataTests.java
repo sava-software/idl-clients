@@ -9,9 +9,11 @@ import software.sava.idl.clients.jupiter.swap.gen.types.RoutePlanStepV2;
 import software.sava.idl.clients.jupiter.swap.rest.response.JupiterQuote;
 import software.sava.idl.clients.jupiter.swap.rest.response.JupiterSwapIx;
 
+import java.io.IOException;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static software.sava.idl.clients.jupiter.swap.gen.JupiterProgram.ROUTE_V_2_DISCRIMINATOR;
@@ -154,5 +156,38 @@ final class RouteV2DataTests {
     final var route = swapIx.readData();
     assertEquals(100L, route.inAmount());
     assertEquals(300L, route.quotedOutAmount());
+  }
+
+  /// A malformed optional value is a parser rejection, regardless of which
+  /// RuntimeException communicates it. This minimized fuzz finding reaches an invalid
+  /// DefiTuna option-presence tag and used to escape the harness's narrow catch.
+  @Test
+  void fuzzHarnessRejectsAnInvalidDefiTunaOptionTag() throws IOException {
+    final byte[] seed = routeV2FuzzSeed("invalid-defi-tuna-option-tag");
+    assertDoesNotThrow(() -> RouteV2DataFuzz.fuzzerTestOneInput(seed));
+  }
+
+  /// An unknown nested enum ordinal is deliberately represented as null by SerDeUtil.
+  /// BisonFiPredict's fixed l() lets that sentinel survive parsing, so the harness must
+  /// reject it before exercising the fixed-point write invariant.
+  @Test
+  void fuzzHarnessRejectsAnUnknownBisonFiPredictSide() throws IOException {
+    final byte[] seed = routeV2FuzzSeed("unknown-bison-fi-predict-side");
+    assertDoesNotThrow(() -> RouteV2DataFuzz.fuzzerTestOneInput(seed));
+  }
+
+  /// WhaleStreetV2 has the same fixed-size shape as BisonFiPredict: an unknown Side
+  /// survives read() and l() as null, but cannot be written back.
+  @Test
+  void fuzzHarnessRejectsAnUnknownWhaleStreetV2Side() throws IOException {
+    final byte[] seed = routeV2FuzzSeed("unknown-whale-street-v2-side");
+    assertDoesNotThrow(() -> RouteV2DataFuzz.fuzzerTestOneInput(seed));
+  }
+
+  private static byte[] routeV2FuzzSeed(final String name) throws IOException {
+    try (var in = Objects.requireNonNull(
+        RouteV2DataTests.class.getResourceAsStream("/fuzz/routeV2/" + name), name)) {
+      return in.readAllBytes();
+    }
   }
 }

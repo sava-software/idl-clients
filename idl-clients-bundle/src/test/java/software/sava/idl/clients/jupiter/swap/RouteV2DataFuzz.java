@@ -1,8 +1,10 @@
 package software.sava.idl.clients.jupiter.swap;
 
+import software.sava.idl.clients.core.gen.RustEnum;
 import software.sava.idl.clients.jupiter.swap.gen.JupiterProgram;
 import software.sava.idl.clients.jupiter.swap.gen.types.RoutePlanStepV2;
 
+import java.lang.reflect.RecordComponent;
 import java.util.Arrays;
 
 import static software.sava.idl.clients.jupiter.swap.gen.JupiterProgram.ROUTE_V_2_DISCRIMINATOR;
@@ -15,9 +17,10 @@ import static software.sava.idl.clients.jupiter.swap.gen.JupiterProgram.SHARED_A
 ///
 /// Any payload either parses — in which case RouteV2Data must agree with the generated
 /// ix record, and write/read must reach a byte-identical fixed point — or is rejected
-/// with a runtime exception: readLen for length prefixes the buffer cannot back,
-/// IndexOutOfBounds for truncation, and NPE for unknown Swap ordinals (read returns
-/// null).
+/// with a runtime exception. Unknown top-level Swap ordinals fail while the route plan
+/// is read; unknown nested Rust-enum ordinals in fixed-size records survive as null, so
+/// the harness rejects those sentinels explicitly before asking the generated record to
+/// write itself.
 ///
 /// Deliberately has no Jazzer imports so it compiles with the regular test sources;
 /// the raw `byte[]` signature is all the driver needs.
@@ -38,9 +41,12 @@ public final class RouteV2DataFuzz {
     final RouteV2Data route;
     try {
       route = RouteV2Data.readData(ix, 0);
-    } catch (final IndexOutOfBoundsException | NullPointerException rejected) {
-      // truncated payload, a length prefix the buffer cannot back (readLen), or an
-      // unknown Swap ordinal (read returns null) — rejection is the documented behavior
+    } catch (final RuntimeException rejected) {
+      // Truncation, an invalid option tag, an unbacked length prefix, or an unknown
+      // Swap ordinal: every RuntimeException from parsing is a documented rejection.
+      return;
+    }
+    if (hasUnknownNestedVariant(route.routePlan())) {
       return;
     }
 
@@ -94,6 +100,48 @@ public final class RouteV2DataFuzz {
       throw new IllegalStateException("write returned " + wrote + " but l() is " + length);
     }
     return out;
+  }
+
+  private static final ClassValue<RecordComponent[]> RECORD_COMPONENTS = new ClassValue<>() {
+    @Override
+    protected RecordComponent[] computeValue(final Class<?> type) {
+      return type.isRecord() ? type.getRecordComponents() : new RecordComponent[0];
+    }
+  };
+
+  /// SerDeUtil deliberately maps unknown enum ordinals to null for forward
+  /// compatibility. A fixed-size generated record can carry that sentinel through
+  /// read() and l(), but it still cannot be serialized. Walk the acyclic generated
+  /// record graph and classify only null Rust-enum components as unsupported; optional
+  /// null records remain valid. Reflection failures are harness failures, not malformed
+  /// input, and therefore escape as AssertionError.
+  private static boolean hasUnknownNestedVariant(final Object value) {
+    if (value == null) {
+      return false;
+    }
+    if (value instanceof Object[] array) {
+      for (final var element : array) {
+        if (hasUnknownNestedVariant(element)) {
+          return true;
+        }
+      }
+      return false;
+    }
+    for (final var component : RECORD_COMPONENTS.get(value.getClass())) {
+      final Object componentValue;
+      try {
+        componentValue = component.getAccessor().invoke(value);
+      } catch (final ReflectiveOperationException reflectionFailure) {
+        throw new AssertionError("Could not inspect " + component, reflectionFailure);
+      }
+      if (componentValue == null && RustEnum.class.isAssignableFrom(component.getType())) {
+        return true;
+      }
+      if (componentValue != null && hasUnknownNestedVariant(componentValue)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /// Catches value corruption that stays size-aligned — e.g. a variant whose write

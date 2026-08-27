@@ -69,6 +69,13 @@ mainnet transactions to `JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4`:
   (`PumpSwapSellV3WithCashbackClaim` 148, `PumpSwapBuyV3` 99) at 5000 bps each,
   with chained input/output indexes. Live routes sampled here are all single
   hop, so the multi-step vector exists in no real payload.
+- `invalid-defi-tuna-option-tag`, `unknown-bison-fi-predict-side`,
+  `unknown-whale-street-v2-side` — minimized `fuzzAll` / `fuzzRouteV2` findings
+  from 2026-08-27. The first carries an invalid option-presence tag, which is a
+  normal RuntimeException rejection; the others carry unknown nested enum ordinals
+  that `SerDeUtil.read` deliberately represents as null and the harness now rejects
+  before generated serialization. `RouteV2DataTests` pins every rejection path by
+  name.
 
 ## `orcaTickMath/`
 
