@@ -76,19 +76,22 @@ final class ScopeProgramClientTests {
     assertEquals(List.of(), ScopeProgramClient.refreshPriceListExtraAccounts(mappings, new int[0]));
   }
 
-  /// Token types whose refresh needs asset mints cannot be refreshed through
-  /// this path — a plain read meta would produce a failing on-chain refresh.
+  /// Token types whose refresh consumes `extra_accounts` cannot be refreshed
+  /// through this path — a plain read meta would produce a failing on-chain
+  /// refresh.
   ///
   /// The list is every arm of the program's `refresh_prices` dispatch that pulls
   /// from `extra_accounts`. `SplBalance` is one of them: `spl_balance::get_price`
   /// takes a mint account, so a token of that type anywhere but last in the batch
   /// makes the handler read the *next* token's base account as its mint and fail
-  /// the whole transaction.
+  /// the whole transaction. `KlendCTokenExchangeRate` pulls the klend program and
+  /// lending market the same way.
   @Test
-  void refreshPriceListExtraAccountsRejectsMintDependentTypes() {
+  void refreshPriceListExtraAccountsRejectsTypesThatConsumeExtraAccounts() {
     for (final var type : new OracleType[]{
         OracleType.KToken, OracleType.KTokenToTokenA, OracleType.KTokenToTokenB,
         OracleType.JupiterLpFetch,
+        OracleType.KlendCTokenExchangeRate,
         OracleType.MeteoraDlmmAtoB, OracleType.MeteoraDlmmBtoA,
         OracleType.OrcaWhirlpoolAtoB, OracleType.OrcaWhirlpoolBtoA,
         OracleType.Securitize,

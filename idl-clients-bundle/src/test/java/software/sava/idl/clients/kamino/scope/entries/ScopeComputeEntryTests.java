@@ -485,6 +485,65 @@ final class ScopeComputeEntryTests {
     assertInstanceOf(Unused.class, entries.scopeEntry(4));
   }
 
+  /// `Token2022Multiplier` prices the `ScaledUiAmount` multiplier of the mapped
+  /// Token-2022 mint. The mapping stores nothing else for the type — the refresh
+  /// keeps its approval state in the *prices* account's generic data — so stray
+  /// bytes in the mapping-side generic, or a configured ref price the record has
+  /// no field for, must not change how the entry decodes.
+  @Test
+  void token2022MultiplierCarriesTheMintAndIgnoresMappingGenerics() {
+    // a nonzero slot, so the index assertion cannot pass by a constant
+    final var entries = new Mappings()
+        .slot(7, OracleType.Token2022Multiplier)
+        .bitmask(7, 1) // Ema1h
+        .parse();
+
+    final var multiplier = assertInstanceOf(Token2022Multiplier.class, entries.scopeEntry(7));
+    assertEquals(7, multiplier.index());
+    assertEquals(key(8), multiplier.oracle());
+    assertEquals(OracleType.Token2022Multiplier, multiplier.oracleType());
+    assertEquals(Set.of(EmaType.Ema1h), multiplier.emaTypes());
+    assertTrue(multiplier.twapEnabled());
+
+    final var configured = new Mappings()
+        .slot(1, OracleType.PythPull)
+        .slot(7, OracleType.Token2022Multiplier)
+        .bitmask(7, 1)
+        .refPrice(7, 1)
+        .tolerance(7, 300);
+    Arrays.fill(configured.generic[7], (byte) 0x5A);
+    assertEquals(multiplier, configured.parse().scopeEntry(7));
+  }
+
+  /// `KlendCTokenExchangeRate` prices a klend cToken's exchange rate: the mapped
+  /// account is the klend Reserve, and the mapping stores nothing else for the
+  /// type — the refresh reads the rate out of CPI return data — so stray bytes in
+  /// the mapping-side generic, or a configured ref price the record has no field
+  /// for, must not change how the entry decodes.
+  @Test
+  void klendCTokenExchangeRateCarriesTheReserveAndIgnoresMappingGenerics() {
+    final var entries = new Mappings()
+        .slot(5, OracleType.KlendCTokenExchangeRate)
+        .bitmask(5, 1) // Ema1h
+        .parse();
+
+    final var exchangeRate = assertInstanceOf(KlendCTokenExchangeRate.class, entries.scopeEntry(5));
+    assertEquals(5, exchangeRate.index());
+    assertEquals(key(6), exchangeRate.oracle());
+    assertEquals(OracleType.KlendCTokenExchangeRate, exchangeRate.oracleType());
+    assertEquals(Set.of(EmaType.Ema1h), exchangeRate.emaTypes());
+    assertTrue(exchangeRate.twapEnabled());
+
+    final var configured = new Mappings()
+        .slot(1, OracleType.PythPull)
+        .slot(5, OracleType.KlendCTokenExchangeRate)
+        .bitmask(5, 1)
+        .refPrice(5, 1)
+        .tolerance(5, 300);
+    Arrays.fill(configured.generic[5], (byte) 0x5A);
+    assertEquals(exchangeRate, configured.parse().scopeEntry(5));
+  }
+
   /// No oracle type forbids a TWAP bitmask. The program's writer validates the
   /// bitmask's range and nothing else, and `refresh_prices` gates the EMA update on
   /// `is_twap_enabled(token)` without consulting the type — so every one of these
@@ -695,7 +754,7 @@ final class ScopeComputeEntryTests {
         OracleType.JitoRestaking, OracleType.FlashtradeLp, OracleType.AdrenaLp,
         OracleType.ChainlinkExchangeRate, OracleType.ChainlinkNAV,
         OracleType.RedStone, OracleType.Securitize, OracleType.SwitchboardOnDemand,
-        OracleType.PythPullEMA
+        OracleType.PythPullEMA, OracleType.Token2022Multiplier, OracleType.KlendCTokenExchangeRate
     };
     final var mappings = new Mappings();
     for (int i = 0; i < types.length; ++i) {
@@ -707,6 +766,7 @@ final class ScopeComputeEntryTests {
 
     for (int i = 0; i < types.length; ++i) {
       final var entry = entries.scopeEntry(i);
+      assertEquals(i, entry.index(), types[i].name());
       assertEquals(types[i], entry.oracleType(), types[i].name());
       final var oracleEntry = assertInstanceOf(OracleEntry.class, entry, types[i].name());
       assertEquals(key(i + 1), oracleEntry.oracle(), types[i].name());

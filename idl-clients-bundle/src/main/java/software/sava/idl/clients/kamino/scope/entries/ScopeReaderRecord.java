@@ -7,8 +7,6 @@ import java.util.EnumSet;
 import java.util.OptionalInt;
 import java.util.Set;
 
-import static software.sava.idl.clients.kamino.scope.gen.types.OracleType.*;
-
 record ScopeReaderRecord(ScopeEntry[] entries,
                          PublicKey[] priceInfoAccounts,
                          byte[] priceTypes,
@@ -211,6 +209,7 @@ record ScopeReaderRecord(ScopeEntry[] entries,
       case JitoRestaking -> new JitoRestaking(i, priceAccount, emaTypes);
       case JupiterLpFetch -> new JupiterLpFetch(i, priceAccount, emaTypes);
       case KToken -> new KToken(i, priceAccount, emaTypes);
+      case KlendCTokenExchangeRate -> new KlendCTokenExchangeRate(i, priceAccount, emaTypes);
       case MeteoraDlmmAtoB -> new MeteoraDlmmAtoB(i, priceAccount, emaTypes);
       case MeteoraDlmmBtoA -> new MeteoraDlmmBtoA(i, priceAccount, emaTypes);
       case MostRecentOf -> {
@@ -249,14 +248,13 @@ record ScopeReaderRecord(ScopeEntry[] entries,
       case RaydiumAmmV3AtoB -> new RaydiumAmmV3AtoB(i, priceAccount, emaTypes);
       case RaydiumAmmV3BtoA -> new RaydiumAmmV3BtoA(i, priceAccount, emaTypes);
       case RedStone -> new RedStone(i, priceAccount, emaTypes);
-      case ScopeTwap1h -> new ScopeTwap(i, ScopeTwap1h, entry(twapSourceOrRefPriceToleranceBps[i]));
-      case ScopeTwap8h -> new ScopeTwap(i, ScopeTwap8h, entry(twapSourceOrRefPriceToleranceBps[i]));
-      case ScopeTwap24h -> new ScopeTwap(i, ScopeTwap24h, entry(twapSourceOrRefPriceToleranceBps[i]));
-      case ScopeTwap7d -> new ScopeTwap(i, ScopeTwap7d, entry(twapSourceOrRefPriceToleranceBps[i]));
+      case ScopeTwap1h, ScopeTwap8h, ScopeTwap24h, ScopeTwap7d ->
+          new ScopeTwap(i, oracleType, entry(twapSourceOrRefPriceToleranceBps[i]));
       case Securitize -> new Securitize(i, priceAccount, emaTypes, refPrice, refPriceToleranceBps);
       case SplBalance -> new SplBalance(i, priceAccount);
       case SplStake -> new SplStake(i, priceAccount);
       case StakedSolBalance -> new StakedSolBalance(i, priceAccount);
+      case Token2022Multiplier -> new Token2022Multiplier(i, priceAccount, emaTypes);
       case TotalMintSupply -> new TotalMintSupply(i, priceAccount, emaTypes);
       case SwitchboardOnDemand -> new SwitchboardOnDemand(i, priceAccount, emaTypes);
       case Unused -> new Unused(i);

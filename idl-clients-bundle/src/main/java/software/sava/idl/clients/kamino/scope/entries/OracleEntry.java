@@ -14,6 +14,7 @@ public sealed interface OracleEntry extends ScopeEntry permits
     JitoRestaking,
     JupiterLpFetch,
     KToken,
+    KlendCTokenExchangeRate,
     MeteoraDlmmAtoB,
     MeteoraDlmmBtoA,
     MsolStake,
@@ -25,6 +26,7 @@ public sealed interface OracleEntry extends ScopeEntry permits
     RedStone,
     ReferencesEntry,
     SwitchboardOnDemand,
+    Token2022Multiplier,
     TotalMintSupply {
 
   ///  Also known as a price account.

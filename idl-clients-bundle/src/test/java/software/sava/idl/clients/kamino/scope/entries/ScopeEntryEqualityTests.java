@@ -190,6 +190,8 @@ final class ScopeEntryEqualityTests {
     assertEquals(OracleType.SplStake, new SplStake(0, k).oracleType());
     assertEquals(OracleType.StakedSolBalance, new StakedSolBalance(0, k).oracleType());
     assertEquals(OracleType.TotalMintSupply, new TotalMintSupply(0, k, ema).oracleType());
+    assertEquals(OracleType.Token2022Multiplier, new Token2022Multiplier(0, k, ema).oracleType());
+    assertEquals(OracleType.KlendCTokenExchangeRate, new KlendCTokenExchangeRate(0, k, ema).oracleType());
     assertEquals(OracleType.PythLazer, new PythLazer(0, k, 1, 2, 3L, 4L, ema, null, none).oracleType());
     assertEquals(OracleType.PythLazerEMA, new PythLazerEMA(0, null, ema).oracleType());
     assertEquals(OracleType.MultiplicationChain, new MultiplicationChain(0, new ScopeEntry[0], 0L).oracleType());
