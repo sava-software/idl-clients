@@ -262,8 +262,16 @@ Reading the record:
   published.** It cannot distinguish that from upstream having stopped
   publishing.
 - **`lastDeploySlot` is the field to check against chain.** It is the slot the
-  program's executable was last written at; an unchanged slot is real evidence a
-  generated client is still current, where an IDL-to-IDL diff is not.
+  program's executable was last written at — by a deploy transaction, or by the
+  runtime at a feature activation, which is how Stake's reads 427248000 with no
+  transaction behind it at all. An unchanged slot is real evidence a generated
+  client is still current, where an IDL-to-IDL diff is not, and a program with no
+  upgrade authority is not exempt from the read: `Option::None` forecloses
+  transaction-driven upgrades and nothing else. `programDataState` reads the
+  loader, never the authority, so `upgradeable` there means only that a
+  `ProgramData` account exists and decodes. Core BPF provenance — reading the
+  feature account, and why an otter-verify record misleads for these — is in
+  [docs/PROGRAM_VERIFICATION.md](docs/PROGRAM_VERIFICATION.md).
 - **`hash` is one opaque value, over the normalized form.** It moves on a
   re-publication but not a re-formatting, and it says only *that* a channel
   moved — never in which direction. A `vcs` copy that was behind chain and has
@@ -369,8 +377,10 @@ only on chain. The tool is **assistive, not an oracle**: most differences it
 reports are artifacts, and `compared 0` means it matched no names, not that
 everything passed. Triage guidance and the per-program traps are in
 [docs/PROGRAM_VERIFICATION.md](docs/PROGRAM_VERIFICATION.md); some programs
-(Meteora, Loopscale) have no independent source and cannot be ground-truthed at
-all.
+(Meteora, Loopscale) have no independent source, and some have one the tool cannot
+read — Stake declares its accounts through codama macros rather than Anchor structs
+or Shank attributes, so it reports `compared 0`. Neither can be ground-truthed this
+way.
 
 ### Extra (`remaining_accounts`) conventions
 
@@ -908,8 +918,22 @@ Conventions when adding a target:
 
 ## Conventions
 
-- Conventional commits; releases are cut by release-please (`fix:`/`feat:`
-  bump patch/minor; a `BREAKING CHANGE:` footer bumps major).
+- Conventional commits; releases are cut by release-please with
+  `"versioning": "always-bump-patch"`, so **every** automated release is a patch
+  bump regardless of what the commits say: `fix:`, `feat:`, a `!` marker and a
+  `BREAKING CHANGE:` footer all land on `x.y.(z+1)`. A break still earns its own
+  ⚠ BREAKING CHANGES section in the changelog — the notes generator is independent
+  of the versioning strategy — but the version number does not react to it
+  (25.18.2, 25.18.3 and 25.18.5 each shipped breaking changes as a patch). This is
+  why the commit body has to carry the migration advice in full: it is the whole
+  warning a consumer gets.
+- A minor or major bump is **manual**. Land a `chore: release <x.y.z>` commit
+  carrying a `Release-As: <x.y.z>` footer and release-please cuts that exact
+  version; every `25.N.0` in this repo's history was produced that way
+  (25.13.0 `c09e6c1d`, 25.14.0 `0104b3cc`, 25.15.0 `9bc9c5fd`, 25.16.0 `40fd212e`,
+  25.17.0 `b9d434b5`, 25.18.0 `643bb671`, 25.19.0 `54056678`). Decide it
+  deliberately when a release accumulates enough breakage that consumers should be
+  made to read the notes.
 - The root `.gitignore` is a **recursive** whitelist: every path in the repo is
   ignored unless a rule re-includes it, not just the top level. A new kind of
   tracked file — a new resource extension, a new config directory — needs an

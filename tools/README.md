@@ -48,8 +48,14 @@ defaults anyway, and regenerating across the switch changed no Java. Stake now r
 `main_net_programs.json`, which it had been the sole exception to. What that gives up
 is the pin: the derived file was committed, so upstream could not reach generated code
 until someone re-ran the script and reviewed the diff. Stake tracks upstream head on
-every run now, and what catches a change is the movement report plus the two Stake
-tests.
+every run now, and what catches a change is the movement report. Not the two Stake
+tests: both are about instruction *data* and are structurally blind to an account
+list. #520 (merged 2026-08-31) is the measurement — it dropped the clock, rent and
+stake-history sysvars and the retired stake config from ten instructions, touched no
+argument, and left `StakeOnChainInstructionTests` and `StakeReferenceEncodingTests`
+green and unedited. Ten assertions in `SPLClientTests` failed instead, and only
+because they are transcribed from the same `idl.json` the builders are generated
+from, so they can see a list that *moved* and never one that moved *wrongly*.
 
 | Script | Answers | Cost |
 |---|---|---|
@@ -145,27 +151,45 @@ Two things it is not. It is not ground truth: since 2026-08-25 our client and
 upstream's JavaScript one are generated from the same file — the visited `idl.json`
 upstream publishes — so they share an input exactly rather than merely descending
 from a common pipeline, and the only evidence that input matches the deployed
-program is the mainnet fixture in `StakeOnChainInstructionTests`. And it is not a
+program is the mainnet fixture in `StakeOnChainInstructionTests` — which records one
+instruction's `data` and nothing else, so it ties the wire format to chain and is
+silent on the account lists declared beside it in the same file. And it is not a
 check you run — the bytes are committed and `qualityGate` compares against them on
 every build.
 
-**Do not re-run this on a schedule.** The deployed Stake program is immutable: its
-programData account `6WU8Nxarf9fudRK5atWwjLY4vFaw5UrrWhL88qz7iCMJ` carries
-`authority: null`, checked against mainnet on 2026-08-25 at slot 441627724. The
-instruction set is frozen at seventeen and the wire format cannot change, so these
-vectors are permanent rather than a moving target, and upstream's repository moving
-is not a reason to refresh them. Measured: regenerating on 2026-08-25 across
+**Do not re-run this on a schedule.** Not because the program cannot move — it can —
+but because these vectors track instruction *data*, and upstream's repository moving
+is not evidence that data moved. Measured twice: regenerating on 2026-08-25 across
 upstream #498, #500 and #501 and a client bump from 0.8.0 to 0.9.0
 (`@solana/kit` 7 to 8) reproduced all 38 vectors byte for byte, changing only the
-three provenance lines in the header.
+three provenance lines in the header; re-deriving on 2026-08-31 against head
+`32c334e` — #520, which removed four accounts from each of ten instructions —
+reproduced all 38 again, because #520 changed no argument.
+
+**What is not the reason is immutability, which this section used to claim.**
+`6WU8Nxarf9fudRK5atWwjLY4vFaw5UrrWhL88qz7iCMJ` does carry `authority: null` (checked
+against mainnet on 2026-08-25 at slot 441627724), but `Option::None` forecloses only
+*transaction*-driven upgrades. The runtime replaces the ELF at feature activation,
+and that is how this program reached `program@v5.0.0`: the Agave gate
+`upgrade_bpf_stake_program_to_v5` (`STk5Xj8hdAx3sTzmtJ3QysKkq6X2A3yj73JtxttiRyk`)
+activated at slot 427248000, which is byte-identical to
+`ProgramData.last_deploy_slot` — the install left a deploy-slot move and no
+transaction to read it from. `upgrade_bpf_stake_program_to_v5_1`
+(`s51VGwCAgebo2745DSUris72RavoLkXGUmVJosESCXr`) is staged behind it, nine zero bytes
+on mainnet as of 2026-08-31. Seventeen instructions and this wire format are what is
+deployed today, not what is guaranteed; a gate activating on mainnet is the trigger
+to look, and a calendar still is not. `docs/PROGRAM_VERIFICATION.md` has the full
+method.
 
 Two things would justify running it. If the comparison ever fails, the committed
 bytes say *that* the generated encoder diverged and re-deriving says *who is right*.
 And if upstream's IDL grows an instruction, `everyInstructionHasAVector` fails until
 one has a vector — hand-authoring those bytes would void the whole point, which is
 that they come from an implementation neither this repository nor its generator
-produced. For an immutable program a new instruction is itself worth a look before
-it is worth a vector. Either way the diff is the review.
+produced. A new instruction is itself worth a look before it is worth a vector: this
+instruction set grows by feature gate, not by deploy, so an addition upstream is a
+question about which gate carries it and whether that gate is live on mainnet before
+it is a question about bytes. Either way the diff is the review.
 
 ## Adding to these
 

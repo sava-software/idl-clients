@@ -58,8 +58,11 @@ hardening {
           "the shared generated commons in software.sava.idl.clients.core.gen — SerDe, " +
           "SerDeUtil, RustEnum, Factory, ProgramError — which every program's generated code " +
           "compiles against: same generator, same ownership. Correctness is carried instead by " +
-          "the generator's own tests; by tools/GroundTruth.java " +
-          "(docs/PROGRAM_VERIFICATION.md); and by execution rather than mutation — seven test " +
+          "the generator's own tests; by tools/GroundTruth.java, which reads Anchor and Shank " +
+          "account declarations and so covers no codama program here — Stake reports " +
+          "'compared 0' in both modes, and its account order is pinned only by SPLClientTests, " +
+          "transcribed from the same idl.json (docs/PROGRAM_VERIFICATION.md); and by execution " +
+          "rather than mutation — seven test " +
           "sources (SPLClientTests, StakeProgramTests, StakeReferenceEncodingTests, " +
           "TokenProgramTests, AddressLookupTableTests, SystemProgramTest, Token2022ProgramTests) " +
           "build and decode through the generated instruction builders and account types. " +

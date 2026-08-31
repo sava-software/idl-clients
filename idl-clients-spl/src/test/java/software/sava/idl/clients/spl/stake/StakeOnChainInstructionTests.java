@@ -32,8 +32,21 @@ import static org.junit.jupiter.api.Assertions.*;
 /// `main_net_programs.json`. What did not change across any of it is why this test exists. The IDL,
 /// the builders generated from it and the readers generated beside them all descend from one
 /// source, so none of them can testify that it matches the program that is deployed. These bytes
-/// can, and nothing else here does. The Stake program is immutable — `Authority: none`, last
-/// deployed at slot 427248000 — so they cannot go out of date.
+/// can, for the instruction data. Only for that: the fixture below records one instruction's
+/// `data` and nothing else, so it is silent on the account lists declared beside it in the same
+/// IDL — which is how `solana-program/stake#520` moved ten of them on 2026-08-31 with all three
+/// assertions here green and this file unedited.
+///
+/// They do not expire, and the reason is narrower than the one this javadoc used to give. The
+/// program is **not** immutable: `Option::None` as upgrade authority forecloses only
+/// transaction-driven upgrades, and the runtime replaces the ELF at feature activation. That is
+/// how mainnet reached `program@v5.0.0` — the Agave gate `upgrade_bpf_stake_program_to_v5`
+/// (`STk5Xj8hdAx3sTzmtJ3QysKkq6X2A3yj73JtxttiRyk`) activated at slot 427248000, byte-identical to
+/// `ProgramData.last_deploy_slot`, with no transaction to read it from — and
+/// `upgrade_bpf_stake_program_to_v5_1` is staged behind it, unactivated on mainnet as of
+/// 2026-08-31. What keeps these bytes good is that no gate so far has moved a discriminant width
+/// or an argument layout; v5's own change was to make sysvar *accounts* optional. A gate
+/// activating on mainnet is the trigger to re-capture.
 ///
 /// [StakeReferenceEncodingTests] holds all seventeen instructions, this one included, against
 /// upstream's generated JavaScript client. That is a second *encoder*, not a second source: it

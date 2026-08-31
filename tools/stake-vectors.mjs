@@ -23,11 +23,16 @@
 // symlink back into `clients/js`. Nothing is written inside the checkout.
 //
 // The output is committed as a test resource, and the diff is the review. Do not regenerate on a
-// schedule: the deployed program is immutable — its programData account
-// 6WU8Nxarf9fudRK5atWwjLY4vFaw5UrrWhL88qz7iCMJ carries `authority: null`, checked against mainnet
-// on 2026-08-25 at slot 441627724 — so the wire format cannot change, and upstream's repository
-// moving is not a reason to refresh. Re-running on 2026-08-25 across upstream #498/#500/#501 and
-// a client bump from 0.8.0 to 0.9.0 reproduced all 38 vectors byte for byte. Run it to adjudicate
+// schedule — not because the program cannot move, but because these vectors are instruction data
+// and upstream's repository moving is not evidence that data moved. Measured twice: re-running on
+// 2026-08-25 across upstream #498/#500/#501 and a client bump from 0.8.0 to 0.9.0 reproduced all
+// 38 vectors byte for byte, and re-deriving on 2026-08-31 at head 32c334e (#520, which stripped
+// four accounts from each of ten instruction account lists) reproduced them again, because #520
+// changed no argument. The programData account 6WU8Nxarf9fudRK5atWwjLY4vFaw5UrrWhL88qz7iCMJ does
+// carry `authority: null` (checked 2026-08-25 at slot 441627724), but that forecloses only
+// transaction-driven upgrades: mainnet reached program@v5.0.0 through the Agave feature gate
+// STk5Xj8hdAx3sTzmtJ3QysKkq6X2A3yj73JtxttiRyk, whose activation slot 427248000 is byte-identical
+// to ProgramData.last_deploy_slot. Run it to adjudicate
 // a comparison that has failed, or to cover an instruction the IDL has grown — hand-authoring
 // those bytes would void the point of them. See tools/README.md.
 //
@@ -283,7 +288,8 @@ function render(client, kit, { head, generated, lock, version }) {
     "# Produced by tools/stake-vectors.mjs from solana-program/stake's own generated JavaScript",
     '# client, which @codama/renderers-js renders from the same idl.json this repository generates',
     '# from. It is an independent encoder, not ground truth: the mainnet fixture in',
-    '# StakeOnChainInstructionTests is what ties that IDL to the deployed program.',
+    '# StakeOnChainInstructionTests is what ties that IDL to the deployed program, for the',
+    '# instruction data — it holds one mainnet instruction and is silent on account lists.',
     '#',
     `# upstream: solana-program/stake @ ${head}`,
     `# client:   @solana-program/stake ${version}, generated at ${generated}`,

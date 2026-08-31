@@ -56,9 +56,14 @@ a gap to work around; it is most of why the automated probe was removed —
 
 - `ProgramData.last_deploy_slot` — `getAccountInfo` on the program (jsonParsed)
   gives the programData address; `getAccountInfo` on that with
-  `dataSlice{offset:0,length:13}` decodes as `u32 enum (3) || u64 slot`;
-  `getBlockTime` dates it. Shows the program was *touched* after the IDL, not
-  what changed.
+  `dataSlice{offset:0,length:45}` decodes as `u32 enum (3) || u64 slot ||
+  Option<Pubkey> upgrade authority`; `getBlockTime` dates it. Shows the program
+  was *touched* after the IDL, not what changed — and *touched* rather than
+  *deployed* is deliberate, because the runtime writes this field too. Read the
+  authority tag at offset 12 for context, never as a licence to skip the slot: a
+  `00` there says no transaction can upgrade the program, and says nothing about
+  whether the executable will be replaced. The fourth worked example below is a
+  program where the tag is `00` and the slot has moved anyway.
 - Grepping the deployed `.so` for account-name literals gives real hits, but a
   discriminator scan of the same buffer matched only 13 of 88 known-present
   instructions — too noisy to rely on.
@@ -222,9 +227,20 @@ The trigger to key on is the **deploy**, not the IDL edit:
 Cache `(program id, last_deploy_slot, idl hash) -> clean`. The deploy-slot read
 is two `getAccountInfo` calls per program and batches 20 to a request, so the
 steady state is a handful of round-trips against ~52 for a full sweep.
-Non-upgradeable programs have no `ProgramData` account and cannot go stale by
-redeploy, so key those on the IDL hash alone — but handle the absent account
-rather than erroring on it.
+Programs outside the upgradeable loader — native, or loader v1/v2/v4 — have no
+`ProgramData` account and cannot go stale by redeploy, so key those on the IDL
+hash alone, but handle the absent account rather than erroring on it. In this
+corpus that is two programs, System and Compute Budget, and `sources.json` names
+them: `programDataState` reads `nativeProgram` for those two and `upgradeable`
+for the rest.
+
+**Do not extend that to a program that merely has no upgrade authority.** A
+finalized loader-v3 program still has a `ProgramData` account, and a Core BPF
+program still has its executable replaced — by the runtime, at feature
+activation, with no transaction anywhere. Stake is both at once: `Option::None`
+as its upgrade authority, and a `last_deploy_slot` that has moved under it. Key
+those on the slot like every other program. The fourth worked example below is
+how to tell which install put a slot there.
 
 ---
 
@@ -313,6 +329,132 @@ copy — the generating run's own report was in commit `40e1533`, which a squash
 
 ---
 
+### A fourth worked example: Stake, 2026-08-31
+
+The first **Core BPF** program here — a former builtin now running as BPF under
+`BPFLoaderUpgradeab1e11111111111111111111111`, installed and replaced by the
+runtime rather than by anyone's transaction. Every reflex above gives the wrong
+answer for it, and one of them gives a confidently wrong one. All measurements
+against `api.mainnet-beta.solana.com` on the date in the heading.
+
+**The ordinary read, and the trap in it.** `getAccountInfo` on
+`Stake11111111111111111111111111111111111111` (jsonParsed) gives programData
+`6WU8Nxarf9fudRK5atWwjLY4vFaw5UrrWhL88qz7iCMJ`. Forty-five bytes off that — not
+the thirteen the weaker-signals section used to suggest — decode as
+`u32 enum (3) || u64 slot || Option<Pubkey>`:
+
+| field | value |
+|---|---|
+| enum | `3` (ProgramData) |
+| `last_deploy_slot` | **427248000** — 2026-06-18T08:04:17Z |
+| upgrade authority | tag byte `0x00` then 32 zero bytes: `Option::None` |
+
+A `None` authority is what everything calls *immutable*, *frozen*, *finalized*.
+It is true and it is narrower than it sounds: **`None` forecloses
+transaction-driven upgrades and nothing else.**
+
+**The feature gate is the provenance signal.** For a Core BPF program the deploy
+*is* a feature activation, and the feature account is a nine-byte record anyone
+can read:
+
+```
+getAccountInfo STk5Xj8hdAx3sTzmtJ3QysKkq6X2A3yj73JtxttiRyk  (base64 -> hex)
+  -> 01 8049771900000000        activated, u64 LE = 427248000
+```
+
+Three shapes, three different answers: `01` + `u64` little-endian is **activated
+at that slot**; nine zero bytes is **allocated and awaiting activation**; a
+`null` account is **nobody has funded the gate**. The owner is always
+`Feature111111111111111111111111111111111111`. 427248000 is byte-identical to
+`last_deploy_slot`, and that equality is the finding — the gate is
+`upgrade_bpf_stake_program_to_v5`, so the deployed image is v5.
+
+What the equality does *not* establish is which ELF. It says the runtime
+installed something in that activation and nothing has written the account
+since. The payload hash is what names the binary.
+
+**Identification at artifact level.** The ProgramData payload — bytes 45.. — is
+202280 bytes and hashes to
+`c9cba7f3d9fe0fac1f32e7a5e012284104a25d27ec97d6eb6d99a3afcd2352a8`, which is
+already in `sources.json` as `programDataPayloadSha256`. Upstream's
+`program@v5.0.0` release asset `solana_stake_program.so` is 202280 bytes with
+the same digest — readable straight off the GitHub API without downloading it
+(`gh release view program@v5.0.0 --repo solana-program/stake --json assets`).
+So the deployed image is upstream commit
+`6ed2c60c7e665e145fb54b272f87092c1791ca3c`, named without an attestation of any
+kind.
+
+Note the difference from marginfi above, and try both forms: there the hash
+reconciled only after stripping trailing zeros from an over-allocated account.
+Here the runtime sized the account to the ELF exactly and the *unstripped* hash
+is the one that matches. Trailing-zero trimming is a property of a particular
+deploy, not a rule.
+
+**The otter-verify record is stale, and read alone it inverts the verdict.** One
+exists — `9dC8TtQdg5co5ep5ENQLpVez5EVdJosXwe2ALvg3Fyaj`, owner
+`verifycLy8mB96wd9wqq3WDXQwM4oU6r42Th37Db9fC`, 291 bytes. It names version
+`0.4.11`, repo `https://github.com/solana-program/stake`, commit
+`ff89b6b4dcacf84ae28f92850f500e7aa47b29b4`, base image
+`solanafoundation/solana-verifiable-build:2.2.19`, and carries **409968000** in
+its trailing `u64` `deployed_slot`. That commit is 2025-12-01 — a week before
+`5cf845b`, the change that taught each processor to accept both the
+sysvar-bearing and the sysvar-free account list. Believe the record and you date
+the program to before that change and conclude the opposite of the truth.
+
+The record is not wrong; it is a statement about an earlier image, and **nothing
+has replaced it because nothing can.** The PDA is seeded on the upgrade
+authority, and a feature-gate install has no authority to sign a new one. So for
+a Core BPF program an otter record is evidence about *some* image and never about
+the current one, and its absence is not evidence either. The check that catches
+it is the one the marginfi entry already performs: compare the record's
+`deployed_slot` against `ProgramData.last_deploy_slot`. 409968000 ≠ 427248000.
+**The comparison is the finding; the commit it names is not.**
+
+**"No upgrade authority" is not "never redeployed", and the next one is already
+readable.** The successor gate `upgrade_bpf_stake_program_to_v5_1`
+(`s51VGwCAgebo2745DSUris72RavoLkXGUmVJosESCXr`) reads nine zero bytes on
+mainnet — allocated, unactivated. Its buffer is live and can be hashed today:
+
+| | |
+|---|---|
+| buffer | `p51x11QCYMHwuVS1MBcLHKb3MezWyqGS5BEB41CA1dk`, 212093 bytes |
+| header | `u32 enum (1 = Buffer) \|\| Option<Pubkey> authority` — 37 bytes |
+| payload | 212056 bytes, sha256 `3d2d39c596ce8be2d47816b4ee5db9fc759d80fde54b08c930ad0b6daed64c2c` |
+| = | upstream `program@v5.1.0` asset `solana_stake_program.so`, byte for byte |
+
+So for this one class of program the *next* binary is identifiable before it
+ships, which nothing else here offers. What it does not give is a date: a gate
+activates when enough stake has voted it in, and staged is not scheduled.
+
+**A corroborating heuristic, and its limit.** `getEpochSchedule` reports
+`slotsPerEpoch` 432000 with `firstNormalSlot` 0, so a feature activation always
+lands on a multiple of 432000. Both slots in this program's record are —
+427248000 = 989 × 432000, and the otter record's 409968000 = 949 × 432000 — while
+a deploy transaction lands wherever the fee market puts it. Use a round slot to
+raise the question, never to answer it: it does not name *which* gate.
+
+**And the change that prompted this section was invisible to every signal
+above.** solana-program/stake#520 merged 2026-08-31 and removed the clock, rent
+and stake-history sysvars and the retired stake-config account from ten
+instructions' account lists. `last_deploy_slot` did not move, the payload did not
+change, the feature accounts read exactly as before. Only the IDL-to-IDL diff saw
+it. That is the marginfi lesson run backwards — there the document held still
+while the program moved, here the program held still while the document moved —
+and it is why the trigger table above carries both rows rather than preferring
+one. Instruction *data* did not change either, so nothing that tests encodings
+could have caught it.
+
+What kept the client working through it is a fact about the deployed processors
+and nothing else: `program/src/processor.rs` carries a `// diverge` block in each
+affected handler that peeks at the account in the old sysvar slot and branches on
+`Clock::check_id` / `Rent::check_id`, so v5.0.0 accepts both lists. Specified by
+SIMD-0490, landed in `5cf845b` (2025-12-08), first shipped in `program@v5.0.0`.
+No slot, hash or gate could have told you that. Reading the Rust is what tells
+you that — and §2's tool cannot read this program's Rust, which is the gap
+recorded under *Programs that cannot be ground-truthed* below.
+
+---
+
 ## 2. Does the account order match the program's Rust?
 
 ```shell
@@ -370,8 +512,19 @@ attributes on the instruction enum. Two consequences:
 
 ### Programs that cannot be ground-truthed
 
-Not every program has an independent source. Check before assuming a diff is
-meaningful:
+Not every program can be ground-truthed, and there are two reasons: no
+independent source, or a source in a shape the tool cannot read. Check which
+before assuming a diff is meaningful:
+
+- **Stake** — has an independent source, and it is not readable here.
+  `solana-program/stake`'s `interface/src/instruction.rs` declares each account
+  through codama macros on the `StakeInstruction` variants
+  (`codama(account(name = "stake", writable, …))`), which is neither the Anchor
+  `#[derive(Accounts)]` struct nor Shank's indexed attributes. Both modes print
+  `rust structs 0 … compared 0` — a failure to compare, not a pass (measured
+  2026-08-31). Read the Rust by hand, and prefer the `// diverge` blocks in
+  `program/src/processor.rs`: they say what the deployed program *accepts*,
+  which for this program is wider than what the IDL declares.
 
 - **Meteora DLMM** — no `programs/` directory. `commons/src/lib.rs` uses
   `declare_program!(dlmm)`, generating its structs *from* `idls/dlmm.json`, and
