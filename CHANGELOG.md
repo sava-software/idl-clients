@@ -1,5 +1,17 @@
 # Changelog
 
+## [25.19.5](https://github.com/sava-software/idl-clients/compare/25.19.4...25.19.5) (2026-08-31)
+
+
+### ⚠ BREAKING CHANGES
+
+* **idl:** ten StakeProgram builders and their ten *Keys counterparts drop their SolanaAccounts parameter, and delegateStake drops unusedKey as well: initialize, initializeChecked, authorize, authorizeChecked, authorizeWithSeed, authorizeCheckedWithSeed, deactivate, withdraw, merge and delegateStake. Drop those arguments at the call site. No old signature survives with the same arity and different argument types, so javac names every site that needs changing rather than silently accepting one. SPLClient is unchanged. Code that assembles these account lists by hand needs no change at all, since the program still accepts the sysvars when they are sent.
+
+### Features
+
+* **idl:** regenerate Stake without sysvars, Kamino Scope at 0.41.0 ([6a32597](https://github.com/sava-software/idl-clients/commit/6a3259737683b1a5e08c6ddc104bf3375cab4e2f))
+* **scope:** add Token2022Multiplier and KlendCTokenExchangeRate entries ([304005c](https://github.com/sava-software/idl-clients/commit/304005c076a61348beaeb9aee0c7c923008d9bd8))
+
 ## [25.19.4](https://github.com/sava-software/idl-clients/compare/25.19.3...25.19.4) (2026-08-27)
 
 
