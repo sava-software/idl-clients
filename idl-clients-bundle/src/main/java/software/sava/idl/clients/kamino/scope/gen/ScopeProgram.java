@@ -918,8 +918,123 @@ public final class ScopeProgram {
     return Instruction.createInstruction(invokedScopeProgramMeta, keys, CLOSE_MINT_MAP_DISCRIMINATOR);
   }
 
+  public static final Discriminator RESUME_SUSPENDED_PRICE_DISCRIMINATOR = toDiscriminator(78, 87, 182, 104, 143, 135, 5, 227);
+
+  public static List<AccountMeta> resumeSuspendedPriceKeys(final PublicKey authorityKey,
+                                                           final PublicKey configurationKey,
+                                                           final PublicKey oraclePricesKey,
+                                                           final PublicKey oracleMappingsKey,
+                                                           final PublicKey tokensMetadataKey) {
+    return List.of(
+      createReadOnlySigner(authorityKey),
+      createRead(configurationKey),
+      createWrite(oraclePricesKey),
+      createRead(oracleMappingsKey),
+      createRead(tokensMetadataKey)
+    );
+  }
+
+  /// @param token: u16
+  public static Instruction resumeSuspendedPrice(final AccountMeta invokedScopeProgramMeta,
+                                                 final PublicKey authorityKey,
+                                                 final PublicKey configurationKey,
+                                                 final PublicKey oraclePricesKey,
+                                                 final PublicKey oracleMappingsKey,
+                                                 final PublicKey tokensMetadataKey,
+                                                 final int token,
+                                                 final String feedName,
+                                                 final byte[] expectedPriceData) {
+    final var keys = resumeSuspendedPriceKeys(
+      authorityKey,
+      configurationKey,
+      oraclePricesKey,
+      oracleMappingsKey,
+      tokensMetadataKey
+    );
+    return resumeSuspendedPrice(
+      invokedScopeProgramMeta,
+      keys,
+      token,
+      feedName,
+      expectedPriceData
+    );
+  }
+
+  /// @param token: u16
+  public static Instruction resumeSuspendedPrice(final AccountMeta invokedScopeProgramMeta,
+                                                 final List<AccountMeta> keys,
+                                                 final int token,
+                                                 final String feedName,
+                                                 final byte[] expectedPriceData) {
+    final byte[] _feedName = SerDeUtil.encodeString(feedName);
+    final byte[] _data = new byte[14 + _feedName.length + SerDeUtil.lenArray(expectedPriceData)];
+    int i = RESUME_SUSPENDED_PRICE_DISCRIMINATOR.write(_data, 0);
+    putInt16LE(_data, i, token);
+    i += 2;
+    i += SerDeUtil.writeVector(4, _feedName, _data, i);
+    SerDeUtil.writeArrayChecked(expectedPriceData, 24, _data, i);
+
+    return Instruction.createInstruction(invokedScopeProgramMeta, keys, _data);
+  }
+
+  /// @param token: u16
+  public record ResumeSuspendedPriceIxData(Discriminator discriminator,
+                                           int token,
+                                           String feedName, byte[] _feedName,
+                                           byte[] expectedPriceData) implements SerDe {
+
+    public static ResumeSuspendedPriceIxData read(final Instruction instruction) {
+      return read(instruction.copyData(), 0);
+    }
+
+    public static final int EXPECTED_PRICE_DATA_LEN = 24;
+    public static final int TOKEN_OFFSET = 8;
+    public static final int FEED_NAME_OFFSET = 10;
+
+    public static ResumeSuspendedPriceIxData createRecord(final Discriminator discriminator,
+                                                          final int token,
+                                                          final String feedName,
+                                                          final byte[] expectedPriceData) {
+      return new ResumeSuspendedPriceIxData(discriminator, token, feedName, feedName == null ? null : SerDeUtil.encodeString(feedName), expectedPriceData);
+    }
+
+    public static ResumeSuspendedPriceIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var token = Short.toUnsignedInt(getInt16LE(_data, i));
+      i += 2;
+      final byte[] _feedName = SerDeUtil.readbyteVector(4, _data, i);
+      final var feedName = SerDeUtil.decodeString(_feedName);
+      i += 4 + _feedName.length;
+      final var expectedPriceData = new byte[24];
+      SerDeUtil.readArray(expectedPriceData, _data, i);
+      return new ResumeSuspendedPriceIxData(discriminator, token, feedName, feedName == null ? null : SerDeUtil.encodeString(feedName), expectedPriceData);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt16LE(_data, i, token);
+      i += 2;
+      i += SerDeUtil.writeVector(4, _feedName, _data, i);
+      i += SerDeUtil.writeArrayChecked(expectedPriceData, 24, _data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 8 + 2 + 4 + _feedName.length + SerDeUtil.lenArray(expectedPriceData);
+    }
+  }
+
   public static final Discriminator RESUME_CHAINLINKX_PRICE_DISCRIMINATOR = toDiscriminator(136, 48, 103, 146, 227, 97, 87, 108);
 
+  /// Deprecated: use `resume_suspended_price` instead. This one names no price data, so it
+  /// cannot be tied to the suspension it approves, and it now errors instead of resuming.
+  ///
   public static List<AccountMeta> resumeChainlinkxPriceKeys(final PublicKey authorityKey,
                                                             final PublicKey configurationKey,
                                                             final PublicKey oraclePricesKey,
@@ -934,6 +1049,9 @@ public final class ScopeProgram {
     );
   }
 
+  /// Deprecated: use `resume_suspended_price` instead. This one names no price data, so it
+  /// cannot be tied to the suspension it approves, and it now errors instead of resuming.
+  ///
   /// @param token: u16
   public static Instruction resumeChainlinkxPrice(final AccountMeta invokedScopeProgramMeta,
                                                   final PublicKey authorityKey,
@@ -953,6 +1071,9 @@ public final class ScopeProgram {
     return resumeChainlinkxPrice(invokedScopeProgramMeta, keys, token, feedName);
   }
 
+  /// Deprecated: use `resume_suspended_price` instead. This one names no price data, so it
+  /// cannot be tied to the suspension it approves, and it now errors instead of resuming.
+  ///
   /// @param token: u16
   public static Instruction resumeChainlinkxPrice(final AccountMeta invokedScopeProgramMeta,
                                                   final List<AccountMeta> keys,

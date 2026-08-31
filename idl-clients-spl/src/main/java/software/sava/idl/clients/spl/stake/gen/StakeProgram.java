@@ -2,7 +2,6 @@
 package software.sava.idl.clients.spl.stake.gen;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.accounts.SolanaAccounts;
 import software.sava.core.accounts.meta.AccountMeta;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.tx.Instruction;
@@ -32,22 +31,18 @@ public final class StakeProgram {
   public static final Discriminator INITIALIZE_DISCRIMINATOR = toDiscriminator(0, 0, 0, 0);
 
   /// @param stakeKey Uninitialized stake account
-  public static List<AccountMeta> initializeKeys(final SolanaAccounts solanaAccounts,
-                                                 final PublicKey stakeKey) {
+  public static List<AccountMeta> initializeKeys(final PublicKey stakeKey) {
     return List.of(
-      createWrite(stakeKey),
-      createRead(solanaAccounts.rentSysVar())
+      createWrite(stakeKey)
     );
   }
 
   /// @param stakeKey Uninitialized stake account
   public static Instruction initialize(final AccountMeta invokedStakeProgramMeta,
-                                       final SolanaAccounts solanaAccounts,
                                        final PublicKey stakeKey,
                                        final Authorized arg0,
                                        final Lockup arg1) {
     final var keys = initializeKeys(
-      solanaAccounts,
       stakeKey
     );
     return initialize(
@@ -119,13 +114,11 @@ public final class StakeProgram {
   /// @param stakeKey Stake account to be updated
   /// @param authorityKey The stake or withdraw authority
   /// @param lockupAuthorityKey Lockup authority, if updating `StakeAuthorize::Withdrawer` before lockup expiration
-  public static List<AccountMeta> authorizeKeys(final SolanaAccounts solanaAccounts,
-                                                final PublicKey stakeKey,
+  public static List<AccountMeta> authorizeKeys(final PublicKey stakeKey,
                                                 final PublicKey authorityKey,
                                                 final PublicKey lockupAuthorityKey) {
-    final var keys = new ArrayList<AccountMeta>(4);
+    final var keys = new ArrayList<AccountMeta>(3);
     keys.add(createWrite(stakeKey));
-    keys.add(createRead(solanaAccounts.clockSysVar()));
     keys.add(createReadOnlySigner(authorityKey));
     if (lockupAuthorityKey != null) {
       keys.add(createReadOnlySigner(lockupAuthorityKey));
@@ -137,14 +130,12 @@ public final class StakeProgram {
   /// @param authorityKey The stake or withdraw authority
   /// @param lockupAuthorityKey Lockup authority, if updating `StakeAuthorize::Withdrawer` before lockup expiration
   public static Instruction authorize(final AccountMeta invokedStakeProgramMeta,
-                                      final SolanaAccounts solanaAccounts,
                                       final PublicKey stakeKey,
                                       final PublicKey authorityKey,
                                       final PublicKey lockupAuthorityKey,
                                       final PublicKey arg0,
                                       final StakeAuthorize arg1) {
     final var keys = authorizeKeys(
-      solanaAccounts,
       stakeKey,
       authorityKey,
       lockupAuthorityKey
@@ -219,38 +210,27 @@ public final class StakeProgram {
 
   /// @param stakeKey Initialized stake account to be delegated
   /// @param voteKey Vote account to which this stake will be delegated
-  /// @param unusedKey Unused account, formerly the stake config
   /// @param stakeAuthorityKey Stake authority
-  public static List<AccountMeta> delegateStakeKeys(final SolanaAccounts solanaAccounts,
-                                                    final PublicKey stakeKey,
+  public static List<AccountMeta> delegateStakeKeys(final PublicKey stakeKey,
                                                     final PublicKey voteKey,
-                                                    final PublicKey unusedKey,
                                                     final PublicKey stakeAuthorityKey) {
     return List.of(
       createWrite(stakeKey),
       createRead(voteKey),
-      createRead(solanaAccounts.clockSysVar()),
-      createRead(solanaAccounts.stakeHistorySysVar()),
-      createRead(unusedKey),
       createReadOnlySigner(stakeAuthorityKey)
     );
   }
 
   /// @param stakeKey Initialized stake account to be delegated
   /// @param voteKey Vote account to which this stake will be delegated
-  /// @param unusedKey Unused account, formerly the stake config
   /// @param stakeAuthorityKey Stake authority
   public static Instruction delegateStake(final AccountMeta invokedStakeProgramMeta,
-                                          final SolanaAccounts solanaAccounts,
                                           final PublicKey stakeKey,
                                           final PublicKey voteKey,
-                                          final PublicKey unusedKey,
                                           final PublicKey stakeAuthorityKey) {
     final var keys = delegateStakeKeys(
-      solanaAccounts,
       stakeKey,
       voteKey,
-      unusedKey,
       stakeAuthorityKey
     );
     return delegateStake(invokedStakeProgramMeta, keys);
@@ -385,16 +365,13 @@ public final class StakeProgram {
   /// @param recipientKey Recipient account
   /// @param withdrawAuthorityKey Withdraw authority
   /// @param lockupAuthorityKey Lockup authority, if before lockup expiration
-  public static List<AccountMeta> withdrawKeys(final SolanaAccounts solanaAccounts,
-                                               final PublicKey stakeKey,
+  public static List<AccountMeta> withdrawKeys(final PublicKey stakeKey,
                                                final PublicKey recipientKey,
                                                final PublicKey withdrawAuthorityKey,
                                                final PublicKey lockupAuthorityKey) {
-    final var keys = new ArrayList<AccountMeta>(6);
+    final var keys = new ArrayList<AccountMeta>(4);
     keys.add(createWrite(stakeKey));
     keys.add(createWrite(recipientKey));
-    keys.add(createRead(solanaAccounts.clockSysVar()));
-    keys.add(createRead(solanaAccounts.stakeHistorySysVar()));
     keys.add(createReadOnlySigner(withdrawAuthorityKey));
     if (lockupAuthorityKey != null) {
       keys.add(createReadOnlySigner(lockupAuthorityKey));
@@ -408,14 +385,12 @@ public final class StakeProgram {
   /// @param lockupAuthorityKey Lockup authority, if before lockup expiration
   /// @param args: u64
   public static Instruction withdraw(final AccountMeta invokedStakeProgramMeta,
-                                     final SolanaAccounts solanaAccounts,
                                      final PublicKey stakeKey,
                                      final PublicKey recipientKey,
                                      final PublicKey withdrawAuthorityKey,
                                      final PublicKey lockupAuthorityKey,
                                      final long args) {
     final var keys = withdrawKeys(
-      solanaAccounts,
       stakeKey,
       recipientKey,
       withdrawAuthorityKey,
@@ -479,12 +454,10 @@ public final class StakeProgram {
 
   /// @param stakeKey Delegated stake account to be deactivated
   /// @param stakeAuthorityKey Stake authority
-  public static List<AccountMeta> deactivateKeys(final SolanaAccounts solanaAccounts,
-                                                 final PublicKey stakeKey,
+  public static List<AccountMeta> deactivateKeys(final PublicKey stakeKey,
                                                  final PublicKey stakeAuthorityKey) {
     return List.of(
       createWrite(stakeKey),
-      createRead(solanaAccounts.clockSysVar()),
       createReadOnlySigner(stakeAuthorityKey)
     );
   }
@@ -492,11 +465,9 @@ public final class StakeProgram {
   /// @param stakeKey Delegated stake account to be deactivated
   /// @param stakeAuthorityKey Stake authority
   public static Instruction deactivate(final AccountMeta invokedStakeProgramMeta,
-                                       final SolanaAccounts solanaAccounts,
                                        final PublicKey stakeKey,
                                        final PublicKey stakeAuthorityKey) {
     final var keys = deactivateKeys(
-      solanaAccounts,
       stakeKey,
       stakeAuthorityKey
     );
@@ -670,15 +641,12 @@ public final class StakeProgram {
   /// @param destinationStakeKey Destination stake account for the merge
   /// @param sourceStakeKey Source stake account for to merge.  This account will be drained
   /// @param stakeAuthorityKey Stake authority
-  public static List<AccountMeta> mergeKeys(final SolanaAccounts solanaAccounts,
-                                            final PublicKey destinationStakeKey,
+  public static List<AccountMeta> mergeKeys(final PublicKey destinationStakeKey,
                                             final PublicKey sourceStakeKey,
                                             final PublicKey stakeAuthorityKey) {
     return List.of(
       createWrite(destinationStakeKey),
       createWrite(sourceStakeKey),
-      createRead(solanaAccounts.clockSysVar()),
-      createRead(solanaAccounts.stakeHistorySysVar()),
       createReadOnlySigner(stakeAuthorityKey)
     );
   }
@@ -687,12 +655,10 @@ public final class StakeProgram {
   /// @param sourceStakeKey Source stake account for to merge.  This account will be drained
   /// @param stakeAuthorityKey Stake authority
   public static Instruction merge(final AccountMeta invokedStakeProgramMeta,
-                                  final SolanaAccounts solanaAccounts,
                                   final PublicKey destinationStakeKey,
                                   final PublicKey sourceStakeKey,
                                   final PublicKey stakeAuthorityKey) {
     final var keys = mergeKeys(
-      solanaAccounts,
       destinationStakeKey,
       sourceStakeKey,
       stakeAuthorityKey
@@ -745,14 +711,12 @@ public final class StakeProgram {
   /// @param stakeKey Stake account to be updated
   /// @param baseKey Base key of stake or withdraw authority
   /// @param lockupAuthorityKey Lockup authority, if updating `StakeAuthorize::Withdrawer` before lockup expiration
-  public static List<AccountMeta> authorizeWithSeedKeys(final SolanaAccounts solanaAccounts,
-                                                        final PublicKey stakeKey,
+  public static List<AccountMeta> authorizeWithSeedKeys(final PublicKey stakeKey,
                                                         final PublicKey baseKey,
                                                         final PublicKey lockupAuthorityKey) {
-    final var keys = new ArrayList<AccountMeta>(4);
+    final var keys = new ArrayList<AccountMeta>(3);
     keys.add(createWrite(stakeKey));
     keys.add(createReadOnlySigner(baseKey));
-    keys.add(createRead(solanaAccounts.clockSysVar()));
     if (lockupAuthorityKey != null) {
       keys.add(createReadOnlySigner(lockupAuthorityKey));
     }
@@ -763,7 +727,6 @@ public final class StakeProgram {
   /// @param baseKey Base key of stake or withdraw authority
   /// @param lockupAuthorityKey Lockup authority, if updating `StakeAuthorize::Withdrawer` before lockup expiration
   public static Instruction authorizeWithSeed(final AccountMeta invokedStakeProgramMeta,
-                                              final SolanaAccounts solanaAccounts,
                                               final PublicKey stakeKey,
                                               final PublicKey baseKey,
                                               final PublicKey lockupAuthorityKey,
@@ -772,7 +735,6 @@ public final class StakeProgram {
                                               final String authoritySeed,
                                               final PublicKey authorityOwner) {
     final var keys = authorizeWithSeedKeys(
-      solanaAccounts,
       stakeKey,
       baseKey,
       lockupAuthorityKey
@@ -890,13 +852,11 @@ public final class StakeProgram {
   /// @param stakeKey Uninitialized stake account
   /// @param stakeAuthorityKey The stake authority
   /// @param withdrawAuthorityKey The withdraw authority
-  public static List<AccountMeta> initializeCheckedKeys(final SolanaAccounts solanaAccounts,
-                                                        final PublicKey stakeKey,
+  public static List<AccountMeta> initializeCheckedKeys(final PublicKey stakeKey,
                                                         final PublicKey stakeAuthorityKey,
                                                         final PublicKey withdrawAuthorityKey) {
     return List.of(
       createWrite(stakeKey),
-      createRead(solanaAccounts.rentSysVar()),
       createRead(stakeAuthorityKey),
       createReadOnlySigner(withdrawAuthorityKey)
     );
@@ -906,12 +866,10 @@ public final class StakeProgram {
   /// @param stakeAuthorityKey The stake authority
   /// @param withdrawAuthorityKey The withdraw authority
   public static Instruction initializeChecked(final AccountMeta invokedStakeProgramMeta,
-                                              final SolanaAccounts solanaAccounts,
                                               final PublicKey stakeKey,
                                               final PublicKey stakeAuthorityKey,
                                               final PublicKey withdrawAuthorityKey) {
     final var keys = initializeCheckedKeys(
-      solanaAccounts,
       stakeKey,
       stakeAuthorityKey,
       withdrawAuthorityKey
@@ -965,14 +923,12 @@ public final class StakeProgram {
   /// @param authorityKey The stake or withdraw authority
   /// @param newAuthorityKey The new stake or withdraw authority
   /// @param lockupAuthorityKey Lockup authority, if updating `StakeAuthorize::Withdrawer` before lockup expiration
-  public static List<AccountMeta> authorizeCheckedKeys(final SolanaAccounts solanaAccounts,
-                                                       final PublicKey stakeKey,
+  public static List<AccountMeta> authorizeCheckedKeys(final PublicKey stakeKey,
                                                        final PublicKey authorityKey,
                                                        final PublicKey newAuthorityKey,
                                                        final PublicKey lockupAuthorityKey) {
-    final var keys = new ArrayList<AccountMeta>(5);
+    final var keys = new ArrayList<AccountMeta>(4);
     keys.add(createWrite(stakeKey));
-    keys.add(createRead(solanaAccounts.clockSysVar()));
     keys.add(createReadOnlySigner(authorityKey));
     keys.add(createReadOnlySigner(newAuthorityKey));
     if (lockupAuthorityKey != null) {
@@ -986,14 +942,12 @@ public final class StakeProgram {
   /// @param newAuthorityKey The new stake or withdraw authority
   /// @param lockupAuthorityKey Lockup authority, if updating `StakeAuthorize::Withdrawer` before lockup expiration
   public static Instruction authorizeChecked(final AccountMeta invokedStakeProgramMeta,
-                                             final SolanaAccounts solanaAccounts,
                                              final PublicKey stakeKey,
                                              final PublicKey authorityKey,
                                              final PublicKey newAuthorityKey,
                                              final PublicKey lockupAuthorityKey,
                                              final StakeAuthorize stakeAuthorize) {
     final var keys = authorizeCheckedKeys(
-      solanaAccounts,
       stakeKey,
       authorityKey,
       newAuthorityKey,
@@ -1056,15 +1010,13 @@ public final class StakeProgram {
   /// @param baseKey Base key of stake or withdraw authority
   /// @param newAuthorityKey The new stake or withdraw authority
   /// @param lockupAuthorityKey Lockup authority, if updating `StakeAuthorize::Withdrawer` before lockup expiration
-  public static List<AccountMeta> authorizeCheckedWithSeedKeys(final SolanaAccounts solanaAccounts,
-                                                               final PublicKey stakeKey,
+  public static List<AccountMeta> authorizeCheckedWithSeedKeys(final PublicKey stakeKey,
                                                                final PublicKey baseKey,
                                                                final PublicKey newAuthorityKey,
                                                                final PublicKey lockupAuthorityKey) {
-    final var keys = new ArrayList<AccountMeta>(5);
+    final var keys = new ArrayList<AccountMeta>(4);
     keys.add(createWrite(stakeKey));
     keys.add(createReadOnlySigner(baseKey));
-    keys.add(createRead(solanaAccounts.clockSysVar()));
     keys.add(createReadOnlySigner(newAuthorityKey));
     if (lockupAuthorityKey != null) {
       keys.add(createReadOnlySigner(lockupAuthorityKey));
@@ -1077,7 +1029,6 @@ public final class StakeProgram {
   /// @param newAuthorityKey The new stake or withdraw authority
   /// @param lockupAuthorityKey Lockup authority, if updating `StakeAuthorize::Withdrawer` before lockup expiration
   public static Instruction authorizeCheckedWithSeed(final AccountMeta invokedStakeProgramMeta,
-                                                     final SolanaAccounts solanaAccounts,
                                                      final PublicKey stakeKey,
                                                      final PublicKey baseKey,
                                                      final PublicKey newAuthorityKey,
@@ -1086,7 +1037,6 @@ public final class StakeProgram {
                                                      final String authoritySeed,
                                                      final PublicKey authorityOwner) {
     final var keys = authorizeCheckedWithSeedKeys(
-      solanaAccounts,
       stakeKey,
       baseKey,
       newAuthorityKey,

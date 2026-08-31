@@ -80,7 +80,11 @@ public sealed interface ScopeError extends ProgramError permits
     ScopeError.UnauthorizedResume,
     ScopeError.PythLazerConfidenceNotPresent,
     ScopeError.KlendCTokenExchangeRateCPIError,
-    ScopeError.KlendReserveDeprecated {
+    ScopeError.KlendReserveDeprecated,
+    ScopeError.PriceNotSuspended,
+    ScopeError.ResumeStateMismatch,
+    ScopeError.DeprecatedInstruction,
+    ScopeError.EagerEvalBpsOutOfRange {
 
   static ScopeError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -161,6 +165,10 @@ public sealed interface ScopeError extends ProgramError permits
       case 6074 -> PythLazerConfidenceNotPresent.INSTANCE;
       case 6075 -> KlendCTokenExchangeRateCPIError.INSTANCE;
       case 6076 -> KlendReserveDeprecated.INSTANCE;
+      case 6077 -> PriceNotSuspended.INSTANCE;
+      case 6078 -> ResumeStateMismatch.INSTANCE;
+      case 6079 -> DeprecatedInstruction.INSTANCE;
+      case 6080 -> EagerEvalBpsOutOfRange.INSTANCE;
       default -> null;
     };
   }
@@ -701,6 +709,34 @@ public sealed interface ScopeError extends ProgramError permits
 
     public static final KlendReserveDeprecated INSTANCE = new KlendReserveDeprecated(
         6076, "Klend reserve version does not match the expected program version (deprecated reserve)"
+    );
+  }
+
+  record PriceNotSuspended(int code, String msg) implements ScopeError {
+
+    public static final PriceNotSuspended INSTANCE = new PriceNotSuspended(
+        6077, "Trying to resume a price that is not suspended"
+    );
+  }
+
+  record ResumeStateMismatch(int code, String msg) implements ScopeError {
+
+    public static final ResumeStateMismatch INSTANCE = new ResumeStateMismatch(
+        6078, "The resume does not name the price data the entry holds"
+    );
+  }
+
+  record DeprecatedInstruction(int code, String msg) implements ScopeError {
+
+    public static final DeprecatedInstruction INSTANCE = new DeprecatedInstruction(
+        6079, "This instruction is deprecated, use its replacement"
+    );
+  }
+
+  record EagerEvalBpsOutOfRange(int code, String msg) implements ScopeError {
+
+    public static final EagerEvalBpsOutOfRange INSTANCE = new EagerEvalBpsOutOfRange(
+        6080, "Eager eval threshold (bps) is greater than FULL_BPS"
     );
   }
 }

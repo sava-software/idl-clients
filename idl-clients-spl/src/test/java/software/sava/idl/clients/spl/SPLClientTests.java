@@ -1,7 +1,6 @@
 package software.sava.idl.clients.spl;
 
 import org.junit.jupiter.api.Test;
-import software.sava.core.accounts.AccountWithSeed;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.SolanaAccounts;
 import software.sava.core.accounts.meta.AccountMeta;
@@ -29,7 +28,7 @@ final class SPLClientTests {
   private static final SolanaAccounts ACCOUNTS = SolanaAccounts.MAIN_NET;
   private static final SPLClient CLIENT = SPLClient.createClient(ACCOUNTS);
 
-  // Distinct, recognisable keys: any two of them swapped is a visible failure.
+  // Distinct, recognizable keys: any two of them swapped is a visible failure.
   private static final PublicKey STAKE = key(0x01);
   private static final PublicKey STAKER = key(0x02);
   private static final PublicKey WITHDRAWER = key(0x03);
@@ -97,6 +96,36 @@ final class SPLClientTests {
   // Stake account lifecycle
   // ---------------------------------------------------------------------------
 
+  // No stake builder passes the clock, rent or stake-history sysvar any more, and
+  // `delegateStake` no longer passes the retired stake config. Upstream dropped all four from
+  // the interface in solana-program/stake#520 (merged 2026-08-31), and the account lists below
+  // are the whole of that change reaching a caller.
+  //
+  // The deployed program does not read them. It takes `Clock`, `Rent` and `StakeHistory` from
+  // syscalls, and each affected processor opens with a `// diverge` block that peeks at the
+  // account in the old sysvar slot and branches on `Clock::check_id` / `Rent::check_id` — if
+  // the sysvar is there it is consumed, if not that same slot is read as the authority. Both
+  // forms therefore dispatch, which is what SIMD-0490 specifies ("make all sysvar account
+  // inputs optional ... will continue to gracefully accept existing instructions that include
+  // sysvars"). That branching landed in `5cf845b` (2025-12-08) and first shipped in
+  // `program@v5.0.0` — which is what mainnet runs: SIMD-0490's gate
+  // `STk5Xj8hdAx3sTzmtJ3QysKkq6X2A3yj73JtxttiRyk` activated at slot 427248000, byte-identical
+  // to the program's `last_deploy_slot`. Read that gate rather than the otter-verify PDA, which
+  // is stale here and attests a v4-era commit that still required the sysvars. All ten short
+  // lists were then confirmed against the live binary by simulation, each with a long-form
+  // control. Note the binary is not frozen: `Option::None` as upgrade authority forecloses only
+  // transaction-driven upgrades, and a successor gate (`s51VGwCAgebo2745DSUris72RavoLkXGUmVJosESCXr`,
+  // v5.1) is staged though not yet activated on mainnet. It keeps the same dispatch.
+  //
+  // Two consequences for what is checked where. Instruction *data* did not change, so
+  // `reference-vectors.txt` and [StakeReferenceEncodingTests] are untouched by this and cannot
+  // see it. And because the program accepts both lists, a regression that put a sysvar back
+  // would still succeed on chain — nothing on mainnet would reject it. These assertions are the
+  // only thing pinning which of the two forms this client emits, and they are transcribed from
+  // the same `idl.json` the builders are generated from, so they can catch a list that *moved*
+  // but not one that moved *wrongly*. A diff here wants the program source read, not just a
+  // green run.
+
   /// `staker` and `withdrawer` are adjacent same-typed parameters, so a swap is only visible
   /// by decoding the data back. A null lockup must become the zero lockup, not a null field.
   @Test
@@ -104,7 +133,7 @@ final class SPLClientTests {
     final var ix = CLIENT.initializeStakeAccount(STAKE, STAKER, WITHDRAWER, null);
 
     assertEquals(ACCOUNTS.invokedStakeProgram(), ix.programId());
-    assertEquals(List.of(STAKE, ACCOUNTS.rentSysVar()), keys(ix));
+    assertEquals(List.of(STAKE), keys(ix));
     assertEquals(List.of(STAKE), writable(ix));
 
     final var data = StakeProgram.InitializeIxData.read(ix);
@@ -132,7 +161,8 @@ final class SPLClientTests {
     // the no-lockup convenience overload matches an explicit NO_LOCKUP
     assertArrayEquals(
         CLIENT.initializeStakeAccount(STAKE, STAKER, WITHDRAWER, LockUp.NO_LOCKUP).data(),
-        CLIENT.initializeStakeAccount(STAKE, STAKER, WITHDRAWER).data());
+        CLIENT.initializeStakeAccount(STAKE, STAKER, WITHDRAWER).data()
+    );
   }
 
   @Test
@@ -141,7 +171,7 @@ final class SPLClientTests {
 
     assertEquals(ACCOUNTS.invokedStakeProgram(), ix.programId());
     // the checked variant carries both authorities as accounts, and the withdrawer must sign
-    assertEquals(List.of(STAKE, ACCOUNTS.rentSysVar(), STAKER, WITHDRAWER), keys(ix));
+    assertEquals(List.of(STAKE, STAKER, WITHDRAWER), keys(ix));
     assertEquals(List.of(WITHDRAWER), signers(ix));
     assertEquals(List.of(STAKE), writable(ix));
   }
@@ -151,11 +181,11 @@ final class SPLClientTests {
   @Test
   void authorizeStakeAccountOptionalLockupAuthority() {
     final var withoutLockup = CLIENT.authorizeStakeAccount(STAKE, STAKER, null, NEW_AUTHORITY, StakeAuthorize.staker);
-    assertEquals(List.of(STAKE, ACCOUNTS.clockSysVar(), STAKER), keys(withoutLockup));
+    assertEquals(List.of(STAKE, STAKER), keys(withoutLockup));
     assertEquals(List.of(STAKER), signers(withoutLockup));
 
     final var withLockup = CLIENT.authorizeStakeAccount(STAKE, STAKER, CUSTODIAN, NEW_AUTHORITY, StakeAuthorize.staker);
-    assertEquals(List.of(STAKE, ACCOUNTS.clockSysVar(), STAKER, CUSTODIAN), keys(withLockup));
+    assertEquals(List.of(STAKE, STAKER, CUSTODIAN), keys(withLockup));
     assertEquals(List.of(STAKER, CUSTODIAN), signers(withLockup));
 
     // the new authority travels in the data, not the accounts
@@ -182,7 +212,8 @@ final class SPLClientTests {
     // and the three-arg overload defaults to no lockup authority
     assertEquals(
         keys(CLIENT.authorizeStakeAccount(STAKE, STAKER, NEW_AUTHORITY, StakeAuthorize.staker)),
-        keys(staker));
+        keys(staker)
+    );
   }
 
   @Test
@@ -190,13 +221,13 @@ final class SPLClientTests {
     final var ix = CLIENT.authorizeStakeAccountChecked(
         STAKE, STAKER, NEW_AUTHORITY, CUSTODIAN, StakeAuthorize.withdrawer);
 
-    assertEquals(List.of(STAKE, ACCOUNTS.clockSysVar(), STAKER, NEW_AUTHORITY, CUSTODIAN), keys(ix));
+    assertEquals(List.of(STAKE, STAKER, NEW_AUTHORITY, CUSTODIAN), keys(ix));
     // both the current authority and the incoming one must sign a checked authorize
     assertEquals(List.of(STAKER, NEW_AUTHORITY, CUSTODIAN), signers(ix));
 
     final var noLockup = CLIENT.authorizeStakeAccountChecked(
         STAKE, STAKER, NEW_AUTHORITY, null, StakeAuthorize.withdrawer);
-    assertEquals(List.of(STAKE, ACCOUNTS.clockSysVar(), STAKER, NEW_AUTHORITY), keys(noLockup));
+    assertEquals(List.of(STAKE, STAKER, NEW_AUTHORITY), keys(noLockup));
 
     // the StakeAccount overload picks the authority matching the role being changed
     final var account = stakeAccount(LockUp.NO_LOCKUP);
@@ -225,7 +256,7 @@ final class SPLClientTests {
 
     assertEquals(ACCOUNTS.invokedStakeProgram(), ix.programId());
     // the base key signs, not the derived address
-    assertEquals(List.of(STAKE, base, ACCOUNTS.clockSysVar(), CUSTODIAN), keys(ix));
+    assertEquals(List.of(STAKE, base, CUSTODIAN), keys(ix));
     assertEquals(List.of(base, CUSTODIAN), signers(ix));
 
     final var data = StakeProgram.AuthorizeWithSeedIxData.read(ix);
@@ -238,7 +269,7 @@ final class SPLClientTests {
     // the overload without a lockup authority omits that account
     final var noLockup = CLIENT.authorizeStakeAccountWithSeed(
         STAKE, seeded, NEW_AUTHORITY, StakeAuthorize.staker, PROGRAM_OWNER);
-    assertEquals(List.of(STAKE, base, ACCOUNTS.clockSysVar()), keys(noLockup));
+    assertEquals(List.of(STAKE, base), keys(noLockup));
   }
 
   /// Covered by the same idl-src-gen fix as [#authorizeStakeAccountWithSeed] —
@@ -253,7 +284,7 @@ final class SPLClientTests {
 
     assertEquals(ACCOUNTS.invokedStakeProgram(), ix.programId());
     // the checked variant additionally requires the incoming authority to sign
-    assertEquals(List.of(STAKE, base, ACCOUNTS.clockSysVar(), NEW_AUTHORITY, CUSTODIAN), keys(ix));
+    assertEquals(List.of(STAKE, base, NEW_AUTHORITY, CUSTODIAN), keys(ix));
     assertEquals(List.of(base, NEW_AUTHORITY, CUSTODIAN), signers(ix));
 
     final var data = StakeProgram.AuthorizeCheckedWithSeedIxData.read(ix);
@@ -267,9 +298,7 @@ final class SPLClientTests {
     final var ix = CLIENT.delegateStakeAccount(STAKE, VOTE, STAKER);
 
     assertEquals(ACCOUNTS.invokedStakeProgram(), ix.programId());
-    assertEquals(
-        List.of(STAKE, VOTE, ACCOUNTS.clockSysVar(), ACCOUNTS.stakeHistorySysVar(), ACCOUNTS.stakeConfig(), STAKER),
-        keys(ix));
+    assertEquals(List.of(STAKE, VOTE, STAKER), keys(ix));
     assertEquals(List.of(STAKER), signers(ix));
     assertEquals(List.of(STAKE), writable(ix));
 
@@ -294,9 +323,7 @@ final class SPLClientTests {
     final var destination = stakeAccount(LockUp.NO_LOCKUP);
     final var ix = CLIENT.mergeStakeAccounts(destination, DESTINATION);
 
-    assertEquals(
-        List.of(STAKE, DESTINATION, ACCOUNTS.clockSysVar(), ACCOUNTS.stakeHistorySysVar(), STAKER),
-        keys(ix));
+    assertEquals(List.of(STAKE, DESTINATION, STAKER), keys(ix));
     assertEquals(List.of(STAKER), signers(ix));
     assertEquals(List.of(STAKE, DESTINATION), writable(ix));
   }
@@ -308,9 +335,7 @@ final class SPLClientTests {
   void withdrawStakeAccountSignersDependOnLockup() {
     final var unlocked = CLIENT.withdrawStakeAccount(stakeAccount(LockUp.NO_LOCKUP), RECIPIENT, 1_234L);
 
-    assertEquals(
-        List.of(STAKE, RECIPIENT, ACCOUNTS.clockSysVar(), ACCOUNTS.stakeHistorySysVar(), WITHDRAWER),
-        keys(unlocked));
+    assertEquals(List.of(STAKE, RECIPIENT, WITHDRAWER), keys(unlocked));
     assertEquals(List.of(WITHDRAWER), signers(unlocked));
     assertEquals(List.of(STAKE, RECIPIENT), writable(unlocked));
     assertEquals(1_234L, StakeProgram.WithdrawIxData.read(unlocked).args());
@@ -321,9 +346,7 @@ final class SPLClientTests {
     // a real lockup appends its custodian as an additional signer
     final var locked = CLIENT.withdrawStakeAccount(
         stakeAccount(new LockUp(1_700L, 9L, CUSTODIAN)), RECIPIENT, 1_234L);
-    assertEquals(
-        List.of(STAKE, RECIPIENT, ACCOUNTS.clockSysVar(), ACCOUNTS.stakeHistorySysVar(), WITHDRAWER, CUSTODIAN),
-        keys(locked));
+    assertEquals(List.of(STAKE, RECIPIENT, WITHDRAWER, CUSTODIAN), keys(locked));
     assertEquals(List.of(WITHDRAWER, CUSTODIAN), signers(locked));
   }
 
@@ -331,7 +354,7 @@ final class SPLClientTests {
   void deactivateStakeAccount() {
     final var ix = CLIENT.deactivateStakeAccount(STAKE, STAKER);
 
-    assertEquals(List.of(STAKE, ACCOUNTS.clockSysVar(), STAKER), keys(ix));
+    assertEquals(List.of(STAKE, STAKER), keys(ix));
     assertEquals(List.of(STAKER), signers(ix));
 
     // the StakeAccount overload takes the address and stake authority from the account
@@ -555,10 +578,12 @@ final class SPLClientTests {
     final var otherSeed = PublicKey.createOffCurveAccountWithAsciiSeed(base, "other-seed", PROGRAM_OWNER);
     assertNotEquals(
         seeded.publicKey(),
-        otherSeed.publicKey());
+        otherSeed.publicKey()
+    );
     assertFalse(
         java.util.Arrays.equals(ix.data(), CLIENT.createAccountWithSeed(PAYER, otherSeed, 1_000L, 200L, PROGRAM_OWNER).data()),
-        "the seed must be serialized");
+        "the seed must be serialized"
+    );
   }
 
   @Test
@@ -587,7 +612,8 @@ final class SPLClientTests {
     assertEquals(ata.publicKey(), CLIENT.findATA(STAKER, mint).publicKey());
     assertEquals(
         CLIENT.findATA(STAKER, ACCOUNTS.token2022Program(), mint).publicKey(),
-        CLIENT.find2022ATA(STAKER, mint).publicKey());
+        CLIENT.find2022ATA(STAKER, mint).publicKey()
+    );
   }
 
   @Test
@@ -623,12 +649,14 @@ final class SPLClientTests {
     assertEquals(
         PublicKey.PUBLIC_KEY_LENGTH,
         extend.data().length - CLIENT.extendLookupTable(table.publicKey(), STAKER, PAYER, List.of(VOTE)).data().length,
-        "each additional address must be serialized");
+        "each additional address must be serialized"
+    );
 
     // the two-key overload makes the authority its own funder
     assertEquals(
         List.of(table.publicKey(), STAKER, STAKER, ACCOUNTS.systemProgram()),
-        keys(CLIENT.extendLookupTable(table.publicKey(), STAKER, List.of(VOTE))));
+        keys(CLIENT.extendLookupTable(table.publicKey(), STAKER, List.of(VOTE)))
+    );
 
     final var deactivate = CLIENT.deactivateLookupTable(table.publicKey(), STAKER);
     assertEquals(List.of(table.publicKey(), STAKER), keys(deactivate));
@@ -647,7 +675,8 @@ final class SPLClientTests {
     assertEquals(List.of(table.publicKey(), RECIPIENT), writable(close));
     assertEquals(
         List.of(table.publicKey(), STAKER, STAKER),
-        keys(CLIENT.closeLookupTable(table.publicKey(), STAKER)));
+        keys(CLIENT.closeLookupTable(table.publicKey(), STAKER))
+    );
   }
 
   // ---------------------------------------------------------------------------

@@ -18,7 +18,8 @@ public sealed interface UpdateOracleMappingAndMetadataEntry extends RustEnum per
   UpdateOracleMappingAndMetadataEntry.MappingRefPrice,
   UpdateOracleMappingAndMetadataEntry.MetadataName,
   UpdateOracleMappingAndMetadataEntry.MetadataMaxPriceAgeSlots,
-  UpdateOracleMappingAndMetadataEntry.MetadataGroupIdsBitset {
+  UpdateOracleMappingAndMetadataEntry.MetadataGroupIdsBitset,
+  UpdateOracleMappingAndMetadataEntry.MetadataEagerEvalBps {
 
   static UpdateOracleMappingAndMetadataEntry read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -32,6 +33,7 @@ public sealed interface UpdateOracleMappingAndMetadataEntry extends RustEnum per
       case 5 -> MetadataName.read(_data, i);
       case 6 -> MetadataMaxPriceAgeSlots.read(_data, i);
       case 7 -> MetadataGroupIdsBitset.read(_data, i);
+      case 8 -> MetadataEagerEvalBps.read(_data, i);
       default -> null;
     };
   }
@@ -222,6 +224,18 @@ public sealed interface UpdateOracleMappingAndMetadataEntry extends RustEnum per
     @Override
     public int ordinal() {
       return 7;
+    }
+  }
+
+  record MetadataEagerEvalBps(int val) implements EnumInt16, UpdateOracleMappingAndMetadataEntry {
+
+    public static MetadataEagerEvalBps read(final byte[] _data, int i) {
+      return new MetadataEagerEvalBps(Short.toUnsignedInt(getInt16LE(_data, i)));
+    }
+
+    @Override
+    public int ordinal() {
+      return 8;
     }
   }
 }

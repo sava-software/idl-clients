@@ -4,25 +4,33 @@ package software.sava.idl.clients.kamino.scope.gen.types;
 import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
+import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// @param maxAgePriceSlots: u64
 /// @param groupIdsBitset: u64
+/// @param eagerEvalPriceMoveBps: u16
 /// @param reserved: u64[]
 public record TokenMetadata(byte[] name,
                             long maxAgePriceSlots,
                             long groupIdsBitset,
+                            int eagerEvalPriceMoveBps,
+                            byte[] padding,
                             long[] reserved) implements SerDe {
 
   public static final int BYTES = 168;
   public static final int NAME_LEN = 32;
-  public static final int RESERVED_LEN = 15;
+  public static final int PADDING_LEN = 6;
+  public static final int RESERVED_LEN = 14;
 
   public static final int NAME_OFFSET = 0;
   public static final int MAX_AGE_PRICE_SLOTS_OFFSET = 32;
   public static final int GROUP_IDS_BITSET_OFFSET = 40;
-  public static final int RESERVED_OFFSET = 48;
+  public static final int EAGER_EVAL_PRICE_MOVE_BPS_OFFSET = 48;
+  public static final int PADDING_OFFSET = 50;
+  public static final int RESERVED_OFFSET = 56;
 
   public static TokenMetadata read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -35,11 +43,17 @@ public record TokenMetadata(byte[] name,
     i += 8;
     final var groupIdsBitset = getInt64LE(_data, i);
     i += 8;
-    final var reserved = new long[15];
+    final var eagerEvalPriceMoveBps = Short.toUnsignedInt(getInt16LE(_data, i));
+    i += 2;
+    final var padding = new byte[6];
+    i += SerDeUtil.readArray(padding, _data, i);
+    final var reserved = new long[14];
     SerDeUtil.readArray(reserved, _data, i);
     return new TokenMetadata(name,
                              maxAgePriceSlots,
                              groupIdsBitset,
+                             eagerEvalPriceMoveBps,
+                             padding,
                              reserved);
   }
 
@@ -51,7 +65,10 @@ public record TokenMetadata(byte[] name,
     i += 8;
     putInt64LE(_data, i, groupIdsBitset);
     i += 8;
-    i += SerDeUtil.writeArrayChecked(reserved, 15, _data, i);
+    putInt16LE(_data, i, eagerEvalPriceMoveBps);
+    i += 2;
+    i += SerDeUtil.writeArrayChecked(padding, 6, _data, i);
+    i += SerDeUtil.writeArrayChecked(reserved, 14, _data, i);
     return i - _offset;
   }
 

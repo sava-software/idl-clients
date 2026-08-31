@@ -176,7 +176,6 @@ record SPLClientImpl(SolanaAccounts solanaAccounts) implements SPLClient {
                                             final LockUp lockUp) {
     return StakeProgram.initialize(
         solanaAccounts.invokedStakeProgram(),
-        solanaAccounts,
         unInitializedStakeAccount,
         new Authorized(staker, withdrawer),
         toLockup(lockUp)
@@ -189,7 +188,6 @@ record SPLClientImpl(SolanaAccounts solanaAccounts) implements SPLClient {
                                                    final PublicKey withdrawer) {
     return StakeProgram.initializeChecked(
         solanaAccounts.invokedStakeProgram(),
-        solanaAccounts,
         unInitializedStakeAccount,
         staker,
         withdrawer
@@ -204,7 +202,6 @@ record SPLClientImpl(SolanaAccounts solanaAccounts) implements SPLClient {
                                            final StakeAuthorize stakeAuthorize) {
     return StakeProgram.authorize(
         solanaAccounts.invokedStakeProgram(),
-        solanaAccounts,
         stakeAccount,
         stakeOrWithdrawAuthority,
         lockupAuthority,
@@ -221,7 +218,6 @@ record SPLClientImpl(SolanaAccounts solanaAccounts) implements SPLClient {
                                                   final StakeAuthorize stakeAuthorize) {
     return StakeProgram.authorizeChecked(
         solanaAccounts.invokedStakeProgram(),
-        solanaAccounts,
         stakeAccount,
         stakeOrWithdrawAuthority,
         newStakeOrWithdrawAuthority,
@@ -240,7 +236,6 @@ record SPLClientImpl(SolanaAccounts solanaAccounts) implements SPLClient {
 
     return StakeProgram.authorizeWithSeed(
         solanaAccounts.invokedStakeProgram(),
-        solanaAccounts,
         stakeAccount,
         baseKeyOrWithdrawAuthority.baseKey(),
         lockupAuthority,
@@ -260,7 +255,6 @@ record SPLClientImpl(SolanaAccounts solanaAccounts) implements SPLClient {
                                                           final PublicKey authorityOwner) {
     return StakeProgram.authorizeCheckedWithSeed(
         solanaAccounts.invokedStakeProgram(),
-        solanaAccounts,
         stakeAccount,
         baseKeyOrWithdrawAuthority.baseKey(),
         stakeOrWithdrawAuthority,
@@ -277,10 +271,8 @@ record SPLClientImpl(SolanaAccounts solanaAccounts) implements SPLClient {
                                           final PublicKey stakeAuthority) {
     return StakeProgram.delegateStake(
         solanaAccounts.invokedStakeProgram(),
-        solanaAccounts,
         initializedStakeAccount,
         validatorVoteAccount,
-        solanaAccounts.stakeConfig(),
         stakeAuthority
     );
   }
@@ -302,7 +294,6 @@ record SPLClientImpl(SolanaAccounts solanaAccounts) implements SPLClient {
   public Instruction mergeStakeAccounts(final StakeAccount destinationStakeAccount, final PublicKey srcStakeAccount) {
     return StakeProgram.merge(
         solanaAccounts.invokedStakeProgram(),
-        solanaAccounts,
         destinationStakeAccount.address(),
         srcStakeAccount,
         destinationStakeAccount.stakeAuthority()
@@ -317,7 +308,6 @@ record SPLClientImpl(SolanaAccounts solanaAccounts) implements SPLClient {
     final PublicKey lockupAuthority = (lockup == null || lockup.equals(LockUp.NO_LOCKUP)) ? null : lockup.custodian();
     return StakeProgram.withdraw(
         solanaAccounts.invokedStakeProgram(),
-        solanaAccounts,
         stakeAccount.address(),
         recipient,
         stakeAccount.withdrawAuthority(),
@@ -330,7 +320,6 @@ record SPLClientImpl(SolanaAccounts solanaAccounts) implements SPLClient {
   public Instruction deactivateStakeAccount(final PublicKey delegatedStakeAccount, final PublicKey stakeAuthority) {
     return StakeProgram.deactivate(
         solanaAccounts.invokedStakeProgram(),
-        solanaAccounts,
         delegatedStakeAccount,
         stakeAuthority
     );

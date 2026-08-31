@@ -2,7 +2,7 @@
   "address": "HFn8GnPADiny6XqUoWE8uRPPxb29ikn4yTuPa9MF2fWJ",
   "metadata": {
     "name": "scope",
-    "version": "0.40.0",
+    "version": "0.41.0",
     "spec": "0.1.0"
   },
   "instructions": [
@@ -483,7 +483,62 @@
       "args": []
     },
     {
+      "name": "resume_suspended_price",
+      "discriminator": [
+        78,
+        87,
+        182,
+        104,
+        143,
+        135,
+        5,
+        227
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "signer": true
+        },
+        {
+          "name": "configuration"
+        },
+        {
+          "name": "oracle_prices",
+          "writable": true
+        },
+        {
+          "name": "oracle_mappings"
+        },
+        {
+          "name": "tokens_metadata"
+        }
+      ],
+      "args": [
+        {
+          "name": "token",
+          "type": "u16"
+        },
+        {
+          "name": "feed_name",
+          "type": "string"
+        },
+        {
+          "name": "expected_price_data",
+          "type": {
+            "array": [
+              "u8",
+              24
+            ]
+          }
+        }
+      ]
+    },
+    {
       "name": "resume_chainlinkx_price",
+      "docs": [
+        "Deprecated: use `resume_suspended_price` instead. This one names no price data, so it",
+        "cannot be tied to the suspension it approves, and it now errors instead of resuming."
+      ],
       "discriminator": [
         136,
         48,
@@ -1096,6 +1151,26 @@
       "code": 6076,
       "name": "KlendReserveDeprecated",
       "msg": "Klend reserve version does not match the expected program version (deprecated reserve)"
+    },
+    {
+      "code": 6077,
+      "name": "PriceNotSuspended",
+      "msg": "Trying to resume a price that is not suspended"
+    },
+    {
+      "code": 6078,
+      "name": "ResumeStateMismatch",
+      "msg": "The resume does not name the price data the entry holds"
+    },
+    {
+      "code": 6079,
+      "name": "DeprecatedInstruction",
+      "msg": "This instruction is deprecated, use its replacement"
+    },
+    {
+      "code": 6080,
+      "name": "EagerEvalBpsOutOfRange",
+      "msg": "Eager eval threshold (bps) is greater than FULL_BPS"
     }
   ],
   "types": [
@@ -1750,6 +1825,50 @@
       }
     },
     {
+      "name": "Token2022MultiplierStoredData",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "suspended",
+            "type": "bool"
+          },
+          {
+            "name": "approved_multiplier_bits",
+            "docs": [
+              "Raw bits of the multiplier the entry may price now. `None` on an entry that has priced",
+              "nothing yet, which takes whatever the mint holds on its first refresh."
+            ],
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "approved_pending_bits",
+            "docs": [
+              "Raw bits of the scheduled multiplier a resume covered in advance, priceable once the mint's",
+              "schedule flips to it. Only a blackout suspension records one."
+            ],
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "suspension_activation_timestamp",
+            "docs": [
+              "The mint's switch timestamp when the entry suspended. `None` on an entry that is not",
+              "suspended. The mint stores an `i64`, but this is a `u32` because the whole record has to",
+              "fit the entry's 24 bytes: a switch announced past 2106 cannot be recorded, and the refresh",
+              "rejects it."
+            ],
+            "type": {
+              "option": "u32"
+            }
+          }
+        ]
+      }
+    },
+    {
       "name": "Price",
       "type": {
         "kind": "struct",
@@ -1914,11 +2033,24 @@
             "type": "u64"
           },
           {
+            "name": "eager_eval_price_move_bps",
+            "type": "u16"
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                6
+              ]
+            }
+          },
+          {
             "name": "reserved",
             "type": {
               "array": [
                 "u64",
-                15
+                14
               ]
             }
           }
@@ -2011,6 +2143,12 @@
             "name": "MetadataGroupIdsBitset",
             "fields": [
               "u64"
+            ]
+          },
+          {
+            "name": "MetadataEagerEvalBps",
+            "fields": [
+              "u16"
             ]
           }
         ]
@@ -2135,6 +2273,38 @@
           },
           {
             "name": "TokenB"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PriceRefreshOutcome",
+      "docs": [
+        "Outcome of computing an entry's price."
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Updated",
+            "fields": [
+              {
+                "defined": {
+                  "name": "DatedPrice"
+                }
+              }
+            ]
+          },
+          {
+            "name": "Suspended",
+            "fields": [
+              {
+                "array": [
+                  "u8",
+                  24
+                ]
+              }
+            ]
           }
         ]
       }
@@ -2336,6 +2506,9 @@
           },
           {
             "name": "KlendCTokenExchangeRate"
+          },
+          {
+            "name": "Token2022Multiplier"
           }
         ]
       }

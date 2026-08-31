@@ -34,8 +34,11 @@ Kamino Lend: the vcs IDL at https://cdn.jsdelivr.net/npm/@kamino-finance/klend-s
   types changed (31): BorrowOrder, BorrowOrderConfigArgs, ElevationGroup, ExchangeRateWithDecimals, FeeCalculation, FixedTermBorrowRolloverConfig, GlobalConfig, LastUpdate, LendingMarket, Obligation, ObligationCollateral, ObligationLiquidity, ObligationOrder, PriceHeuristic, ProgressCallbackType, PythConfiguration, ReferrerTokenState, Reserve, ReserveCollateral, ReserveConfig, ReserveConfigCustomizationArgs, ReserveFees, ReserveLiquidity, ScopeConfiguration, SwitchboardConfiguration, TokenInfo, UpdateObligationConfigMode, UserMetadata, WithdrawalCaps, WithdrawQueue, WithdrawTicket
 
 Kamino Scope: the vcs IDL at github:Kamino-Finance/scope-sdk@master/src/idl/scope.json differs from the deployed idl.json
-  instructions changed (4): refresh_chainlink_price, refresh_price_list, refresh_pyth_lazer_price, update_mapping_and_metadata
-  types changed (14): ChainlinkStandardPriceData, ChainlinkXPriceData, ConditionalData, EmaTwap, LiqPool, MintsToScopeChains, PythLazerData, PythLazerEmaRefData, PythLazerStoredData, ReportDataV9RipcordFlag, ScopeChainError, StakeSystem, State, ValidatorSystem
+  instructions removed (1): resume_suspended_price
+  instructions changed (5): refresh_chainlink_price, refresh_price_list, refresh_pyth_lazer_price, resume_chainlinkx_price, update_mapping_and_metadata
+  types removed (2): PriceRefreshOutcome, Token2022MultiplierStoredData
+  types changed (17): ChainlinkStandardPriceData, ChainlinkXPriceData, ConditionalData, EmaTwap, LiqPool, MintsToScopeChains, OracleType, PythLazerData, PythLazerEmaRefData, PythLazerStoredData, ReportDataV9RipcordFlag, ScopeChainError, StakeSystem, State, TokenMetadata, UpdateOracleMappingAndMetadataEntry, ValidatorSystem
+  errors removed (4): DeprecatedInstruction, EagerEvalBpsOutOfRange, PriceNotSuspended, ResumeStateMismatch
 
 Kamino Vaults: the vcs IDL at https://cdn.jsdelivr.net/npm/@kamino-finance/klend-sdk@latest/src/idl/kvault.json differs from the deployed idl.json
   instructions changed (5): invest, invest_with_max_amount, update_reserve_allocation, update_reserve_allocation_v2, withdraw_pending_fees
