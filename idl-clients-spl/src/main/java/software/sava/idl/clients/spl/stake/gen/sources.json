@@ -1,11 +1,11 @@
 {
   "program": "Stake11111111111111111111111111111111111111",
   "deployed": "vcs",
-  "lastDeploySlot": 427248000,
+  "lastDeploySlot": 443232000,
   "programDataState": "upgradeable",
   "programDataStateSlot": 440077852,
-  "programDataPayloadSha256": "c9cba7f3d9fe0fac1f32e7a5e012284104a25d27ec97d6eb6d99a3afcd2352a8",
-  "programDataPayloadLength": 202280,
+  "programDataPayloadSha256": "3d2d39c596ce8be2d47816b4ee5db9fc759d80fde54b08c930ad0b6daed64c2c",
+  "programDataPayloadLength": 212056,
   "channels": {
     "vcs": {
       "origin": "https://raw.githubusercontent.com/solana-program/stake/refs/heads/main/idl.json",

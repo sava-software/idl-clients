@@ -7,18 +7,6 @@ nobody took. The standing disagreements live beside this file, at its name with 
 before the extension. Ordered by program and channel, and carrying no timestamp, so
 consecutive runs are worth diffing against each other.
 
-== Movement (4) ==
+== Movement (1) ==
 
-Jupiter Swap: the program was redeployed at slot 443139720, up from 441316428, and no IDL channel moved with it; the stored program image changed: 2892224 payload bytes, was 2892224 — review required
-
-Kamino Scope: the anchor IDL at AWUuZ6o4ZJX2fDqjUqDaA1pfHenZ6XEbmuTamMgM911E moved since the last generation: instructions +1 ~1, types +2 ~3, errors +4; version 0.40.0 -> 0.41.0
-  instructions added (1): resume_suspended_price
-  instructions changed (1): resume_chainlinkx_price
-  types added (2): PriceRefreshOutcome, Token2022MultiplierStoredData
-  types changed (3): every one type changed
-  errors added (4): DeprecatedInstruction, EagerEvalBpsOutOfRange, PriceNotSuspended, ResumeStateMismatch
-
-Kamino Scope: the program was redeployed at slot 443102298, up from 439877805; the stored program image changed: 10485715 payload bytes, was 10485715 — review required
-
-Stake: the vcs IDL at https://raw.githubusercontent.com/solana-program/stake/refs/heads/main/idl.json moved since the last generation: instructions ~10
-  instructions changed (10): authorize, authorizeChecked, authorizeCheckedWithSeed, authorizeWithSeed, deactivate, delegateStake, initialize, initializeChecked, merge, withdraw
+Stake: the program was redeployed at slot 443232000, up from 427248000, and no IDL channel moved with it; the stored program image changed: 212056 payload bytes, was 202280 — review required
