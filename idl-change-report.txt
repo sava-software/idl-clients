@@ -7,6 +7,6 @@ nobody took. The standing disagreements live beside this file, at its name with 
 before the extension. Ordered by program and channel, and carrying no timestamp, so
 consecutive runs are worth diffing against each other.
 
-== Movement (0) ==
+== Movement (1) ==
 
-Nothing moved since the last generation.
+Marginfi V2: the program was redeployed at slot 444313123, up from 441655269, and no IDL channel moved with it (the anchor IDL was last written at slot 411882076, before the previous deploy; the metadata IDL was last written at slot 441913658, between the previous deploy and this one; nothing has been written for this deploy); the stored program image changed: 10485715 payload bytes, was 10485715 — review required

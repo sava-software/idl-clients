@@ -1,10 +1,10 @@
 {
   "program": "MFv2hWf31Z9kbCa1snEPYctwafyhdvnV7FZnsebVacA",
   "deployed": "metadata",
-  "lastDeploySlot": 441655269,
+  "lastDeploySlot": 444313123,
   "programDataState": "upgradeable",
   "programDataStateSlot": 440077852,
-  "programDataPayloadSha256": "625c33efa445faff687deaea4a3ac8cd89b49b86c2cd79b9651c6ecf4c1066bf",
+  "programDataPayloadSha256": "aabbe1d58ec5d853fc6093ad3510a832e1a96e488a96d741c0b67b52926275bf",
   "programDataPayloadLength": 10485715,
   "channels": {
     "anchor": {
