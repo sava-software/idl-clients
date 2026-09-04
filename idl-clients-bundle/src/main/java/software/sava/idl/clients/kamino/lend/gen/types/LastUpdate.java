@@ -4,7 +4,9 @@ package software.sava.idl.clients.kamino.lend.gen.types;
 import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Last update state
@@ -12,18 +14,23 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param slot: u64 Last slot when updated
 /// @param stale: u8 True when marked stale, false when slot updated
 /// @param priceStatus: u8 Status of the prices used to calculate the last update
+/// @param timestamp: u32 Wall-clock timestamp (seconds) of the last update.
+///
+///                  Note: `u32` is used here only because of space constraints.
 public record LastUpdate(long slot,
                          int stale,
                          int priceStatus,
-                         byte[] placeholder) implements SerDe {
+                         byte[] alignmentPadding,
+                         long timestamp) implements SerDe {
 
   public static final int BYTES = 16;
-  public static final int PLACEHOLDER_LEN = 6;
+  public static final int ALIGNMENT_PADDING_LEN = 2;
 
   public static final int SLOT_OFFSET = 0;
   public static final int STALE_OFFSET = 8;
   public static final int PRICE_STATUS_OFFSET = 9;
-  public static final int PLACEHOLDER_OFFSET = 10;
+  public static final int ALIGNMENT_PADDING_OFFSET = 10;
+  public static final int TIMESTAMP_OFFSET = 12;
 
   public static LastUpdate read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -36,12 +43,14 @@ public record LastUpdate(long slot,
     ++i;
     final var priceStatus = _data[i] & 0xFF;
     ++i;
-    final var placeholder = new byte[6];
-    SerDeUtil.readArray(placeholder, _data, i);
+    final var alignmentPadding = new byte[2];
+    i += SerDeUtil.readArray(alignmentPadding, _data, i);
+    final var timestamp = Integer.toUnsignedLong(getInt32LE(_data, i));
     return new LastUpdate(slot,
                           stale,
                           priceStatus,
-                          placeholder);
+                          alignmentPadding,
+                          timestamp);
   }
 
   @Override
@@ -53,7 +62,9 @@ public record LastUpdate(long slot,
     ++i;
     _data[i] = (byte) priceStatus;
     ++i;
-    i += SerDeUtil.writeArrayChecked(placeholder, 6, _data, i);
+    i += SerDeUtil.writeArrayChecked(alignmentPadding, 2, _data, i);
+    putInt32LE(_data, i, (int) timestamp);
+    i += 4;
     return i - _offset;
   }
 

@@ -71,7 +71,18 @@ public sealed interface FarmsError extends ProgramError permits
     FarmsError.InvalidDelegatedAuthorityUpdate,
     FarmsError.UserTokenAccountOwnerMismatch,
     FarmsError.HarvestingNotPermissionlessPayerMismatch,
-    FarmsError.CurrentRewardIssuedUnclaimedMismatch {
+    FarmsError.RewardsIssuedCumulativeMismatch,
+    FarmsError.CannotCloseUserStateStakeNonZero,
+    FarmsError.CannotCloseUserStatePendingUnstakes,
+    FarmsError.CannotCloseUserStatePendingDeposits,
+    FarmsError.CannotCloseUserStateUnharvestedRewards,
+    FarmsError.CannotCloseUserStateSignerNotOwner,
+    FarmsError.CannotCloseUserStateDelegatedSignerNotDelegateAuthority,
+    FarmsError.CannotCloseUserStateRentReceiverNotOwner,
+    FarmsError.CannotCloseUserStateDelegatedRentReceiverNotAdmin,
+    FarmsError.UserRewardTokenAccountMustBeAta,
+    FarmsError.RewardsIssuedCumulativeAtMax,
+    FarmsError.UserStateIdMismatch {
 
   static FarmsError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -142,7 +153,18 @@ public sealed interface FarmsError extends ProgramError permits
       case 6064 -> InvalidDelegatedAuthorityUpdate.INSTANCE;
       case 6065 -> UserTokenAccountOwnerMismatch.INSTANCE;
       case 6066 -> HarvestingNotPermissionlessPayerMismatch.INSTANCE;
-      case 6067 -> CurrentRewardIssuedUnclaimedMismatch.INSTANCE;
+      case 6067 -> RewardsIssuedCumulativeMismatch.INSTANCE;
+      case 6068 -> CannotCloseUserStateStakeNonZero.INSTANCE;
+      case 6069 -> CannotCloseUserStatePendingUnstakes.INSTANCE;
+      case 6070 -> CannotCloseUserStatePendingDeposits.INSTANCE;
+      case 6071 -> CannotCloseUserStateUnharvestedRewards.INSTANCE;
+      case 6072 -> CannotCloseUserStateSignerNotOwner.INSTANCE;
+      case 6073 -> CannotCloseUserStateDelegatedSignerNotDelegateAuthority.INSTANCE;
+      case 6074 -> CannotCloseUserStateRentReceiverNotOwner.INSTANCE;
+      case 6075 -> CannotCloseUserStateDelegatedRentReceiverNotAdmin.INSTANCE;
+      case 6076 -> UserRewardTokenAccountMustBeAta.INSTANCE;
+      case 6077 -> RewardsIssuedCumulativeAtMax.INSTANCE;
+      case 6078 -> UserStateIdMismatch.INSTANCE;
       default -> null;
     };
   }
@@ -616,10 +638,87 @@ public sealed interface FarmsError extends ProgramError permits
     );
   }
 
-  record CurrentRewardIssuedUnclaimedMismatch(int code, String msg) implements FarmsError {
+  record RewardsIssuedCumulativeMismatch(int code, String msg) implements FarmsError {
 
-    public static final CurrentRewardIssuedUnclaimedMismatch INSTANCE = new CurrentRewardIssuedUnclaimedMismatch(
-        6067, "Current reward issued unclaimed does not match expected value"
+    public static final RewardsIssuedCumulativeMismatch INSTANCE = new RewardsIssuedCumulativeMismatch(
+        6067, "Rewards issued cumulative does not match expected value"
+    );
+  }
+
+  record CannotCloseUserStateStakeNonZero(int code, String msg) implements FarmsError {
+
+    public static final CannotCloseUserStateStakeNonZero INSTANCE = new CannotCloseUserStateStakeNonZero(
+        6068, "Cannot close user state because staked amount is non-zero"
+    );
+  }
+
+  record CannotCloseUserStatePendingUnstakes(int code, String msg) implements FarmsError {
+
+    public static final CannotCloseUserStatePendingUnstakes INSTANCE = new CannotCloseUserStatePendingUnstakes(
+        6069, "Cannot close user state because there are pending unstake requests"
+    );
+  }
+
+  record CannotCloseUserStatePendingDeposits(int code, String msg) implements FarmsError {
+
+    public static final CannotCloseUserStatePendingDeposits INSTANCE = new CannotCloseUserStatePendingDeposits(
+        6070, "Cannot close user state because there are pending deposit requests"
+    );
+  }
+
+  record CannotCloseUserStateUnharvestedRewards(int code, String msg) implements FarmsError {
+
+    public static final CannotCloseUserStateUnharvestedRewards INSTANCE = new CannotCloseUserStateUnharvestedRewards(
+        6071, "Cannot close user state because there are unharvested rewards"
+    );
+  }
+
+  record CannotCloseUserStateSignerNotOwner(int code, String msg) implements FarmsError {
+
+    public static final CannotCloseUserStateSignerNotOwner INSTANCE = new CannotCloseUserStateSignerNotOwner(
+        6072, "Cannot close user state because signer is not the owner"
+    );
+  }
+
+  record CannotCloseUserStateDelegatedSignerNotDelegateAuthority(int code, String msg) implements FarmsError {
+
+    public static final CannotCloseUserStateDelegatedSignerNotDelegateAuthority INSTANCE = new CannotCloseUserStateDelegatedSignerNotDelegateAuthority(
+        6073, "Cannot close user state (delegated) because signer is not the delegate authority"
+    );
+  }
+
+  record CannotCloseUserStateRentReceiverNotOwner(int code, String msg) implements FarmsError {
+
+    public static final CannotCloseUserStateRentReceiverNotOwner INSTANCE = new CannotCloseUserStateRentReceiverNotOwner(
+        6074, "Cannot close user state because rent receiver is not the owner"
+    );
+  }
+
+  record CannotCloseUserStateDelegatedRentReceiverNotAdmin(int code, String msg) implements FarmsError {
+
+    public static final CannotCloseUserStateDelegatedRentReceiverNotAdmin INSTANCE = new CannotCloseUserStateDelegatedRentReceiverNotAdmin(
+        6075, "Cannot close user state (delegated) because rent receiver is not the admin"
+    );
+  }
+
+  record UserRewardTokenAccountMustBeAta(int code, String msg) implements FarmsError {
+
+    public static final UserRewardTokenAccountMustBeAta INSTANCE = new UserRewardTokenAccountMustBeAta(
+        6076, "User reward token account must be an ATA when payer is not the owner"
+    );
+  }
+
+  record RewardsIssuedCumulativeAtMax(int code, String msg) implements FarmsError {
+
+    public static final RewardsIssuedCumulativeAtMax INSTANCE = new RewardsIssuedCumulativeAtMax(
+        6077, "Cannot reward user because rewards_issued_cumulative has reached maximum value"
+    );
+  }
+
+  record UserStateIdMismatch(int code, String msg) implements FarmsError {
+
+    public static final UserStateIdMismatch INSTANCE = new UserStateIdMismatch(
+        6078, "User state user id does not match expected value"
     );
   }
 }

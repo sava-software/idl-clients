@@ -188,10 +188,18 @@
       "module": "bundle",
       "package": "kamino.lend",
       "program": "KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
-      "generateNext": true,
       "vcs": {
-        "url": "https://cdn.jsdelivr.net/npm/@kamino-finance/klend-sdk@10.1.0/src/idl/klend.json"
+        "repo": "Kamino-Finance/klend-sdk",
+        "path": "src/idl/klend.json",
+        "ref": "master"
       }
+    },
+    {
+      "name": "Kamino Lend Staging",
+      "source": "idl-clients-bundle",
+      "module": "bundle",
+      "package": "kamino.staging.lend",
+      "program": "SLendK7ySfcEzyaFqy93gDnD3RtrpXJcnRwb6zFHJSh"
     },
     {
       "name": "Kamino Scope",
@@ -217,9 +225,16 @@
       "typeRefs": [
         {
           "refProgram": "KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
-          "srcMismatch": "KEEP_LOCAL",
+          "srcMismatch": "WARN_KEEP_LOCAL",
           "matchOnTypeName": true,
-          "explicitRules": []
+          "excludeTypes": [
+            "GlobalConfig",
+            "UpdateGlobalConfigMode"
+          ],
+          "explicitRules": [
+            {"refType": "LastUpdate", "localType": "LastUpdate", "srcMismatch": "WARN_KEEP_REF"},
+            {"refType": "ReserveConfig", "localType": "ReserveConfig", "srcMismatch": "WARN_KEEP_REF"}
+          ]
         },
         {
           "refProgram": "HFn8GnPADiny6XqUoWE8uRPPxb29ikn4yTuPa9MF2fWJ",

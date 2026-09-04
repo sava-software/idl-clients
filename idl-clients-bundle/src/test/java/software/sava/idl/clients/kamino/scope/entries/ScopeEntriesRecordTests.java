@@ -4,7 +4,11 @@ import org.junit.jupiter.api.Test;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.encoding.ByteUtil;
 import software.sava.idl.clients.kamino.KaminoAccounts;
+import software.sava.idl.clients.kamino.lend.gen.types.Reserve;
+import software.sava.idl.clients.kamino.lend.gen.types.ReserveConfig;
+import software.sava.idl.clients.kamino.lend.gen.types.ReserveLiquidity;
 import software.sava.idl.clients.kamino.lend.gen.types.ScopeConfiguration;
+import software.sava.idl.clients.kamino.lend.gen.types.TokenInfo;
 import software.sava.idl.clients.kamino.scope.gen.types.DatedPrice;
 import software.sava.idl.clients.kamino.scope.gen.types.OracleMappings;
 import software.sava.idl.clients.kamino.scope.gen.types.OraclePrices;
@@ -212,17 +216,15 @@ final class ScopeEntriesRecordTests {
 
   /// Only the two paths the overload reads are populated; a generated record
   /// accepts null/zero for everything else.
-  private static software.sava.idl.clients.kamino.lend.gen.types.Reserve reserve(
-      final PublicKey mint,
-      final ScopeConfiguration scopeConfiguration) {
-    final var liquidity = new software.sava.idl.clients.kamino.lend.gen.types.ReserveLiquidity(
+  private static Reserve reserve(final PublicKey mint, final ScopeConfiguration scopeConfiguration) {
+    final var liquidity = new ReserveLiquidity(
         mint, null, null, 0, null, null, 0, 0, 0, 0, null, null, null, null, null, null, 0, null, null);
-    final var tokenInfo = new software.sava.idl.clients.kamino.lend.gen.types.TokenInfo(
+    final var tokenInfo = new TokenInfo(
         null, null, 0, 0, 0, scopeConfiguration, null, null, 0, null, null);
-    final var config = new software.sava.idl.clients.kamino.lend.gen.types.ReserveConfig(
-        0, 0, 0, 0, 0, 0, 0, null, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, null, null, 0, 0, 0,
+    final var config = new ReserveConfig(
+        0, 0, 0, 0, 0, 0, 0, 0, null, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, null, null, 0, 0, 0,
         tokenInfo, null, null, null, 0, 0, 0, 0, 0, null, 0, 0, 0, 0, 0);
-    return new software.sava.idl.clients.kamino.lend.gen.types.Reserve(
+    return new Reserve(
         null, null, 0, null, null, null, null, liquidity, null, null, null, config, null, 0, null, null, null);
   }
 

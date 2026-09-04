@@ -7,6 +7,22 @@ nobody took. The standing disagreements live beside this file, at its name with 
 before the extension. Ordered by program and channel, and carrying no timestamp, so
 consecutive runs are worth diffing against each other.
 
-== Movement (1) ==
+== Movement (6) ==
 
-Stake: the program was redeployed at slot 443232000, up from 427248000, and no IDL channel moved with it; the stored program image changed: 212056 payload bytes, was 202280 — review required
+Kamino Farms: the anchor IDL at Ey7rZRLbKdhDqcUuSpAkApk3S3dK7RHoKPJST1RRVJAp moved since the last generation: instructions +1 ~1, errors +12 -1; version 1.6.5 -> 1.7.0
+  instructions added (1): close_empty_user_state
+  instructions changed (1): reward_user_once
+  errors added (12): CannotCloseUserStateDelegatedRentReceiverNotAdmin, CannotCloseUserStateDelegatedSignerNotDelegateAuthority, CannotCloseUserStatePendingDeposits, CannotCloseUserStatePendingUnstakes, CannotCloseUserStateRentReceiverNotOwner, CannotCloseUserStateSignerNotOwner, CannotCloseUserStateStakeNonZero, CannotCloseUserStateUnharvestedRewards, RewardsIssuedCumulativeAtMax, RewardsIssuedCumulativeMismatch, UserRewardTokenAccountMustBeAta, UserStateIdMismatch
+  errors removed (1): CurrentRewardIssuedUnclaimedMismatch
+
+Kamino Farms: the program was redeployed at slot 444035168, up from 379693642; the stored program image changed: 10485715 payload bytes, was 10485715 — review required
+
+Kamino Lend: the anchor IDL at 8qLKwp1fk8WyqmzarkuMeZEX3AzL4VDSmA2UZTKT2aCJ moved since the last generation: types ~5; version 1.24.0 -> 1.25.0
+  types changed (5): every one type changed
+
+Kamino Lend: the vcs IDL at github:Kamino-Finance/klend-sdk@master/src/idl/klend.json moved since the last generation: types ~3; version 1.24.0 -> 1.25.0
+  types changed (3): every one type changed
+
+Phoenix Perpetuals Dev: the program was redeployed at slot 443800559, up from 440130597, and no IDL channel moved with it (the metadata IDL was last written at slot 420691791, before the previous deploy); the stored program image changed: 3197584 payload bytes, was 3162136 — review required
+
+Phoenix Perpetuals: the program was redeployed at slot 444043696, up from 440735150, and no IDL channel moved with it (the metadata IDL was last written at slot 424405036, before the previous deploy); the stored program image changed: 3197584 payload bytes, was 3162136 — review required

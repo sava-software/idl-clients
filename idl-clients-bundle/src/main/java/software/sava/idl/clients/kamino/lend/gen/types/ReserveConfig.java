@@ -25,6 +25,11 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///                      but scoped to a single reserve. Also cascades to obligations using this reserve as
 ///                      collateral or debt, blocking borrows and withdrawals on other reserves but still
 ///                      allowing repays and deposits.
+/// @param interestRateBasis: u8 Selects how the time-related settings are interpreted:
+///                          - Self::borrow_rate_curve + Self::host_fixed_interest_rate_bps (when accruing interest),
+///                          - Self::rewards_amount_per_accrual_unit (when accruing rewards).
+///
+///                          See the docs of the actual type, InterestRateBasis.
 /// @param reserved1 Past reserved space - feel free to reuse.
 /// @param protocolOrderExecutionFeePct: u8 Cut of the order execution bonus that the protocol receives, as a percentage
 /// @param protocolTakeRatePct: u8 Protocol take rate is the amount borrowed interest protocol receives, as a percentage
@@ -79,15 +84,17 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///
 ///                        Note: this feature is independent of Self::debt_maturity_timestamp - the liquidation
 ///                        mechanism is based on the ObligationLiquidity::last_borrowed_at_timestamp.
-/// @param rewardsAmountPerSlot: u64 Rewards distributed per slot to depositors. Drained from
-///                             ReserveLiquidity::rewards_amount_available into
-///                             ReserveLiquidity::total_available_amount at each refresh, capped by the
-///                             market-level LendingMarket::reserve_rewards_max_apr_bps. `0` disables.
+/// @param rewardsAmountPerAccrualUnit: u64 Rewards distributed per accrual unit to depositors. The unit follows
+///                                    Self::interest_rate_basis: per slot for `Legacy`, per second for `TrueApr` (i.e. a
+///                                    basis migration must rescale this value by the real slot rate). Drained from
+///                                    ReserveLiquidity::rewards_amount_available into
+///                                    ReserveLiquidity::total_available_amount at each refresh, capped by the
+///                                    market-level LendingMarket::reserve_rewards_max_apr_bps. `0` disables.
 ///
-///                             **Note:** because rewards inflate `total_available_amount`, a non-zero RPS on a
-///                             reserve with Self::autodeleverage_enabled and a finite Self::deposit_limit
-///                             will eventually cross the cap and arm the autodeleverage countdown. Size
-///                             `deposit_limit` and RPS together.
+///                                    **Note:** because rewards inflate `total_available_amount`, a non-zero RPS on a
+///                                    reserve with Self::autodeleverage_enabled and a finite Self::deposit_limit
+///                                    will eventually cross the cap and arm the autodeleverage countdown. Size
+///                                    `deposit_limit` and RPS together.
 /// @param permissionedOps: u64 Bitmask of PermissionedOps gated by the parent market's `permissioning_authority`
 ///                        when this reserve is the operation's target. `0` = no operation is restricted at the
 ///                        reserve level. Use Reserve::get_permissioned_ops for a typed view.
@@ -98,6 +105,7 @@ public record ReserveConfig(int status,
                             int blockCtokenUsage,
                             int earlyRepayRemainingInterestPct,
                             int emergencyMode,
+                            int interestRateBasis,
                             byte[] reserved1,
                             int protocolOrderExecutionFeePct,
                             int protocolTakeRatePct,
@@ -127,11 +135,11 @@ public record ReserveConfig(int status,
                             long deleveragingBonusIncreaseBpsPerDay,
                             long debtMaturityTimestamp,
                             long debtTermSeconds,
-                            long rewardsAmountPerSlot,
+                            long rewardsAmountPerAccrualUnit,
                             long permissionedOps) implements SerDe {
 
   public static final int BYTES = 952;
-  public static final int RESERVED_1_LEN = 4;
+  public static final int RESERVED_1_LEN = 3;
   public static final int ELEVATION_GROUPS_LEN = 20;
   public static final int BORROW_LIMIT_AGAINST_THIS_COLLATERAL_IN_ELEVATION_GROUP_LEN = 32;
 
@@ -142,7 +150,8 @@ public record ReserveConfig(int status,
   public static final int BLOCK_CTOKEN_USAGE_OFFSET = 6;
   public static final int EARLY_REPAY_REMAINING_INTEREST_PCT_OFFSET = 7;
   public static final int EMERGENCY_MODE_OFFSET = 8;
-  public static final int RESERVED_1_OFFSET = 9;
+  public static final int INTEREST_RATE_BASIS_OFFSET = 9;
+  public static final int RESERVED_1_OFFSET = 10;
   public static final int PROTOCOL_ORDER_EXECUTION_FEE_PCT_OFFSET = 13;
   public static final int PROTOCOL_TAKE_RATE_PCT_OFFSET = 14;
   public static final int PROTOCOL_LIQUIDATION_FEE_PCT_OFFSET = 15;
@@ -171,7 +180,7 @@ public record ReserveConfig(int status,
   public static final int DELEVERAGING_BONUS_INCREASE_BPS_PER_DAY_OFFSET = 912;
   public static final int DEBT_MATURITY_TIMESTAMP_OFFSET = 920;
   public static final int DEBT_TERM_SECONDS_OFFSET = 928;
-  public static final int REWARDS_AMOUNT_PER_SLOT_OFFSET = 936;
+  public static final int REWARDS_AMOUNT_PER_ACCRUAL_UNIT_OFFSET = 936;
   public static final int PERMISSIONED_OPS_OFFSET = 944;
 
   public static ReserveConfig read(final byte[] _data, final int _offset) {
@@ -193,7 +202,9 @@ public record ReserveConfig(int status,
     ++i;
     final var emergencyMode = _data[i] & 0xFF;
     ++i;
-    final var reserved1 = new byte[4];
+    final var interestRateBasis = _data[i] & 0xFF;
+    ++i;
+    final var reserved1 = new byte[3];
     i += SerDeUtil.readArray(reserved1, _data, i);
     final var protocolOrderExecutionFeePct = _data[i] & 0xFF;
     ++i;
@@ -251,7 +262,7 @@ public record ReserveConfig(int status,
     i += 8;
     final var debtTermSeconds = getInt64LE(_data, i);
     i += 8;
-    final var rewardsAmountPerSlot = getInt64LE(_data, i);
+    final var rewardsAmountPerAccrualUnit = getInt64LE(_data, i);
     i += 8;
     final var permissionedOps = getInt64LE(_data, i);
     return new ReserveConfig(status,
@@ -261,6 +272,7 @@ public record ReserveConfig(int status,
                              blockCtokenUsage,
                              earlyRepayRemainingInterestPct,
                              emergencyMode,
+                             interestRateBasis,
                              reserved1,
                              protocolOrderExecutionFeePct,
                              protocolTakeRatePct,
@@ -290,7 +302,7 @@ public record ReserveConfig(int status,
                              deleveragingBonusIncreaseBpsPerDay,
                              debtMaturityTimestamp,
                              debtTermSeconds,
-                             rewardsAmountPerSlot,
+                             rewardsAmountPerAccrualUnit,
                              permissionedOps);
   }
 
@@ -311,7 +323,9 @@ public record ReserveConfig(int status,
     ++i;
     _data[i] = (byte) emergencyMode;
     ++i;
-    i += SerDeUtil.writeArrayChecked(reserved1, 4, _data, i);
+    _data[i] = (byte) interestRateBasis;
+    ++i;
+    i += SerDeUtil.writeArrayChecked(reserved1, 3, _data, i);
     _data[i] = (byte) protocolOrderExecutionFeePct;
     ++i;
     _data[i] = (byte) protocolTakeRatePct;
@@ -361,7 +375,7 @@ public record ReserveConfig(int status,
     i += 8;
     putInt64LE(_data, i, debtTermSeconds);
     i += 8;
-    putInt64LE(_data, i, rewardsAmountPerSlot);
+    putInt64LE(_data, i, rewardsAmountPerAccrualUnit);
     i += 8;
     putInt64LE(_data, i, permissionedOps);
     i += 8;

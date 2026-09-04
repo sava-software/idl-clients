@@ -1,11 +1,12 @@
 IDL gap report
 
-Every channel that disagrees with the idl.json its program was generated from — a standing
-state, true again on every run until someone deploys what the divergent channel already
-publishes. A dashboard to read rather than a diff to review: an entry names its members and
-changes only when that membership does, while the volatile counts and versions stay on the
-console summaries and the movement log. Ordered by program and channel, and carrying no
-timestamp.
+Every channel that disagrees with the idl.json its program was generated from, and every
+review a config records against a deploy slot — standing states, true again on every run
+until someone deploys what the divergent channel already publishes or reviews the deploy
+that retired the verdict. A dashboard to read rather than a diff to review: an entry names
+its members and changes only when that membership does, while the volatile counts and
+versions stay on the console summaries and the movement log. Ordered by program and channel,
+and carrying no timestamp.
 
 == Next gap (14) ==
 
@@ -23,13 +24,9 @@ Jupiter Swap: the vcs IDL at github:jup-ag/jupiter-amm-implementation@main/idls/
   events removed (4): BestSwapOutAmountViolation, CandidateSwapQuoteError, CandidateSwapResults, SwapsEvent
   errors removed (8): BondingCurveAlreadyCompleted, InsufficientFunds, InvalidAuthority, InvalidFeeWallet, InvalidMint, InvalidOutputTokenAccount, InvalidProgramAuthority, InvalidTokenAccount
 
-Kamino Farms: the vcs IDL at github:Kamino-Finance/farms-sdk@master/src/idl/farms.json differs from the deployed idl.json
-  instructions added (1): close_empty_user_state
-  instructions changed (1): reward_user_once
-  errors added (12): CannotCloseUserStateDelegatedRentReceiverNotAdmin, CannotCloseUserStateDelegatedSignerNotDelegateAuthority, CannotCloseUserStatePendingDeposits, CannotCloseUserStatePendingUnstakes, CannotCloseUserStateRentReceiverNotOwner, CannotCloseUserStateSignerNotOwner, CannotCloseUserStateStakeNonZero, CannotCloseUserStateUnharvestedRewards, RewardsIssuedCumulativeAtMax, RewardsIssuedCumulativeMismatch, UserRewardTokenAccountMustBeAta, UserStateIdMismatch
-  errors removed (1): CurrentRewardIssuedUnclaimedMismatch
+Kamino Farms: the vcs IDL at github:Kamino-Finance/farms-sdk@master/src/idl/farms.json differs from the deployed idl.json: no member differs; the metadata does
 
-Kamino Lend: the vcs IDL at https://cdn.jsdelivr.net/npm/@kamino-finance/klend-sdk@10.1.0/src/idl/klend.json differs from the deployed idl.json
+Kamino Lend: the vcs IDL at github:Kamino-Finance/klend-sdk@master/src/idl/klend.json differs from the deployed idl.json
   instructions changed (17): abort_obligation_ownership_transfer, accept_obligation_ownership, approve_obligation_ownership_transfer, cancel_withdraw_ticket, clone_reserve_config, enqueue_to_withdraw, fill_borrow_order, fill_borrow_order_v2, initiate_obligation_ownership_transfer, recover_invalid_ticket_collateral, refresh_obligation_farms_for_reserve, rollover_fixed_term_borrow, set_borrow_order, set_borrow_order_v2, topup_reserve_rewards, update_obligation_config, withdraw_queued_liquidity
   types changed (31): BorrowOrder, BorrowOrderConfigArgs, ElevationGroup, ExchangeRateWithDecimals, FeeCalculation, FixedTermBorrowRolloverConfig, GlobalConfig, LastUpdate, LendingMarket, Obligation, ObligationCollateral, ObligationLiquidity, ObligationOrder, PriceHeuristic, ProgressCallbackType, PythConfiguration, ReferrerTokenState, Reserve, ReserveCollateral, ReserveConfig, ReserveConfigCustomizationArgs, ReserveFees, ReserveLiquidity, ScopeConfiguration, SwitchboardConfiguration, TokenInfo, UpdateObligationConfigMode, UserMetadata, WithdrawalCaps, WithdrawQueue, WithdrawTicket
 

@@ -143,7 +143,8 @@ that first carried it is one commit in a branch and a squash would take it with 
 | after | `c229f91d6a79a4a100ce6adc51597eaf0688ed29fa2ff4a38a4238da7ad24875` |
 
 Full hashes on purpose: a truncated prefix is enough to read a story and not enough to
-re-verify one, and `sources.json` is the only other place this pair exists.
+re-verify one. `sources.json` holds only the current hash — the 1.25.0 publication on
+2026-09-03 replaced the `after` value above — so this table is the durable copy of the pair.
 
 What changed: three instructions added (`calculate_ctoken_exchange_rate`,
 `fill_borrow_order_v2`, `set_borrow_order_v2`), fifteen changed, the
@@ -157,9 +158,13 @@ keeps meeting is the other one: marginfi's IDL stopped changing while its progra
 on, so an IDL-to-IDL diff read clean. Movement in the document is evidence the document
 moved, and only the deploy slot is evidence the program did.
 
-And the staged (`next`) client *survived* the deploy — the SDK copy still differs from the
+And the staged (`next`) client *survived* that deploy — the SDK copy still differed from the
 deployed document at the same version string — so a deploy does not retire a `next/`
-package and the version string is not what decides it.
+package and the version string is not what decides it. What retired it, two weeks later, was
+the record reading the other way: the 1.25.0 program deployed at slot 440486775 with no IDL
+channel moving, the on-chain document caught up on 2026-09-03, and the pinned SDK copy was
+then strictly behind chain with nothing published ahead of it (AGENTS.md, "The staged
+(`next`) client").
 
 The generating run's own report is in commit `c2563a4`; `sources.json` carries the
 slot and hashes at all times.

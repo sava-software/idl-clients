@@ -105,9 +105,11 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                          (`init_global_config`, `update_global_config`, `update_global_config_admin`) remain
 ///                          unconditionally blocked.
 /// @param reserveRewardsMaxAprBps: u16 Maximum APR (in basis points; `FULL_BPS = 10_000` = 100%) at which reserves on this market
-///                                may distribute their `rewards_amount_per_slot`. `0` disables rewards on this market
+///                                may distribute their `rewards_amount_per_accrual_unit`. `0` disables rewards on this market
 ///                                entirely (`topup_reserve_rewards` is rejected). Bounded by `FULL_BPS` (100% APR) when set.
-///                                See ReserveConfig::rewards_amount_per_slot for the depositor-cap interaction.
+///                                The APR is interpreted per each reserve's interest rate basis: a true wall-clock APR for
+///                                `TrueApr` reserves, a nominal slot-year APR for `Legacy` ones.
+///                                See ReserveConfig::rewards_amount_per_accrual_unit for the depositor-cap interaction.
 /// @param minWithdrawQueuedLiquidityValue: u64 Minimum value that can be withdrawn in a single `withdraw_queued_liquidity()` call, in full
 ///                                        units of the quote currency (e.g. `2` means "$2", not "2 lamports of USDC").
 /// @param fixedTermRolloverWindowDurationSeconds: u64 A configurable time window (right before the end of a fixed debt term) during which an

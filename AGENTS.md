@@ -127,10 +127,12 @@ An Anchor instruction may declare `"returns"`, the type the program hands back t
 surfaces along with the producing program id. `idl-src-gen` ignores the field, so no
 decoder is generated for it and consumers Borsh-decode the payload by hand.
 
-**Scope, as of 2026-08-13** — 45 declarations across 8 generated packages, which is **43 unique
-instructions across 7 on-chain programs**: `kamino.lend` and `kamino.lend.next` are the deployed
-and staged clients for one program address and duplicate two declarations between them. Count
-packages when sizing the generator work, program addresses when describing the gap on chain.
+**Scope, as of 2026-09-03** — 45 declarations across 8 generated packages, which is **45 unique
+instructions across 8 on-chain programs**: `kamino.staging.lend` is Kamino Lend's staging
+deployment, a second program address serving the same two declarations. A staged `next/`
+client, by contrast, duplicates its program's declarations at the *same* address — the two
+counts coincided when `kamino.lend.next` was retired — so count packages when sizing the
+generator work and program addresses when describing the gap on chain.
 
 | instructions | program |
 |---:|---|
@@ -138,7 +140,8 @@ packages when sizing the generator work, program addresses when describing the g
 | 12 | `jupiter.swap` |
 | 6 | `jupiter.lend` |
 | 3 | `jupiter.perpetuals` |
-| 2 + 2 | `kamino.lend`, `kamino.lend.next` — same program, staged and deployed |
+| 2 | `kamino.lend` |
+| 2 | `kamino.staging.lend` — the staging deployment, a second address |
 | 1 | `cctp.message_transmitter.v2` |
 | 1 | `oracles.pyth.lazer` |
 
@@ -302,20 +305,47 @@ package goes with it — which is usually but not always the deploy that ships i
 see the Kamino note below for a deploy that left both in place.
 
 Because divergence alone does not mean ahead, this is opted into per program and
-off by default; `main_net_programs.json` is the authority on which. Today that is
-Kamino Lend, and it is worth reading how its justification changed. The staged
-client was added when SDK package 10.1.0 carried IDL 1.24.0 against a deployed
-1.23.0. Kamino has since deployed: the program was rewritten at slot 438843135 and
-the on-chain IDL is now 1.24.0 too. Pin a staged client's VCS URL to the exact
-package version or commit that was reviewed; a mutable `@latest` response can
-change—or remain CDN-cached after its registry tag changes—without any repository
-diff. Advancing the candidate is an explicit config and generated-source change.
+off by default; `main_net_programs.json` is the authority on which. Today no
+program opts in. The one staged client so far was Kamino Lend's, live from
+2026-08-11 to 2026-09-03, and its whole life is worth reading. It was added when
+SDK package 10.1.0 carried IDL 1.24.0 against a deployed 1.23.0. Pin a staged
+client's VCS URL to the exact package version or commit that was reviewed; a
+mutable `@latest` response can change—or remain CDN-cached after its registry tag
+changes—without any repository diff. Advancing the candidate is an explicit config
+and generated-source change.
 
 **A deploy does not necessarily retire a staged client, and the version string is
-not what decides it.** Kamino's `vcs.json` and its `next/` package both survived
-that deploy, because the SDK copy still differs from the deployed document at the
-*same* version string — 1.24.0 on both sides, different content. Read the record,
-not the version.
+not what decides it.** Kamino deployed 1.24.0 at slot 438843135, and the `vcs.json`
+and `next/` package both survived, because the SDK copy still differed from the
+deployed document at the *same* version string — 1.24.0 on both sides, different
+content. Read the record, not the version.
+
+**What retires one is the record reading the other way.** Kamino deployed 1.25.0
+at slot 440486775 with no IDL channel moving (`82e7d479`); when the on-chain
+document caught up two weeks later, the pinned SDK copy was strictly *behind*
+chain — three types holding retired shapes, nothing ahead — and no published
+package was ahead of it either (klend-sdk 11.0.2 carries 1.25.0, and the 11.1.0
+betas ship the same document byte for byte). A staged client of a superseded
+release previews nothing, so `generateNext` was dropped, `next/` went with it, and
+the pin advanced to 11.0.2, then moved off the CDN pin entirely. The `vcs.json` and the
+gap-report entry stay: the SDK copy still differs from the deployed document, now
+only in the 358 documentation nodes it does not carry, and divergence in the behind
+direction is still divergence.
+
+**What watches Kamino now is not a staged client.** A `next/` package never
+detected anything — the SDK document it was generated from *trailed* the 1.25.0
+deploy by a day — and the two things that do lead a Kamino release are both
+ordinary channel records: the **staging program**
+(`SLendK7ySfcEzyaFqy93gDnD3RtrpXJcnRwb6zFHJSh`, the SDK's own `STAGING_PROGRAM_ID`)
+is configured as `kamino.staging.lend`, a full client of a deployed program with
+its own `lastDeploySlot` — it took 1.25.0 some 28 hours before mainnet did — and
+Kamino Lend's `vcs` tracks `Kamino-Finance/klend-sdk@master` unpinned, the shape
+Farms and Scope already use, so the channel moves when the SDK repository does.
+Neither needs `generateNext`, and turning it back on would not help: divergence is
+measured with documentation included and the SDK document carries none, so a
+staged client would exist permanently, ahead or behind. That comparison being
+docs-stripped is a generator change worth making before `generateNext` is ever
+opted into again.
 
 Always generate with `--report=idl-change-report.txt` and commit **both** reports one
 run writes: that file, which carries the movement this run saw, and
@@ -324,6 +354,15 @@ generated `sources.json` hash without a matching change to the *movement* report
 the generation was run without retaining its channel-movement evidence. The gap report
 is not evidence of anything — it re-renders whether or not this run saw movement, which
 is why it was split out (idl-src-gen#3) and why only the movement file is gated.
+
+A redeploy line that says *review required* is answered in `main_net_programs.json`, not in
+a commit message: `"review": {"deploySlot": N, "verdict": "…"}` on the program, held against
+the deploy it answered. The gap report then carries it as a standing entry until a later
+deploy is recorded, and the redeploy line that retires it quotes the last verdict so the next
+review starts from it rather than from nothing. This needs an idl-src-gen build carrying that
+key (it landed on 2026-09-03); the redeploy line from the same build also says when each
+on-chain IDL channel was last written, which is what separates a publisher who skipped one
+release from one who abandoned the channel.
 
 `.github/report-evidence.sh` is that sentence as a gate, run over every pushed range
 by the `Report Evidence` workflow. It keys on the movement-implying *lines* of a

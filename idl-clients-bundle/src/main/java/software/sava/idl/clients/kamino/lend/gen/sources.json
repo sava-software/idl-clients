@@ -9,13 +9,13 @@
   "channels": {
     "anchor": {
       "origin": "8qLKwp1fk8WyqmzarkuMeZEX3AzL4VDSmA2UZTKT2aCJ",
-      "hash": "c229f91d6a79a4a100ce6adc51597eaf0688ed29fa2ff4a38a4238da7ad24875",
+      "hash": "c1a1de17c3d24fe8bbff16462da7812b22af8fe503de58a2d0c7b1ed6f89691e",
       "matchesDeployed": true,
       "verbatim": "anchor.original.json"
     },
     "vcs": {
-      "origin": "https://cdn.jsdelivr.net/npm/@kamino-finance/klend-sdk@10.1.0/src/idl/klend.json",
-      "hash": "be3df38090d75a8009aee93fa7425dab2d0abb759750a3d4044d3118a5635b36",
+      "origin": "github:Kamino-Finance/klend-sdk@master/src/idl/klend.json",
+      "hash": "5b6f8ce6f878993035cbf42c9c4f4e77c0e9da1c675acace3c5a7358e373a303",
       "matchesDeployed": false,
       "file": "vcs.json",
       "verbatim": "vcs.original.json"

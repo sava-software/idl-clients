@@ -608,14 +608,16 @@ public final class FarmsProgram {
 
   /// @param rewardIndex: u64
   /// @param amount: u64
-  /// @param expectedRewardIssuedUnclaimed: u64
+  /// @param expectedRewardsIssuedCumulative: u64
+  /// @param userStateId: u64
   public static Instruction rewardUserOnce(final AccountMeta invokedFarmsProgramMeta,
                                            final PublicKey delegateAuthorityKey,
                                            final PublicKey farmStateKey,
                                            final PublicKey userStateKey,
                                            final long rewardIndex,
                                            final long amount,
-                                           final long expectedRewardIssuedUnclaimed) {
+                                           final long expectedRewardsIssuedCumulative,
+                                           final long userStateId) {
     final var keys = rewardUserOnceKeys(
       delegateAuthorityKey,
       farmStateKey,
@@ -626,46 +628,54 @@ public final class FarmsProgram {
       keys,
       rewardIndex,
       amount,
-      expectedRewardIssuedUnclaimed
+      expectedRewardsIssuedCumulative,
+      userStateId
     );
   }
 
   /// @param rewardIndex: u64
   /// @param amount: u64
-  /// @param expectedRewardIssuedUnclaimed: u64
+  /// @param expectedRewardsIssuedCumulative: u64
+  /// @param userStateId: u64
   public static Instruction rewardUserOnce(final AccountMeta invokedFarmsProgramMeta,
                                            final List<AccountMeta> keys,
                                            final long rewardIndex,
                                            final long amount,
-                                           final long expectedRewardIssuedUnclaimed) {
-    final byte[] _data = new byte[32];
+                                           final long expectedRewardsIssuedCumulative,
+                                           final long userStateId) {
+    final byte[] _data = new byte[40];
     int i = REWARD_USER_ONCE_DISCRIMINATOR.write(_data, 0);
     putInt64LE(_data, i, rewardIndex);
     i += 8;
     putInt64LE(_data, i, amount);
     i += 8;
-    putInt64LE(_data, i, expectedRewardIssuedUnclaimed);
+    putInt64LE(_data, i, expectedRewardsIssuedCumulative);
+    i += 8;
+    putInt64LE(_data, i, userStateId);
 
     return Instruction.createInstruction(invokedFarmsProgramMeta, keys, _data);
   }
 
   /// @param rewardIndex: u64
   /// @param amount: u64
-  /// @param expectedRewardIssuedUnclaimed: u64
+  /// @param expectedRewardsIssuedCumulative: u64
+  /// @param userStateId: u64
   public record RewardUserOnceIxData(Discriminator discriminator,
                                      long rewardIndex,
                                      long amount,
-                                     long expectedRewardIssuedUnclaimed) implements SerDe {
+                                     long expectedRewardsIssuedCumulative,
+                                     long userStateId) implements SerDe {
 
     public static RewardUserOnceIxData read(final Instruction instruction) {
       return read(instruction.copyData(), 0);
     }
 
-    public static final int BYTES = 32;
+    public static final int BYTES = 40;
 
     public static final int REWARD_INDEX_OFFSET = 8;
     public static final int AMOUNT_OFFSET = 16;
-    public static final int EXPECTED_REWARD_ISSUED_UNCLAIMED_OFFSET = 24;
+    public static final int EXPECTED_REWARDS_ISSUED_CUMULATIVE_OFFSET = 24;
+    public static final int USER_STATE_ID_OFFSET = 32;
 
     public static RewardUserOnceIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -677,8 +687,14 @@ public final class FarmsProgram {
       i += 8;
       final var amount = getInt64LE(_data, i);
       i += 8;
-      final var expectedRewardIssuedUnclaimed = getInt64LE(_data, i);
-      return new RewardUserOnceIxData(discriminator, rewardIndex, amount, expectedRewardIssuedUnclaimed);
+      final var expectedRewardsIssuedCumulative = getInt64LE(_data, i);
+      i += 8;
+      final var userStateId = getInt64LE(_data, i);
+      return new RewardUserOnceIxData(discriminator,
+                                      rewardIndex,
+                                      amount,
+                                      expectedRewardsIssuedCumulative,
+                                      userStateId);
     }
 
     @Override
@@ -688,7 +704,9 @@ public final class FarmsProgram {
       i += 8;
       putInt64LE(_data, i, amount);
       i += 8;
-      putInt64LE(_data, i, expectedRewardIssuedUnclaimed);
+      putInt64LE(_data, i, expectedRewardsIssuedCumulative);
+      i += 8;
+      putInt64LE(_data, i, userStateId);
       i += 8;
       return i - _offset;
     }
@@ -1629,6 +1647,57 @@ public final class FarmsProgram {
   public static Instruction updateSecondDelegatedAuthority(final AccountMeta invokedFarmsProgramMeta,
                                                            final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedFarmsProgramMeta, keys, UPDATE_SECOND_DELEGATED_AUTHORITY_DISCRIMINATOR);
+  }
+
+  public static final Discriminator CLOSE_EMPTY_USER_STATE_DISCRIMINATOR = toDiscriminator(240, 24, 9, 227, 86, 225, 199, 95);
+
+  /// @param signerKey The account that signs the transaction
+  ///                  - Non-delegated: user signs
+  ///                  - Delegated: delegated authority signs
+  /// @param farmStateKey The farm state account for validation
+  /// @param rentReceiverKey The account that receives the rent
+  ///                        - Non-delegated: user receives the rent
+  ///                        - Delegated: farm admin receives the rent
+  public static List<AccountMeta> closeEmptyUserStateKeys(final PublicKey signerKey,
+                                                          final PublicKey userStateKey,
+                                                          final PublicKey farmStateKey,
+                                                          final PublicKey rentReceiverKey,
+                                                          final PublicKey systemProgramKey) {
+    return List.of(
+      createReadOnlySigner(signerKey),
+      createWrite(userStateKey),
+      createRead(farmStateKey),
+      createWrite(rentReceiverKey),
+      createRead(systemProgramKey)
+    );
+  }
+
+  /// @param signerKey The account that signs the transaction
+  ///                  - Non-delegated: user signs
+  ///                  - Delegated: delegated authority signs
+  /// @param farmStateKey The farm state account for validation
+  /// @param rentReceiverKey The account that receives the rent
+  ///                        - Non-delegated: user receives the rent
+  ///                        - Delegated: farm admin receives the rent
+  public static Instruction closeEmptyUserState(final AccountMeta invokedFarmsProgramMeta,
+                                                final PublicKey signerKey,
+                                                final PublicKey userStateKey,
+                                                final PublicKey farmStateKey,
+                                                final PublicKey rentReceiverKey,
+                                                final PublicKey systemProgramKey) {
+    final var keys = closeEmptyUserStateKeys(
+      signerKey,
+      userStateKey,
+      farmStateKey,
+      rentReceiverKey,
+      systemProgramKey
+    );
+    return closeEmptyUserState(invokedFarmsProgramMeta, keys);
+  }
+
+  public static Instruction closeEmptyUserState(final AccountMeta invokedFarmsProgramMeta,
+                                                final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedFarmsProgramMeta, keys, CLOSE_EMPTY_USER_STATE_DISCRIMINATOR);
   }
 
   public static final Discriminator IDL_MISSING_TYPES_DISCRIMINATOR = toDiscriminator(130, 80, 38, 153, 80, 212, 182, 253);

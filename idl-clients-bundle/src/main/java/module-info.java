@@ -58,6 +58,9 @@ module software.sava.idl.clients.bundle {
   exports software.sava.idl.clients.kamino.scope.gen.types;
   exports software.sava.idl.clients.kamino.scope.gen;
   exports software.sava.idl.clients.kamino.scope;
+  exports software.sava.idl.clients.kamino.staging.lend.gen.events;
+  exports software.sava.idl.clients.kamino.staging.lend.gen.types;
+  exports software.sava.idl.clients.kamino.staging.lend.gen;
   exports software.sava.idl.clients.kamino.vaults.gen.events;
   exports software.sava.idl.clients.kamino.vaults.gen.types;
   exports software.sava.idl.clients.kamino.vaults.gen;

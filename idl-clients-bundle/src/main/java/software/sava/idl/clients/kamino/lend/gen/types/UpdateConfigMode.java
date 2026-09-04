@@ -63,8 +63,9 @@ public enum UpdateConfigMode implements RustEnum {
   UpdateDebtTermSeconds,
   UpdateEarlyRepayRemainingInterestPct,
   UpdateReserveEmergencyMode,
-  UpdateRewardsAmountPerSlot,
-  UpdateReservePermissionedOps;
+  UpdateRewardsAmountPerAccrualUnit,
+  UpdateReservePermissionedOps,
+  UpdateInterestRateBasis;
 
   public static UpdateConfigMode read(final byte[] _data, final int _offset) {
     return SerDeUtil.read(1, UpdateConfigMode.values(), _data, _offset);
