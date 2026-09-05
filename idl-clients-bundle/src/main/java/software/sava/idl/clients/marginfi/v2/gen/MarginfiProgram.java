@@ -6436,6 +6436,99 @@ public final class MarginfiProgram {
     }
   }
 
+  public static final Discriminator LENDING_POOL_CONFIGURE_BANK_ORACLE_SCOPE_DISCRIMINATOR = toDiscriminator(134, 228, 127, 3, 117, 132, 85, 146);
+
+  /// (admin only) Point a bank at a Scope feed entry.
+  /// * oracle - the feed's `OraclePrices` account
+  /// * entry_index - which of the 512 entries in that account prices this bank
+  ///
+  public static List<AccountMeta> lendingPoolConfigureBankOracleScopeKeys(final PublicKey groupKey,
+                                                                          final PublicKey adminKey,
+                                                                          final PublicKey bankKey) {
+    return List.of(
+      createRead(groupKey),
+      createReadOnlySigner(adminKey),
+      createWrite(bankKey)
+    );
+  }
+
+  /// (admin only) Point a bank at a Scope feed entry.
+  /// * oracle - the feed's `OraclePrices` account
+  /// * entry_index - which of the 512 entries in that account prices this bank
+  ///
+  /// @param entryIndex: u16
+  public static Instruction lendingPoolConfigureBankOracleScope(final AccountMeta invokedMarginfiProgramMeta,
+                                                                final PublicKey groupKey,
+                                                                final PublicKey adminKey,
+                                                                final PublicKey bankKey,
+                                                                final PublicKey oracle,
+                                                                final int entryIndex) {
+    final var keys = lendingPoolConfigureBankOracleScopeKeys(
+      groupKey,
+      adminKey,
+      bankKey
+    );
+    return lendingPoolConfigureBankOracleScope(invokedMarginfiProgramMeta, keys, oracle, entryIndex);
+  }
+
+  /// (admin only) Point a bank at a Scope feed entry.
+  /// * oracle - the feed's `OraclePrices` account
+  /// * entry_index - which of the 512 entries in that account prices this bank
+  ///
+  /// @param entryIndex: u16
+  public static Instruction lendingPoolConfigureBankOracleScope(final AccountMeta invokedMarginfiProgramMeta,
+                                                                final List<AccountMeta> keys,
+                                                                final PublicKey oracle,
+                                                                final int entryIndex) {
+    final byte[] _data = new byte[42];
+    int i = LENDING_POOL_CONFIGURE_BANK_ORACLE_SCOPE_DISCRIMINATOR.write(_data, 0);
+    oracle.write(_data, i);
+    i += 32;
+    putInt16LE(_data, i, entryIndex);
+
+    return Instruction.createInstruction(invokedMarginfiProgramMeta, keys, _data);
+  }
+
+  /// @param entryIndex: u16
+  public record LendingPoolConfigureBankOracleScopeIxData(Discriminator discriminator, PublicKey oracle, int entryIndex) implements SerDe {
+
+    public static LendingPoolConfigureBankOracleScopeIxData read(final Instruction instruction) {
+      return read(instruction.copyData(), 0);
+    }
+
+    public static final int BYTES = 42;
+
+    public static final int ORACLE_OFFSET = 8;
+    public static final int ENTRY_INDEX_OFFSET = 40;
+
+    public static LendingPoolConfigureBankOracleScopeIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var oracle = readPubKey(_data, i);
+      i += 32;
+      final var entryIndex = Short.toUnsignedInt(getInt16LE(_data, i));
+      return new LendingPoolConfigureBankOracleScopeIxData(discriminator, oracle, entryIndex);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      oracle.write(_data, i);
+      i += 32;
+      putInt16LE(_data, i, entryIndex);
+      i += 2;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
   public static final Discriminator LENDING_POOL_EMISSIONS_DEPOSIT_DISCRIMINATOR = toDiscriminator(121, 118, 123, 58, 59, 192, 74, 138);
 
   /// (permissionless) Deposit same-bank emissions directly into liquidity vault and increase
@@ -6834,13 +6927,13 @@ public final class MarginfiProgram {
     }
   }
 
-  public static final Discriminator LENDING_POOL_SET_FIXED_ORACLE_PRICE_DISCRIMINATOR = toDiscriminator(28, 126, 127, 127, 60, 37, 211, 125);
+  public static final Discriminator LENDING_POOL_SET_ORACLE_PRICE_DISCRIMINATOR = toDiscriminator(234, 244, 37, 65, 101, 255, 217, 160);
 
   /// (admin only)
   ///
-  public static List<AccountMeta> lendingPoolSetFixedOraclePriceKeys(final PublicKey groupKey,
-                                                                     final PublicKey adminKey,
-                                                                     final PublicKey bankKey) {
+  public static List<AccountMeta> lendingPoolSetOraclePriceKeys(final PublicKey groupKey,
+                                                                final PublicKey adminKey,
+                                                                final PublicKey bankKey) {
     return List.of(
       createRead(groupKey),
       createReadOnlySigner(adminKey),
@@ -6850,55 +6943,66 @@ public final class MarginfiProgram {
 
   /// (admin only)
   ///
-  public static Instruction lendingPoolSetFixedOraclePrice(final AccountMeta invokedMarginfiProgramMeta,
-                                                           final PublicKey groupKey,
-                                                           final PublicKey adminKey,
-                                                           final PublicKey bankKey,
-                                                           final WrappedI80F48 price) {
-    final var keys = lendingPoolSetFixedOraclePriceKeys(
+  /// @param setup: u8
+  public static Instruction lendingPoolSetOraclePrice(final AccountMeta invokedMarginfiProgramMeta,
+                                                      final PublicKey groupKey,
+                                                      final PublicKey adminKey,
+                                                      final PublicKey bankKey,
+                                                      final WrappedI80F48 price,
+                                                      final int setup) {
+    final var keys = lendingPoolSetOraclePriceKeys(
       groupKey,
       adminKey,
       bankKey
     );
-    return lendingPoolSetFixedOraclePrice(invokedMarginfiProgramMeta, keys, price);
+    return lendingPoolSetOraclePrice(invokedMarginfiProgramMeta, keys, price, setup);
   }
 
   /// (admin only)
   ///
-  public static Instruction lendingPoolSetFixedOraclePrice(final AccountMeta invokedMarginfiProgramMeta,
-                                                           final List<AccountMeta> keys,
-                                                           final WrappedI80F48 price) {
-    final byte[] _data = new byte[8 + price.l()];
-    int i = LENDING_POOL_SET_FIXED_ORACLE_PRICE_DISCRIMINATOR.write(_data, 0);
-    price.write(_data, i);
+  /// @param setup: u8
+  public static Instruction lendingPoolSetOraclePrice(final AccountMeta invokedMarginfiProgramMeta,
+                                                      final List<AccountMeta> keys,
+                                                      final WrappedI80F48 price,
+                                                      final int setup) {
+    final byte[] _data = new byte[9 + price.l()];
+    int i = LENDING_POOL_SET_ORACLE_PRICE_DISCRIMINATOR.write(_data, 0);
+    i += price.write(_data, i);
+    _data[i] = (byte) setup;
 
     return Instruction.createInstruction(invokedMarginfiProgramMeta, keys, _data);
   }
 
-  public record LendingPoolSetFixedOraclePriceIxData(Discriminator discriminator, WrappedI80F48 price) implements SerDe {
+  /// @param setup: u8
+  public record LendingPoolSetOraclePriceIxData(Discriminator discriminator, WrappedI80F48 price, int setup) implements SerDe {
 
-    public static LendingPoolSetFixedOraclePriceIxData read(final Instruction instruction) {
+    public static LendingPoolSetOraclePriceIxData read(final Instruction instruction) {
       return read(instruction.copyData(), 0);
     }
 
-    public static final int BYTES = 24;
+    public static final int BYTES = 25;
 
     public static final int PRICE_OFFSET = 8;
+    public static final int SETUP_OFFSET = 24;
 
-    public static LendingPoolSetFixedOraclePriceIxData read(final byte[] _data, final int _offset) {
+    public static LendingPoolSetOraclePriceIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final var price = WrappedI80F48.read(_data, i);
-      return new LendingPoolSetFixedOraclePriceIxData(discriminator, price);
+      i += 16;
+      final var setup = _data[i] & 0xFF;
+      return new LendingPoolSetOraclePriceIxData(discriminator, price, setup);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
       i += price.write(_data, i);
+      _data[i] = (byte) setup;
+      ++i;
       return i - _offset;
     }
 

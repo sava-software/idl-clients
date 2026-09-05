@@ -54,6 +54,9 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///
 ///                                 Value is UI USD value, for example value 100 -> $100
 /// @param oracleMaxAge: u16 Time window in seconds for the oracle price feed to be considered live.
+/// @param scopeEntryIndex: u16 Entry index into the Scope `OraclePrices` price list. Only read when
+///                        `oracle_setup == OracleSetup::Scope`; ignored (and zero) for every other setup.
+///                        Occupies what was previously `_padding0`, so the layout is unchanged.
 /// @param oracleMaxConfidence: u32 A %, as u32, e.g. 100% = u32::MAX, 50% = u32::MAX/2, etc.
 ///
 ///                            Oracle confidence configuration. Semantics depend on the oracle type:
@@ -90,7 +93,7 @@ public record BankConfig(WrappedI80F48 assetWeightInit,
                          long cbWindowSeconds,
                          long totalAssetValueInitLimit,
                          int oracleMaxAge,
-                         byte[] padding0,
+                         int scopeEntryIndex,
                          long oracleMaxConfidence,
                          WrappedI80F48 fixedPrice,
                          int[] cbDeviationBpsTiers,
@@ -103,7 +106,6 @@ public record BankConfig(WrappedI80F48 assetWeightInit,
   public static final int ORACLE_KEYS_LEN = 5;
   public static final int PAD_0_LEN = 2;
   public static final int PAD_1_LEN = 1;
-  public static final int PADDING_0_LEN = 2;
   public static final int CB_DEVIATION_BPS_TIERS_LEN = 3;
   public static final int CB_TIER_DURATIONS_SECONDS_LEN = 3;
 
@@ -127,7 +129,7 @@ public record BankConfig(WrappedI80F48 assetWeightInit,
   public static final int CB_WINDOW_SECONDS_OFFSET = 492;
   public static final int TOTAL_ASSET_VALUE_INIT_LIMIT_OFFSET = 496;
   public static final int ORACLE_MAX_AGE_OFFSET = 504;
-  public static final int PADDING_0_OFFSET = 506;
+  public static final int SCOPE_ENTRY_INDEX_OFFSET = 506;
   public static final int ORACLE_MAX_CONFIDENCE_OFFSET = 508;
   public static final int FIXED_PRICE_OFFSET = 512;
   public static final int CB_DEVIATION_BPS_TIERS_OFFSET = 528;
@@ -181,8 +183,8 @@ public record BankConfig(WrappedI80F48 assetWeightInit,
     i += 8;
     final var oracleMaxAge = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var padding0 = new byte[2];
-    i += SerDeUtil.readArray(padding0, _data, i);
+    final var scopeEntryIndex = Short.toUnsignedInt(getInt16LE(_data, i));
+    i += 2;
     final var oracleMaxConfidence = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var fixedPrice = WrappedI80F48.read(_data, i);
@@ -216,7 +218,7 @@ public record BankConfig(WrappedI80F48 assetWeightInit,
                           cbWindowSeconds,
                           totalAssetValueInitLimit,
                           oracleMaxAge,
-                          padding0,
+                          scopeEntryIndex,
                           oracleMaxConfidence,
                           fixedPrice,
                           cbDeviationBpsTiers,
@@ -258,7 +260,8 @@ public record BankConfig(WrappedI80F48 assetWeightInit,
     i += 8;
     putInt16LE(_data, i, oracleMaxAge);
     i += 2;
-    i += SerDeUtil.writeArrayChecked(padding0, 2, _data, i);
+    putInt16LE(_data, i, scopeEntryIndex);
+    i += 2;
     putInt32LE(_data, i, (int) oracleMaxConfidence);
     i += 4;
     i += fixedPrice.write(_data, i);

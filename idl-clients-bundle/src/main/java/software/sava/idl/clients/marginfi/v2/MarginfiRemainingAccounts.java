@@ -34,9 +34,24 @@ import java.util.List;
 ///    |---|---|---|
 ///    | `OracleSetup.Fixed` | 1 | bank |
 ///    | `FixedKamino` / `FixedDrift` / `FixedJuplend` | 2 | bank, venue state |
+///    | `PTFixed` | 2 | bank, Exponent vault |
+///    | `PythMSOL` | 3 | bank, Pyth feed, Marinade state |
+///    | `PythLST` | 3 | bank, Pyth feed, SPL stake pool |
+///    | `PTPyth` | 3 | bank, Pyth feed, Exponent vault |
+///    | `KaminoMSOL` / `JuplendMSOL` | 4 | bank, Pyth feed, venue state, Marinade state |
+///    | `KaminoLST` / `JuplendLST` | 4 | bank, Pyth feed, venue state, SPL stake pool |
 ///    | asset tag `DEFAULT` (0) or `SOL` (1) | 2 | bank, oracle |
 ///    | asset tag `KAMINO`/`DRIFT`/`SOLEND`/`JUPLEND` (3-6) | 3 | bank, oracle, reserve |
-///    | asset tag `STAKED` (2) | 5 | bank, oracle, lst mint, stake pool, onramp |
+///    | asset tag `STAKED` (2) | 5 | bank, oracle, lst mint, sol pool, onramp |
+///
+///    The oracle-setup rows win: only a setup absent from them falls through to the
+///    asset tag. `Scope` is one such — its group is the ordinary `<bank, oracle>`
+///    pair, where the oracle is the feed's `OraclePrices` account and
+///    `BankConfig.scopeEntryIndex` picks the entry within it.
+///
+///    The staked row's "sol pool" is `oracle_keys[2]` — the single-pool program's
+///    *stake* account, which the program reads for the pool's NAV, not the pool
+///    address itself.
 ///
 ///    A wrong count fails with `WrongNumberOfOracleAccounts`.
 ///
@@ -65,7 +80,9 @@ public final class MarginfiRemainingAccounts {
   public static int accountsPerBank(final OracleSetup oracleSetup, final int assetTag) {
     return switch (oracleSetup) {
       case Fixed -> 1;
-      case FixedKamino, FixedDrift, FixedJuplend -> 2;
+      case FixedKamino, FixedDrift, FixedJuplend, PTFixed -> 2;
+      case PythMSOL, PythLST, PTPyth -> 3;
+      case KaminoMSOL, JuplendMSOL, KaminoLST, JuplendLST -> 4;
       default -> switch (assetTag) {
         case ASSET_TAG_STAKED -> 5;
         case ASSET_TAG_KAMINO, ASSET_TAG_DRIFT, ASSET_TAG_SOLEND, ASSET_TAG_JUPLEND -> 3;

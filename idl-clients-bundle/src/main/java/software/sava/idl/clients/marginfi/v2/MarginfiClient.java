@@ -245,9 +245,12 @@ public interface MarginfiClient {
 
   /// (permissionless) Refresh the internal risk-engine health cache of a marginfi account.
   ///
-  /// The caller must append every active balance's bank and oracle as `remaining_accounts` on the
-  /// returned [Instruction] via [Instruction#extraAccounts] in the order
-  /// `<bank1, oracle1, bank2, oracle2, ...>`.
+  /// The caller must append one group per active balance, in balance order, as
+  /// `remaining_accounts` on the returned [Instruction] via [Instruction#extraAccounts]. A group
+  /// is **not** a flat `<bank, oracle>` pair — its size and contents depend on the bank's oracle
+  /// setup and asset tag, from one account for a fixed-price bank up to five for a staked one.
+  /// Build the list with [MarginfiRemainingAccounts], which encodes the table and rejects a
+  /// miscount up front.
   Instruction pulseHealth(final PublicKey marginfiAccount);
 
   // ------------------------------------------------------------------

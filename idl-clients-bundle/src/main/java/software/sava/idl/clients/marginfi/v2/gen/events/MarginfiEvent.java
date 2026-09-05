@@ -26,7 +26,7 @@ public sealed interface MarginfiEvent extends SerDe permits
     LendingPoolBankConfigureOracleEvent,
     LendingPoolBankCreateEvent,
     LendingPoolBankHandleBankruptcyEvent,
-    LendingPoolBankSetFixedOraclePriceEvent,
+    LendingPoolBankSetOraclePriceEvent,
     LendingPoolBankSetSameAssetEmodeEligibilityEvent,
     LendingPoolSuperAdminDepositEvent,
     LendingPoolSuperAdminWithdrawEvent,
@@ -86,8 +86,8 @@ public sealed interface MarginfiEvent extends SerDe permits
       return LendingPoolBankCreateEvent.read(_data, _offset);
     } else if (LendingPoolBankHandleBankruptcyEvent.DISCRIMINATOR.equals(_data, _offset)) {
       return LendingPoolBankHandleBankruptcyEvent.read(_data, _offset);
-    } else if (LendingPoolBankSetFixedOraclePriceEvent.DISCRIMINATOR.equals(_data, _offset)) {
-      return LendingPoolBankSetFixedOraclePriceEvent.read(_data, _offset);
+    } else if (LendingPoolBankSetOraclePriceEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return LendingPoolBankSetOraclePriceEvent.read(_data, _offset);
     } else if (LendingPoolBankSetSameAssetEmodeEligibilityEvent.DISCRIMINATOR.equals(_data, _offset)) {
       return LendingPoolBankSetSameAssetEmodeEligibilityEvent.read(_data, _offset);
     } else if (LendingPoolSuperAdminDepositEvent.DISCRIMINATOR.equals(_data, _offset)) {

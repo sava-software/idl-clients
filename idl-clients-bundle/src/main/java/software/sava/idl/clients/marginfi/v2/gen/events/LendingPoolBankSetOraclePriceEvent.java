@@ -10,16 +10,16 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-public record LendingPoolBankSetFixedOraclePriceEvent(Discriminator discriminator,
-                                                      GroupEventHeader header,
-                                                      PublicKey bank,
-                                                      WrappedI80F48 price) implements MarginfiEvent {
+public record LendingPoolBankSetOraclePriceEvent(Discriminator discriminator,
+                                                 GroupEventHeader header,
+                                                 PublicKey bank,
+                                                 WrappedI80F48 price) implements MarginfiEvent {
 
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(65, 72, 8, 85, 229, 20, 90, 26);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(92, 180, 117, 175, 131, 24, 159, 141);
 
   public static final int HEADER_OFFSET = 8;
 
-  public static LendingPoolBankSetFixedOraclePriceEvent read(final byte[] _data, final int _offset) {
+  public static LendingPoolBankSetOraclePriceEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
@@ -30,7 +30,7 @@ public record LendingPoolBankSetFixedOraclePriceEvent(Discriminator discriminato
     final var bank = readPubKey(_data, i);
     i += 32;
     final var price = WrappedI80F48.read(_data, i);
-    return new LendingPoolBankSetFixedOraclePriceEvent(discriminator, header, bank, price);
+    return new LendingPoolBankSetOraclePriceEvent(discriminator, header, bank, price);
   }
 
   @Override

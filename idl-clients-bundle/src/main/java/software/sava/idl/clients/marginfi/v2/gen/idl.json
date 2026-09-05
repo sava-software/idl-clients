@@ -2,7 +2,7 @@
   "address": "MFv2hWf31Z9kbCa1snEPYctwafyhdvnV7FZnsebVacA",
   "metadata": {
     "name": "marginfi",
-    "version": "0.1.10",
+    "version": "0.1.11",
     "spec": "0.1.0",
     "description": "Borrow Lending Prime Broker"
   },
@@ -1856,7 +1856,7 @@
       "name": "init_bank_metadata",
       "docs": [
         "(permissionless) pay the rent to open metadata for a bank. The bank account does not have",
-        "to exist yet — callers can pre-create metadata for an upcoming bank pubkey at their own",
+        "to exist yet \u2014 callers can pre-create metadata for an upcoming bank pubkey at their own",
         "rent expense. When the bank is initialized and its seed is on-chain, the PDA is verified."
       ],
       "discriminator": [
@@ -2886,7 +2886,7 @@
         "(permissionless) Harvest the specified reward index from the Kamino Farm attached to this",
         "bank. Rewards are always sent to the global fee wallet's canonical ATA.",
         "",
-        "* `reward_index` — index of the reward token in the Kamino Farm's reward list"
+        "* `reward_index` \u2014 index of the reward token in the Kamino Farm's reward list"
       ],
       "discriminator": [
         163,
@@ -7414,6 +7414,53 @@
       ]
     },
     {
+      "name": "lending_pool_configure_bank_oracle_scope",
+      "docs": [
+        "(admin only) Point a bank at a Scope feed entry.",
+        "* oracle - the feed's `OraclePrices` account",
+        "* entry_index - which of the 512 entries in that account prices this bank"
+      ],
+      "discriminator": [
+        134,
+        228,
+        127,
+        3,
+        117,
+        132,
+        85,
+        146
+      ],
+      "accounts": [
+        {
+          "name": "group",
+          "relations": [
+            "bank"
+          ]
+        },
+        {
+          "name": "admin",
+          "signer": true,
+          "relations": [
+            "group"
+          ]
+        },
+        {
+          "name": "bank",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "oracle",
+          "type": "pubkey"
+        },
+        {
+          "name": "entry_index",
+          "type": "u16"
+        }
+      ]
+    },
+    {
       "name": "lending_pool_emissions_deposit",
       "docs": [
         "(permissionless) Deposit same-bank emissions directly into liquidity vault and increase",
@@ -7885,19 +7932,19 @@
       ]
     },
     {
-      "name": "lending_pool_set_fixed_oracle_price",
+      "name": "lending_pool_set_oracle_price",
       "docs": [
         "(admin only)"
       ],
       "discriminator": [
-        28,
-        126,
-        127,
-        127,
-        60,
+        234,
+        244,
         37,
-        211,
-        125
+        65,
+        101,
+        255,
+        217,
+        160
       ],
       "accounts": [
         {
@@ -7926,6 +7973,10 @@
               "name": "WrappedI80F48"
             }
           }
+        },
+        {
+          "name": "setup",
+          "type": "u8"
         }
       ]
     },
@@ -8457,7 +8508,7 @@
         {
           "name": "executor",
           "docs": [
-            "The executioner ☠️"
+            "The executioner \u2620\ufe0f"
           ],
           "signer": true,
           "relations": [
@@ -11304,16 +11355,16 @@
       ]
     },
     {
-      "name": "LendingPoolBankSetFixedOraclePriceEvent",
+      "name": "LendingPoolBankSetOraclePriceEvent",
       "discriminator": [
-        65,
-        72,
-        8,
-        85,
-        229,
-        20,
-        90,
-        26
+        92,
+        180,
+        117,
+        175,
+        131,
+        24,
+        159,
+        141
       ]
     },
     {
@@ -12149,8 +12200,8 @@
     },
     {
       "code": 6132,
-      "name": "UseSetFixedOraclePrice",
-      "msg": "Use set_fixed_oracle_price instead"
+      "name": "UseSetOraclePrice",
+      "msg": "Use set_oracle_price instead"
     },
     {
       "code": 6133,
@@ -12166,6 +12217,26 @@
       "code": 6135,
       "name": "SlippageTooHigh",
       "msg": "Max slippage exceeds the allowed cap"
+    },
+    {
+      "code": 6136,
+      "name": "MarinadeStateValidationFailed",
+      "msg": "Marinade state validation failed"
+    },
+    {
+      "code": 6137,
+      "name": "ExponentVaultValidationFailed",
+      "msg": "Exponent vault validation failed"
+    },
+    {
+      "code": 6138,
+      "name": "InvalidPtStartPrice",
+      "msg": "PT start price must be in (0, 1]"
+    },
+    {
+      "code": 6139,
+      "name": "StakePoolStale",
+      "msg": "Stake pool balance has not been updated recently enough"
     },
     {
       "code": 6200,
@@ -12556,6 +12627,26 @@
       "code": 6604,
       "name": "CircuitBreakerPriceJump",
       "msg": "Oracle price deviates too far from the circuit breaker reference; action rejected"
+    },
+    {
+      "code": 6800,
+      "name": "ScopeInvalidAccount",
+      "msg": "Scope oracle account is not owned by the Scope program or is malformed"
+    },
+    {
+      "code": 6801,
+      "name": "ScopeInvalidEntry",
+      "msg": "Scope entry is out of range, never refreshed, or dated in the future"
+    },
+    {
+      "code": 6802,
+      "name": "ScopeStalePrice",
+      "msg": "Scope price is stale"
+    },
+    {
+      "code": 6803,
+      "name": "UseConfigureBankOracleScope",
+      "msg": "Use lending_pool_configure_bank_oracle_scope; Scope requires an entry index"
     }
   ],
   "types": [
@@ -12929,22 +13020,22 @@
             "docs": [
               "Bank flags bitfield (u64).",
               "",
-              "- Bit 0 (1): `EMISSIONS_FLAG_BORROW_ACTIVE` — borrow-side emissions are active",
-              "- Bit 1 (2): `EMISSIONS_FLAG_LENDING_ACTIVE` — lending-side emissions are active",
-              "- Bit 2 (4): `PERMISSIONLESS_BAD_DEBT_SETTLEMENT_FLAG` — anyone can settle bad debt",
-              "- Bit 3 (8): `FREEZE_SETTINGS` — bank configuration is frozen (only limits can change)",
-              "- Bit 4 (16): `CLOSE_ENABLED_FLAG` — bank can be closed (set at creation for banks >= 0.1.4)",
-              "- Bit 5 (32): `TOKENLESS_REPAYMENTS_ALLOWED` — risk admin can repay debt without tokens",
-              "- Bit 6 (64): `TOKENLESS_REPAYMENTS_COMPLETE` — all debt cleared, lender purge enabled",
-              "- Bit 7 (128): `IS_T22` — 1 if T22, 0 if token classic",
-              "- Bit 8 (256): `BANK_SEED_KNOWN` — bank is known to be PDA/seed-derived. If not set, bank",
+              "- Bit 0 (1): `EMISSIONS_FLAG_BORROW_ACTIVE` \u2014 borrow-side emissions are active",
+              "- Bit 1 (2): `EMISSIONS_FLAG_LENDING_ACTIVE` \u2014 lending-side emissions are active",
+              "- Bit 2 (4): `PERMISSIONLESS_BAD_DEBT_SETTLEMENT_FLAG` \u2014 anyone can settle bad debt",
+              "- Bit 3 (8): `FREEZE_SETTINGS` \u2014 bank configuration is frozen (only limits can change)",
+              "- Bit 4 (16): `CLOSE_ENABLED_FLAG` \u2014 bank can be closed (set at creation for banks >= 0.1.4)",
+              "- Bit 5 (32): `TOKENLESS_REPAYMENTS_ALLOWED` \u2014 risk admin can repay debt without tokens",
+              "- Bit 6 (64): `TOKENLESS_REPAYMENTS_COMPLETE` \u2014 all debt cleared, lender purge enabled",
+              "- Bit 7 (128): `IS_T22` \u2014 1 if T22, 0 if token classic",
+              "- Bit 8 (256): `BANK_SEED_KNOWN` \u2014 bank is known to be PDA/seed-derived. If not set, bank",
               "may still be a PDA, but created before this flag launched (1.8 or earlier) or is a legacy",
               "keypair-based bank.",
-              "- Bit 9 (512): `STAKED_ORACLE_DISABLED` — staked oracle pricing is temporarily disabled.",
-              "- Bit 10 (1024): `STAKED_ORACLE_PRICE_USES_ONRAMP` — staked oracle pricing includes the SPL",
+              "- Bit 9 (512): `STAKED_ORACLE_DISABLED` \u2014 staked oracle pricing is temporarily disabled.",
+              "- Bit 10 (1024): `STAKED_ORACLE_PRICE_USES_ONRAMP` \u2014 staked oracle pricing includes the SPL",
               "single-pool on-ramp account in NAV.",
-              "- Bit 11 (2048): `CIRCUIT_BREAKER_ENABLED` — oracle deviation breaker active on this bank",
-              "- Bit 12 (4096): `BANK_SAME_ASSET_EMODE_ELIGIBLE` — bank may participate in same-asset e-mode."
+              "- Bit 11 (2048): `CIRCUIT_BREAKER_ENABLED` \u2014 oracle deviation breaker active on this bank",
+              "- Bit 12 (4096): `BANK_SAME_ASSET_EMODE_ELIGIBLE` \u2014 bank may participate in same-asset e-mode."
             ],
             "type": "u64"
           },
@@ -13645,13 +13736,13 @@
             "type": "u16"
           },
           {
-            "name": "_padding0",
-            "type": {
-              "array": [
-                "u8",
-                2
-              ]
-            }
+            "name": "scope_entry_index",
+            "docs": [
+              "Entry index into the Scope `OraclePrices` price list. Only read when",
+              "`oracle_setup == OracleSetup::Scope`; ignored (and zero) for every other setup.",
+              "Occupies what was previously `_padding0`, so the layout is unchanged."
+            ],
+            "type": "u16"
           },
           {
             "name": "oracle_max_confidence",
@@ -13718,7 +13809,7 @@
           {
             "name": "cb_ema_alpha_bps",
             "docs": [
-              "EMA smoothing factor for the reference price, in basis points (e.g. 1000 = α=0.1)."
+              "EMA smoothing factor for the reference price, in basis points (e.g. 1000 = \u03b1=0.1)."
             ],
             "type": "u16"
           }
@@ -15428,7 +15519,7 @@
             "name": "was_active_30d",
             "docs": [
               "1 if account was active within the last 30 days. Raised to 1 on every",
-              "balance-mutating instruction; can only transition 1 → 0 at pulse time, when the",
+              "balance-mutating instruction; can only transition 1 \u2192 0 at pulse time, when the",
               "elapsed-since-`last_update` check fails.",
               "Combined with `is_empty`, indicates an account pending closure."
             ],
@@ -15438,7 +15529,7 @@
             "name": "was_active_60d",
             "docs": [
               "1 if account was active within the last 60 days. Raised to 1 on every",
-              "balance-mutating instruction; can only transition 1 → 0 at pulse time, when the",
+              "balance-mutating instruction; can only transition 1 \u2192 0 at pulse time, when the",
               "elapsed-since-`last_update` check fails.",
               "Combined with `is_empty`, indicates an account eligible for permissionless close."
             ],
@@ -15864,7 +15955,7 @@
             "name": "deposit_limit",
             "docs": [
               "Cap in **fToken units**, not underlying. As `token_exchange_price` grows, the same",
-              "cap admits more underlying — re-tune against the current rate."
+              "cap admits more underlying \u2014 re-tune against the current rate."
             ],
             "type": "u64"
           },
@@ -15954,7 +16045,7 @@
             "name": "deposit_limit",
             "docs": [
               "Cap in **Kamino collateral units**, not underlying. As the reserve collateral",
-              "exchange rate grows, the same cap admits more underlying — re-tune against the",
+              "exchange rate grows, the same cap admits more underlying \u2014 re-tune against the",
               "current rate."
             ],
             "type": "u64"
@@ -16628,7 +16719,7 @@
       }
     },
     {
-      "name": "LendingPoolBankSetFixedOraclePriceEvent",
+      "name": "LendingPoolBankSetOraclePriceEvent",
       "type": {
         "kind": "struct",
         "fields": [
@@ -17359,7 +17450,7 @@
             "name": "group_flags",
             "docs": [
               "Bitmask for group settings flags.",
-              "* Bit 0 (1): `PROGRAM_FEES_ENABLED` — If set, program-level fees are enabled.",
+              "* Bit 0 (1): `PROGRAM_FEES_ENABLED` \u2014 If set, program-level fees are enabled.",
               "* Bits 1-63: Reserved for future use."
             ],
             "type": "u64"
@@ -18602,6 +18693,33 @@
           },
           {
             "name": "FixedJuplend"
+          },
+          {
+            "name": "Scope"
+          },
+          {
+            "name": "PythMSOL"
+          },
+          {
+            "name": "KaminoMSOL"
+          },
+          {
+            "name": "JuplendMSOL"
+          },
+          {
+            "name": "PythLST"
+          },
+          {
+            "name": "KaminoLST"
+          },
+          {
+            "name": "JuplendLST"
+          },
+          {
+            "name": "PTPyth"
+          },
+          {
+            "name": "PTFixed"
           }
         ]
       }
@@ -19317,7 +19435,7 @@
             "name": "deposit_limit",
             "docs": [
               "Cap in **Solend collateral units**, not underlying. As the reserve collateral",
-              "exchange rate grows, the same cap admits more underlying — re-tune against the",
+              "exchange rate grows, the same cap admits more underlying \u2014 re-tune against the",
               "current rate."
             ],
             "type": "u64"
@@ -19744,8 +19862,8 @@
             "docs": [
               "Desired bitmask for staked-bank transition flags. These bits are copied to `Bank.flags`",
               "when staked settings are propagated or when a new staked bank is created.",
-              "* Bit 9 (512): `STAKED_ORACLE_DISABLED` — staked oracle pricing is temporarily disabled.",
-              "* Bit 10 (1024): `STAKED_ORACLE_PRICE_USES_ONRAMP` — staked oracle pricing includes the SPL",
+              "* Bit 9 (512): `STAKED_ORACLE_DISABLED` \u2014 staked oracle pricing is temporarily disabled.",
+              "* Bit 10 (1024): `STAKED_ORACLE_PRICE_USES_ONRAMP` \u2014 staked oracle pricing includes the SPL",
               "single-pool on-ramp account in NAV."
             ],
             "type": "u64"

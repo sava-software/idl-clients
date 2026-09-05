@@ -136,10 +136,14 @@ public sealed interface MarginfiError extends ProgramError permits
     MarginfiError.DeleverageWithdrawalUpdateStale,
     MarginfiError.DeleverageWithdrawalUpdateOutOfOrderSlot,
     MarginfiError.DeleverageWithdrawalUpdateOutOfOrderSeq,
-    MarginfiError.UseSetFixedOraclePrice,
+    MarginfiError.UseSetOraclePrice,
     MarginfiError.InvalidGlobalFeeWallet,
     MarginfiError.BankUninitialized,
     MarginfiError.SlippageTooHigh,
+    MarginfiError.MarinadeStateValidationFailed,
+    MarginfiError.ExponentVaultValidationFailed,
+    MarginfiError.InvalidPtStartPrice,
+    MarginfiError.StakePoolStale,
     MarginfiError.WrongAssetTagForStandardInstructions,
     MarginfiError.WrongAssetTagForKaminoInstructions,
     MarginfiError.CantAddPool,
@@ -217,7 +221,11 @@ public sealed interface MarginfiError extends ProgramError permits
     MarginfiError.CircuitBreakerAdminOnly,
     MarginfiError.CircuitBreakerInvalidConfig,
     MarginfiError.CircuitBreakerRequiresWarmCache,
-    MarginfiError.CircuitBreakerPriceJump {
+    MarginfiError.CircuitBreakerPriceJump,
+    MarginfiError.ScopeInvalidAccount,
+    MarginfiError.ScopeInvalidEntry,
+    MarginfiError.ScopeStalePrice,
+    MarginfiError.UseConfigureBankOracleScope {
 
   static MarginfiError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -353,10 +361,14 @@ public sealed interface MarginfiError extends ProgramError permits
       case 6129 -> DeleverageWithdrawalUpdateStale.INSTANCE;
       case 6130 -> DeleverageWithdrawalUpdateOutOfOrderSlot.INSTANCE;
       case 6131 -> DeleverageWithdrawalUpdateOutOfOrderSeq.INSTANCE;
-      case 6132 -> UseSetFixedOraclePrice.INSTANCE;
+      case 6132 -> UseSetOraclePrice.INSTANCE;
       case 6133 -> InvalidGlobalFeeWallet.INSTANCE;
       case 6134 -> BankUninitialized.INSTANCE;
       case 6135 -> SlippageTooHigh.INSTANCE;
+      case 6136 -> MarinadeStateValidationFailed.INSTANCE;
+      case 6137 -> ExponentVaultValidationFailed.INSTANCE;
+      case 6138 -> InvalidPtStartPrice.INSTANCE;
+      case 6139 -> StakePoolStale.INSTANCE;
       case 6200 -> WrongAssetTagForStandardInstructions.INSTANCE;
       case 6201 -> WrongAssetTagForKaminoInstructions.INSTANCE;
       case 6202 -> CantAddPool.INSTANCE;
@@ -435,6 +447,10 @@ public sealed interface MarginfiError extends ProgramError permits
       case 6602 -> CircuitBreakerInvalidConfig.INSTANCE;
       case 6603 -> CircuitBreakerRequiresWarmCache.INSTANCE;
       case 6604 -> CircuitBreakerPriceJump.INSTANCE;
+      case 6800 -> ScopeInvalidAccount.INSTANCE;
+      case 6801 -> ScopeInvalidEntry.INSTANCE;
+      case 6802 -> ScopeStalePrice.INSTANCE;
+      case 6803 -> UseConfigureBankOracleScope.INSTANCE;
       default -> null;
     };
   }
@@ -1363,10 +1379,10 @@ public sealed interface MarginfiError extends ProgramError permits
     );
   }
 
-  record UseSetFixedOraclePrice(int code, String msg) implements MarginfiError {
+  record UseSetOraclePrice(int code, String msg) implements MarginfiError {
 
-    public static final UseSetFixedOraclePrice INSTANCE = new UseSetFixedOraclePrice(
-        6132, "Use set_fixed_oracle_price instead"
+    public static final UseSetOraclePrice INSTANCE = new UseSetOraclePrice(
+        6132, "Use set_oracle_price instead"
     );
   }
 
@@ -1388,6 +1404,34 @@ public sealed interface MarginfiError extends ProgramError permits
 
     public static final SlippageTooHigh INSTANCE = new SlippageTooHigh(
         6135, "Max slippage exceeds the allowed cap"
+    );
+  }
+
+  record MarinadeStateValidationFailed(int code, String msg) implements MarginfiError {
+
+    public static final MarinadeStateValidationFailed INSTANCE = new MarinadeStateValidationFailed(
+        6136, "Marinade state validation failed"
+    );
+  }
+
+  record ExponentVaultValidationFailed(int code, String msg) implements MarginfiError {
+
+    public static final ExponentVaultValidationFailed INSTANCE = new ExponentVaultValidationFailed(
+        6137, "Exponent vault validation failed"
+    );
+  }
+
+  record InvalidPtStartPrice(int code, String msg) implements MarginfiError {
+
+    public static final InvalidPtStartPrice INSTANCE = new InvalidPtStartPrice(
+        6138, "PT start price must be in (0, 1]"
+    );
+  }
+
+  record StakePoolStale(int code, String msg) implements MarginfiError {
+
+    public static final StakePoolStale INSTANCE = new StakePoolStale(
+        6139, "Stake pool balance has not been updated recently enough"
     );
   }
 
@@ -1934,6 +1978,34 @@ public sealed interface MarginfiError extends ProgramError permits
 
     public static final CircuitBreakerPriceJump INSTANCE = new CircuitBreakerPriceJump(
         6604, "Oracle price deviates too far from the circuit breaker reference; action rejected"
+    );
+  }
+
+  record ScopeInvalidAccount(int code, String msg) implements MarginfiError {
+
+    public static final ScopeInvalidAccount INSTANCE = new ScopeInvalidAccount(
+        6800, "Scope oracle account is not owned by the Scope program or is malformed"
+    );
+  }
+
+  record ScopeInvalidEntry(int code, String msg) implements MarginfiError {
+
+    public static final ScopeInvalidEntry INSTANCE = new ScopeInvalidEntry(
+        6801, "Scope entry is out of range, never refreshed, or dated in the future"
+    );
+  }
+
+  record ScopeStalePrice(int code, String msg) implements MarginfiError {
+
+    public static final ScopeStalePrice INSTANCE = new ScopeStalePrice(
+        6802, "Scope price is stale"
+    );
+  }
+
+  record UseConfigureBankOracleScope(int code, String msg) implements MarginfiError {
+
+    public static final UseConfigureBankOracleScope INSTANCE = new UseConfigureBankOracleScope(
+        6803, "Use lending_pool_configure_bank_oracle_scope; Scope requires an entry index"
     );
   }
 }

@@ -23,7 +23,16 @@ public enum OracleSetup implements RustEnum {
   FixedDrift,
   JuplendPythPull,
   JuplendSwitchboardPull,
-  FixedJuplend;
+  FixedJuplend,
+  Scope,
+  PythMSOL,
+  KaminoMSOL,
+  JuplendMSOL,
+  PythLST,
+  KaminoLST,
+  JuplendLST,
+  PTPyth,
+  PTFixed;
 
   public static OracleSetup read(final byte[] _data, final int _offset) {
     return SerDeUtil.read(1, OracleSetup.values(), _data, _offset);

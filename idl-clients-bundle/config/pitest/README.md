@@ -798,9 +798,30 @@ bank*, from one to five:
 |---|---|
 | `OracleSetup.Fixed` | 1 — bank only |
 | `FixedKamino` / `FixedDrift` / `FixedJuplend` | 2 — bank + venue state |
+| `PTFixed` | 2 — bank + Exponent vault |
+| `PythMSOL` | 3 — bank + Pyth feed + Marinade state |
+| `PythLST` | 3 — bank + Pyth feed + SPL stake pool |
+| `PTPyth` | 3 — bank + Pyth feed + Exponent vault |
+| `KaminoMSOL` / `JuplendMSOL` | 4 — bank + Pyth feed + venue state + Marinade state |
+| `KaminoLST` / `JuplendLST` | 4 — bank + Pyth feed + venue state + SPL stake pool |
 | asset tag `DEFAULT`(0) / `SOL`(1) | 2 — bank + oracle |
 | asset tag `KAMINO`/`DRIFT`/`SOLEND`/`JUPLEND`(3-6) | 3 — bank + oracle + reserve |
-| asset tag `STAKED`(2) | 5 — bank + oracle + lst mint + stake pool + onramp |
+| asset tag `STAKED`(2) | 5 — bank + oracle + lst mint + sol pool + onramp |
+
+The setup rows win; only a setup absent from them falls through to the asset tag.
+`Scope`, added in 0.1.11, is one such — the ordinary pair, with the feed's
+`OraclePrices` account as the oracle and `BankConfig.scopeEntryIndex` selecting
+the entry inside it.
+
+**0.1.11 (deployed at slot 444313123) reopened this.** It appended nine
+`OracleSetup` constants; the switch still named only the four `Fixed*` arms, so
+seven of the nine fell through to the asset tag and came back one account short —
+`WrongNumberOfOracleAccounts` again, for exactly the reason the helper exists.
+`PTFixed` and `Scope` escaped only because the program pins their asset tags to
+`DEFAULT`/`SOL`. Fixed by extending the switch and by
+`MarginfiRemainingAccountsTests.everyOracleSetupIsClassified`, which names every
+constant against an expected table so the next appended setup fails a test
+instead of mispricing a bank.
 
 A wrong count fails on chain with `WrongNumberOfOracleAccounts`. Separately,
 `maybe_take_bank_mint` splits the **first** remaining account off on the

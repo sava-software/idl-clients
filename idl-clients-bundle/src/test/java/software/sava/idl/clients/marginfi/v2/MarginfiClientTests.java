@@ -26,7 +26,8 @@ import static org.junit.jupiter.api.Assertions.*;
 /// These tests pin each derived key to its slot.
 ///
 /// Account orders are ground-truthed against the live on-chain IDL (marginfi
-/// `0.1.8`, program `MFv2hWf31Z9kbCa1snEPYctwafyhdvnV7FZnsebVacA`).
+/// `0.1.11`, program `MFv2hWf31Z9kbCa1snEPYctwafyhdvnV7FZnsebVacA`) and against
+/// the program's own Rust with `java tools/GroundTruth.java anchor`.
 final class MarginfiClientTests {
 
   private static final SolanaAccounts SOLANA_ACCOUNTS = SolanaAccounts.MAIN_NET;
