@@ -7,15 +7,6 @@ nobody took. The standing disagreements live beside this file, at its name with 
 before the extension. Ordered by program and channel, and carrying no timestamp, so
 consecutive runs are worth diffing against each other.
 
-== Movement (1) ==
+== Movement (0) ==
 
-Marginfi V2: the metadata IDL at B66dYmjB9pJ3unjp3QMiEpySb8i44Zhev3qaYj5SfLPG moved since the last generation: instructions +2 -1, types +1 -1 ~2, events +1 -1, errors +9 -1; version 0.1.10 -> 0.1.11
-  instructions added (2): lending_pool_configure_bank_oracle_scope, lending_pool_set_oracle_price
-  instructions removed (1): lending_pool_set_fixed_oracle_price
-  types added (1): LendingPoolBankSetOraclePriceEvent
-  types removed (1): LendingPoolBankSetFixedOraclePriceEvent
-  types changed (2): every one type changed
-  events added (1): LendingPoolBankSetOraclePriceEvent
-  events removed (1): LendingPoolBankSetFixedOraclePriceEvent
-  errors added (9): ExponentVaultValidationFailed, InvalidPtStartPrice, MarinadeStateValidationFailed, ScopeInvalidAccount, ScopeInvalidEntry, ScopeStalePrice, StakePoolStale, UseConfigureBankOracleScope, UseSetOraclePrice
-  errors removed (1): UseSetFixedOraclePrice
+Nothing moved since the last generation.
