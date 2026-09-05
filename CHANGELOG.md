@@ -1,5 +1,19 @@
 # Changelog
 
+## [25.19.6](https://github.com/sava-software/idl-clients/compare/25.19.5...25.19.6) (2026-09-05)
+
+
+### ⚠ BREAKING CHANGES
+
+* **idl:** Methods and event types tied to `LendingPoolBankSetFixedOraclePriceEvent` are now tied to `LendingPoolBankSetOraclePriceEvent`. Update all references to support the new event and setup logic. Test and migration adjustments may be required.
+* **kamino:** ReserveConfig has one more component, interestRateBasis, after emergencyMode, and its reserved1 array is 3 bytes; rewardsAmountPerSlot() is rewardsAmountPerAccrualUnit(), and REWARDS_AMOUNT_PER_SLOT_OFFSET is REWARDS_AMOUNT_PER_ACCRUAL_UNIT_OFFSET. LastUpdate replaces placeholder() with alignmentPadding() and timestamp(). UpdateConfigMode.UpdateRewardsAmountPerSlot is UpdateRewardsAmountPerAccrualUnit. FarmsProgram.rewardUserOnce and RewardUserOnceIxData take expectedRewardsIssuedCumulative and userStateId in place of expectedRewardIssuedUnclaimed. The unexported kamino.lend.next package is removed. Every site that needs changing fails to compile rather than silently accepting the old shape.
+
+### Features
+
+* **idl:** update Marginfi V2 to 0.1.11, sync with latest IDL changes ([ab40da0](https://github.com/sava-software/idl-clients/commit/ab40da074e27983a072dc86208f787fcb9ca22fc))
+* **kamino:** sync Lend to 1.25.0 and Farms to 1.7.0, add the Lend staging client ([a79f698](https://github.com/sava-software/idl-clients/commit/a79f6987da4189edfa2e825a1b334770fa789235))
+* **marginfi:** sync Marginfi V2 with redeployment at slot 444313123 ([6fd90cb](https://github.com/sava-software/idl-clients/commit/6fd90cb0135fa94d262afb282116d55612437358))
+
 ## [25.19.5](https://github.com/sava-software/idl-clients/compare/25.19.4...25.19.5) (2026-08-31)
 
 
