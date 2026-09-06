@@ -15,12 +15,15 @@ dependencies {
 }
 
 hardening {
+  // Ignored live-RPC scratch drivers stay available to the normal local compile,
+  // but must not enter the PIT/Jazzer recompile or its production-class audit.
+  recompileExcludes = listOf("Integ.java")
+
   // Suites are split for inner-loop speed, not for coverage: 'clients' is a
   // catch-all by exclusion, so a new hand-written class lands in some suite by
-  // default. Every suite drops the same three families — generated code (owned
-  // by idl-src-gen), test/fuzz sources sharing the recompiled root, and the
-  // git-ignored 'Integ.*' scratch files (present locally, absent in CI, so
-  // mutating them would make the baseline machine-dependent).
+  // default. The shared exclusions drop generated code (owned by idl-src-gen),
+  // test/fuzz sources sharing the recompiled root, and Integ classes; the
+  // recompile exclusion above keeps ignored Integ sources out of that root.
   val notMutated = listOf(
     "software.sava.idl.clients.*.gen.*",
     "software.sava.idl.clients.*Test*",
@@ -32,11 +35,12 @@ hardening {
     "software.sava.idl.clients.*.Integ"
   )
   // The exclusion audit reports production classes a glob swallows, per suite, and
-  // only against the FIRST glob that matches — so these two arguments have to be
-  // repeated in each suite that swallows anything, and only there. Every other glob
-  // above swallows zero (the test/fuzz roots and ResourceUtil are subtracted as test
-  // sources, orca.* and kamino.scope.* as sibling-owned), and a decline that matches
-  // nothing is itself reported.
+  // only against the FIRST glob that matches — so the generated-code argument has to
+  // be repeated in each suite that swallows generated code, and only there. Every
+  // other glob above swallows zero (the test/fuzz roots and ResourceUtil are
+  // subtracted as test sources, Integ.java is absent from the tool recompile, and
+  // orca.* and kamino.scope.* are sibling-owned), and a decline that matches nothing
+  // is itself reported.
   val generatedDecline =
       "idl-src-gen output: per-program instruction builders, account and type " +
           "(de)serialization, PDA helpers and error enums generated from each program's IDL, " +
@@ -53,11 +57,6 @@ hardening {
           "round-trip them (RouteV2DataFuzz through jupiter.swap.gen, ScopeReaderFuzz through " +
           "kamino.scope.gen.types.OracleMappings). The hand-written layer that interprets them " +
           "stays in the mutant population."
-  val integDecline =
-      "Git-ignored local scratch mains ('Integ.*' in .gitignore; AGENTS.md, Build & test): " +
-          "hand-run integration probes against live RPC, present on a dev machine and absent " +
-          "in CI. Nothing published depends on them and no source references them, so " +
-          "mutating them would make the baseline differ between this machine and CI."
   mutation.register("orca") {
     // BigInteger arithmetic is method calls, which MathMutator (primitive
     // bytecode ops) cannot reach — see config/pitest/README.md. Requires
@@ -94,9 +93,8 @@ hardening {
     mutators = "STRONGER,EXPERIMENTAL_NAKED_RECEIVER"
     targetClasses = listOf("software.sava.idl.clients.kamino.scope.*")
     excludedClasses = notMutated
-    // 45 kamino.scope.gen.* classes and kamino.scope.Integ
+    // 45 kamino.scope.gen.* classes; Integ.java stays out of the tool recompile
     declineExclusionAudit("software.sava.idl.clients.*.gen.*", generatedDecline)
-    declineExclusionAudit("software.sava.idl.clients.*.Integ", integDecline)
     targetTests = "software.sava.idl.clients.kamino.*Test*"
   }
   mutation.register("clients") {
@@ -117,9 +115,8 @@ hardening {
       "software.sava.idl.clients.spl.*"
     )
     // every bundled program's gen.* (the orca and kamino.scope ones included, since
-    // no suite mutates those either) plus the five Integ scratch mains
+    // no suite mutates those either); Integ.java stays out of the tool recompile
     declineExclusionAudit("software.sava.idl.clients.*.gen.*", generatedDecline)
-    declineExclusionAudit("software.sava.idl.clients.*.Integ", integDecline)
     targetTests = "software.sava.idl.clients.*Test*"
   }
   fuzz.register("routeV2") {

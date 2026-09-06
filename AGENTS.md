@@ -874,15 +874,17 @@ The marker remains an *acknowledgement*, not a checksum of the bounded body;
 `hardeningAgentTemplateDiff` remains the content review. Moving the marker alone
 is still not the adoption.
 
-It is also only armed when `savaBuildLocalRepo` is absent. Probed on 21.5.32
-(2026-09-06) with a deliberately stale marker: a plain `./gradlew
-:idl-clients-spl:agentsTemplateInSync` fails, while the same command with
-`-PsavaBuildLocalRepo=` — the blank form this repo's `settings.gradle.kts` treats
-as "no local repo", so the *published* plugin was resolved — passes with an
-advisory instead. The plugin keys "unreleased validation" on the property being
-present, not on it being non-blank, so a stale marker survives `check` under
-that flag. Run the sync check without the flag when it is the thing being
-verified; the defect is sava-build's to fix.
+The blank-local-override defect observed on 21.5.32 is fixed in 21.5.33.
+`-PsavaBuildLocalRepo=` clears an inherited override in this repository's
+settings while keeping a published plugin's template gate strict. Only a
+verified, byte-matching local `0.0.0-test` publication relaxes a stale marker to
+an advisory. Inspect the actual loaded coordinates, JAR path, SHA-256, and
+local override state with `:idl-clients-spl:savaBuildIdentity`.
+
+The 21.5.33 adoption keeps marker `714041431f01`: the installed template body
+is unchanged. It also uses `recompileExcludes` for the bundle's ignored scratch
+drivers, as described under "Exclusion ownership" below; accepted rows and
+PIT/toolchain sidecars do not change.
 
 What changed on 21.5.26 is that the body delta is no longer hand work.
 `hardeningAgentTemplateDiff` reports it directly, bounded by the
@@ -958,9 +960,11 @@ bundle README under "Audited timeout-detected mutants".
 exclusions, **never by allowlist** — an allowlist silently exempts every class
 added after it was written. Generated `**.gen.*` code is excluded everywhere
 (its correctness belongs to idl-src-gen, and `tools/GroundTruth.java` plus the
-execution tests are what check it), as are the git-ignored `Integ.*`
-scratch mains, which would otherwise make the baseline differ between a dev
-machine and CI. Both arguments are declared to the ownership audit as
+execution tests are what check it). In the bundle, git-ignored `Integ.*` scratch
+mains stay out of PIT/Jazzer recompiles with `recompileExcludes =
+listOf("Integ.java")`, so they cannot make the tool class path or ownership
+audit differ between a dev machine and CI. Generated exclusions are declared to
+the ownership audit as
 `declineExclusionAudit(...)` in each module's `hardening {}` block — that DSL
 call is the record, and it is per-suite, so it has to be repeated in every
 suite the glob actually swallows classes in. Exclusion patterns need a trailing
