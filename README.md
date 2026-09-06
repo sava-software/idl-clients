@@ -19,6 +19,12 @@ savaGithubPackagesPassword=GITHUB_TOKEN
 ./gradlew check
 ```
 
+## Releases
+
+Every release tag is published to GitHub Packages. Selected releases of SPL and
+bundle can be uploaded to Maven Central through the manual publishing workflow;
+see [the release procedure](docs/RELEASING.md) for fix and monthly release policy.
+
 ## Rust to Java Type Conversion
 
 Solana programs are written in Rust, so an IDL describes a program's data using Rust types. The generated Java

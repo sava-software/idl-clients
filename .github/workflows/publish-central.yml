@@ -1,0 +1,109 @@
+name: Upload Maven Central Release
+run-name: Maven Central ${{ inputs.tag }} (${{ inputs.reason }})
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Existing release tag to upload (for example, 25.19.6)'
+        required: true
+        type: string
+      reason:
+        description: 'Consumer fix needed now, or the monthly feature release'
+        required: true
+        type: choice
+        options:
+          - monthly
+          - fix
+
+# Serialize Central uploads independently of normal GitHub Packages releases.
+concurrency:
+  group: publish-central
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      RELEASE_TAG: ${{ inputs.tag }}
+
+    steps:
+      - name: Validate release selection
+        id: release
+        env:
+          RELEASE_REASON: ${{ inputs.reason }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [[ ! "$RELEASE_TAG" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo '::error::Select an existing numeric release tag, such as 25.19.6.'
+            exit 1
+          fi
+          case "$RELEASE_REASON" in
+            fix|monthly) ;;
+            *) echo '::error::Release reason must be fix or monthly.'; exit 1 ;;
+          esac
+          gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" \
+            --json isDraft,isPrerelease | jq -e '.isDraft == false and .isPrerelease == false'
+          echo "java-version=${RELEASE_TAG%%.*}" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: refs/tags/${{ inputs.tag }}
+          persist-credentials: false
+
+      - name: Verify tagged version
+        run: |
+          jq -e --arg tag "$RELEASE_TAG" '.["."] == $tag' .release-please-manifest.json
+          echo "Building release $RELEASE_TAG at $(git rev-parse HEAD)" >> "$GITHUB_STEP_SUMMARY"
+
+      # sava-build's composite setup checks out the dispatch ref, which can be
+      # main. Set up the JDKs here so the selected tag stays checked out.
+      - uses: gradle/actions/setup-gradle@9c971963bec38e04b3d30dcc455b5382be2fdbfb
+
+      - name: Set up Gradle JDK
+        uses: oracle-actions/setup-java@fff43251af9936a0e6a4d5d0946e14f1680e9b6b
+        with:
+          website: ${{ vars.JDK_SRC }}
+          release: ${{ vars.GRADLE_JAVA_VERSION }}
+
+      - name: Configure Gradle JDK
+        run: printf '\norg.gradle.java.home=%s\n' "$JAVA_HOME" >> gradle.properties
+
+      - name: Set up release JDK
+        if: ${{ vars.GRADLE_JAVA_VERSION != steps.release.outputs.java-version }}
+        uses: oracle-actions/setup-java@fff43251af9936a0e6a4d5d0946e14f1680e9b6b
+        with:
+          website: ${{ vars.JDK_SRC }}
+          release: ${{ steps.release.outputs.java-version }}
+
+      - name: Configure release JDK
+        run: printf '\norg.gradle.java.installations.paths=%s\n' "$JAVA_HOME" >> gradle.properties
+
+      - name: Check
+        env:
+          RELEASE_JAVA_VERSION: ${{ steps.release.outputs.java-version }}
+          ORG_GRADLE_PROJECT_savaGithubPackagesUsername: ${{ github.actor }}
+          ORG_GRADLE_PROJECT_savaGithubPackagesPassword: ${{ secrets.READ_SAVA_PACKAGES }}
+        run: ./gradlew --stacktrace -Psign=true -PjavaVersion="$RELEASE_JAVA_VERSION" -Pversion="$RELEASE_TAG" check
+
+      - name: Upload to Maven Central
+        env:
+          RELEASE_JAVA_VERSION: ${{ steps.release.outputs.java-version }}
+          GPG_PUBLISH_SECRET: ${{ secrets.GPG_PUBLISH_SECRET }}
+          GPG_PUBLISH_PHRASE: ${{ secrets.GPG_PUBLISH_PHRASE }}
+          MAVEN_CENTRAL_TOKEN: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
+          MAVEN_CENTRAL_SECRET: ${{ secrets.MAVEN_CENTRAL_SECRET }}
+          ORG_GRADLE_PROJECT_savaGithubPackagesUsername: ${{ github.actor }}
+          ORG_GRADLE_PROJECT_savaGithubPackagesPassword: ${{ secrets.READ_SAVA_PACKAGES }}
+        run: ./gradlew --stacktrace -Psign=true -PjavaVersion="$RELEASE_JAVA_VERSION" -Pversion="$RELEASE_TAG" :aggregation:publishCentralPortalDeployment
+
+      - name: Release instructions
+        run: |
+          echo "Uploaded SPL and bundle $RELEASE_TAG for validation. Review the deployment and publish it at https://central.sonatype.com/publishing/deployments." >> "$GITHUB_STEP_SUMMARY"
