@@ -94,6 +94,27 @@ whose division leaves trailing zeros (`StakePoolStateTests.feeToRatio`,
 | 2026-07-25 | 9 | 0 | 9 | 778/787 (99%) | 99% |
 | 2026-07-25 | 10 | 0 | 10 | 834/844 (99%) | 99% |
 | 2026-07-25 | 12 | 0 | 12 | 850/862 (99%) | 99% |
+| 2026-08-07 | 4 | 0 | 4 | 826/830 (99%) | 99% |
+| 2026-09-06 | 4 | 0 | 4 | 831/835 (99%) | 99% |
+
+The 2026-08-07 row is the ArcMutate-licensed population, measured after the
+2026-08-06 rebase onto sava-build 21.5.24 and the prune that followed it: eight
+of the twelve rows matched no mutant the licensed engine generates — the five
+`StakePoolState` / `Fee` `RemoveConditionalMutator_EQUAL_IF` zero fast paths,
+the `mulDivU64` `EQUAL_IF` sibling, and both `RemoveConditionalMutator_ORDER_IF`
+fast-path-guard rows — and were retired through the prune protocol after two
+independent history-free measurements agreed. The arguments below are kept in
+full: the four rows that remain are instances of the same three families, and
+a coordinate the engine stops generating is not one that has been killed.
+
+The 2026-09-06 row is the sava-build 21.5.32 transition — PIT 1.25.9 → 1.30.0
+and ArcMutate base 1.7.1 → 1.7.2, licence unchanged — recorded by
+`pitestSplBaselineRebase` after a history-free observation: every accepted row
+retained, `spl-accepted.csv` byte-identical, no new gated row and no unmatched
+row; only `spl-pitest-version` and `spl-pitest-toolchain.tsv` moved. The
+population is five larger than the 2026-08-07 entry, but hand-written sources
+changed in between too, so that difference is a re-measurement rather than the
+engine's effect.
 
 The 2026-07-23 row is the `EXPERIMENTAL_NAKED_RECEIVER` intake (below): +19
 mutants, all four initial survivors killed, baseline unchanged.
@@ -218,9 +239,15 @@ label by searching this file for its literal text):
 
 | Label | Rows | Argument |
 |---|---|---|
-| `# zero-fast-path family` | 7 | redundant zero short-circuits in front of a division |
-| `# fast-path-guard family` | 4 | a guard choosing the cheaper of two identical computations |
+| `# zero-fast-path family` | 1 | redundant zero short-circuits in front of a division |
+| `# fast-path-guard family` | 2 | a guard choosing the cheaper of two identical computations |
 | `# equal-operands family` | 1 | a comparison boundary where both branches compute the same value |
+
+Row counts are the CSV's current multiset, which the verify prints on every
+run; they fell from 7/4/1 to 1/2/1 with the 2026-08-06 prune described under
+"Baseline composition". The sections below still describe every site each
+family was argued at, because the argument is what a future row of the same
+shape is checked against.
 
 ### Redundant zero short-circuits in front of a division (5 mutants)
 

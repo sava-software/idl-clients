@@ -31,7 +31,7 @@ software.sava.idl.clients.kamino.scope.entries.PriceChainsRecord,hashCode,MathMu
 software.sava.idl.clients.kamino.scope.entries.ScopeEntriesRecord,hashCode,MathMutator,SURVIVED # hash-mixing family # line 167
 software.sava.idl.clients.kamino.scope.entries.ScopeEntriesRecord,hashCode,MathMutator,SURVIVED # hash-mixing family # line 168
 software.sava.idl.clients.kamino.scope.entries.ScopeEntriesRecord,parseChain,ConditionalsBoundaryMutator,SURVIVED # trim-on-exact-fit family # line 139
-software.sava.idl.clients.kamino.scope.entries.ScopeReaderRecord,emaTypes,RemoveConditionalMutator_EQUAL_IF,SURVIVED # zero-fast-path family # line 80
-software.sava.idl.clients.kamino.scope.entries.ScopeReaderRecord,entry,RemoveConditionalMutator_ORDER_IF,SURVIVED # defensive-guard family # line 104
-software.sava.idl.clients.kamino.scope.entries.ScopeReaderRecord,parseEntries,ConditionalsBoundaryMutator,SURVIVED # trim-on-exact-fit family # line 70
+software.sava.idl.clients.kamino.scope.entries.ScopeReaderRecord,emaTypes,RemoveConditionalMutator_EQUAL_IF,SURVIVED # zero-fast-path family # line 78
+software.sava.idl.clients.kamino.scope.entries.ScopeReaderRecord,entry,RemoveConditionalMutator_ORDER_IF,SURVIVED # defensive-guard family # line 102
+software.sava.idl.clients.kamino.scope.entries.ScopeReaderRecord,parseEntries,ConditionalsBoundaryMutator,SURVIVED # trim-on-exact-fit family # line 68
 software.sava.idl.clients.kamino.scope.entries.ScopeEntriesRecord,hashCode,MathMutator,SURVIVED # hash-mixing family # line 169

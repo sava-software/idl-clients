@@ -228,6 +228,29 @@ reached (`preSerialize:46`, `collectRewardsQuote:128`).
 | 2026-07-25 | `orca` | 47 | 0 | 47 | 674/721 (93%) | 93% |
 | 2026-07-25 | `clients` | 35 | 0 | 35 | 1621/1656 (98%) | 98% |
 | 2026-07-25 | `orca` | 45 | 0 | 45 | 659/704 (94%) | 94% |
+| 2026-09-06 | `orca` | 37 | 0 | 37 | 598/635 (94%) | 94% |
+| 2026-09-06 | `scope` | 37 | 0 | 37 | 302/339 (89%) | 89% |
+| 2026-09-06 | `clients` | 35 | 0 | 35 | 1586/1621 (97%) | 98% |
+
+The 2026-09-06 rows are the sava-build 21.5.32 transition — PIT 1.25.9 → 1.30.0
+and ArcMutate base 1.7.1 → 1.7.2, licence unchanged — which
+`:hardeningCertifyAll`'s preflight named for all three suites. Each
+`pitest<Suite>BaselineRebase` ran after a history-free observation of the same
+population, retained every accepted row, seeded no `# untriaged` row and left
+`orca-accepted.csv` and `clients-accepted.csv` byte-identical. The populations
+are larger than the last table entries because hand-written sources changed in
+between as well; what the transition established is that every survivor still
+matches an accepted row, no suite reported a new gated row, and no accepted row
+went unmatched. `scope-accepted.csv` changed only in three `# line` tags: the
+`ScopeReaderRecord` acceptances for `parseEntries` (trim-on-exact-fit),
+`emaTypes` (zero fast path) and `entry` (defensive guard) sat two lines above
+their recorded tags — the 2026-08-31 entries commit removed one import and its
+blank line above them — the arguments still describe the code at the observed
+lines, and `pitestScopeBaselineRetag` refreshed the metadata without touching a
+row. The rows between 2026-07-25 and here are not measured table entries: the
+2026-08-06 prune onto the licensed population is recorded under "Baseline
+provenance" in `AGENTS.md`, and the 2026-08-15 `orca` retraction in the
+tick-index lower-margin section below.
 
 The 57-row 2026-07-23 entry is the priority-3 discharge — the client-impl and
 request/response tranche worked down from 436 rows. In order of volume:
@@ -1370,6 +1393,13 @@ unaudited newcomer, which is the reviewer-stop the audit exists for.
 (`next == prev`) the iteration recomputes the same value forever instead of
 exiting. It is the weakened loop exit of an otherwise-correct Newton
 iteration, so no assertion can observe wrongness — the loop never returns.
+
+The member still times out under PIT 1.30.0 with ArcMutate base 1.7.2 (the
+2026-09-06 transition), as its structure says it must; the plugin reports the
+key as one physical `TIMED_OUT` mutant with non-timeout siblings, which is not
+a mixed-cause conflict. That transition also reset the machine-local quiet-run
+counter for every suite, as a captured PIT-input change does, so any future
+retirement argument starts from zero fresh observations.
 
 `RemoveConditionalMutator_ORDER_IF` at the same line, and the matching
 `OrcaUtil.sqrtPriceFromPositiveTick` `ORDER_IF` member at line 564, were
