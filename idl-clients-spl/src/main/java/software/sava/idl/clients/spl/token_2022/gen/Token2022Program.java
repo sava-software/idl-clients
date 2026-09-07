@@ -2724,7 +2724,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator INITIALIZE_TRANSFER_FEE_CONFIG_DISCRIMINATOR = toDiscriminator(26);
+  public static final Discriminator INITIALIZE_TRANSFER_FEE_CONFIG_DISCRIMINATOR = toDiscriminator(26, 0);
 
   /// Initialize the transfer fee on a new mint.
   ///
@@ -2797,8 +2797,6 @@ public final class Token2022Program {
     + (withdrawWithheldAuthority == null ? 1 : 33)
     ];
     int i = INITIALIZE_TRANSFER_FEE_CONFIG_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 0;
-    ++i;
     i += SerDeUtil.writeOptional(1, transferFeeConfigAuthority, _data, i);
     i += SerDeUtil.writeOptional(1, withdrawWithheldAuthority, _data, i);
     putInt16LE(_data, i, transferFeeBasisPoints);
@@ -2903,7 +2901,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator TRANSFER_CHECKED_WITH_FEE_DISCRIMINATOR = toDiscriminator(26);
+  public static final Discriminator TRANSFER_CHECKED_WITH_FEE_DISCRIMINATOR = toDiscriminator(26, 1);
 
   /// Transfer, providing expected mint information and fees.
   ///
@@ -2983,8 +2981,6 @@ public final class Token2022Program {
                                                    final long fee) {
     final byte[] _data = new byte[19];
     int i = TRANSFER_CHECKED_WITH_FEE_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 1;
-    ++i;
     putInt64LE(_data, i, amount);
     i += 8;
     _data[i] = (byte) decimals;
@@ -3067,7 +3063,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator WITHDRAW_WITHHELD_TOKENS_FROM_MINT_DISCRIMINATOR = toDiscriminator(26);
+  public static final Discriminator WITHDRAW_WITHHELD_TOKENS_FROM_MINT_DISCRIMINATOR = toDiscriminator(26, 2);
 
   /// Transfer all withheld tokens in the mint to an account. Signed by the
   /// mint's withdraw withheld tokens authority.
@@ -3111,8 +3107,7 @@ public final class Token2022Program {
   public static Instruction withdrawWithheldTokensFromMint(final AccountMeta invokedToken2022ProgramMeta,
                                                            final List<AccountMeta> keys) {
     final byte[] _data = new byte[2];
-    int i = WITHDRAW_WITHHELD_TOKENS_FROM_MINT_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 2;
+    WITHDRAW_WITHHELD_TOKENS_FROM_MINT_DISCRIMINATOR.write(_data, 0);
 
     return Instruction.createInstruction(invokedToken2022ProgramMeta, keys, _data);
   }
@@ -3159,7 +3154,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator WITHDRAW_WITHHELD_TOKENS_FROM_ACCOUNTS_DISCRIMINATOR = toDiscriminator(26);
+  public static final Discriminator WITHDRAW_WITHHELD_TOKENS_FROM_ACCOUNTS_DISCRIMINATOR = toDiscriminator(26, 3);
 
   /// Transfer all withheld tokens to an account. Signed by the mint's
   /// withdraw withheld tokens authority.
@@ -3212,8 +3207,6 @@ public final class Token2022Program {
                                                                final int numTokenAccounts) {
     final byte[] _data = new byte[3];
     int i = WITHDRAW_WITHHELD_TOKENS_FROM_ACCOUNTS_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 3;
-    ++i;
     _data[i] = (byte) numTokenAccounts;
 
     return Instruction.createInstruction(invokedToken2022ProgramMeta, keys, _data);
@@ -3269,7 +3262,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator HARVEST_WITHHELD_TOKENS_TO_MINT_DISCRIMINATOR = toDiscriminator(26);
+  public static final Discriminator HARVEST_WITHHELD_TOKENS_TO_MINT_DISCRIMINATOR = toDiscriminator(26, 4);
 
   /// Permissionless instruction to transfer all withheld tokens to the mint.
   ///
@@ -3311,8 +3304,7 @@ public final class Token2022Program {
   public static Instruction harvestWithheldTokensToMint(final AccountMeta invokedToken2022ProgramMeta,
                                                         final List<AccountMeta> keys) {
     final byte[] _data = new byte[2];
-    int i = HARVEST_WITHHELD_TOKENS_TO_MINT_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 4;
+    HARVEST_WITHHELD_TOKENS_TO_MINT_DISCRIMINATOR.write(_data, 0);
 
     return Instruction.createInstruction(invokedToken2022ProgramMeta, keys, _data);
   }
@@ -3363,7 +3355,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator SET_TRANSFER_FEE_DISCRIMINATOR = toDiscriminator(26);
+  public static final Discriminator SET_TRANSFER_FEE_DISCRIMINATOR = toDiscriminator(26, 5);
 
   /// Set transfer fee. Only supported for mints that include the
   /// `TransferFeeConfig` extension.
@@ -3413,8 +3405,6 @@ public final class Token2022Program {
                                            final long maximumFee) {
     final byte[] _data = new byte[12];
     int i = SET_TRANSFER_FEE_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 5;
-    ++i;
     putInt16LE(_data, i, transferFeeBasisPoints);
     i += 2;
     putInt64LE(_data, i, maximumFee);
@@ -3482,7 +3472,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator INITIALIZE_CONFIDENTIAL_TRANSFER_MINT_DISCRIMINATOR = toDiscriminator(27);
+  public static final Discriminator INITIALIZE_CONFIDENTIAL_TRANSFER_MINT_DISCRIMINATOR = toDiscriminator(27, 0);
 
   /// Initializes confidential transfers for a mint.
   ///
@@ -3556,8 +3546,6 @@ public final class Token2022Program {
                                                                final PublicKey auditorElgamalPubkey) {
     final byte[] _data = new byte[67];
     int i = INITIALIZE_CONFIDENTIAL_TRANSFER_MINT_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 0;
-    ++i;
     if (authority != null) {
       authority.write(_data, i);
     } else {
@@ -3661,7 +3649,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator UPDATE_CONFIDENTIAL_TRANSFER_MINT_DISCRIMINATOR = toDiscriminator(27);
+  public static final Discriminator UPDATE_CONFIDENTIAL_TRANSFER_MINT_DISCRIMINATOR = toDiscriminator(27, 1);
 
   /// Updates the confidential transfer mint configuration for a mint.
   ///
@@ -3719,8 +3707,6 @@ public final class Token2022Program {
                                                            final PublicKey auditorElgamalPubkey) {
     final byte[] _data = new byte[35];
     int i = UPDATE_CONFIDENTIAL_TRANSFER_MINT_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 1;
-    ++i;
     _data[i] = (byte) (autoApproveNewAccounts ? 1 : 0);
     ++i;
     if (auditorElgamalPubkey != null) {
@@ -3800,7 +3786,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator CONFIGURE_CONFIDENTIAL_TRANSFER_ACCOUNT_DISCRIMINATOR = toDiscriminator(27);
+  public static final Discriminator CONFIGURE_CONFIDENTIAL_TRANSFER_ACCOUNT_DISCRIMINATOR = toDiscriminator(27, 2);
 
   /// Configures confidential transfers for a token account.
   ///
@@ -3918,8 +3904,6 @@ public final class Token2022Program {
                                                                  final int proofInstructionOffset) {
     final byte[] _data = new byte[11 + decryptableZeroBalance.l()];
     int i = CONFIGURE_CONFIDENTIAL_TRANSFER_ACCOUNT_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 2;
-    ++i;
     i += decryptableZeroBalance.write(_data, i);
     putInt64LE(_data, i, maximumPendingBalanceCreditCounter);
     i += 8;
@@ -4014,7 +3998,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator APPROVE_CONFIDENTIAL_TRANSFER_ACCOUNT_DISCRIMINATOR = toDiscriminator(27);
+  public static final Discriminator APPROVE_CONFIDENTIAL_TRANSFER_ACCOUNT_DISCRIMINATOR = toDiscriminator(27, 3);
 
   /// Approves a token account for confidential transfers.
   ///
@@ -4071,8 +4055,7 @@ public final class Token2022Program {
   public static Instruction approveConfidentialTransferAccount(final AccountMeta invokedToken2022ProgramMeta,
                                                                final List<AccountMeta> keys) {
     final byte[] _data = new byte[2];
-    int i = APPROVE_CONFIDENTIAL_TRANSFER_ACCOUNT_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 3;
+    APPROVE_CONFIDENTIAL_TRANSFER_ACCOUNT_DISCRIMINATOR.write(_data, 0);
 
     return Instruction.createInstruction(invokedToken2022ProgramMeta, keys, _data);
   }
@@ -4124,7 +4107,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator EMPTY_CONFIDENTIAL_TRANSFER_ACCOUNT_DISCRIMINATOR = toDiscriminator(27);
+  public static final Discriminator EMPTY_CONFIDENTIAL_TRANSFER_ACCOUNT_DISCRIMINATOR = toDiscriminator(27, 4);
 
   /// Empty the available balance in a confidential token account.
   ///
@@ -4228,8 +4211,6 @@ public final class Token2022Program {
                                                              final int proofInstructionOffset) {
     final byte[] _data = new byte[3];
     int i = EMPTY_CONFIDENTIAL_TRANSFER_ACCOUNT_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 4;
-    ++i;
     _data[i] = (byte) proofInstructionOffset;
 
     return Instruction.createInstruction(invokedToken2022ProgramMeta, keys, _data);
@@ -4304,7 +4285,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator CONFIDENTIAL_DEPOSIT_DISCRIMINATOR = toDiscriminator(27);
+  public static final Discriminator CONFIDENTIAL_DEPOSIT_DISCRIMINATOR = toDiscriminator(27, 5);
 
   /// Deposit SPL Tokens into the pending balance of a confidential token
   /// account.
@@ -4381,8 +4362,6 @@ public final class Token2022Program {
                                                 final int decimals) {
     final byte[] _data = new byte[11];
     int i = CONFIDENTIAL_DEPOSIT_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 5;
-    ++i;
     putInt64LE(_data, i, amount);
     i += 8;
     _data[i] = (byte) decimals;
@@ -4457,7 +4436,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator CONFIDENTIAL_WITHDRAW_DISCRIMINATOR = toDiscriminator(27);
+  public static final Discriminator CONFIDENTIAL_WITHDRAW_DISCRIMINATOR = toDiscriminator(27, 6);
 
   /// Withdraw SPL Tokens from the available balance of a confidential token
   /// account.
@@ -4602,8 +4581,6 @@ public final class Token2022Program {
                                                  final int rangeProofInstructionOffset) {
     final byte[] _data = new byte[13 + newDecryptableAvailableBalance.l()];
     int i = CONFIDENTIAL_WITHDRAW_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 6;
-    ++i;
     putInt64LE(_data, i, amount);
     i += 8;
     _data[i] = (byte) decimals;
@@ -4716,7 +4693,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator CONFIDENTIAL_TRANSFER_DISCRIMINATOR = toDiscriminator(27);
+  public static final Discriminator CONFIDENTIAL_TRANSFER_DISCRIMINATOR = toDiscriminator(27, 7);
 
   /// Transfer tokens confidentially.
   ///
@@ -4883,8 +4860,6 @@ public final class Token2022Program {
                                                  final int rangeProofInstructionOffset) {
     final byte[] _data = new byte[5 + newSourceDecryptableAvailableBalance.l() + transferAmountAuditorCiphertextLo.l() + transferAmountAuditorCiphertextHi.l()];
     int i = CONFIDENTIAL_TRANSFER_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 7;
-    ++i;
     i += newSourceDecryptableAvailableBalance.write(_data, i);
     i += transferAmountAuditorCiphertextLo.write(_data, i);
     i += transferAmountAuditorCiphertextHi.write(_data, i);
@@ -5005,7 +4980,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator APPLY_CONFIDENTIAL_PENDING_BALANCE_DISCRIMINATOR = toDiscriminator(27);
+  public static final Discriminator APPLY_CONFIDENTIAL_PENDING_BALANCE_DISCRIMINATOR = toDiscriminator(27, 8);
 
   /// Applies the pending balance to the available balance, based on the
   /// history of `Deposit` and/or `Transfer` instructions.
@@ -5086,8 +5061,6 @@ public final class Token2022Program {
                                                             final DecryptableBalance newDecryptableAvailableBalance) {
     final byte[] _data = new byte[10 + newDecryptableAvailableBalance.l()];
     int i = APPLY_CONFIDENTIAL_PENDING_BALANCE_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 8;
-    ++i;
     putInt64LE(_data, i, expectedPendingBalanceCreditCounter);
     i += 8;
     newDecryptableAvailableBalance.write(_data, i);
@@ -5165,7 +5138,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator ENABLE_CONFIDENTIAL_CREDITS_DISCRIMINATOR = toDiscriminator(27);
+  public static final Discriminator ENABLE_CONFIDENTIAL_CREDITS_DISCRIMINATOR = toDiscriminator(27, 9);
 
   /// Configure a confidential extension account to accept incoming
   /// confidential transfers.
@@ -5201,8 +5174,7 @@ public final class Token2022Program {
   public static Instruction enableConfidentialCredits(final AccountMeta invokedToken2022ProgramMeta,
                                                       final List<AccountMeta> keys) {
     final byte[] _data = new byte[2];
-    int i = ENABLE_CONFIDENTIAL_CREDITS_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 9;
+    ENABLE_CONFIDENTIAL_CREDITS_DISCRIMINATOR.write(_data, 0);
 
     return Instruction.createInstruction(invokedToken2022ProgramMeta, keys, _data);
   }
@@ -5249,7 +5221,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator DISABLE_CONFIDENTIAL_CREDITS_DISCRIMINATOR = toDiscriminator(27);
+  public static final Discriminator DISABLE_CONFIDENTIAL_CREDITS_DISCRIMINATOR = toDiscriminator(27, 10);
 
   /// Configure a confidential extension account to reject any incoming
   /// confidential transfers.
@@ -5303,8 +5275,7 @@ public final class Token2022Program {
   public static Instruction disableConfidentialCredits(final AccountMeta invokedToken2022ProgramMeta,
                                                        final List<AccountMeta> keys) {
     final byte[] _data = new byte[2];
-    int i = DISABLE_CONFIDENTIAL_CREDITS_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 10;
+    DISABLE_CONFIDENTIAL_CREDITS_DISCRIMINATOR.write(_data, 0);
 
     return Instruction.createInstruction(invokedToken2022ProgramMeta, keys, _data);
   }
@@ -5357,7 +5328,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator ENABLE_NON_CONFIDENTIAL_CREDITS_DISCRIMINATOR = toDiscriminator(27);
+  public static final Discriminator ENABLE_NON_CONFIDENTIAL_CREDITS_DISCRIMINATOR = toDiscriminator(27, 11);
 
   /// Configure an account with the confidential extension to accept incoming
   /// non-confidential transfers.
@@ -5393,8 +5364,7 @@ public final class Token2022Program {
   public static Instruction enableNonConfidentialCredits(final AccountMeta invokedToken2022ProgramMeta,
                                                          final List<AccountMeta> keys) {
     final byte[] _data = new byte[2];
-    int i = ENABLE_NON_CONFIDENTIAL_CREDITS_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 11;
+    ENABLE_NON_CONFIDENTIAL_CREDITS_DISCRIMINATOR.write(_data, 0);
 
     return Instruction.createInstruction(invokedToken2022ProgramMeta, keys, _data);
   }
@@ -5441,7 +5411,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator DISABLE_NON_CONFIDENTIAL_CREDITS_DISCRIMINATOR = toDiscriminator(27);
+  public static final Discriminator DISABLE_NON_CONFIDENTIAL_CREDITS_DISCRIMINATOR = toDiscriminator(27, 12);
 
   /// Configure an account with the confidential extension to reject any
   /// incoming non-confidential transfers.
@@ -5486,8 +5456,7 @@ public final class Token2022Program {
   public static Instruction disableNonConfidentialCredits(final AccountMeta invokedToken2022ProgramMeta,
                                                           final List<AccountMeta> keys) {
     final byte[] _data = new byte[2];
-    int i = DISABLE_NON_CONFIDENTIAL_CREDITS_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 12;
+    DISABLE_NON_CONFIDENTIAL_CREDITS_DISCRIMINATOR.write(_data, 0);
 
     return Instruction.createInstruction(invokedToken2022ProgramMeta, keys, _data);
   }
@@ -5537,7 +5506,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator CONFIDENTIAL_TRANSFER_WITH_FEE_DISCRIMINATOR = toDiscriminator(27);
+  public static final Discriminator CONFIDENTIAL_TRANSFER_WITH_FEE_DISCRIMINATOR = toDiscriminator(27, 13);
 
   /// Transfer tokens confidentially with fee.
   ///
@@ -5765,8 +5734,6 @@ public final class Token2022Program {
                                                         final int rangeProofInstructionOffset) {
     final byte[] _data = new byte[7 + newSourceDecryptableAvailableBalance.l() + transferAmountAuditorCiphertextLo.l() + transferAmountAuditorCiphertextHi.l()];
     int i = CONFIDENTIAL_TRANSFER_WITH_FEE_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 13;
-    ++i;
     i += newSourceDecryptableAvailableBalance.write(_data, i);
     i += transferAmountAuditorCiphertextLo.write(_data, i);
     i += transferAmountAuditorCiphertextHi.write(_data, i);
@@ -5921,7 +5888,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator CONFIGURE_CONFIDENTIAL_TRANSFER_ACCOUNT_WITH_REGISTRY_DISCRIMINATOR = toDiscriminator(27);
+  public static final Discriminator CONFIGURE_CONFIDENTIAL_TRANSFER_ACCOUNT_WITH_REGISTRY_DISCRIMINATOR = toDiscriminator(27, 14);
 
   /// Configures confidential transfers for a token account.
   ///
@@ -6021,8 +5988,7 @@ public final class Token2022Program {
   public static Instruction configureConfidentialTransferAccountWithRegistry(final AccountMeta invokedToken2022ProgramMeta,
                                                                              final List<AccountMeta> keys) {
     final byte[] _data = new byte[2];
-    int i = CONFIGURE_CONFIDENTIAL_TRANSFER_ACCOUNT_WITH_REGISTRY_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 14;
+    CONFIGURE_CONFIDENTIAL_TRANSFER_ACCOUNT_WITH_REGISTRY_DISCRIMINATOR.write(_data, 0);
 
     return Instruction.createInstruction(invokedToken2022ProgramMeta, keys, _data);
   }
@@ -6083,7 +6049,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator INITIALIZE_DEFAULT_ACCOUNT_STATE_DISCRIMINATOR = toDiscriminator(28);
+  public static final Discriminator INITIALIZE_DEFAULT_ACCOUNT_STATE_DISCRIMINATOR = toDiscriminator(28, 0);
 
   /// Initialize a new mint with the default state for new Accounts.
   ///
@@ -6140,8 +6106,6 @@ public final class Token2022Program {
                                                           final AccountState state) {
     final byte[] _data = new byte[2 + state.l()];
     int i = INITIALIZE_DEFAULT_ACCOUNT_STATE_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 0;
-    ++i;
     state.write(_data, i);
 
     return Instruction.createInstruction(invokedToken2022ProgramMeta, keys, _data);
@@ -6202,7 +6166,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator UPDATE_DEFAULT_ACCOUNT_STATE_DISCRIMINATOR = toDiscriminator(28);
+  public static final Discriminator UPDATE_DEFAULT_ACCOUNT_STATE_DISCRIMINATOR = toDiscriminator(28, 1);
 
   /// Update the default state for new Accounts. Only supported for mints that
   /// include the `DefaultAccountState` extension.
@@ -6247,8 +6211,6 @@ public final class Token2022Program {
                                                       final AccountState state) {
     final byte[] _data = new byte[2 + state.l()];
     int i = UPDATE_DEFAULT_ACCOUNT_STATE_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 1;
-    ++i;
     state.write(_data, i);
 
     return Instruction.createInstruction(invokedToken2022ProgramMeta, keys, _data);
@@ -6409,7 +6371,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator ENABLE_MEMO_TRANSFERS_DISCRIMINATOR = toDiscriminator(30);
+  public static final Discriminator ENABLE_MEMO_TRANSFERS_DISCRIMINATOR = toDiscriminator(30, 0);
 
   /// Require memos for transfers into this Account. Adds the MemoTransfer
   /// extension to the Account, if it doesn't already exist.
@@ -6445,8 +6407,7 @@ public final class Token2022Program {
   public static Instruction enableMemoTransfers(final AccountMeta invokedToken2022ProgramMeta,
                                                 final List<AccountMeta> keys) {
     final byte[] _data = new byte[2];
-    int i = ENABLE_MEMO_TRANSFERS_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 0;
+    ENABLE_MEMO_TRANSFERS_DISCRIMINATOR.write(_data, 0);
 
     return Instruction.createInstruction(invokedToken2022ProgramMeta, keys, _data);
   }
@@ -6493,7 +6454,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator DISABLE_MEMO_TRANSFERS_DISCRIMINATOR = toDiscriminator(30);
+  public static final Discriminator DISABLE_MEMO_TRANSFERS_DISCRIMINATOR = toDiscriminator(30, 1);
 
   /// Stop requiring memos for transfers into this Account.
   ///
@@ -6535,8 +6496,7 @@ public final class Token2022Program {
   public static Instruction disableMemoTransfers(final AccountMeta invokedToken2022ProgramMeta,
                                                  final List<AccountMeta> keys) {
     final byte[] _data = new byte[2];
-    int i = DISABLE_MEMO_TRANSFERS_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 1;
+    DISABLE_MEMO_TRANSFERS_DISCRIMINATOR.write(_data, 0);
 
     return Instruction.createInstruction(invokedToken2022ProgramMeta, keys, _data);
   }
@@ -6751,7 +6711,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator INITIALIZE_INTEREST_BEARING_MINT_DISCRIMINATOR = toDiscriminator(33);
+  public static final Discriminator INITIALIZE_INTEREST_BEARING_MINT_DISCRIMINATOR = toDiscriminator(33, 0);
 
   /// Initialize a new mint with the `InterestBearing` extension.
   ///
@@ -6813,8 +6773,6 @@ public final class Token2022Program {
                                                           final int rate) {
     final byte[] _data = new byte[36];
     int i = INITIALIZE_INTEREST_BEARING_MINT_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 0;
-    ++i;
     if (rateAuthority != null) {
       rateAuthority.write(_data, i);
     } else {
@@ -6896,7 +6854,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator UPDATE_RATE_INTEREST_BEARING_MINT_DISCRIMINATOR = toDiscriminator(33);
+  public static final Discriminator UPDATE_RATE_INTEREST_BEARING_MINT_DISCRIMINATOR = toDiscriminator(33, 1);
 
   /// Update the interest rate. Only supported for mints that include the
   /// `InterestBearingConfig` extension.
@@ -6941,8 +6899,6 @@ public final class Token2022Program {
                                                           final int rate) {
     final byte[] _data = new byte[4];
     int i = UPDATE_RATE_INTEREST_BEARING_MINT_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 1;
-    ++i;
     putInt16LE(_data, i, rate);
 
     return Instruction.createInstruction(invokedToken2022ProgramMeta, keys, _data);
@@ -6998,7 +6954,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator ENABLE_CPI_GUARD_DISCRIMINATOR = toDiscriminator(34);
+  public static final Discriminator ENABLE_CPI_GUARD_DISCRIMINATOR = toDiscriminator(34, 0);
 
   /// Lock certain token operations from taking place within CPI for this Account, namely:
   /// * Transfer and Burn must go through a delegate.
@@ -7049,8 +7005,7 @@ public final class Token2022Program {
   public static Instruction enableCpiGuard(final AccountMeta invokedToken2022ProgramMeta,
                                            final List<AccountMeta> keys) {
     final byte[] _data = new byte[2];
-    int i = ENABLE_CPI_GUARD_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 0;
+    ENABLE_CPI_GUARD_DISCRIMINATOR.write(_data, 0);
 
     return Instruction.createInstruction(invokedToken2022ProgramMeta, keys, _data);
   }
@@ -7102,7 +7057,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator DISABLE_CPI_GUARD_DISCRIMINATOR = toDiscriminator(34);
+  public static final Discriminator DISABLE_CPI_GUARD_DISCRIMINATOR = toDiscriminator(34, 1);
 
   /// Allow all token operations to happen via CPI as normal.
   ///
@@ -7141,8 +7096,7 @@ public final class Token2022Program {
   public static Instruction disableCpiGuard(final AccountMeta invokedToken2022ProgramMeta,
                                             final List<AccountMeta> keys) {
     final byte[] _data = new byte[2];
-    int i = DISABLE_CPI_GUARD_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 1;
+    DISABLE_CPI_GUARD_DISCRIMINATOR.write(_data, 0);
 
     return Instruction.createInstruction(invokedToken2022ProgramMeta, keys, _data);
   }
@@ -7293,7 +7247,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator INITIALIZE_TRANSFER_HOOK_DISCRIMINATOR = toDiscriminator(36);
+  public static final Discriminator INITIALIZE_TRANSFER_HOOK_DISCRIMINATOR = toDiscriminator(36, 0);
 
   /// Initialize a new mint with a transfer hook program.
   ///
@@ -7352,8 +7306,6 @@ public final class Token2022Program {
                                                    final PublicKey programId) {
     final byte[] _data = new byte[66];
     int i = INITIALIZE_TRANSFER_HOOK_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 0;
-    ++i;
     if (authority != null) {
       authority.write(_data, i);
     } else {
@@ -7443,7 +7395,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator UPDATE_TRANSFER_HOOK_DISCRIMINATOR = toDiscriminator(36);
+  public static final Discriminator UPDATE_TRANSFER_HOOK_DISCRIMINATOR = toDiscriminator(36, 1);
 
   /// Update the transfer hook program id. Only supported for mints that
   /// include the `TransferHook` extension.
@@ -7503,8 +7455,6 @@ public final class Token2022Program {
                                                final PublicKey programId) {
     final byte[] _data = new byte[34];
     int i = UPDATE_TRANSFER_HOOK_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 1;
-    ++i;
     if (programId != null) {
       programId.write(_data, i);
     } else {
@@ -7574,7 +7524,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator INITIALIZE_CONFIDENTIAL_TRANSFER_FEE_DISCRIMINATOR = toDiscriminator(37);
+  public static final Discriminator INITIALIZE_CONFIDENTIAL_TRANSFER_FEE_DISCRIMINATOR = toDiscriminator(37, 0);
 
   /// Initializes confidential transfer fees for a mint.
   ///
@@ -7630,8 +7580,6 @@ public final class Token2022Program {
                                                               final PublicKey withdrawWithheldAuthorityElGamalPubkey) {
     final byte[] _data = new byte[66];
     int i = INITIALIZE_CONFIDENTIAL_TRANSFER_FEE_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 0;
-    ++i;
     if (authority != null) {
       authority.write(_data, i);
     } else {
@@ -7711,7 +7659,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator WITHDRAW_WITHHELD_TOKENS_FROM_MINT_FOR_CONFIDENTIAL_TRANSFER_FEE_DISCRIMINATOR = toDiscriminator(37);
+  public static final Discriminator WITHDRAW_WITHHELD_TOKENS_FROM_MINT_FOR_CONFIDENTIAL_TRANSFER_FEE_DISCRIMINATOR = toDiscriminator(37, 1);
 
   /// Transfer all withheld confidential tokens in the mint to an account.
   /// Signed by the mint's withdraw withheld tokens authority.
@@ -7797,8 +7745,6 @@ public final class Token2022Program {
                                                                                      final DecryptableBalance newDecryptableAvailableBalance) {
     final byte[] _data = new byte[3 + newDecryptableAvailableBalance.l()];
     int i = WITHDRAW_WITHHELD_TOKENS_FROM_MINT_FOR_CONFIDENTIAL_TRANSFER_FEE_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 1;
-    ++i;
     _data[i] = (byte) proofInstructionOffset;
     ++i;
     newDecryptableAvailableBalance.write(_data, i);
@@ -7871,7 +7817,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator WITHDRAW_WITHHELD_TOKENS_FROM_ACCOUNTS_FOR_CONFIDENTIAL_TRANSFER_FEE_DISCRIMINATOR = toDiscriminator(37);
+  public static final Discriminator WITHDRAW_WITHHELD_TOKENS_FROM_ACCOUNTS_FOR_CONFIDENTIAL_TRANSFER_FEE_DISCRIMINATOR = toDiscriminator(37, 2);
 
   /// Transfer all withheld tokens to an account. Signed by the mint's withdraw withheld
   /// tokens authority. This instruction is susceptible to front-running.
@@ -7953,8 +7899,6 @@ public final class Token2022Program {
                                                                                          final DecryptableBalance newDecryptableAvailableBalance) {
     final byte[] _data = new byte[4 + newDecryptableAvailableBalance.l()];
     int i = WITHDRAW_WITHHELD_TOKENS_FROM_ACCOUNTS_FOR_CONFIDENTIAL_TRANSFER_FEE_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 2;
-    ++i;
     _data[i] = (byte) numTokenAccounts;
     ++i;
     _data[i] = (byte) proofInstructionOffset;
@@ -8034,7 +7978,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator HARVEST_WITHHELD_TOKENS_TO_MINT_FOR_CONFIDENTIAL_TRANSFER_FEE_DISCRIMINATOR = toDiscriminator(37);
+  public static final Discriminator HARVEST_WITHHELD_TOKENS_TO_MINT_FOR_CONFIDENTIAL_TRANSFER_FEE_DISCRIMINATOR = toDiscriminator(37, 3);
 
   /// Permissionless instruction to transfer all withheld confidential tokens to the mint.
   ///
@@ -8076,8 +8020,7 @@ public final class Token2022Program {
   public static Instruction harvestWithheldTokensToMintForConfidentialTransferFee(final AccountMeta invokedToken2022ProgramMeta,
                                                                                   final List<AccountMeta> keys) {
     final byte[] _data = new byte[2];
-    int i = HARVEST_WITHHELD_TOKENS_TO_MINT_FOR_CONFIDENTIAL_TRANSFER_FEE_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 3;
+    HARVEST_WITHHELD_TOKENS_TO_MINT_FOR_CONFIDENTIAL_TRANSFER_FEE_DISCRIMINATOR.write(_data, 0);
 
     return Instruction.createInstruction(invokedToken2022ProgramMeta, keys, _data);
   }
@@ -8128,7 +8071,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator ENABLE_HARVEST_TO_MINT_DISCRIMINATOR = toDiscriminator(37);
+  public static final Discriminator ENABLE_HARVEST_TO_MINT_DISCRIMINATOR = toDiscriminator(37, 4);
 
   /// Configure a confidential transfer fee mint to accept harvested confidential fees.
   ///
@@ -8161,8 +8104,7 @@ public final class Token2022Program {
   public static Instruction enableHarvestToMint(final AccountMeta invokedToken2022ProgramMeta,
                                                 final List<AccountMeta> keys) {
     final byte[] _data = new byte[2];
-    int i = ENABLE_HARVEST_TO_MINT_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 4;
+    ENABLE_HARVEST_TO_MINT_DISCRIMINATOR.write(_data, 0);
 
     return Instruction.createInstruction(invokedToken2022ProgramMeta, keys, _data);
   }
@@ -8208,7 +8150,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator DISABLE_HARVEST_TO_MINT_DISCRIMINATOR = toDiscriminator(37);
+  public static final Discriminator DISABLE_HARVEST_TO_MINT_DISCRIMINATOR = toDiscriminator(37, 5);
 
   /// Configure a confidential transfer fee mint to reject any harvested confidential fees.
   ///
@@ -8241,8 +8183,7 @@ public final class Token2022Program {
   public static Instruction disableHarvestToMint(final AccountMeta invokedToken2022ProgramMeta,
                                                  final List<AccountMeta> keys) {
     final byte[] _data = new byte[2];
-    int i = DISABLE_HARVEST_TO_MINT_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 5;
+    DISABLE_HARVEST_TO_MINT_DISCRIMINATOR.write(_data, 0);
 
     return Instruction.createInstruction(invokedToken2022ProgramMeta, keys, _data);
   }
@@ -8374,7 +8315,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator INITIALIZE_METADATA_POINTER_DISCRIMINATOR = toDiscriminator(39);
+  public static final Discriminator INITIALIZE_METADATA_POINTER_DISCRIMINATOR = toDiscriminator(39, 0);
 
   /// Initialize a new mint with a metadata pointer
   ///
@@ -8436,8 +8377,6 @@ public final class Token2022Program {
                                                       final PublicKey metadataAddress) {
     final byte[] _data = new byte[66];
     int i = INITIALIZE_METADATA_POINTER_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 0;
-    ++i;
     if (authority != null) {
       authority.write(_data, i);
     } else {
@@ -8528,7 +8467,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator UPDATE_METADATA_POINTER_DISCRIMINATOR = toDiscriminator(39);
+  public static final Discriminator UPDATE_METADATA_POINTER_DISCRIMINATOR = toDiscriminator(39, 1);
 
   /// Update the metadata pointer address. Only supported for mints that
   /// include the `MetadataPointer` extension.
@@ -8573,8 +8512,6 @@ public final class Token2022Program {
                                                   final PublicKey metadataAddress) {
     final byte[] _data = new byte[34];
     int i = UPDATE_METADATA_POINTER_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 1;
-    ++i;
     if (metadataAddress != null) {
       metadataAddress.write(_data, i);
     } else {
@@ -8639,7 +8576,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator INITIALIZE_GROUP_POINTER_DISCRIMINATOR = toDiscriminator(40);
+  public static final Discriminator INITIALIZE_GROUP_POINTER_DISCRIMINATOR = toDiscriminator(40, 0);
 
   /// Initialize a new mint with a group pointer
   ///
@@ -8701,8 +8638,6 @@ public final class Token2022Program {
                                                    final PublicKey groupAddress) {
     final byte[] _data = new byte[66];
     int i = INITIALIZE_GROUP_POINTER_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 0;
-    ++i;
     if (authority != null) {
       authority.write(_data, i);
     } else {
@@ -8793,7 +8728,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator UPDATE_GROUP_POINTER_DISCRIMINATOR = toDiscriminator(40);
+  public static final Discriminator UPDATE_GROUP_POINTER_DISCRIMINATOR = toDiscriminator(40, 1);
 
   /// Update the group pointer address. Only supported for mints that
   /// include the `GroupPointer` extension.
@@ -8838,8 +8773,6 @@ public final class Token2022Program {
                                                final PublicKey groupAddress) {
     final byte[] _data = new byte[34];
     int i = UPDATE_GROUP_POINTER_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 1;
-    ++i;
     if (groupAddress != null) {
       groupAddress.write(_data, i);
     } else {
@@ -8904,7 +8837,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator INITIALIZE_GROUP_MEMBER_POINTER_DISCRIMINATOR = toDiscriminator(41);
+  public static final Discriminator INITIALIZE_GROUP_MEMBER_POINTER_DISCRIMINATOR = toDiscriminator(41, 0);
 
   /// Initialize a new mint with a group member pointer
   ///
@@ -8966,8 +8899,6 @@ public final class Token2022Program {
                                                          final PublicKey memberAddress) {
     final byte[] _data = new byte[66];
     int i = INITIALIZE_GROUP_MEMBER_POINTER_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 0;
-    ++i;
     if (authority != null) {
       authority.write(_data, i);
     } else {
@@ -9058,7 +8989,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator UPDATE_GROUP_MEMBER_POINTER_DISCRIMINATOR = toDiscriminator(41);
+  public static final Discriminator UPDATE_GROUP_MEMBER_POINTER_DISCRIMINATOR = toDiscriminator(41, 1);
 
   /// Update the group member pointer address. Only supported for mints that
   /// include the `GroupMemberPointer` extension.
@@ -9103,8 +9034,6 @@ public final class Token2022Program {
                                                      final PublicKey memberAddress) {
     final byte[] _data = new byte[34];
     int i = UPDATE_GROUP_MEMBER_POINTER_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 1;
-    ++i;
     if (memberAddress != null) {
       memberAddress.write(_data, i);
     } else {
@@ -9169,7 +9098,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator INITIALIZE_CONFIDENTIAL_MINT_BURN_DISCRIMINATOR = toDiscriminator(42);
+  public static final Discriminator INITIALIZE_CONFIDENTIAL_MINT_BURN_DISCRIMINATOR = toDiscriminator(42, 0);
 
   /// Initializes confidential mints and burns for a mint.
   ///
@@ -9234,8 +9163,6 @@ public final class Token2022Program {
                                                            final DecryptableBalance decryptableSupply) {
     final byte[] _data = new byte[34 + decryptableSupply.l()];
     int i = INITIALIZE_CONFIDENTIAL_MINT_BURN_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 0;
-    ++i;
     supplyElgamalPubkey.write(_data, i);
     i += 32;
     decryptableSupply.write(_data, i);
@@ -9309,7 +9236,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator ROTATE_SUPPLY_ELGAMAL_PUBKEY_DISCRIMINATOR = toDiscriminator(42);
+  public static final Discriminator ROTATE_SUPPLY_ELGAMAL_PUBKEY_DISCRIMINATOR = toDiscriminator(42, 1);
 
   /// Rotates the ElGamal pubkey used to encrypt confidential supply.
   ///
@@ -9377,8 +9304,6 @@ public final class Token2022Program {
                                                       final int proofInstructionOffset) {
     final byte[] _data = new byte[35];
     int i = ROTATE_SUPPLY_ELGAMAL_PUBKEY_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 1;
-    ++i;
     newSupplyElgamalPubkey.write(_data, i);
     i += 32;
     _data[i] = (byte) proofInstructionOffset;
@@ -9452,7 +9377,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator UPDATE_CONFIDENTIAL_MINT_BURN_DECRYPTABLE_SUPPLY_DISCRIMINATOR = toDiscriminator(42);
+  public static final Discriminator UPDATE_CONFIDENTIAL_MINT_BURN_DECRYPTABLE_SUPPLY_DISCRIMINATOR = toDiscriminator(42, 2);
 
   /// Updates the decryptable supply of the mint.
   ///
@@ -9494,8 +9419,6 @@ public final class Token2022Program {
                                                                         final DecryptableBalance newDecryptableSupply) {
     final byte[] _data = new byte[2 + newDecryptableSupply.l()];
     int i = UPDATE_CONFIDENTIAL_MINT_BURN_DECRYPTABLE_SUPPLY_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 2;
-    ++i;
     newDecryptableSupply.write(_data, i);
 
     return Instruction.createInstruction(invokedToken2022ProgramMeta, keys, _data);
@@ -9549,7 +9472,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator CONFIDENTIAL_MINT_DISCRIMINATOR = toDiscriminator(42);
+  public static final Discriminator CONFIDENTIAL_MINT_DISCRIMINATOR = toDiscriminator(42, 3);
 
   /// Mints tokens to a confidential balance.
   ///
@@ -9718,8 +9641,6 @@ public final class Token2022Program {
                                              final int rangeProofInstructionOffset) {
     final byte[] _data = new byte[5 + newDecryptableSupply.l() + mintAmountAuditorCiphertextLo.l() + mintAmountAuditorCiphertextHi.l()];
     int i = CONFIDENTIAL_MINT_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 3;
-    ++i;
     i += newDecryptableSupply.write(_data, i);
     i += mintAmountAuditorCiphertextLo.write(_data, i);
     i += mintAmountAuditorCiphertextHi.write(_data, i);
@@ -9841,7 +9762,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator CONFIDENTIAL_BURN_DISCRIMINATOR = toDiscriminator(42);
+  public static final Discriminator CONFIDENTIAL_BURN_DISCRIMINATOR = toDiscriminator(42, 4);
 
   /// Burns tokens from a confidential balance.
   ///
@@ -10010,8 +9931,6 @@ public final class Token2022Program {
                                              final int rangeProofInstructionOffset) {
     final byte[] _data = new byte[5 + newDecryptableAvailableBalance.l() + burnAmountAuditorCiphertextLo.l() + burnAmountAuditorCiphertextHi.l()];
     int i = CONFIDENTIAL_BURN_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 4;
-    ++i;
     i += newDecryptableAvailableBalance.write(_data, i);
     i += burnAmountAuditorCiphertextLo.write(_data, i);
     i += burnAmountAuditorCiphertextHi.write(_data, i);
@@ -10133,7 +10052,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator APPLY_CONFIDENTIAL_PENDING_BURN_DISCRIMINATOR = toDiscriminator(42);
+  public static final Discriminator APPLY_CONFIDENTIAL_PENDING_BURN_DISCRIMINATOR = toDiscriminator(42, 5);
 
   /// Applies the pending burn amount to the confidential supply.
   ///
@@ -10166,8 +10085,7 @@ public final class Token2022Program {
   public static Instruction applyConfidentialPendingBurn(final AccountMeta invokedToken2022ProgramMeta,
                                                          final List<AccountMeta> keys) {
     final byte[] _data = new byte[2];
-    int i = APPLY_CONFIDENTIAL_PENDING_BURN_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 5;
+    APPLY_CONFIDENTIAL_PENDING_BURN_DISCRIMINATOR.write(_data, 0);
 
     return Instruction.createInstruction(invokedToken2022ProgramMeta, keys, _data);
   }
@@ -10213,7 +10131,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator INITIALIZE_SCALED_UI_AMOUNT_MINT_DISCRIMINATOR = toDiscriminator(43);
+  public static final Discriminator INITIALIZE_SCALED_UI_AMOUNT_MINT_DISCRIMINATOR = toDiscriminator(43, 0);
 
   /// Initialize a new mint with the `ScaledUiAmount` extension.
   ///
@@ -10272,8 +10190,6 @@ public final class Token2022Program {
                                                          final double multiplier) {
     final byte[] _data = new byte[42];
     int i = INITIALIZE_SCALED_UI_AMOUNT_MINT_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 0;
-    ++i;
     if (authority != null) {
       authority.write(_data, i);
     } else {
@@ -10354,7 +10270,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator UPDATE_MULTIPLIER_SCALED_UI_MINT_DISCRIMINATOR = toDiscriminator(43);
+  public static final Discriminator UPDATE_MULTIPLIER_SCALED_UI_MINT_DISCRIMINATOR = toDiscriminator(43, 1);
 
   /// Update the multiplier. Only supported for mints that include the
   /// `ScaledUiAmountConfig` extension.
@@ -10407,8 +10323,6 @@ public final class Token2022Program {
                                                          final long effectiveTimestamp) {
     final byte[] _data = new byte[18];
     int i = UPDATE_MULTIPLIER_SCALED_UI_MINT_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 1;
-    ++i;
     putFloat64LE(_data, i, multiplier);
     i += 8;
     putInt64LE(_data, i, effectiveTimestamp);
@@ -10477,7 +10391,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator INITIALIZE_PAUSABLE_CONFIG_DISCRIMINATOR = toDiscriminator(44);
+  public static final Discriminator INITIALIZE_PAUSABLE_CONFIG_DISCRIMINATOR = toDiscriminator(44, 0);
 
   /// Initialize a new mint with the `Pausable` extension.
   ///
@@ -10519,8 +10433,6 @@ public final class Token2022Program {
                                                      final PublicKey authority) {
     final byte[] _data = new byte[34];
     int i = INITIALIZE_PAUSABLE_CONFIG_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 0;
-    ++i;
     if (authority != null) {
       authority.write(_data, i);
     } else {
@@ -10586,7 +10498,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator PAUSE_DISCRIMINATOR = toDiscriminator(44);
+  public static final Discriminator PAUSE_DISCRIMINATOR = toDiscriminator(44, 1);
 
   /// Pause the mint.
   ///
@@ -10625,8 +10537,7 @@ public final class Token2022Program {
   public static Instruction pause(final AccountMeta invokedToken2022ProgramMeta,
                                   final List<AccountMeta> keys) {
     final byte[] _data = new byte[2];
-    int i = PAUSE_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 1;
+    PAUSE_DISCRIMINATOR.write(_data, 0);
 
     return Instruction.createInstruction(invokedToken2022ProgramMeta, keys, _data);
   }
@@ -10674,7 +10585,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator RESUME_DISCRIMINATOR = toDiscriminator(44);
+  public static final Discriminator RESUME_DISCRIMINATOR = toDiscriminator(44, 2);
 
   /// Resume the mint.
   ///
@@ -10713,8 +10624,7 @@ public final class Token2022Program {
   public static Instruction resume(final AccountMeta invokedToken2022ProgramMeta,
                                    final List<AccountMeta> keys) {
     final byte[] _data = new byte[2];
-    int i = RESUME_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 2;
+    RESUME_DISCRIMINATOR.write(_data, 0);
 
     return Instruction.createInstruction(invokedToken2022ProgramMeta, keys, _data);
   }
@@ -12017,7 +11927,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator INITIALIZE_PERMISSIONED_BURN_DISCRIMINATOR = toDiscriminator(46);
+  public static final Discriminator INITIALIZE_PERMISSIONED_BURN_DISCRIMINATOR = toDiscriminator(46, 0);
 
   /// Require permissioned burn for the given mint account.
   ///
@@ -12059,8 +11969,6 @@ public final class Token2022Program {
                                                        final PublicKey authority) {
     final byte[] _data = new byte[34];
     int i = INITIALIZE_PERMISSIONED_BURN_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 0;
-    ++i;
     authority.write(_data, i);
 
     return Instruction.createInstruction(invokedToken2022ProgramMeta, keys, _data);
@@ -12117,7 +12025,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator PERMISSIONED_BURN_DISCRIMINATOR = toDiscriminator(46);
+  public static final Discriminator PERMISSIONED_BURN_DISCRIMINATOR = toDiscriminator(46, 1);
 
   /// Burn tokens when the mint has the permissioned burn extension enabled.
   ///
@@ -12171,8 +12079,6 @@ public final class Token2022Program {
                                              final long amount) {
     final byte[] _data = new byte[10];
     int i = PERMISSIONED_BURN_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 1;
-    ++i;
     putInt64LE(_data, i, amount);
 
     return Instruction.createInstruction(invokedToken2022ProgramMeta, keys, _data);
@@ -12227,7 +12133,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator PERMISSIONED_BURN_CHECKED_DISCRIMINATOR = toDiscriminator(46);
+  public static final Discriminator PERMISSIONED_BURN_CHECKED_DISCRIMINATOR = toDiscriminator(46, 2);
 
   /// Burn tokens with expected decimals when the mint has the permissioned burn extension enabled.
   ///
@@ -12286,8 +12192,6 @@ public final class Token2022Program {
                                                     final int decimals) {
     final byte[] _data = new byte[11];
     int i = PERMISSIONED_BURN_CHECKED_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 2;
-    ++i;
     putInt64LE(_data, i, amount);
     i += 8;
     _data[i] = (byte) decimals;
@@ -12354,7 +12258,7 @@ public final class Token2022Program {
     }
   }
 
-  public static final Discriminator PERMISSIONED_CONFIDENTIAL_BURN_DISCRIMINATOR = toDiscriminator(46);
+  public static final Discriminator PERMISSIONED_CONFIDENTIAL_BURN_DISCRIMINATOR = toDiscriminator(46, 3);
 
   /// Burn tokens from a confidential balance when the mint has the
   /// permissioned burn extension enabled.
@@ -12532,8 +12436,6 @@ public final class Token2022Program {
                                                          final int rangeProofInstructionOffset) {
     final byte[] _data = new byte[5 + newDecryptableAvailableBalance.l() + burnAmountAuditorCiphertextLo.l() + burnAmountAuditorCiphertextHi.l()];
     int i = PERMISSIONED_CONFIDENTIAL_BURN_DISCRIMINATOR.write(_data, 0);
-    _data[i] = (byte) 3;
-    ++i;
     i += newDecryptableAvailableBalance.write(_data, i);
     i += burnAmountAuditorCiphertextLo.write(_data, i);
     i += burnAmountAuditorCiphertextHi.write(_data, i);

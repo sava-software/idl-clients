@@ -301,27 +301,27 @@ PublicKey mintAuthority = parsed.mintAuthority();
 
 **`read` decodes the discriminator into a field; it does not validate it.** Handing an instruction to the wrong
 `IxData.read` returns a populated record rather than throwing, so the caller is responsible for dispatching to the right
-one. That matters more here than in most programs, because Token 2022 dispatches its extensions on two bytes and the
-generated constants carry only the first: for the 58 instructions that live under an extension, `*_DISCRIMINATOR` is
-shared with its siblings — 26 by six instructions, 27 by fifteen, 37 and 42 by six each, 46 by four, 44 by three, and
-28, 30, 33, 34, 36, 39, 40, 41 and 43 by two each. The second byte is on the parsed record:
+one. Every instruction's `*_DISCRIMINATOR` constant is the full key the program dispatches on: one byte for the base
+instructions, two for the 58 that live under an extension — the extension's instruction index followed by its
+sub-instruction index, so `INITIALIZE_TRANSFER_FEE_CONFIG_DISCRIMINATOR` is `toDiscriminator(26, 0)` and
+`SET_TRANSFER_FEE_DISCRIMINATOR` is `toDiscriminator(26, 5)` — and eight for the token-metadata and token-group interface
+instructions. All 99 are distinct, so comparing the constant against the instruction's own bytes identifies it before
+anything is decoded:
 
 ```java
 final byte[] data = instruction.copyData(); // this instruction's own bytes, not the transaction's
 
-if (data[0] == 26) {
-  // the transfer fee extension — but which of its six instructions?
+if (Token2022Program.SET_TRANSFER_FEE_DISCRIMINATOR.equals(data, 0)) {
   var parsed = Token2022Program.SetTransferFeeIxData.read(data, 0);
-  if (parsed.transferFeeDiscriminator() == 5) {
-    long maximumFee = parsed.maximumFee();
-  }
+  long maximumFee = parsed.maximumFee();
 }
 ```
 
-The sub-discriminator is a real field on every one of these records — `transferFeeDiscriminator`,
-`confidentialTransferDiscriminator`, `confidentialMintBurnDiscriminator` and so on — so the two-step check above is
-always available. The one-byte constants are a generator limitation rather than a property of the program — the IDL
-declares both discriminator fields — so treat them as the current state rather than a permanent one.
+The parsed records still carry every discriminator byte as a field — `discriminator`, and for the extension
+instructions `transferFeeDiscriminator`, `confidentialTransferDiscriminator` and so on — so a record says which
+instruction it was read as. Before the client was regenerated on 2026-09-06 the constants carried only the first byte,
+so 58 of them were shared with their sibling sub-instructions; code that compared against those one-byte values needs
+the two-byte constants now. The instruction bytes the builders write did not change.
 
 ### Error Handling
 

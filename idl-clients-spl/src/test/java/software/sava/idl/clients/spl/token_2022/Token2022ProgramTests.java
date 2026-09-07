@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.SolanaAccounts;
 import software.sava.core.accounts.meta.AccountMeta;
+import software.sava.core.programs.Discriminator;
 import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.spl.token_2022.gen.Token2022Program;
 import software.sava.idl.clients.spl.token_2022.gen.types.AuthorityType;
@@ -12,17 +13,21 @@ import software.sava.idl.clients.spl.token_2022.gen.types.EncryptedBalance;
 import software.sava.idl.clients.spl.token_2022.gen.types.ExtensionType;
 
 import java.io.ByteArrayOutputStream;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.HashSet;
 import java.util.List;
 import java.util.OptionalLong;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 final class Token2022ProgramTests {
 
@@ -1277,5 +1282,44 @@ final class Token2022ProgramTests {
         Token2022Program.WithdrawWithheldTokensFromMintForConfidentialTransferFeeIxData.read(withdrawWithheld, 0);
     assertEquals(1, parsedWithheld.confidentialTransferFeeDiscriminator());
     assertReserializes(withdrawWithheld, parsedWithheld);
+  }
+
+  /// Every generated discriminator constant is the whole key the program dispatches on, so no two
+  /// of the 99 instructions share one. Oracle: the codama document declares two
+  /// fieldDiscriminatorNodes on each extension instruction, and the Rust sub-instruction enums
+  /// under interface/src/extension/*/instruction.rs are what the second byte indexes. Until the
+  /// client regenerated on 2026-09-06 the constants carried only the first byte, so 58 of them
+  /// collided in 15 families and a constant could not tell sibling sub-instructions apart.
+  @Test
+  void everyInstructionHasItsOwnDiscriminator() throws IllegalAccessException {
+    final var byLength = new int[9];
+    final var seen = new HashSet<List<Byte>>();
+    int constants = 0;
+    for (final var field : Token2022Program.class.getDeclaredFields()) {
+      if (field.getType() == Discriminator.class
+          && Modifier.isStatic(field.getModifiers())
+          && field.getName().endsWith("_DISCRIMINATOR")) {
+        final byte[] data = ((Discriminator) field.get(null)).data();
+        ++byLength[data.length];
+        final var key = new ArrayList<Byte>(data.length);
+        for (final byte b : data) {
+          key.add(b);
+        }
+        assertTrue(seen.add(key), field.getName() + " shares its discriminator with another instruction");
+        ++constants;
+      }
+    }
+    assertEquals(99, constants);
+    assertEquals(32, byLength[1], "base instructions");
+    assertEquals(58, byLength[2], "extension sub-instructions");
+    assertEquals(9, byLength[8], "token-metadata and token-group interface instructions");
+
+    // the constant is exactly the prefix its builder writes, and a sibling's is not
+    final byte[] data = Token2022Program.transferCheckedWithFee(
+        INVOKED_TOKEN_2022, TOKEN_ACCOUNT, MINT, DESTINATION, OWNER, 24L, 24, 23L
+    ).data();
+    assertTrue(Token2022Program.TRANSFER_CHECKED_WITH_FEE_DISCRIMINATOR.equals(data, 0));
+    assertFalse(Token2022Program.INITIALIZE_TRANSFER_FEE_CONFIG_DISCRIMINATOR.equals(data, 0));
+    assertFalse(Token2022Program.SET_TRANSFER_FEE_DISCRIMINATOR.equals(data, 0));
   }
 }
