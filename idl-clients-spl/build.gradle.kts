@@ -7,6 +7,7 @@ testModuleInfo {
   requires("jdk.httpserver")
   requires("org.junit.jupiter.api")
   runtimeOnly("org.junit.jupiter.engine")
+  requires("systems.comodal.json_iterator")
 }
 
 hardening {

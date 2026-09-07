@@ -193,7 +193,14 @@ public sealed interface Swap extends RustEnum permits
   Swap.TrenchWrappedBuy,
   Swap.TrenchWrappedSell,
   Swap.BisonFiMarketBacked,
-  Swap.TesseraVV2 {
+  Swap.TesseraVV2,
+  Swap.Stableswap,
+  Swap.BinaryFiV2,
+  Swap.KipseliV3,
+  Swap.PerenaStarV2TrancheDeposit,
+  Swap.PerenaStarV2TrancheWithdrawFromExternal,
+  Swap.Quay,
+  Swap.HumidiFiRouter {
 
   static Swap read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -378,6 +385,13 @@ public sealed interface Swap extends RustEnum permits
       case 176 -> TrenchWrappedSell.INSTANCE;
       case 177 -> BisonFiMarketBacked.read(_data, i);
       case 178 -> TesseraVV2.read(_data, i);
+      case 179 -> Stableswap.INSTANCE;
+      case 180 -> BinaryFiV2.INSTANCE;
+      case 181 -> KipseliV3.read(_data, i);
+      case 182 -> PerenaStarV2TrancheDeposit.read(_data, i);
+      case 183 -> PerenaStarV2TrancheWithdrawFromExternal.read(_data, i);
+      case 184 -> Quay.read(_data, i);
+      case 185 -> HumidiFiRouter.read(_data, i);
       default -> null;
     };
   }
@@ -3059,6 +3073,166 @@ public sealed interface Swap extends RustEnum permits
     @Override
     public int ordinal() {
       return 178;
+    }
+  }
+
+  record Stableswap() implements EnumNone, Swap {
+
+    public static final Stableswap INSTANCE = new Stableswap();
+
+    @Override
+    public int ordinal() {
+      return 179;
+    }
+  }
+
+  record BinaryFiV2() implements EnumNone, Swap {
+
+    public static final BinaryFiV2 INSTANCE = new BinaryFiV2();
+
+    @Override
+    public int ordinal() {
+      return 180;
+    }
+  }
+
+  record KipseliV3(boolean val) implements EnumBool, Swap {
+
+    public static final KipseliV3 TRUE = new KipseliV3(true);
+    public static final KipseliV3 FALSE = new KipseliV3(false);
+
+    public static KipseliV3 read(final byte[] _data, int i) {
+      return _data[i] == 1 ? KipseliV3.TRUE : KipseliV3.FALSE;
+    }
+
+    @Override
+    public int ordinal() {
+      return 181;
+    }
+  }
+
+  record PerenaStarV2TrancheDeposit(PerenaTrancheKind val) implements SerDeEnum, Swap {
+
+    public static PerenaStarV2TrancheDeposit read(final byte[] _data, final int _offset) {
+      return new PerenaStarV2TrancheDeposit(PerenaTrancheKind.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 182;
+    }
+  }
+
+  /// @param externalLiquiditySource: Option<u8>
+  record PerenaStarV2TrancheWithdrawFromExternal(PerenaTrancheKind kind, OptionalInt externalLiquiditySource) implements Swap {
+
+    public static final int KIND_OFFSET = 0;
+    public static final int EXTERNAL_LIQUIDITY_SOURCE_OFFSET = 2;
+
+    public static PerenaStarV2TrancheWithdrawFromExternal read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var kind = PerenaTrancheKind.read(_data, i);
+      i += 1;
+      final OptionalInt externalLiquiditySource;
+      if (SerDeUtil.isAbsent(1, _data, i)) {
+        externalLiquiditySource = OptionalInt.empty();
+      } else {
+        ++i;
+        externalLiquiditySource = OptionalInt.of(_data[i] & 0xFF);
+      }
+      return new PerenaStarV2TrancheWithdrawFromExternal(kind, externalLiquiditySource);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + writeOrdinal(_data, _offset);
+      i += kind.write(_data, i);
+      i += SerDeUtil.writeOptionalbyte(1, externalLiquiditySource, _data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return ordinalBytes() + kind.l() + (externalLiquiditySource == null || externalLiquiditySource.isEmpty() ? 1 : (1 + 1));
+    }
+
+    @Override
+    public int ordinal() {
+      return 183;
+    }
+  }
+
+  record Quay(boolean val) implements EnumBool, Swap {
+
+    public static final Quay TRUE = new Quay(true);
+    public static final Quay FALSE = new Quay(false);
+
+    public static Quay read(final byte[] _data, int i) {
+      return _data[i] == 1 ? Quay.TRUE : Quay.FALSE;
+    }
+
+    @Override
+    public int ordinal() {
+      return 184;
+    }
+  }
+
+  /// @param claimedMs: u64
+  record HumidiFiRouter(long claimedMs,
+                        byte[] seedRng,
+                        byte[] token,
+                        boolean isBaseToQuote) implements Swap {
+
+    public static final int BYTES = 57;
+    public static final int SEED_RNG_LEN = 32;
+    public static final int TOKEN_LEN = 16;
+
+    public static final int CLAIMED_MS_OFFSET = 0;
+    public static final int SEED_RNG_OFFSET = 8;
+    public static final int TOKEN_OFFSET = 40;
+    public static final int IS_BASE_TO_QUOTE_OFFSET = 56;
+
+    public static HumidiFiRouter read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var claimedMs = getInt64LE(_data, i);
+      i += 8;
+      final var seedRng = new byte[32];
+      i += SerDeUtil.readArray(seedRng, _data, i);
+      final var token = new byte[16];
+      i += SerDeUtil.readArray(token, _data, i);
+      final var isBaseToQuote = _data[i] == 1;
+      return new HumidiFiRouter(claimedMs,
+                                seedRng,
+                                token,
+                                isBaseToQuote);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + writeOrdinal(_data, _offset);
+      putInt64LE(_data, i, claimedMs);
+      i += 8;
+      i += SerDeUtil.writeArrayChecked(seedRng, 32, _data, i);
+      i += SerDeUtil.writeArrayChecked(token, 16, _data, i);
+      _data[i] = (byte) (isBaseToQuote ? 1 : 0);
+      ++i;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return ordinalBytes() + BYTES;
+    }
+
+    @Override
+    public int ordinal() {
+      return 185;
     }
   }
 }

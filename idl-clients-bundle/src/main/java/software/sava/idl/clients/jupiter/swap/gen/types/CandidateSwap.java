@@ -22,7 +22,8 @@ public sealed interface CandidateSwap extends RustEnum permits
   CandidateSwap.ZeroFiSwapV2,
   CandidateSwap.BisonFiMarketBacked,
   CandidateSwap.RaydiumClmmV2,
-  CandidateSwap.TesseraVV2 {
+  CandidateSwap.TesseraVV2,
+  CandidateSwap.HumidiFiRouter {
 
   static CandidateSwap read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -43,6 +44,7 @@ public sealed interface CandidateSwap extends RustEnum permits
       case 12 -> BisonFiMarketBacked.read(_data, i);
       case 13 -> RaydiumClmmV2.INSTANCE;
       case 14 -> TesseraVV2.read(_data, i);
+      case 15 -> HumidiFiRouter.read(_data, i);
       default -> null;
     };
   }
@@ -315,6 +317,62 @@ public sealed interface CandidateSwap extends RustEnum permits
     @Override
     public int ordinal() {
       return 14;
+    }
+  }
+
+  /// @param claimedMs: u64
+  record HumidiFiRouter(long claimedMs,
+                        byte[] seedRng,
+                        byte[] token,
+                        boolean isBaseToQuote) implements CandidateSwap {
+
+    public static final int BYTES = 57;
+    public static final int SEED_RNG_LEN = 32;
+    public static final int TOKEN_LEN = 16;
+
+    public static final int CLAIMED_MS_OFFSET = 0;
+    public static final int SEED_RNG_OFFSET = 8;
+    public static final int TOKEN_OFFSET = 40;
+    public static final int IS_BASE_TO_QUOTE_OFFSET = 56;
+
+    public static HumidiFiRouter read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var claimedMs = getInt64LE(_data, i);
+      i += 8;
+      final var seedRng = new byte[32];
+      i += SerDeUtil.readArray(seedRng, _data, i);
+      final var token = new byte[16];
+      i += SerDeUtil.readArray(token, _data, i);
+      final var isBaseToQuote = _data[i] == 1;
+      return new HumidiFiRouter(claimedMs,
+                                seedRng,
+                                token,
+                                isBaseToQuote);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + writeOrdinal(_data, _offset);
+      putInt64LE(_data, i, claimedMs);
+      i += 8;
+      i += SerDeUtil.writeArrayChecked(seedRng, 32, _data, i);
+      i += SerDeUtil.writeArrayChecked(token, 16, _data, i);
+      _data[i] = (byte) (isBaseToQuote ? 1 : 0);
+      ++i;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return ordinalBytes() + BYTES;
+    }
+
+    @Override
+    public int ordinal() {
+      return 15;
     }
   }
 }

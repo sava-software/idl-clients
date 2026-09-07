@@ -30,7 +30,8 @@ public sealed interface JupiterError extends ProgramError permits
     JupiterError.InvalidAuthority,
     JupiterError.InsufficientFunds,
     JupiterError.InvalidTokenAccount,
-    JupiterError.BondingCurveAlreadyCompleted {
+    JupiterError.BondingCurveAlreadyCompleted,
+    JupiterError.IncorrectSwapProgramId {
 
   static JupiterError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -61,6 +62,7 @@ public sealed interface JupiterError extends ProgramError permits
       case 6024 -> InsufficientFunds.INSTANCE;
       case 6025 -> InvalidTokenAccount.INSTANCE;
       case 6026 -> BondingCurveAlreadyCompleted.INSTANCE;
+      case 6027 -> IncorrectSwapProgramId.INSTANCE;
       default -> null;
     };
   }
@@ -251,6 +253,13 @@ public sealed interface JupiterError extends ProgramError permits
 
     public static final BondingCurveAlreadyCompleted INSTANCE = new BondingCurveAlreadyCompleted(
         6026, "Bonding curve already completed"
+    );
+  }
+
+  record IncorrectSwapProgramId(int code, String msg) implements JupiterError {
+
+    public static final IncorrectSwapProgramId INSTANCE = new IncorrectSwapProgramId(
+        6027, "Swap program ID is invalid"
     );
   }
 }

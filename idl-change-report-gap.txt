@@ -19,10 +19,10 @@ Jupiter Swap: the vcs IDL at github:jup-ag/jupiter-amm-implementation@main/idls/
   instructions added (2): create_open_orders, create_program_open_orders
   instructions removed (5): close_wsol_token_account, exact_out_route_v2, route_v2, shared_accounts_exact_out_route_v2, shared_accounts_route_v2
   instructions changed (6): claim, claim_token, close_token, route, shared_accounts_exact_out_route, shared_accounts_route
-  types removed (13): BestSwapOutAmountViolation, BisonFiPredictSide, CandidateSwap, CandidateSwapQuoteError, CandidateSwapResult, CandidateSwapResults, CandidateSwapWithBps, DefiTunaAccountsType, HyloSwapType, RoutePlanStepV2, SanctumSolsSwapType, SwapEventV2, SwapsEvent
+  types removed (14): BestSwapOutAmountViolation, BisonFiPredictSide, CandidateSwap, CandidateSwapQuoteError, CandidateSwapResult, CandidateSwapResults, CandidateSwapWithBps, DefiTunaAccountsType, HyloSwapType, PerenaTrancheKind, RoutePlanStepV2, SanctumSolsSwapType, SwapEventV2, SwapsEvent
   types changed (2): RemainingAccountsSlice, Swap
   events removed (4): BestSwapOutAmountViolation, CandidateSwapQuoteError, CandidateSwapResults, SwapsEvent
-  errors removed (8): BondingCurveAlreadyCompleted, InsufficientFunds, InvalidAuthority, InvalidFeeWallet, InvalidMint, InvalidOutputTokenAccount, InvalidProgramAuthority, InvalidTokenAccount
+  errors removed (9): BondingCurveAlreadyCompleted, IncorrectSwapProgramId, InsufficientFunds, InvalidAuthority, InvalidFeeWallet, InvalidMint, InvalidOutputTokenAccount, InvalidProgramAuthority, InvalidTokenAccount
 
 Kamino Farms: the vcs IDL at github:Kamino-Finance/farms-sdk@master/src/idl/farms.json differs from the deployed idl.json: no member differs; the metadata does
 
