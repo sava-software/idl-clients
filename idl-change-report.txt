@@ -7,11 +7,6 @@ nobody took. The standing disagreements live beside this file, at its name with 
 before the extension. Ordered by program and channel, and carrying no timestamp, so
 consecutive runs are worth diffing against each other.
 
-== Movement (2) ==
+== Movement (0) ==
 
-Jupiter Swap: the anchor IDL at C88XWfp26heEmDkmfSzeXP7Fd7GQJ2j9dDTUsyiZbUTa moved since the last generation: types +1 ~2, errors +1
-  types added (1): PerenaTrancheKind
-  types changed (2): every one type changed
-  errors added (1): IncorrectSwapProgramId
-
-Neutral Trade: the program was redeployed at slot 444949127, up from 440165894, and no IDL channel moved with it (the metadata IDL was last written at slot 415920738, before the previous deploy); the stored program image changed: 1350928 payload bytes, was 1350928 — review required
+Nothing moved since the last generation.
