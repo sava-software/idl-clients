@@ -1,6 +1,11 @@
 # SPL
 
-Java clients and generated types for Solana Program Library (SPL) programs including Token, Associated Token, System, and Attestation Service programs.
+Java clients and generated types for the Solana Program Library (SPL) and the other programs every Solana client needs:
+Token, Token 2022, Associated Token, System, Compute Budget, Address Lookup Table, Memo, Stake, Stake Pool, Solana
+Attestation Service, and the ed25519 / secp256k1 / secp256r1 signature-verify precompiles.
+
+Token 2022 is spread across sava-core (account and extension decoding) and this module (instruction builders, parsers
+and errors) — [TOKEN_2022.md](TOKEN_2022.md) explains which project to reach for.
 
 ## Quick Start
 
