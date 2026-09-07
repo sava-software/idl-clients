@@ -6,8 +6,9 @@ time, and each re-derivation reintroduced the same false positives.
 
 **Everything here needs something outside the repository.** That is the rule for what
 belongs in `tools/` rather than in a test: `GroundTruth.java` needs a checkout of the
-program's Rust, and `stake-vectors.mjs` needs a `solana-program/stake` checkout to
-resolve against. A check that needs nothing outside the repo is a test, and lives with
+program's Rust, and `stake-vectors.mjs` and `token2022-vectors.mjs` each need the
+matching `solana-program/*` checkout to resolve against. A check that needs nothing
+outside the repo is a test, and lives with
 the code it reasons about — `tick_margin_sweep.py` was here until 2026-08-15 and is
 now `OrcaTickMarginSweep` in `idl-clients-bundle`'s test sources, beside the
 `OrcaUtil` whose accepted mutants it clears.
@@ -16,7 +17,8 @@ now `OrcaTickMarginSweep` in `idl-clients-bundle`'s test sources, beside the
 `java tools/GroundTruth.java`, no build step — and is deliberately **not** a Gradle
 module: a module would join the publish and would owe `mutationOwnershipAudit` either
 a mutation suite or an argued decline, which is a lot of ceremony for a diff tool.
-`stake-vectors.mjs` installs nothing here.
+The two `*-vectors.mjs` scripts install nothing here — each borrows its checkout's
+`node_modules` rather than adding a package manifest to this repository.
 
 These were Python until 2026-08-14. The port was verified byte-for-byte against the
 scripts it replaced, over every invocation recorded below plus three error paths, with
@@ -24,9 +26,9 @@ outputs and exit statuses matching exactly — the only intended difference bein
 `java …` command in the usage text. Two defects found while doing that are described
 under `GroundTruth.java`.
 
-They are **investigative aids, not gates** — with one exception, noted below:
-`stake-vectors.mjs` writes a test fixture, so what it produces *is* checked by
-`qualityGate`, even though running it is not.
+They are **investigative aids, not gates** — with one exception, noted below: the
+`*-vectors.mjs` scripts write test fixtures, so what they produce *is* checked by
+`qualityGate`, even though running them is not.
 
 `idl_probe.py` was removed on 2026-08-14. It simulated declared instructions to
 find ones the deployed program no longer dispatches; that failure reports itself,
@@ -61,6 +63,7 @@ from, so they can see a list that *moved* and never one that moved *wrongly*.
 |---|---|---|
 | `GroundTruth.java` | Does our account order match the program's Rust? | instant, local |
 | `stake-vectors.mjs` | Does our Stake encoder agree with upstream's generated JS client? | seconds, needs their checkout |
+| `token2022-vectors.mjs` | Do our Token 2022 encoder **and account lists** agree with upstream's generated JS client? | seconds, needs their checkout |
 
 
 ## `GroundTruth.java`
@@ -191,14 +194,74 @@ instruction set grows by feature gate, not by deploy, so an addition upstream is
 question about which gate carries it and whether that gate is live on mainnet before
 it is a question about bytes. Either way the diff is the review.
 
+## `token2022-vectors.mjs`
+
+```shell
+cd <solana-program/token-2022 checkout>/clients/js && pnpm install --frozen-lockfile
+cd <this repo> && node tools/token2022-vectors.mjs <that checkout>
+```
+
+Writes `idl-clients-spl/src/test/resources/token_2022/reference-vectors.txt`: **155
+vectors covering all 99 instructions `Token2022Program` declares**, each carrying both
+the instruction data upstream's client encoded and the account list its builder
+produced. `Token2022ReferenceEncodingTests` builds the same input through our generated
+builders and compares.
+
+The argument for it is the Stake one, one program over: a builder and the `IxData`
+beside it come from one IDL through one generator, so they agree by construction and
+cannot see a systematic wire-format change. What is new here is the **account list**.
+The Stake vectors are instruction data only and are structurally blind to an account
+order — the gap #520 walked straight through, described above. These vectors close it
+for Token 2022 by calling the *key-argument* builder overload rather than the
+`List<AccountMeta>` one, so address, writability and signer flag are compared for every
+case. Measured: transposing two same-typed `PublicKey` parameters in one builder call
+leaves the data comparison green and fails the account comparison, which is exactly the
+defect class `GroundTruth.java` exists for and which Token 2022 cannot be
+ground-truthed against, since it has no Anchor or Shank account structs to read.
+
+Where the two clients could legitimately disagree, the test keeps a named
+`EXPECTED_ACCOUNT_DIFFERENCES` table with a reason per entry and fails on any
+difference not in it. **As of 2026-09-06 that table is empty** — all 155 account lists
+agree exactly. Three shapes were checked and do not diverge: `syncNative`'s rent sysvar
+is optional in the IDL but *defaulted* by upstream rather than omitted, so both sides
+emit it; the eight instructions with genuinely optional accounts are the only ones
+upstream renders with the `omitted` strategy, and the generated builders drop a null
+account the same way; and every account either side declares a signer is marked one on
+both. What is deliberately outside the comparison is anything appended past the
+declared account list — upstream's `multiSigners`, and the `signers` / `sources` arrays
+— which no IDL expresses and no generated builder emits, so the vectors pass them empty.
+
+Four instructions upstream's client exposes have no vector, and the script's header
+says so rather than inventing bytes: `batch` is a client-side packing helper that
+idl-src-gen skips, which is why the IDL declares 100 instructions and
+`Token2022Program` has 99; `createAssociatedToken`, `createAssociatedTokenIdempotent`
+and `recoverNestedAssociatedToken` belong to the Associated Token Account program,
+carried in this IDL's `additionalPrograms` and generated into the `associated_token`
+package at a different address.
+
+**Do not re-run this on a schedule**, for the reason given under `stake-vectors.mjs`:
+these vectors track instruction data and account lists, and upstream's repository
+moving is not evidence that either moved. Run it to adjudicate a comparison that has
+failed, or to cover an instruction the IDL has grown — `everyInstructionHasAVector`
+fails until a new one has a vector, and hand-authoring those bytes would void the whole
+point of them. Either way the diff is the review.
+
+Like the Stake script it transpiles the checkout's TypeScript with that checkout's own
+`tsc` into a temporary directory, because the `AccountState`, `AuthorityType` and
+`ExtensionType` encoders need those `enum`s at runtime and Node's type stripping cannot
+erase them. It compiles `src/generated` rather than `src`: the hand-written helpers
+beside it are not the encoder under comparison. Nothing is written inside the checkout,
+and a dirty tree under `clients/js/src/generated` or the lockfile is refused rather
+than recorded.
+
 ## Adding to these
 
 First ask whether it belongs here at all: if the check needs nothing outside this
 repository, it is a test, and it should live next to the code it reasons about where
 `check` will run it. Otherwise keep it runnable from the repo root, and keep what it
 needs out of the repo — `GroundTruth.java` uses nothing but the JDK and stays out of
-`settings.gradle.kts`, and `stake-vectors.mjs` borrows a checkout's `node_modules`
-rather than adding a package manifest here. A new language is a decision, not a
+`settings.gradle.kts`, and the `*-vectors.mjs` scripts borrow a checkout's
+`node_modules` rather than adding a package manifest here. A new language is a decision, not a
 convenience: it needs a `.gitignore` whitelist rule, and whoever runs the tool next
 has to already have it. If a script starts needing per-program special cases beyond
 a flag, that is a sign the case belongs in `docs/PROGRAM_VERIFICATION.md` as prose

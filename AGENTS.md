@@ -514,16 +514,20 @@ Integration-style tests named `Integ.*` are git-ignored scratch files.
 `tools/` holds standalone scripts for checks otherwise re-derived by hand, and the
 rule for what belongs there is that it needs something outside the repository — a
 check that does not is a test. `GroundTruth.java` diffs a generated client's account
-order against the program's Rust, and `stake-vectors.mjs` runs against a
-`solana-program/stake` checkout to regenerate the reference encodings
-`StakeReferenceEncodingTests` compares against. The `.java` ones run straight
+order against the program's Rust; `stake-vectors.mjs` and `token2022-vectors.mjs`
+run against a `solana-program/stake` or `solana-program/token-2022` checkout to
+regenerate the reference encodings `StakeReferenceEncodingTests` and
+`Token2022ReferenceEncodingTests` compare against. The Token 2022 vectors also
+record the account list upstream's builder produced, which the Stake ones do not —
+that is the half `GroundTruth.java` covers for programs whose Rust it can read, and
+Token 2022 is not one of them. The `.java` ones run straight
 from source (`java tools/GroundTruth.java`) and are deliberately not Gradle
 modules, so they stay out of the build, the publish, and
 `mutationOwnershipAudit`. None is wired into Gradle or CI —
 `hardeningCertify` is the release gate; they are investigative aids whose output
-needs triage, except that what `stake-vectors.mjs` writes is a committed fixture
-and so is checked on every build. `GroundTruth.java` and those vectors are also
-part of what carries the correctness of the generated `**.gen.*` code the mutation
+needs triage, except that what the `*-vectors.mjs` scripts write are committed
+fixtures and so are checked on every build. `GroundTruth.java` and those vectors are
+also part of what carries the correctness of the generated `**.gen.*` code the mutation
 suites deliberately do not mutate. See [tools/README.md](tools/README.md).
 
 ## Hardening: mutation testing & fuzzing

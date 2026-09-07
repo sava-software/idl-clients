@@ -1,0 +1,638 @@
+# Differential encoding vectors for the Token 2022 program. Generated — do not hand-edit.
+#
+# Produced by tools/token2022-vectors.mjs from solana-program/token-2022's own generated
+# JavaScript client, which @codama/renderers-js renders from the same IDL this repository
+# generates from. It is an independent encoder, not ground truth: both sides descend from one
+# document, and nothing here says that document matches the deployed program.
+#
+# upstream: solana-program/token-2022 @ 0410dd784280c6498b2ad38a962bd3e1e84b5893
+# client:   @solana-program/token-2022 0.16.1, generated at fb4229feeee03eb1d7ece9c5fd91c5018e7036b6
+# lockfile: sha256 5335c1033b16b26c6d5d65e6c26e2206e2f7b1fc79f606dc7d5092620d22c644
+# covers:   99 instructions, 155 vectors
+#
+# One vector per line, "<instruction>.<case> <base64 instruction data> <accounts>", preceded
+# by the input it was built from and the accounts spelled out by name. <accounts> is a
+# comma-separated list of <base58 address>:<flags> in the order the builder emitted them,
+# where flags is "w" for writable, "s" for signer, and "-" for a readonly non-signer.
+# k(0xNN) is the 32-byte key whose byte i is (0xNN + i * 7) & 0xff; cipher(0xNN, L) is the
+# L-byte value whose byte i is 1 + ((0xNN + i * 7) % 255).
+
+# input:    mint: k(0x11), decimals: 9, mintAuthority: k(0x33), freezeAuthority: some(k(0x7f))
+# accounts: k(0x11):w, rentSysVar:-
+initializeMint.with-freeze-authority AAkzOkFIT1ZdZGtyeYCHjpWco6qxuL/GzdTb4unw9/4FDAF/ho2Um6KpsLe+xczT2uHo7/b9BAsSGSAnLjU8Q0pRWA== 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w,SysvarRent111111111111111111111111111111111:-
+
+# input:    mint: k(0x11), decimals: 9, mintAuthority: k(0x33), freezeAuthority: none
+# accounts: k(0x11):w, rentSysVar:-
+initializeMint.no-freeze-authority AAkzOkFIT1ZdZGtyeYCHjpWco6qxuL/GzdTb4unw9/4FDAA= 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w,SysvarRent111111111111111111111111111111111:-
+
+# input:    account: k(0x22), mint: k(0x11), owner: k(0x33)
+# accounts: k(0x22):w, k(0x11):-, k(0x33):-, rentSysVar:-
+initializeAccount.basic AQ== 3JMHksUi3m4Dfyjct8HuRw3tCC88banJxaa19Zybe2Xc:w,29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:-,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:-,SysvarRent111111111111111111111111111111111:-
+
+# input:    multisig: k(0x9f), m: 3, signers: []
+# accounts: k(0x9f):w, rentSysVar:-
+initializeMultisig.m3 AgM= BkDEeWgyy3BY7J14QU4a966gNvpBhghjDKwVuM4fGF51:w,SysvarRent111111111111111111111111111111111:-
+
+# input:    source: k(0x4f), destination: k(0x44), authority: signer(k(0x33)), amount: 4230000000000
+# accounts: k(0x4f):w, k(0x44):w, k(0x33):s
+transfer.amount AwC8pd/YAwAA 6LhbCRSAfBRQx3zTWZyFXKnDBLbBuSgD6wZVZh8LLTNw:w,5bbLd7K49u9vR4EsiHP9KhHpVbGyVk8BxTEK7zWDwhz4:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    source: k(0x4f), destination: k(0x44), authority: signer(k(0x33)), amount: 18446744073709551615
+# accounts: k(0x4f):w, k(0x44):w, k(0x33):s
+transfer.max-u64 A/////////// 6LhbCRSAfBRQx3zTWZyFXKnDBLbBuSgD6wZVZh8LLTNw:w,5bbLd7K49u9vR4EsiHP9KhHpVbGyVk8BxTEK7zWDwhz4:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    source: k(0x4f), delegate: k(0x55), owner: signer(k(0x33)), amount: 4230000000000
+# accounts: k(0x4f):w, k(0x55):-, k(0x33):s
+approve.amount BAC8pd/YAwAA 6LhbCRSAfBRQx3zTWZyFXKnDBLbBuSgD6wZVZh8LLTNw:w,6kDN4EEECyCmnbVW8MvmGaQneHrPwpo8TPPjExb7Kr3f:-,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    source: k(0x4f), owner: signer(k(0x33))
+# accounts: k(0x4f):w, k(0x33):s
+revoke.bare BQ== 6LhbCRSAfBRQx3zTWZyFXKnDBLbBuSgD6wZVZh8LLTNw:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    owned: k(0x11), owner: signer(k(0x33)), authorityType: MintTokens, newAuthority: some(k(0x1f))
+# accounts: k(0x11):w, k(0x33):s
+setAuthority.mint-tokens BgABHyYtNDtCSVBXXmVsc3qBiI+WnaSrsrnAx87V3OPq8fg= 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    owned: k(0x22), owner: signer(k(0x33)), authorityType: CloseAccount, newAuthority: none
+# accounts: k(0x22):w, k(0x33):s
+setAuthority.close-account-none BgMA 3JMHksUi3m4Dfyjct8HuRw3tCC88banJxaa19Zybe2Xc:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    owned: k(0x11), owner: signer(k(0x33)), authorityType: PermissionedBurn, newAuthority: some(k(0x1f))
+# accounts: k(0x11):w, k(0x33):s
+setAuthority.permissioned-burn BhEBHyYtNDtCSVBXXmVsc3qBiI+WnaSrsrnAx87V3OPq8fg= 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    mint: k(0x11), token: k(0x22), mintAuthority: signer(k(0x33)), amount: 4230000000000
+# accounts: k(0x11):w, k(0x22):w, k(0x33):s
+mintTo.amount BwC8pd/YAwAA 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w,3JMHksUi3m4Dfyjct8HuRw3tCC88banJxaa19Zybe2Xc:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    account: k(0x22), mint: k(0x11), authority: signer(k(0x33)), amount: 4230000000000
+# accounts: k(0x22):w, k(0x11):w, k(0x33):s
+burn.amount CAC8pd/YAwAA 3JMHksUi3m4Dfyjct8HuRw3tCC88banJxaa19Zybe2Xc:w,29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    account: k(0x22), destination: k(0x44), owner: signer(k(0x33))
+# accounts: k(0x22):w, k(0x44):w, k(0x33):s
+closeAccount.bare CQ== 3JMHksUi3m4Dfyjct8HuRw3tCC88banJxaa19Zybe2Xc:w,5bbLd7K49u9vR4EsiHP9KhHpVbGyVk8BxTEK7zWDwhz4:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    account: k(0x22), mint: k(0x11), owner: signer(k(0x33))
+# accounts: k(0x22):w, k(0x11):-, k(0x33):s
+freezeAccount.bare Cg== 3JMHksUi3m4Dfyjct8HuRw3tCC88banJxaa19Zybe2Xc:w,29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:-,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    account: k(0x22), mint: k(0x11), owner: signer(k(0x33))
+# accounts: k(0x22):w, k(0x11):-, k(0x33):s
+thawAccount.bare Cw== 3JMHksUi3m4Dfyjct8HuRw3tCC88banJxaa19Zybe2Xc:w,29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:-,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    source: k(0x4f), mint: k(0x11), destination: k(0x44), authority: signer(k(0x33)), amount: 4230000000000, decimals: 9
+# accounts: k(0x4f):w, k(0x11):-, k(0x44):w, k(0x33):s
+transferChecked.amount DAC8pd/YAwAACQ== 6LhbCRSAfBRQx3zTWZyFXKnDBLbBuSgD6wZVZh8LLTNw:w,29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:-,5bbLd7K49u9vR4EsiHP9KhHpVbGyVk8BxTEK7zWDwhz4:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    source: k(0x4f), mint: k(0x11), delegate: k(0x55), owner: signer(k(0x33)), amount: 4230000000000, decimals: 9
+# accounts: k(0x4f):w, k(0x11):-, k(0x55):-, k(0x33):s
+approveChecked.amount DQC8pd/YAwAACQ== 6LhbCRSAfBRQx3zTWZyFXKnDBLbBuSgD6wZVZh8LLTNw:w,29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:-,6kDN4EEECyCmnbVW8MvmGaQneHrPwpo8TPPjExb7Kr3f:-,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    mint: k(0x11), token: k(0x22), mintAuthority: signer(k(0x33)), amount: 4230000000000, decimals: 9
+# accounts: k(0x11):w, k(0x22):w, k(0x33):s
+mintToChecked.amount DgC8pd/YAwAACQ== 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w,3JMHksUi3m4Dfyjct8HuRw3tCC88banJxaa19Zybe2Xc:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    account: k(0x22), mint: k(0x11), authority: signer(k(0x33)), amount: 4230000000000, decimals: 9
+# accounts: k(0x22):w, k(0x11):w, k(0x33):s
+burnChecked.amount DwC8pd/YAwAACQ== 3JMHksUi3m4Dfyjct8HuRw3tCC88banJxaa19Zybe2Xc:w,29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    account: k(0x22)
+# accounts: k(0x22):w, rentSysVar:-
+syncNative.bare EQ== 3JMHksUi3m4Dfyjct8HuRw3tCC88banJxaa19Zybe2Xc:w,SysvarRent111111111111111111111111111111111:-
+
+# input:    mint: k(0x11)
+# accounts: k(0x11):-
+getAccountDataSize.bare FQ== 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:-
+
+# input:    account: k(0x22)
+# accounts: k(0x22):w
+initializeImmutableOwner.bare Fg== 3JMHksUi3m4Dfyjct8HuRw3tCC88banJxaa19Zybe2Xc:w
+
+# input:    mint: k(0x11), amount: 4230000000000
+# accounts: k(0x11):-
+amountToUiAmount.amount FwC8pd/YAwAA 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:-
+
+# input:    mint: k(0x11), uiAmount: "12.345"
+# accounts: k(0x11):-
+uiAmountToAmount.decimal GDEyLjM0NQ== 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:-
+
+# input:    mint: k(0x11), uiAmount: "name-é€𝄞"
+# accounts: k(0x11):-
+uiAmountToAmount.multibyte GG5hbWUtw6nigqzwnYSe 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:-
+
+# input:    mint: k(0x11), uiAmount: ""
+# accounts: k(0x11):-
+uiAmountToAmount.empty GA== 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:-
+
+# input:    account: k(0x22), mint: k(0x11), owner: k(0x33)
+# accounts: k(0x22):w, k(0x11):-, rentSysVar:-
+initializeAccount2.basic EDM6QUhPVl1ka3J5gIeOlZyjqrG4v8bN1Nvi6fD3/gUM 3JMHksUi3m4Dfyjct8HuRw3tCC88banJxaa19Zybe2Xc:w,29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:-,SysvarRent111111111111111111111111111111111:-
+
+# input:    account: k(0x22), mint: k(0x11), owner: k(0x33)
+# accounts: k(0x22):w, k(0x11):-
+initializeAccount3.basic EjM6QUhPVl1ka3J5gIeOlZyjqrG4v8bN1Nvi6fD3/gUM 3JMHksUi3m4Dfyjct8HuRw3tCC88banJxaa19Zybe2Xc:w,29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:-
+
+# input:    multisig: k(0x9f), m: 3, signers: []
+# accounts: k(0x9f):w
+initializeMultisig2.m3 EwM= BkDEeWgyy3BY7J14QU4a966gNvpBhghjDKwVuM4fGF51:w
+
+# input:    mint: k(0x11), decimals: 9, mintAuthority: k(0x33), freezeAuthority: some(k(0x7f))
+# accounts: k(0x11):w
+initializeMint2.with-freeze-authority FAkzOkFIT1ZdZGtyeYCHjpWco6qxuL/GzdTb4unw9/4FDAF/ho2Um6KpsLe+xczT2uHo7/b9BAsSGSAnLjU8Q0pRWA== 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w
+
+# input:    mint: k(0x11), decimals: 9, mintAuthority: k(0x33), freezeAuthority: none
+# accounts: k(0x11):w
+initializeMint2.no-freeze-authority FAkzOkFIT1ZdZGtyeYCHjpWco6qxuL/GzdTb4unw9/4FDAA= 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w
+
+# input:    mint: k(0x11), closeAuthority: some(k(0x1f))
+# accounts: k(0x11):w
+initializeMintCloseAuthority.some GQEfJi00O0JJUFdeZWxzeoGIj5adpKuyucDHztXc4+rx+A== 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w
+
+# input:    mint: k(0x11), closeAuthority: none
+# accounts: k(0x11):w
+initializeMintCloseAuthority.none GQA= 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w
+
+# input:    mint: k(0x11), transferFeeConfigAuthority: some(k(0x33)), withdrawWithheldAuthority: some(k(0x7f)), transferFeeBasisPoints: 1234, maximumFee: 5000000
+# accounts: k(0x11):w
+initializeTransferFeeConfig.both-authorities GgABMzpBSE9WXWRrcnmAh46VnKOqsbi/xs3U2+Lp8Pf+BQwBf4aNlJuiqbC3vsXM09rh6O/2/QQLEhkgJy41PENKUVjSBEBLTAAAAAAA 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w
+
+# input:    mint: k(0x11), transferFeeConfigAuthority: none, withdrawWithheldAuthority: none, transferFeeBasisPoints: 1234, maximumFee: 5000000
+# accounts: k(0x11):w
+initializeTransferFeeConfig.no-authorities GgAAANIEQEtMAAAAAAA= 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w
+
+# input:    mint: k(0x11), transferFeeConfigAuthority: some(k(0x33)), withdrawWithheldAuthority: none, transferFeeBasisPoints: 1234, maximumFee: 5000000
+# accounts: k(0x11):w
+initializeTransferFeeConfig.config-authority-only GgABMzpBSE9WXWRrcnmAh46VnKOqsbi/xs3U2+Lp8Pf+BQwA0gRAS0wAAAAAAA== 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w
+
+# input:    mint: k(0x11), transferFeeConfigAuthority: none, withdrawWithheldAuthority: some(k(0x7f)), transferFeeBasisPoints: 1234, maximumFee: 5000000
+# accounts: k(0x11):w
+initializeTransferFeeConfig.withdraw-authority-only GgAAAX+GjZSboqmwt77FzNPa4ejv9v0ECxIZICcuNTxDSlFY0gRAS0wAAAAAAA== 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w
+
+# input:    source: k(0x4f), mint: k(0x11), destination: k(0x44), authority: signer(k(0x33)), amount: 4230000000000, decimals: 9, fee: 7777
+# accounts: k(0x4f):w, k(0x11):-, k(0x44):w, k(0x33):s
+transferCheckedWithFee.fee GgEAvKXf2AMAAAlhHgAAAAAAAA== 6LhbCRSAfBRQx3zTWZyFXKnDBLbBuSgD6wZVZh8LLTNw:w,29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:-,5bbLd7K49u9vR4EsiHP9KhHpVbGyVk8BxTEK7zWDwhz4:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    mint: k(0x11), feeReceiver: k(0x5f), withdrawWithheldAuthority: signer(k(0x33))
+# accounts: k(0x11):w, k(0x5f):w, k(0x33):s
+withdrawWithheldTokensFromMint.bare GgI= 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w,7RQKVEtL7xB3BVzaVMBxBL8R5sxQgTfGmjVUb6KPPdNP:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    mint: k(0x11), feeReceiver: k(0x5f), withdrawWithheldAuthority: signer(k(0x33)), numTokenAccounts: 7, sources: []
+# accounts: k(0x11):-, k(0x5f):w, k(0x33):s
+withdrawWithheldTokensFromAccounts.count GgMH 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:-,7RQKVEtL7xB3BVzaVMBxBL8R5sxQgTfGmjVUb6KPPdNP:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    mint: k(0x11), sources: []
+# accounts: k(0x11):w
+harvestWithheldTokensToMint.bare GgQ= 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w
+
+# input:    mint: k(0x11), transferFeeConfigAuthority: signer(k(0x33)), transferFeeBasisPoints: 1234, maximumFee: 5000000
+# accounts: k(0x11):w, k(0x33):s
+setTransferFee.fee GgXSBEBLTAAAAAAA 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    mint: k(0x11), authority: some(k(0x33)), autoApproveNewAccounts: true, auditorElgamalPubkey: some(k(0x2f))
+# accounts: k(0x11):w
+initializeConfidentialTransferMint.auto-approve GwAzOkFIT1ZdZGtyeYCHjpWco6qxuL/GzdTb4unw9/4FDAEvNj1ES1JZYGdudXyDipGYn6attLvCydDX3uXs8/oBCA== 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w
+
+# input:    mint: k(0x11), authority: none, autoApproveNewAccounts: false, auditorElgamalPubkey: none
+# accounts: k(0x11):w
+initializeConfidentialTransferMint.no-auto-approve GwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA== 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w
+
+# input:    mint: k(0x11), authority: signer(k(0x33)), autoApproveNewAccounts: true, auditorElgamalPubkey: some(k(0x2f))
+# accounts: k(0x11):w, k(0x33):s
+updateConfidentialTransferMint.enable GwEBLzY9REtSWWBnbnV8g4qRmJ+mrbS7wsnQ197l7PP6AQg= 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    mint: k(0x11), authority: signer(k(0x33)), autoApproveNewAccounts: false, auditorElgamalPubkey: none
+# accounts: k(0x11):w, k(0x33):s
+updateConfidentialTransferMint.disable GwEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA= 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    token: k(0x22), mint: k(0x11), authority: signer(k(0x33)), decryptableZeroBalance: cipher(0xc3, 36), maximumPendingBalanceCreditCounter: 65536, proofInstructionOffset: 5
+# accounts: k(0x22):w, k(0x11):-, instructionsSysVar:-, k(0x33):s
+configureConfidentialTransferAccount.basic GwLEy9LZ4Ofu9fwECxIZICcuNTxDSlFYX2ZtdHuCiZCXnqWss7oAAAEAAAAAAAU= 3JMHksUi3m4Dfyjct8HuRw3tCC88banJxaa19Zybe2Xc:w,29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:-,Sysvar1nstructions1111111111111111111111111:-,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    token: k(0x22), mint: k(0x11), authority: signer(k(0x33))
+# accounts: k(0x22):w, k(0x11):-, k(0x33):s
+approveConfidentialTransferAccount.bare GwM= 3JMHksUi3m4Dfyjct8HuRw3tCC88banJxaa19Zybe2Xc:w,29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:-,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    token: k(0x22), authority: signer(k(0x33)), proofInstructionOffset: 5
+# accounts: k(0x22):w, instructionsSysVar:-, k(0x33):s
+emptyConfidentialTransferAccount.offset GwQF 3JMHksUi3m4Dfyjct8HuRw3tCC88banJxaa19Zybe2Xc:w,Sysvar1nstructions1111111111111111111111111:-,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    token: k(0x22), authority: signer(k(0x33)), proofInstructionOffset: -3
+# accounts: k(0x22):w, instructionsSysVar:-, k(0x33):s
+emptyConfidentialTransferAccount.negative-offset GwT9 3JMHksUi3m4Dfyjct8HuRw3tCC88banJxaa19Zybe2Xc:w,Sysvar1nstructions1111111111111111111111111:-,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    token: k(0x22), mint: k(0x11), authority: signer(k(0x33)), amount: 4230000000000, decimals: 9
+# accounts: k(0x22):w, k(0x11):-, k(0x33):s
+confidentialDeposit.amount GwUAvKXf2AMAAAk= 3JMHksUi3m4Dfyjct8HuRw3tCC88banJxaa19Zybe2Xc:w,29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:-,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    token: k(0x22), mint: k(0x11), instructionsSysvar: instructionsSysVar, equalityRecord: k(0xaa), rangeRecord: k(0xcc), authority: signer(k(0x33)), amount: 4230000000000, decimals: 9, newDecryptableAvailableBalance: cipher(0xc3, 36), equalityProofInstructionOffset: -3, rangeProofInstructionOffset: 5
+# accounts: k(0x22):w, k(0x11):-, instructionsSysVar:-, k(0xaa):-, k(0xcc):-, k(0x33):s
+confidentialWithdraw.all-records GwYAvKXf2AMAAAnEy9LZ4Ofu9fwECxIZICcuNTxDSlFYX2ZtdHuCiZCXnqWss7r9BQ== 3JMHksUi3m4Dfyjct8HuRw3tCC88banJxaa19Zybe2Xc:w,29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:-,Sysvar1nstructions1111111111111111111111111:-,CVKVDpp6UKT2eHkeCjqp6ucw2dnepQHZk8YVRcSF9yrA:-,EnZY64eSaTYKxTPqtsyoZj3ew8fKdwfEBDFMsxX81Wf6:-,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    token: k(0x22), mint: k(0x11), authority: signer(k(0x33)), amount: 4230000000000, decimals: 9, newDecryptableAvailableBalance: cipher(0xc3, 36), equalityProofInstructionOffset: -3, rangeProofInstructionOffset: 5
+# accounts: k(0x22):w, k(0x11):-, k(0x33):s
+confidentialWithdraw.no-records GwYAvKXf2AMAAAnEy9LZ4Ofu9fwECxIZICcuNTxDSlFYX2ZtdHuCiZCXnqWss7r9BQ== 3JMHksUi3m4Dfyjct8HuRw3tCC88banJxaa19Zybe2Xc:w,29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:-,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    sourceToken: k(0x4f), mint: k(0x11), destinationToken: k(0x44), instructionsSysvar: instructionsSysVar, equalityRecord: k(0xaa), ciphertextValidityRecord: k(0xbb), rangeRecord: k(0xcc), authority: signer(k(0x33)), newSourceDecryptableAvailableBalance: cipher(0xc3, 36), transferAmountAuditorCiphertextLo: cipher(0xa1, 64), transferAmountAuditorCiphertextHi: cipher(0xb2, 64), equalityProofInstructionOffset: -3, ciphertextValidityProofInstructionOffset: 5, rangeProofInstructionOffset: -3
+# accounts: k(0x4f):w, k(0x11):-, k(0x44):w, instructionsSysVar:-, k(0xaa):-, k(0xbb):-, k(0xcc):-, k(0x33):s
+confidentialTransfer.all-records GwfEy9LZ4Ofu9fwECxIZICcuNTxDSlFYX2ZtdHuCiZCXnqWss7qiqbC3vsXM09rh6O/2/QUMExohKC82PURLUllgZ251fIOKkZifpq20u8LJ0Nfe5ezz+gIJEBceJSwzOkFIT1Zds7rByM/W3eTr8vkBCA8WHSQrMjlAR05VXGNqcXh/ho2Um6KpsLe+xczT2uHo7/b9BQwTGiEoLzY9REtSWWBnbv0F/Q== 6LhbCRSAfBRQx3zTWZyFXKnDBLbBuSgD6wZVZh8LLTNw:w,29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:-,5bbLd7K49u9vR4EsiHP9KhHpVbGyVk8BxTEK7zWDwhz4:w,Sysvar1nstructions1111111111111111111111111:-,CVKVDpp6UKT2eHkeCjqp6ucw2dnepQHZk8YVRcSF9yrA:-,DdwWewjGXPVt1ooWuQZYKRGfWmBBEVSiCPz12UVh5TmM:-,EnZY64eSaTYKxTPqtsyoZj3ew8fKdwfEBDFMsxX81Wf6:-,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    sourceToken: k(0x4f), mint: k(0x11), destinationToken: k(0x44), authority: signer(k(0x33)), newSourceDecryptableAvailableBalance: cipher(0xc3, 36), transferAmountAuditorCiphertextLo: cipher(0xa1, 64), transferAmountAuditorCiphertextHi: cipher(0xb2, 64), equalityProofInstructionOffset: -3, ciphertextValidityProofInstructionOffset: 5, rangeProofInstructionOffset: -3
+# accounts: k(0x4f):w, k(0x11):-, k(0x44):w, k(0x33):s
+confidentialTransfer.no-records GwfEy9LZ4Ofu9fwECxIZICcuNTxDSlFYX2ZtdHuCiZCXnqWss7qiqbC3vsXM09rh6O/2/QUMExohKC82PURLUllgZ251fIOKkZifpq20u8LJ0Nfe5ezz+gIJEBceJSwzOkFIT1Zds7rByM/W3eTr8vkBCA8WHSQrMjlAR05VXGNqcXh/ho2Um6KpsLe+xczT2uHo7/b9BQwTGiEoLzY9REtSWWBnbv0F/Q== 6LhbCRSAfBRQx3zTWZyFXKnDBLbBuSgD6wZVZh8LLTNw:w,29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:-,5bbLd7K49u9vR4EsiHP9KhHpVbGyVk8BxTEK7zWDwhz4:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    token: k(0x22), authority: signer(k(0x33)), expectedPendingBalanceCreditCounter: 1024, newDecryptableAvailableBalance: cipher(0xc3, 36)
+# accounts: k(0x22):w, k(0x33):s
+applyConfidentialPendingBalance.counter GwgABAAAAAAAAMTL0tng5+71/AQLEhkgJy41PENKUVhfZm10e4KJkJeepayzug== 3JMHksUi3m4Dfyjct8HuRw3tCC88banJxaa19Zybe2Xc:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    token: k(0x22), authority: signer(k(0x33))
+# accounts: k(0x22):w, k(0x33):s
+enableConfidentialCredits.bare Gwk= 3JMHksUi3m4Dfyjct8HuRw3tCC88banJxaa19Zybe2Xc:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    token: k(0x22), authority: signer(k(0x33))
+# accounts: k(0x22):w, k(0x33):s
+disableConfidentialCredits.bare Gwo= 3JMHksUi3m4Dfyjct8HuRw3tCC88banJxaa19Zybe2Xc:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    token: k(0x22), authority: signer(k(0x33))
+# accounts: k(0x22):w, k(0x33):s
+enableNonConfidentialCredits.bare Gws= 3JMHksUi3m4Dfyjct8HuRw3tCC88banJxaa19Zybe2Xc:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    token: k(0x22), authority: signer(k(0x33))
+# accounts: k(0x22):w, k(0x33):s
+disableNonConfidentialCredits.bare Gww= 3JMHksUi3m4Dfyjct8HuRw3tCC88banJxaa19Zybe2Xc:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    sourceToken: k(0x4f), mint: k(0x11), destinationToken: k(0x44), instructionsSysvar: instructionsSysVar, equalityRecord: k(0xaa), transferAmountCiphertextValidityRecord: k(0xbb), feeSigmaRecord: k(0xdd), feeCiphertextValidityRecord: k(0xee), rangeRecord: k(0xcc), authority: signer(k(0x33)), newSourceDecryptableAvailableBalance: cipher(0xc3, 36), transferAmountAuditorCiphertextLo: cipher(0xa1, 64), transferAmountAuditorCiphertextHi: cipher(0xb2, 64), equalityProofInstructionOffset: -3, transferAmountCiphertextValidityProofInstructionOffset: 5, feeSigmaProofInstructionOffset: -3, feeCiphertextValidityProofInstructionOffset: 5, rangeProofInstructionOffset: -3
+# accounts: k(0x4f):w, k(0x11):-, k(0x44):w, instructionsSysVar:-, k(0xaa):-, k(0xbb):-, k(0xdd):-, k(0xee):-, k(0xcc):-, k(0x33):s
+confidentialTransferWithFee.all-records Gw3Ey9LZ4Ofu9fwECxIZICcuNTxDSlFYX2ZtdHuCiZCXnqWss7qiqbC3vsXM09rh6O/2/QUMExohKC82PURLUllgZ251fIOKkZifpq20u8LJ0Nfe5ezz+gIJEBceJSwzOkFIT1Zds7rByM/W3eTr8vkBCA8WHSQrMjlAR05VXGNqcXh/ho2Um6KpsLe+xczT2uHo7/b9BQwTGiEoLzY9REtSWWBnbv0F/QX9 6LhbCRSAfBRQx3zTWZyFXKnDBLbBuSgD6wZVZh8LLTNw:w,29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:-,5bbLd7K49u9vR4EsiHP9KhHpVbGyVk8BxTEK7zWDwhz4:w,Sysvar1nstructions1111111111111111111111111:-,CVKVDpp6UKT2eHkeCjqp6ucw2dnepQHZk8YVRcSF9yrA:-,DdwWewjGXPVt1ooWuQZYKRGfWmBBEVSiCPz12UVh5TmM:-,FwBZXBZ1tt3Ko1uaGFmrvWgvpziXxLMoKERrMBTk3TwK:-,H5oakdnHviLad41rJEPxFP2XuqH6ENquYVNwr75NzasQ:-,EnZY64eSaTYKxTPqtsyoZj3ew8fKdwfEBDFMsxX81Wf6:-,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    sourceToken: k(0x4f), mint: k(0x11), destinationToken: k(0x44), authority: signer(k(0x33)), newSourceDecryptableAvailableBalance: cipher(0xc3, 36), transferAmountAuditorCiphertextLo: cipher(0xa1, 64), transferAmountAuditorCiphertextHi: cipher(0xb2, 64), equalityProofInstructionOffset: -3, transferAmountCiphertextValidityProofInstructionOffset: 5, feeSigmaProofInstructionOffset: -3, feeCiphertextValidityProofInstructionOffset: 5, rangeProofInstructionOffset: -3
+# accounts: k(0x4f):w, k(0x11):-, k(0x44):w, k(0x33):s
+confidentialTransferWithFee.no-records Gw3Ey9LZ4Ofu9fwECxIZICcuNTxDSlFYX2ZtdHuCiZCXnqWss7qiqbC3vsXM09rh6O/2/QUMExohKC82PURLUllgZ251fIOKkZifpq20u8LJ0Nfe5ezz+gIJEBceJSwzOkFIT1Zds7rByM/W3eTr8vkBCA8WHSQrMjlAR05VXGNqcXh/ho2Um6KpsLe+xczT2uHo7/b9BQwTGiEoLzY9REtSWWBnbv0F/QX9 6LhbCRSAfBRQx3zTWZyFXKnDBLbBuSgD6wZVZh8LLTNw:w,29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:-,5bbLd7K49u9vR4EsiHP9KhHpVbGyVk8BxTEK7zWDwhz4:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    token: k(0x22), mint: k(0x11), elgamalRegistry: k(0x0f), payer: signer(k(0x66)), systemProgram: systemProgram
+# accounts: k(0x22):w, k(0x11):-, k(0x0f):-, k(0x66):ws, systemProgram:-
+configureConfidentialTransferAccountWithRegistry.with-payer Gw4= 3JMHksUi3m4Dfyjct8HuRw3tCC88banJxaa19Zybe2Xc:w,29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:-,21tg39dWp6Qv2FyybT6SuJPPZB8JoNjjLpuY3M8DShQB:-,7tqPVM9QG3FdA8k8YSUPDTXknzRpPuDdVi4shxaup2zz:ws,11111111111111111111111111111111:-
+
+# input:    token: k(0x22), mint: k(0x11), elgamalRegistry: k(0x0f)
+# accounts: k(0x22):w, k(0x11):-, k(0x0f):-
+configureConfidentialTransferAccountWithRegistry.no-payer Gw4= 3JMHksUi3m4Dfyjct8HuRw3tCC88banJxaa19Zybe2Xc:w,29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:-,21tg39dWp6Qv2FyybT6SuJPPZB8JoNjjLpuY3M8DShQB:-
+
+# input:    mint: k(0x11), state: Frozen
+# accounts: k(0x11):w
+initializeDefaultAccountState.frozen HAAC 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w
+
+# input:    mint: k(0x11), state: Uninitialized
+# accounts: k(0x11):w
+initializeDefaultAccountState.uninitialized HAAA 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w
+
+# input:    mint: k(0x11), freezeAuthority: signer(k(0x33)), state: Initialized
+# accounts: k(0x11):w, k(0x33):s
+updateDefaultAccountState.initialized HAEB 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    token: k(0x22), payer: signer(k(0x66)), owner: signer(k(0x33)), newExtensionTypes: [MemoTransfer, CpiGuard]
+# accounts: k(0x22):w, k(0x66):ws, systemProgram:-, k(0x33):s
+reallocate.two-extensions HQgACwA= 3JMHksUi3m4Dfyjct8HuRw3tCC88banJxaa19Zybe2Xc:w,7tqPVM9QG3FdA8k8YSUPDTXknzRpPuDdVi4shxaup2zz:ws,11111111111111111111111111111111:-,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    token: k(0x22), payer: signer(k(0x66)), owner: signer(k(0x33)), newExtensionTypes: []
+# accounts: k(0x22):w, k(0x66):ws, systemProgram:-, k(0x33):s
+reallocate.empty HQ== 3JMHksUi3m4Dfyjct8HuRw3tCC88banJxaa19Zybe2Xc:w,7tqPVM9QG3FdA8k8YSUPDTXknzRpPuDdVi4shxaup2zz:ws,11111111111111111111111111111111:-,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    token: k(0x22), payer: signer(k(0x66)), owner: signer(k(0x33)), newExtensionTypes: [PermissionedBurn]
+# accounts: k(0x22):w, k(0x66):ws, systemProgram:-, k(0x33):s
+reallocate.high-ordinal HRwA 3JMHksUi3m4Dfyjct8HuRw3tCC88banJxaa19Zybe2Xc:w,7tqPVM9QG3FdA8k8YSUPDTXknzRpPuDdVi4shxaup2zz:ws,11111111111111111111111111111111:-,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    token: k(0x22), owner: signer(k(0x33))
+# accounts: k(0x22):w, k(0x33):s
+enableMemoTransfers.bare HgA= 3JMHksUi3m4Dfyjct8HuRw3tCC88banJxaa19Zybe2Xc:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    token: k(0x22), owner: signer(k(0x33))
+# accounts: k(0x22):w, k(0x33):s
+disableMemoTransfers.bare HgE= 3JMHksUi3m4Dfyjct8HuRw3tCC88banJxaa19Zybe2Xc:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    payer: signer(k(0x66)), nativeMint: k(0x6f)
+# accounts: k(0x66):ws, k(0x6f):w, systemProgram:-
+createNativeMint.bare Hw== 7tqPVM9QG3FdA8k8YSUPDTXknzRpPuDdVi4shxaup2zz:ws,8W73n4LVaivfQwzhU8QeqLUczRKdSNv5Vt8x79D1RLV5:w,11111111111111111111111111111111:-
+
+# input:    mint: k(0x11)
+# accounts: k(0x11):w
+initializeNonTransferableMint.bare IA== 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w
+
+# input:    mint: k(0x11), rateAuthority: some(k(0x33)), rate: 4321
+# accounts: k(0x11):w
+initializeInterestBearingMint.positive-rate IQAzOkFIT1ZdZGtyeYCHjpWco6qxuL/GzdTb4unw9/4FDOEQ 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w
+
+# input:    mint: k(0x11), rateAuthority: some(k(0x33)), rate: -1234
+# accounts: k(0x11):w
+initializeInterestBearingMint.negative-rate IQAzOkFIT1ZdZGtyeYCHjpWco6qxuL/GzdTb4unw9/4FDC77 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w
+
+# input:    mint: k(0x11), rateAuthority: none, rate: 4321
+# accounts: k(0x11):w
+initializeInterestBearingMint.no-authority IQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOEQ 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w
+
+# input:    mint: k(0x11), rateAuthority: signer(k(0x33)), rate: -1234
+# accounts: k(0x11):w, k(0x33):ws
+updateRateInterestBearingMint.negative-rate IQEu+w== 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:ws
+
+# input:    token: k(0x22), owner: signer(k(0x33))
+# accounts: k(0x22):w, k(0x33):s
+enableCpiGuard.bare IgA= 3JMHksUi3m4Dfyjct8HuRw3tCC88banJxaa19Zybe2Xc:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    token: k(0x22), owner: signer(k(0x33))
+# accounts: k(0x22):w, k(0x33):s
+disableCpiGuard.bare IgE= 3JMHksUi3m4Dfyjct8HuRw3tCC88banJxaa19Zybe2Xc:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    mint: k(0x11), delegate: k(0x55)
+# accounts: k(0x11):w
+initializePermanentDelegate.bare I1VcY2pxeH+GjZSboqmwt77FzNPa4ejv9v0ECxIZICcu 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w
+
+# input:    mint: k(0x11), authority: some(k(0x33)), programId: some(k(0x3f))
+# accounts: k(0x11):w
+initializeTransferHook.both JAAzOkFIT1ZdZGtyeYCHjpWco6qxuL/GzdTb4unw9/4FDD9GTVRbYmlwd36FjJOaoaivtr3Ey9LZ4Ofu9fwDChEY 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w
+
+# input:    mint: k(0x11), authority: none, programId: none
+# accounts: k(0x11):w
+initializeTransferHook.none JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w
+
+# input:    mint: k(0x11), authority: some(k(0x33)), programId: none
+# accounts: k(0x11):w
+initializeTransferHook.authority-only JAAzOkFIT1ZdZGtyeYCHjpWco6qxuL/GzdTb4unw9/4FDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w
+
+# input:    mint: k(0x11), authority: signer(k(0x33)), programId: some(k(0x3f))
+# accounts: k(0x11):w, k(0x33):s
+updateTransferHook.some JAE/Rk1UW2JpcHd+hYyTmqGor7a9xMvS2eDn7vX8AwoRGA== 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    mint: k(0x11), authority: signer(k(0x33)), programId: none
+# accounts: k(0x11):w, k(0x33):s
+updateTransferHook.none JAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA== 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    mint: k(0x11), authority: some(k(0x33)), withdrawWithheldAuthorityElGamalPubkey: k(0x2f)
+# accounts: k(0x11):w
+initializeConfidentialTransferFee.some-authority JQAzOkFIT1ZdZGtyeYCHjpWco6qxuL/GzdTb4unw9/4FDC82PURLUllgZ251fIOKkZifpq20u8LJ0Nfe5ezz+gEI 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w
+
+# input:    mint: k(0x11), authority: none, withdrawWithheldAuthorityElGamalPubkey: k(0x2f)
+# accounts: k(0x11):w
+initializeConfidentialTransferFee.no-authority JQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC82PURLUllgZ251fIOKkZifpq20u8LJ0Nfe5ezz+gEI 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w
+
+# input:    mint: k(0x11), destination: k(0x44), instructionsSysvarOrContextState: instructionsSysVar, authority: signer(k(0x33)), proofInstructionOffset: -3, newDecryptableAvailableBalance: cipher(0xc3, 36)
+# accounts: k(0x11):w, k(0x44):w, instructionsSysVar:-, k(0x33):s
+withdrawWithheldTokensFromMintForConfidentialTransferFee.offset JQH9xMvS2eDn7vX8BAsSGSAnLjU8Q0pRWF9mbXR7gomQl56lrLO6 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w,5bbLd7K49u9vR4EsiHP9KhHpVbGyVk8BxTEK7zWDwhz4:w,Sysvar1nstructions1111111111111111111111111:-,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    mint: k(0x11), destination: k(0x44), instructionsSysvarOrContextState: instructionsSysVar, authority: signer(k(0x33)), numTokenAccounts: 7, proofInstructionOffset: -3, newDecryptableAvailableBalance: cipher(0xc3, 36)
+# accounts: k(0x11):-, k(0x44):w, instructionsSysVar:-, k(0x33):s
+withdrawWithheldTokensFromAccountsForConfidentialTransferFee.offset JQIH/cTL0tng5+71/AQLEhkgJy41PENKUVhfZm10e4KJkJeepayzug== 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:-,5bbLd7K49u9vR4EsiHP9KhHpVbGyVk8BxTEK7zWDwhz4:w,Sysvar1nstructions1111111111111111111111111:-,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    mint: k(0x11), sources: []
+# accounts: k(0x11):w
+harvestWithheldTokensToMintForConfidentialTransferFee.bare JQM= 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w
+
+# input:    mint: k(0x11), authority: signer(k(0x33))
+# accounts: k(0x11):w, k(0x33):s
+enableHarvestToMint.bare JQQ= 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    mint: k(0x11), authority: signer(k(0x33))
+# accounts: k(0x11):w, k(0x33):s
+disableHarvestToMint.bare JQU= 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    source: k(0x4f), destination: k(0x44), authority: signer(k(0x33))
+# accounts: k(0x4f):w, k(0x44):w, k(0x33):s
+withdrawExcessLamports.bare Jg== 6LhbCRSAfBRQx3zTWZyFXKnDBLbBuSgD6wZVZh8LLTNw:w,5bbLd7K49u9vR4EsiHP9KhHpVbGyVk8BxTEK7zWDwhz4:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    mint: k(0x11), authority: some(k(0x33)), metadataAddress: some(k(0x8f))
+# accounts: k(0x11):w
+initializeMetadataPointer.both JwAzOkFIT1ZdZGtyeYCHjpWco6qxuL/GzdTb4unw9/4FDI+WnaSrsrnAx87V3OPq8fj/Bg0UGyIpMDc+RUxTWmFo 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w
+
+# input:    mint: k(0x11), authority: none, metadataAddress: none
+# accounts: k(0x11):w
+initializeMetadataPointer.none JwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w
+
+# input:    mint: k(0x11), authority: none, metadataAddress: some(k(0x8f))
+# accounts: k(0x11):w
+initializeMetadataPointer.address-only JwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI+WnaSrsrnAx87V3OPq8fj/Bg0UGyIpMDc+RUxTWmFo 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w
+
+# input:    mint: k(0x11), metadataPointerAuthority: signer(k(0x33)), metadataAddress: some(k(0x8f))
+# accounts: k(0x11):w, k(0x33):s
+updateMetadataPointer.some JwGPlp2kq7K5wMfO1dzj6vH4/wYNFBsiKTA3PkVMU1phaA== 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    mint: k(0x11), metadataPointerAuthority: signer(k(0x33)), metadataAddress: none
+# accounts: k(0x11):w, k(0x33):s
+updateMetadataPointer.none JwEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA== 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    mint: k(0x11), authority: some(k(0x33)), groupAddress: some(k(0x8f))
+# accounts: k(0x11):w
+initializeGroupPointer.both KAAzOkFIT1ZdZGtyeYCHjpWco6qxuL/GzdTb4unw9/4FDI+WnaSrsrnAx87V3OPq8fj/Bg0UGyIpMDc+RUxTWmFo 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w
+
+# input:    mint: k(0x11), authority: none, groupAddress: none
+# accounts: k(0x11):w
+initializeGroupPointer.none KAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w
+
+# input:    mint: k(0x11), groupPointerAuthority: signer(k(0x33)), groupAddress: some(k(0x8f))
+# accounts: k(0x11):w, k(0x33):s
+updateGroupPointer.some KAGPlp2kq7K5wMfO1dzj6vH4/wYNFBsiKTA3PkVMU1phaA== 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    mint: k(0x11), groupPointerAuthority: signer(k(0x33)), groupAddress: none
+# accounts: k(0x11):w, k(0x33):s
+updateGroupPointer.none KAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA== 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    mint: k(0x11), authority: some(k(0x33)), memberAddress: some(k(0x8f))
+# accounts: k(0x11):w
+initializeGroupMemberPointer.both KQAzOkFIT1ZdZGtyeYCHjpWco6qxuL/GzdTb4unw9/4FDI+WnaSrsrnAx87V3OPq8fj/Bg0UGyIpMDc+RUxTWmFo 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w
+
+# input:    mint: k(0x11), authority: none, memberAddress: none
+# accounts: k(0x11):w
+initializeGroupMemberPointer.none KQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w
+
+# input:    mint: k(0x11), groupMemberPointerAuthority: signer(k(0x33)), memberAddress: some(k(0x8f))
+# accounts: k(0x11):w, k(0x33):s
+updateGroupMemberPointer.some KQGPlp2kq7K5wMfO1dzj6vH4/wYNFBsiKTA3PkVMU1phaA== 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    mint: k(0x11), groupMemberPointerAuthority: signer(k(0x33)), memberAddress: none
+# accounts: k(0x11):w, k(0x33):s
+updateGroupMemberPointer.none KQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA== 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    mint: k(0x11), supplyElgamalPubkey: k(0x2f), decryptableSupply: cipher(0xd4, 36)
+# accounts: k(0x11):w
+initializeConfidentialMintBurn.basic KgAvNj1ES1JZYGdudXyDipGYn6attLvCydDX3uXs8/oBCNXc4+rx+P8HDhUcIyoxOD9GTVRbYmlwd36FjJOaoaivtr3Eyw== 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w
+
+# input:    mint: k(0x11), authority: signer(k(0x33)), newSupplyElgamalPubkey: k(0x2f), proofInstructionOffset: -3
+# accounts: k(0x11):w, instructionsSysVar:-, k(0x33):s
+rotateSupplyElgamalPubkey.offset KgEvNj1ES1JZYGdudXyDipGYn6attLvCydDX3uXs8/oBCP0= 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w,Sysvar1nstructions1111111111111111111111111:-,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    mint: k(0x11), authority: signer(k(0x33)), newDecryptableSupply: cipher(0xd4, 36)
+# accounts: k(0x11):w, k(0x33):s
+updateConfidentialMintBurnDecryptableSupply.basic KgLV3OPq8fj/Bw4VHCMqMTg/Rk1UW2JpcHd+hYyTmqGor7a9xMs= 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    token: k(0x22), mint: k(0x11), instructionsSysvar: instructionsSysVar, equalityRecord: k(0xaa), ciphertextValidityRecord: k(0xbb), rangeRecord: k(0xcc), authority: signer(k(0x33)), newDecryptableSupply: cipher(0xd4, 36), mintAmountAuditorCiphertextLo: cipher(0xa1, 64), mintAmountAuditorCiphertextHi: cipher(0xb2, 64), equalityProofInstructionOffset: -3, ciphertextValidityProofInstructionOffset: 5, rangeProofInstructionOffset: -3
+# accounts: k(0x22):w, k(0x11):w, instructionsSysVar:-, k(0xaa):-, k(0xbb):-, k(0xcc):-, k(0x33):s
+confidentialMint.all-records KgPV3OPq8fj/Bw4VHCMqMTg/Rk1UW2JpcHd+hYyTmqGor7a9xMuiqbC3vsXM09rh6O/2/QUMExohKC82PURLUllgZ251fIOKkZifpq20u8LJ0Nfe5ezz+gIJEBceJSwzOkFIT1Zds7rByM/W3eTr8vkBCA8WHSQrMjlAR05VXGNqcXh/ho2Um6KpsLe+xczT2uHo7/b9BQwTGiEoLzY9REtSWWBnbv0F/Q== 3JMHksUi3m4Dfyjct8HuRw3tCC88banJxaa19Zybe2Xc:w,29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w,Sysvar1nstructions1111111111111111111111111:-,CVKVDpp6UKT2eHkeCjqp6ucw2dnepQHZk8YVRcSF9yrA:-,DdwWewjGXPVt1ooWuQZYKRGfWmBBEVSiCPz12UVh5TmM:-,EnZY64eSaTYKxTPqtsyoZj3ew8fKdwfEBDFMsxX81Wf6:-,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    token: k(0x22), mint: k(0x11), authority: signer(k(0x33)), newDecryptableSupply: cipher(0xd4, 36), mintAmountAuditorCiphertextLo: cipher(0xa1, 64), mintAmountAuditorCiphertextHi: cipher(0xb2, 64), equalityProofInstructionOffset: -3, ciphertextValidityProofInstructionOffset: 5, rangeProofInstructionOffset: -3
+# accounts: k(0x22):w, k(0x11):w, k(0x33):s
+confidentialMint.no-records KgPV3OPq8fj/Bw4VHCMqMTg/Rk1UW2JpcHd+hYyTmqGor7a9xMuiqbC3vsXM09rh6O/2/QUMExohKC82PURLUllgZ251fIOKkZifpq20u8LJ0Nfe5ezz+gIJEBceJSwzOkFIT1Zds7rByM/W3eTr8vkBCA8WHSQrMjlAR05VXGNqcXh/ho2Um6KpsLe+xczT2uHo7/b9BQwTGiEoLzY9REtSWWBnbv0F/Q== 3JMHksUi3m4Dfyjct8HuRw3tCC88banJxaa19Zybe2Xc:w,29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    token: k(0x22), mint: k(0x11), instructionsSysvar: instructionsSysVar, equalityRecord: k(0xaa), ciphertextValidityRecord: k(0xbb), rangeRecord: k(0xcc), authority: signer(k(0x33)), newDecryptableAvailableBalance: cipher(0xc3, 36), burnAmountAuditorCiphertextLo: cipher(0xa1, 64), burnAmountAuditorCiphertextHi: cipher(0xb2, 64), equalityProofInstructionOffset: -3, ciphertextValidityProofInstructionOffset: 5, rangeProofInstructionOffset: -3
+# accounts: k(0x22):w, k(0x11):w, instructionsSysVar:-, k(0xaa):-, k(0xbb):-, k(0xcc):-, k(0x33):s
+confidentialBurn.all-records KgTEy9LZ4Ofu9fwECxIZICcuNTxDSlFYX2ZtdHuCiZCXnqWss7qiqbC3vsXM09rh6O/2/QUMExohKC82PURLUllgZ251fIOKkZifpq20u8LJ0Nfe5ezz+gIJEBceJSwzOkFIT1Zds7rByM/W3eTr8vkBCA8WHSQrMjlAR05VXGNqcXh/ho2Um6KpsLe+xczT2uHo7/b9BQwTGiEoLzY9REtSWWBnbv0F/Q== 3JMHksUi3m4Dfyjct8HuRw3tCC88banJxaa19Zybe2Xc:w,29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w,Sysvar1nstructions1111111111111111111111111:-,CVKVDpp6UKT2eHkeCjqp6ucw2dnepQHZk8YVRcSF9yrA:-,DdwWewjGXPVt1ooWuQZYKRGfWmBBEVSiCPz12UVh5TmM:-,EnZY64eSaTYKxTPqtsyoZj3ew8fKdwfEBDFMsxX81Wf6:-,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    token: k(0x22), mint: k(0x11), authority: signer(k(0x33)), newDecryptableAvailableBalance: cipher(0xc3, 36), burnAmountAuditorCiphertextLo: cipher(0xa1, 64), burnAmountAuditorCiphertextHi: cipher(0xb2, 64), equalityProofInstructionOffset: -3, ciphertextValidityProofInstructionOffset: 5, rangeProofInstructionOffset: -3
+# accounts: k(0x22):w, k(0x11):w, k(0x33):s
+confidentialBurn.no-records KgTEy9LZ4Ofu9fwECxIZICcuNTxDSlFYX2ZtdHuCiZCXnqWss7qiqbC3vsXM09rh6O/2/QUMExohKC82PURLUllgZ251fIOKkZifpq20u8LJ0Nfe5ezz+gIJEBceJSwzOkFIT1Zds7rByM/W3eTr8vkBCA8WHSQrMjlAR05VXGNqcXh/ho2Um6KpsLe+xczT2uHo7/b9BQwTGiEoLzY9REtSWWBnbv0F/Q== 3JMHksUi3m4Dfyjct8HuRw3tCC88banJxaa19Zybe2Xc:w,29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    mint: k(0x11), authority: signer(k(0x33))
+# accounts: k(0x11):w, k(0x33):s
+applyConfidentialPendingBurn.bare KgU= 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    mint: k(0x11), authority: some(k(0x33)), multiplier: 3.141592653589793
+# accounts: k(0x11):w
+initializeScaledUiAmountMint.multiplier KwAzOkFIT1ZdZGtyeYCHjpWco6qxuL/GzdTb4unw9/4FDBgtRFT7IQlA 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w
+
+# input:    mint: k(0x11), authority: some(k(0x33)), multiplier: -0.5
+# accounts: k(0x11):w
+initializeScaledUiAmountMint.negative-multiplier KwAzOkFIT1ZdZGtyeYCHjpWco6qxuL/GzdTb4unw9/4FDAAAAAAAAOC/ 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w
+
+# input:    mint: k(0x11), authority: none, multiplier: 3.141592653589793
+# accounts: k(0x11):w
+initializeScaledUiAmountMint.no-authority KwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgtRFT7IQlA 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w
+
+# input:    mint: k(0x11), authority: signer(k(0x33)), multiplier: 3.141592653589793, effectiveTimestamp: 1700000000
+# accounts: k(0x11):w, k(0x33):ws
+updateMultiplierScaledUiMint.multiplier KwEYLURU+yEJQADxU2UAAAAA 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:ws
+
+# input:    mint: k(0x11), authority: signer(k(0x33)), multiplier: -0.5, effectiveTimestamp: -1
+# accounts: k(0x11):w, k(0x33):ws
+updateMultiplierScaledUiMint.negative-timestamp KwEAAAAAAADgv/////////// 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:ws
+
+# input:    mint: k(0x11), authority: some(k(0x33))
+# accounts: k(0x11):w
+initializePausableConfig.some LAAzOkFIT1ZdZGtyeYCHjpWco6qxuL/GzdTb4unw9/4FDA== 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w
+
+# input:    mint: k(0x11), authority: none
+# accounts: k(0x11):w
+initializePausableConfig.none LAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA== 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w
+
+# input:    mint: k(0x11), authority: signer(k(0x33))
+# accounts: k(0x11):w, k(0x33):s
+pause.bare LAE= 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    mint: k(0x11), authority: signer(k(0x33))
+# accounts: k(0x11):w, k(0x33):s
+resume.bare LAI= 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    metadata: k(0x77), updateAuthority: k(0x1f), mint: k(0x11), mintAuthority: signer(k(0x33)), name: "Sava Token", symbol: "SAVA", uri: "https://sava.software/token.json"
+# accounts: k(0x77):w, k(0x1f):-, k(0x11):-, k(0x33):s
+initializeTokenMetadata.basic 0uEeoli4TY0KAAAAU2F2YSBUb2tlbgQAAABTQVZBIAAAAGh0dHBzOi8vc2F2YS5zb2Z0d2FyZS90b2tlbi5qc29u 93TQvU4aK7JUXfzkxX21ALeiwh19zh8BMTsndMeFqbv7:w,36bQKy5gGsAYFhz6aEK9ZJjbTiVXaPirHMa2yRqoQ2ZV:-,29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:-,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    metadata: k(0x77), updateAuthority: k(0x1f), mint: k(0x11), mintAuthority: signer(k(0x33)), name: "name-é€𝄞", symbol: "SAVA", uri: "https://sava.software/token.json"
+# accounts: k(0x77):w, k(0x1f):-, k(0x11):-, k(0x33):s
+initializeTokenMetadata.multibyte 0uEeoli4TY0OAAAAbmFtZS3DqeKCrPCdhJ4EAAAAU0FWQSAAAABodHRwczovL3NhdmEuc29mdHdhcmUvdG9rZW4uanNvbg== 93TQvU4aK7JUXfzkxX21ALeiwh19zh8BMTsndMeFqbv7:w,36bQKy5gGsAYFhz6aEK9ZJjbTiVXaPirHMa2yRqoQ2ZV:-,29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:-,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    metadata: k(0x77), updateAuthority: k(0x1f), mint: k(0x11), mintAuthority: signer(k(0x33)), name: "", symbol: "", uri: ""
+# accounts: k(0x77):w, k(0x1f):-, k(0x11):-, k(0x33):s
+initializeTokenMetadata.empty 0uEeoli4TY0AAAAAAAAAAAAAAAA= 93TQvU4aK7JUXfzkxX21ALeiwh19zh8BMTsndMeFqbv7:w,36bQKy5gGsAYFhz6aEK9ZJjbTiVXaPirHMa2yRqoQ2ZV:-,29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:-,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    metadata: k(0x77), updateAuthority: signer(k(0x33)), field: Name, value: "Sava Token"
+# accounts: k(0x77):w, k(0x33):s
+updateTokenMetadataField.name 3ekxLbXK3MgACgAAAFNhdmEgVG9rZW4= 93TQvU4aK7JUXfzkxX21ALeiwh19zh8BMTsndMeFqbv7:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    metadata: k(0x77), updateAuthority: signer(k(0x33)), field: Symbol, value: "SAVA"
+# accounts: k(0x77):w, k(0x33):s
+updateTokenMetadataField.symbol 3ekxLbXK3MgBBAAAAFNBVkE= 93TQvU4aK7JUXfzkxX21ALeiwh19zh8BMTsndMeFqbv7:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    metadata: k(0x77), updateAuthority: signer(k(0x33)), field: Uri, value: "https://sava.software/token.json"
+# accounts: k(0x77):w, k(0x33):s
+updateTokenMetadataField.uri 3ekxLbXK3MgCIAAAAGh0dHBzOi8vc2F2YS5zb2Z0d2FyZS90b2tlbi5qc29u 93TQvU4aK7JUXfzkxX21ALeiwh19zh8BMTsndMeFqbv7:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    metadata: k(0x77), updateAuthority: signer(k(0x33)), field: Key("website"), value: "https://sava.software/token.json"
+# accounts: k(0x77):w, k(0x33):s
+updateTokenMetadataField.key 3ekxLbXK3MgDBwAAAHdlYnNpdGUgAAAAaHR0cHM6Ly9zYXZhLnNvZnR3YXJlL3Rva2VuLmpzb24= 93TQvU4aK7JUXfzkxX21ALeiwh19zh8BMTsndMeFqbv7:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    metadata: k(0x77), updateAuthority: signer(k(0x33)), field: Key("name-é€𝄞"), value: "name-é€𝄞"
+# accounts: k(0x77):w, k(0x33):s
+updateTokenMetadataField.multibyte-key 3ekxLbXK3MgDDgAAAG5hbWUtw6nigqzwnYSeDgAAAG5hbWUtw6nigqzwnYSe 93TQvU4aK7JUXfzkxX21ALeiwh19zh8BMTsndMeFqbv7:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    metadata: k(0x77), updateAuthority: signer(k(0x33)), idempotent: true, key: "website"
+# accounts: k(0x77):w, k(0x33):s
+removeTokenMetadataKey.idempotent 6hIgOFmNJbUBBwAAAHdlYnNpdGU= 93TQvU4aK7JUXfzkxX21ALeiwh19zh8BMTsndMeFqbv7:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    metadata: k(0x77), updateAuthority: signer(k(0x33)), idempotent: false, key: "website"
+# accounts: k(0x77):w, k(0x33):s
+removeTokenMetadataKey.not-idempotent 6hIgOFmNJbUABwAAAHdlYnNpdGU= 93TQvU4aK7JUXfzkxX21ALeiwh19zh8BMTsndMeFqbv7:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    metadata: k(0x77), updateAuthority: signer(k(0x33)), idempotent: true, key: "name-é€𝄞"
+# accounts: k(0x77):w, k(0x33):s
+removeTokenMetadataKey.multibyte-key 6hIgOFmNJbUBDgAAAG5hbWUtw6nigqzwnYSe 93TQvU4aK7JUXfzkxX21ALeiwh19zh8BMTsndMeFqbv7:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    metadata: k(0x77), updateAuthority: signer(k(0x33)), newUpdateAuthority: some(k(0x1f))
+# accounts: k(0x77):w, k(0x33):s
+updateTokenMetadataUpdateAuthority.some 1+Sm5FRkVnsfJi00O0JJUFdeZWxzeoGIj5adpKuyucDHztXc4+rx+A== 93TQvU4aK7JUXfzkxX21ALeiwh19zh8BMTsndMeFqbv7:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    metadata: k(0x77), updateAuthority: signer(k(0x33)), newUpdateAuthority: none
+# accounts: k(0x77):w, k(0x33):s
+updateTokenMetadataUpdateAuthority.none 1+Sm5FRkVnsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA== 93TQvU4aK7JUXfzkxX21ALeiwh19zh8BMTsndMeFqbv7:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    metadata: k(0x77), start: some(16), end: some(48)
+# accounts: k(0x77):-
+emitTokenMetadata.range +qa0+g0MuEYBEAAAAAAAAAABMAAAAAAAAAA= 93TQvU4aK7JUXfzkxX21ALeiwh19zh8BMTsndMeFqbv7:-
+
+# input:    metadata: k(0x77), start: none, end: none
+# accounts: k(0x77):-
+emitTokenMetadata.none +qa0+g0MuEYAAA== 93TQvU4aK7JUXfzkxX21ALeiwh19zh8BMTsndMeFqbv7:-
+
+# input:    metadata: k(0x77), start: some(16), end: none
+# accounts: k(0x77):-
+emitTokenMetadata.start-only +qa0+g0MuEYBEAAAAAAAAAAA 93TQvU4aK7JUXfzkxX21ALeiwh19zh8BMTsndMeFqbv7:-
+
+# input:    metadata: k(0x77), start: none, end: some(48)
+# accounts: k(0x77):-
+emitTokenMetadata.end-only +qa0+g0MuEYAATAAAAAAAAAA 93TQvU4aK7JUXfzkxX21ALeiwh19zh8BMTsndMeFqbv7:-
+
+# input:    group: k(0x88), mint: k(0x11), mintAuthority: signer(k(0x33)), updateAuthority: some(k(0x1f)), maxSize: 9000
+# accounts: k(0x88):w, k(0x11):-, k(0x33):s
+initializeTokenGroup.some-authority eXFsJzYzAAQfJi00O0JJUFdeZWxzeoGIj5adpKuyucDHztXc4+rx+CgjAAAAAAAA AC5SMaykNBMKuDFPNbZd7Dmh4m6dD5kHRvAjjQv6mjZi:w,29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:-,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    group: k(0x88), mint: k(0x11), mintAuthority: signer(k(0x33)), updateAuthority: none, maxSize: 9000
+# accounts: k(0x88):w, k(0x11):-, k(0x33):s
+initializeTokenGroup.no-authority eXFsJzYzAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACgjAAAAAAAA AC5SMaykNBMKuDFPNbZd7Dmh4m6dD5kHRvAjjQv6mjZi:w,29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:-,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    group: k(0x88), updateAuthority: signer(k(0x33)), maxSize: 9000
+# accounts: k(0x88):w, k(0x33):s
+updateTokenGroupMaxSize.max-size bCWrj/geEm4oIwAAAAAAAA== AC5SMaykNBMKuDFPNbZd7Dmh4m6dD5kHRvAjjQv6mjZi:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    group: k(0x88), updateAuthority: signer(k(0x33)), newUpdateAuthority: some(k(0x1f))
+# accounts: k(0x88):w, k(0x33):s
+updateTokenGroupUpdateAuthority.some oWlYAe3d2MsfJi00O0JJUFdeZWxzeoGIj5adpKuyucDHztXc4+rx+A== AC5SMaykNBMKuDFPNbZd7Dmh4m6dD5kHRvAjjQv6mjZi:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    group: k(0x88), updateAuthority: signer(k(0x33)), newUpdateAuthority: none
+# accounts: k(0x88):w, k(0x33):s
+updateTokenGroupUpdateAuthority.none oWlYAe3d2MsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA== AC5SMaykNBMKuDFPNbZd7Dmh4m6dD5kHRvAjjQv6mjZi:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    member: k(0x99), memberMint: k(0x11), memberMintAuthority: signer(k(0x33)), group: k(0x88), groupUpdateAuthority: signer(k(0x1f))
+# accounts: k(0x99):w, k(0x11):-, k(0x33):s, k(0x88):w, k(0x1f):s
+initializeTokenGroupMember.bare mCDesN/tdIY= BLhTnhtvRFQBGkW1ng7F1gpG1RPYEDpd2Xw3hUZj55q3:w,29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:-,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s,AC5SMaykNBMKuDFPNbZd7Dmh4m6dD5kHRvAjjQv6mjZi:w,36bQKy5gGsAYFhz6aEK9ZJjbTiVXaPirHMa2yRqoQ2ZV:s
+
+# input:    source: k(0x4f), destination: k(0x44), authority: signer(k(0x33)), amount: some(4230000000000)
+# accounts: k(0x4f):w, k(0x44):w, k(0x33):s
+unwrapLamports.amount LQEAvKXf2AMAAA== 6LhbCRSAfBRQx3zTWZyFXKnDBLbBuSgD6wZVZh8LLTNw:w,5bbLd7K49u9vR4EsiHP9KhHpVbGyVk8BxTEK7zWDwhz4:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    source: k(0x4f), destination: k(0x44), authority: signer(k(0x33)), amount: none
+# accounts: k(0x4f):w, k(0x44):w, k(0x33):s
+unwrapLamports.none LQA= 6LhbCRSAfBRQx3zTWZyFXKnDBLbBuSgD6wZVZh8LLTNw:w,5bbLd7K49u9vR4EsiHP9KhHpVbGyVk8BxTEK7zWDwhz4:w,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    mint: k(0x11), authority: k(0x33)
+# accounts: k(0x11):w
+initializePermissionedBurn.bare LgAzOkFIT1ZdZGtyeYCHjpWco6qxuL/GzdTb4unw9/4FDA== 29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w
+
+# input:    account: k(0x22), mint: k(0x11), permissionedBurnAuthority: signer(k(0x7f)), authority: signer(k(0x33)), amount: 4230000000000
+# accounts: k(0x22):w, k(0x11):w, k(0x7f):s, k(0x33):s
+permissionedBurn.amount LgEAvKXf2AMAAA== 3JMHksUi3m4Dfyjct8HuRw3tCC88banJxaa19Zybe2Xc:w,29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w,9aon4snf3VgHePzpSudMVLpptxKSfPyGKyKM6sfkp6Ss:s,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    account: k(0x22), mint: k(0x11), permissionedBurnAuthority: signer(k(0x7f)), authority: signer(k(0x33)), amount: 4230000000000, decimals: 9
+# accounts: k(0x22):w, k(0x11):w, k(0x7f):s, k(0x33):s
+permissionedBurnChecked.amount LgIAvKXf2AMAAAk= 3JMHksUi3m4Dfyjct8HuRw3tCC88banJxaa19Zybe2Xc:w,29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w,9aon4snf3VgHePzpSudMVLpptxKSfPyGKyKM6sfkp6Ss:s,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    token: k(0x22), mint: k(0x11), instructionsSysvar: instructionsSysVar, equalityRecord: k(0xaa), ciphertextValidityRecord: k(0xbb), rangeRecord: k(0xcc), permissionedBurnAuthority: signer(k(0x7f)), authority: signer(k(0x33)), newDecryptableAvailableBalance: cipher(0xc3, 36), burnAmountAuditorCiphertextLo: cipher(0xa1, 64), burnAmountAuditorCiphertextHi: cipher(0xb2, 64), equalityProofInstructionOffset: -3, ciphertextValidityProofInstructionOffset: 5, rangeProofInstructionOffset: -3
+# accounts: k(0x22):w, k(0x11):w, instructionsSysVar:-, k(0xaa):-, k(0xbb):-, k(0xcc):-, k(0x7f):s, k(0x33):s
+permissionedConfidentialBurn.all-records LgPEy9LZ4Ofu9fwECxIZICcuNTxDSlFYX2ZtdHuCiZCXnqWss7qiqbC3vsXM09rh6O/2/QUMExohKC82PURLUllgZ251fIOKkZifpq20u8LJ0Nfe5ezz+gIJEBceJSwzOkFIT1Zds7rByM/W3eTr8vkBCA8WHSQrMjlAR05VXGNqcXh/ho2Um6KpsLe+xczT2uHo7/b9BQwTGiEoLzY9REtSWWBnbv0F/Q== 3JMHksUi3m4Dfyjct8HuRw3tCC88banJxaa19Zybe2Xc:w,29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w,Sysvar1nstructions1111111111111111111111111:-,CVKVDpp6UKT2eHkeCjqp6ucw2dnepQHZk8YVRcSF9yrA:-,DdwWewjGXPVt1ooWuQZYKRGfWmBBEVSiCPz12UVh5TmM:-,EnZY64eSaTYKxTPqtsyoZj3ew8fKdwfEBDFMsxX81Wf6:-,9aon4snf3VgHePzpSudMVLpptxKSfPyGKyKM6sfkp6Ss:s,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
+
+# input:    token: k(0x22), mint: k(0x11), permissionedBurnAuthority: signer(k(0x7f)), authority: signer(k(0x33)), newDecryptableAvailableBalance: cipher(0xc3, 36), burnAmountAuditorCiphertextLo: cipher(0xa1, 64), burnAmountAuditorCiphertextHi: cipher(0xb2, 64), equalityProofInstructionOffset: -3, ciphertextValidityProofInstructionOffset: 5, rangeProofInstructionOffset: -3
+# accounts: k(0x22):w, k(0x11):w, k(0x7f):s, k(0x33):s
+permissionedConfidentialBurn.no-records LgPEy9LZ4Ofu9fwECxIZICcuNTxDSlFYX2ZtdHuCiZCXnqWss7qiqbC3vsXM09rh6O/2/QUMExohKC82PURLUllgZ251fIOKkZifpq20u8LJ0Nfe5ezz+gIJEBceJSwzOkFIT1Zds7rByM/W3eTr8vkBCA8WHSQrMjlAR05VXGNqcXh/ho2Um6KpsLe+xczT2uHo7/b9BQwTGiEoLzY9REtSWWBnbv0F/Q== 3JMHksUi3m4Dfyjct8HuRw3tCC88banJxaa19Zybe2Xc:w,29jGKkZXzh1NJSUzU3kHV3vv3VYi9W7NTeErA7DQwN3b:w,9aon4snf3VgHePzpSudMVLpptxKSfPyGKyKM6sfkp6Ss:s,4SyKBzPt6q753WzFJCqXNpArLthZ3fTFTWuA92jnLMTH:s
