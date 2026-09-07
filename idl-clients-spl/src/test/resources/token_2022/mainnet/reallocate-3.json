@@ -1,0 +1,45 @@
+{
+  "instruction": "reallocate",
+  "signature": "2BGJRtQNBNCU25LRoVy7AbsMWoDhbWrSWStxfXFdjkrCRnu48vUoqAVKHPn31Bs1XxbZ7H4o7LPqkimKhYyzyN5W",
+  "slot": 346963336,
+  "position": "2",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "HaKDAkPqQm3gdZVNhF6Bac3WbiGa7EAgKkUAe4wg42NE",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "CHTQGEsyYjD9eBCZdn1QUjpLvKJ4q4bPv53QMEn1FbJF",
+      "signer": true,
+      "writable": true,
+      "feePayer": true,
+      "multisig": false
+    },
+    {
+      "pubkey": "11111111111111111111111111111111",
+      "signer": false,
+      "writable": false,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "CHTQGEsyYjD9eBCZdn1QUjpLvKJ4q4bPv53QMEn1FbJF",
+      "signer": true,
+      "writable": true,
+      "feePayer": true,
+      "multisig": false
+    },
+    {
+      "pubkey": "CHTQGEsyYjD9eBCZdn1QUjpLvKJ4q4bPv53QMEn1FbJF",
+      "signer": true,
+      "writable": true,
+      "feePayer": true,
+      "multisig": false
+    }
+  ],
+  "data": "HQUA"
+}

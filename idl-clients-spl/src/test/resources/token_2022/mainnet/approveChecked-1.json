@@ -1,0 +1,38 @@
+{
+  "instruction": "approveChecked",
+  "signature": "2SfdmykMhRkkjA8iNvbaVr3pMPSHJ1sQfjRodHChJo3UtNFuPciFQcVpGaHppAoqXt58KYfS45KFGGciArDZwWdS",
+  "slot": 371345478,
+  "position": "3",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "11XPJmYhe5zCrRTEScXRkjQrrPgF8SjPnxLRzpdpk3S",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "E2gLkTXSbbTMmJM19xkquawun2ShJSi7G59A8c2PtbFa",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "EoBoa35JPnkeHWJGLkWMf1LWFCy9icuQTa8yA34Ghf3J",
+      "signer": false,
+      "writable": false,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "12ZvNrLuyu2PGM5MTKa9tgHc5N2gfEdsaiDjWUMtK6ne",
+      "signer": true,
+      "writable": true,
+      "feePayer": true,
+      "multisig": false
+    }
+  ],
+  "data": "DQBe0LIAAAAABg=="
+}

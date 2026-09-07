@@ -1,0 +1,52 @@
+{
+  "instruction": "withdrawWithheldTokensFromAccounts",
+  "signature": "2KQRRXKy6F6jqxxQKGnfaw7JxiMJNenKnqV4ecxvLZpwiE8D6iFZNfPRwxAG9mMAHmXaXJonoUkVnJn5YxACrMgi",
+  "slot": 441577869,
+  "position": "0",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "15EHKcw5G6viCRodD56rcFmvK1ni2xC52p2kfAQroQn",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "FK1wdqTyazBgVAzHZiy9o5XjdSKmRCVm6LWZb5U96LCq",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "5KXDF6QnqhBj72hDtJNkkpFaQVUfbFXNybMsp3DiK6tD",
+      "signer": true,
+      "writable": true,
+      "feePayer": true,
+      "multisig": false
+    },
+    {
+      "pubkey": "5KXDF6QnqhBj72hDtJNkkpFaQVUfbFXNybMsp3DiK6tD",
+      "signer": true,
+      "writable": true,
+      "feePayer": true,
+      "multisig": false
+    },
+    {
+      "pubkey": "3i8Pgt53v3JuakWv611v1g3PzaAHqcqpmNTCxwx24gpA",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "BdpDh83eDe8KpBPXqEuqfaueYxYv2ZqvtMuMwAdyRxVB",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    }
+  ],
+  "data": "GgMC"
+}

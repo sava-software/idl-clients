@@ -1,0 +1,38 @@
+{
+  "instruction": "harvestWithheldTokensToMint",
+  "signature": "3BPKG4HsVNdwuwLvhmdmGtLLNLR7k6Za9bzeBb5F1ps7ttm2mDxLnHDNTPjUFx8mqUy3koXHXYqCK87SiN6qXyab",
+  "slot": 326637428,
+  "position": "0",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "1D1hpr6ggmqD41DEGvia3dRXEFgCCR9TCD96xBjzf4P",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "Cm5DXdnANmQiNXQ5MRWwJyUgN7Do49tQFaHCcVGx7CWT",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "Doz5pa2iKa3T1VrVDC1BD3kRYgctCuf3Tt7ewwepujJT",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "AKPJcKrSJbXEEQYmZzxvXVFYqtm29S4k1KkUyS7tmZe1",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    }
+  ],
+  "data": "GgQ="
+}

@@ -1,0 +1,38 @@
+{
+  "instruction": "configureConfidentialTransferAccount",
+  "signature": "3UYKXJZDRCXcrhJdjWjuVHymAvia6FyvkFQZrLAKf7Ucu74iGz1H9Lv4MFEtQNSanpVmuN3AxU91gBKpKx9ChZuD",
+  "slot": 338236896,
+  "position": "0",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "2zcd4kzKj6QyLqXovkqGPjh2w9m8z5cDW4PxEKKVJGPT",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "mntccTgSXKidmyxxQ7cVT1Vwz6SM9LkexaJe8PWqDam",
+      "signer": false,
+      "writable": false,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "Sysvar1nstructions1111111111111111111111111",
+      "signer": false,
+      "writable": false,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "C57QTsmL3vE5HFVuRiNzT6CuTFhft1T5o2rKhFWhA1Yp",
+      "signer": true,
+      "writable": true,
+      "feePayer": true,
+      "multisig": false
+    }
+  ],
+  "data": "GwKYcM+XESdI8+s25YiLzZCtMXDXbjN3PqKyceaWHzEF4kYY2MYAAAEAAAAAAAE="
+}

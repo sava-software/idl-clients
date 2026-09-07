@@ -1,0 +1,17 @@
+{
+  "instruction": "initializeMint2",
+  "signature": "2bf8JA3RitDQjVf6new5x95gojCUSQAnogJxvRNJc7VW1RvQxG4FKPGRbHDdPvi5BLkLcDdGs86HRCoZZdp8rKqh",
+  "slot": 444957985,
+  "position": "2.2",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "AKhBsKUzbNeuKGqAba7zQzaZcmCY5uvVzocaEac1pump",
+      "signer": true,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    }
+  ],
+  "data": "FAYGxcHOY40lZ9JkaLBeuVHRoo3MbhI0grXGdRSXcOYr8gA="
+}

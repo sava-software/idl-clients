@@ -1,0 +1,24 @@
+{
+  "instruction": "disableMemoTransfers",
+  "signature": "VS69jAHZPKWmC5yk6rJCtfeHdFJCVaQq2i23ALKffCtcnVarJ3LG32XGMg6TEQMdSAiKWXzwmEU8vNabWbvuPP8",
+  "slot": 195636988,
+  "position": "0",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "PVtQNirA213P3fwuFD3oV7enZG3zvhXAzdJGhn19YAE",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "J3djQHbAfrAUh5WqL8rXsXGbTPSRxo9wyfvT7JnzEzd4",
+      "signer": true,
+      "writable": true,
+      "feePayer": true,
+      "multisig": false
+    }
+  ],
+  "data": "HgE="
+}

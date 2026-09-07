@@ -1,0 +1,38 @@
+{
+  "instruction": "transferCheckedWithFee",
+  "signature": "wCq2Hbp1d4u5FVYda3pcLwLwaDqmd64LkG3C2qLwrmick3AdxktXnhyKVJKzq9ZYJsPhH1cWKZEkpDXqdaGhWPj",
+  "slot": 444957978,
+  "position": "2.18",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "FfT91qMjTycnVZzc45iL8Kpm36oMyPTAJxk9qoxypfjn",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "Xs8S1uUs1zvS2p7iwtsG3b6fkhpvmwz4GYU3gWAmWHZ",
+      "signer": false,
+      "writable": false,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "7C9TnmiBwD8fbpHmtsZYZV8hGFUzXFbeRJo2CPFwDBZx",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "D5YqVMoSxnqeZAKAUUE1Dm3bmjtdxQ5DCF356ozqN9cM",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    }
+  ],
+  "data": "GgEJLQAAAAAAAAgAAAAAAAAAAA=="
+}

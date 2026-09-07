@@ -1,0 +1,17 @@
+{
+  "instruction": "initializeImmutableOwner",
+  "signature": "2VYudH6X1XeQPoUf2kWJvXQpVht2rqsCLAd2vPGyX7XWqWcSDhXwBoWA9vr576u43gDePTD7dAHaTk2vWaJpBE2N",
+  "slot": 444311899,
+  "position": "3.3",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "77DCJwmwZMnU5YEpKSv6nwxRksfhyLv12BXrRqP42iTU",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    }
+  ],
+  "data": "Fg=="
+}

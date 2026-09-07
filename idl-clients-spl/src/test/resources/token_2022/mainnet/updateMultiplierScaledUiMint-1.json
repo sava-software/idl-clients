@@ -1,0 +1,24 @@
+{
+  "instruction": "updateMultiplierScaledUiMint",
+  "signature": "2NJkUiHhfAescjgV32qkxYgpf7kK8BnimvuXqG9P79D8qnz2XvJTTZ7cufnv5fK2U71bBzezDeQFfyfALboyEvQQ",
+  "slot": 441022799,
+  "position": "2.0",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "qFjNHKgu2WEqyd6vNfECt355sncW1YhJQRApqBbondo",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "FpeumcjXquykWDgioLpwap8f4NUdggfMSYD42kF3EiLB",
+      "signer": false,
+      "writable": false,
+      "feePayer": false,
+      "multisig": false
+    }
+  ],
+  "data": "KwEBPPUDt7zoP48mimoAAAAA"
+}

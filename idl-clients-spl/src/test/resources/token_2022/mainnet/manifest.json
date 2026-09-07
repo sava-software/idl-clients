@@ -1,0 +1,425 @@
+{
+  "program": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "fixtures": [
+    {
+      "file": "initializeMint-1.json",
+      "instruction": "initializeMint"
+    },
+    {
+      "file": "initializeMint-2.json",
+      "instruction": "initializeMint"
+    },
+    {
+      "file": "initializeAccount-1.json",
+      "instruction": "initializeAccount"
+    },
+    {
+      "file": "initializeMultisig-1.json",
+      "instruction": "initializeMultisig"
+    },
+    {
+      "file": "initializeMultisig-2.json",
+      "instruction": "initializeMultisig"
+    },
+    {
+      "file": "transfer-1.json",
+      "instruction": "transfer"
+    },
+    {
+      "file": "approve-1.json",
+      "instruction": "approve"
+    },
+    {
+      "file": "revoke-1.json",
+      "instruction": "revoke"
+    },
+    {
+      "file": "setAuthority-1.json",
+      "instruction": "setAuthority"
+    },
+    {
+      "file": "setAuthority-2.json",
+      "instruction": "setAuthority"
+    },
+    {
+      "file": "setAuthority-3.json",
+      "instruction": "setAuthority"
+    },
+    {
+      "file": "mintTo-1.json",
+      "instruction": "mintTo"
+    },
+    {
+      "file": "mintTo-2.json",
+      "instruction": "mintTo"
+    },
+    {
+      "file": "burn-1.json",
+      "instruction": "burn"
+    },
+    {
+      "file": "closeAccount-1.json",
+      "instruction": "closeAccount"
+    },
+    {
+      "file": "closeAccount-2.json",
+      "instruction": "closeAccount"
+    },
+    {
+      "file": "closeAccount-3.json",
+      "instruction": "closeAccount"
+    },
+    {
+      "file": "freezeAccount-1.json",
+      "instruction": "freezeAccount"
+    },
+    {
+      "file": "freezeAccount-2.json",
+      "instruction": "freezeAccount"
+    },
+    {
+      "file": "thawAccount-1.json",
+      "instruction": "thawAccount"
+    },
+    {
+      "file": "thawAccount-2.json",
+      "instruction": "thawAccount"
+    },
+    {
+      "file": "transferChecked-1.json",
+      "instruction": "transferChecked"
+    },
+    {
+      "file": "approveChecked-1.json",
+      "instruction": "approveChecked"
+    },
+    {
+      "file": "mintToChecked-1.json",
+      "instruction": "mintToChecked"
+    },
+    {
+      "file": "mintToChecked-2.json",
+      "instruction": "mintToChecked"
+    },
+    {
+      "file": "burnChecked-1.json",
+      "instruction": "burnChecked"
+    },
+    {
+      "file": "syncNative-1.json",
+      "instruction": "syncNative"
+    },
+    {
+      "file": "initializeAccount3-1.json",
+      "instruction": "initializeAccount3"
+    },
+    {
+      "file": "initializeMint2-1.json",
+      "instruction": "initializeMint2"
+    },
+    {
+      "file": "initializeMint2-2.json",
+      "instruction": "initializeMint2"
+    },
+    {
+      "file": "getAccountDataSize-1.json",
+      "instruction": "getAccountDataSize"
+    },
+    {
+      "file": "initializeImmutableOwner-1.json",
+      "instruction": "initializeImmutableOwner"
+    },
+    {
+      "file": "amountToUiAmount-1.json",
+      "instruction": "amountToUiAmount"
+    },
+    {
+      "file": "initializeMintCloseAuthority-1.json",
+      "instruction": "initializeMintCloseAuthority"
+    },
+    {
+      "file": "initializeTransferFeeConfig-1.json",
+      "instruction": "initializeTransferFeeConfig"
+    },
+    {
+      "file": "initializeTransferFeeConfig-2.json",
+      "instruction": "initializeTransferFeeConfig"
+    },
+    {
+      "file": "transferCheckedWithFee-1.json",
+      "instruction": "transferCheckedWithFee"
+    },
+    {
+      "file": "withdrawWithheldTokensFromMint-1.json",
+      "instruction": "withdrawWithheldTokensFromMint"
+    },
+    {
+      "file": "withdrawWithheldTokensFromMint-2.json",
+      "instruction": "withdrawWithheldTokensFromMint"
+    },
+    {
+      "file": "withdrawWithheldTokensFromAccounts-1.json",
+      "instruction": "withdrawWithheldTokensFromAccounts"
+    },
+    {
+      "file": "withdrawWithheldTokensFromAccounts-2.json",
+      "instruction": "withdrawWithheldTokensFromAccounts"
+    },
+    {
+      "file": "withdrawWithheldTokensFromAccounts-3.json",
+      "instruction": "withdrawWithheldTokensFromAccounts"
+    },
+    {
+      "file": "harvestWithheldTokensToMint-1.json",
+      "instruction": "harvestWithheldTokensToMint"
+    },
+    {
+      "file": "harvestWithheldTokensToMint-2.json",
+      "instruction": "harvestWithheldTokensToMint"
+    },
+    {
+      "file": "harvestWithheldTokensToMint-3.json",
+      "instruction": "harvestWithheldTokensToMint"
+    },
+    {
+      "file": "setTransferFee-1.json",
+      "instruction": "setTransferFee"
+    },
+    {
+      "file": "setTransferFee-2.json",
+      "instruction": "setTransferFee"
+    },
+    {
+      "file": "initializeConfidentialTransferMint-1.json",
+      "instruction": "initializeConfidentialTransferMint"
+    },
+    {
+      "file": "configureConfidentialTransferAccount-1.json",
+      "instruction": "configureConfidentialTransferAccount"
+    },
+    {
+      "file": "emptyConfidentialTransferAccount-1.json",
+      "instruction": "emptyConfidentialTransferAccount"
+    },
+    {
+      "file": "confidentialDeposit-1.json",
+      "instruction": "confidentialDeposit"
+    },
+    {
+      "file": "confidentialWithdraw-1.json",
+      "instruction": "confidentialWithdraw"
+    },
+    {
+      "file": "confidentialTransfer-1.json",
+      "instruction": "confidentialTransfer"
+    },
+    {
+      "file": "applyConfidentialPendingBalance-1.json",
+      "instruction": "applyConfidentialPendingBalance"
+    },
+    {
+      "file": "disableConfidentialCredits-1.json",
+      "instruction": "disableConfidentialCredits"
+    },
+    {
+      "file": "disableNonConfidentialCredits-1.json",
+      "instruction": "disableNonConfidentialCredits"
+    },
+    {
+      "file": "initializeDefaultAccountState-1.json",
+      "instruction": "initializeDefaultAccountState"
+    },
+    {
+      "file": "updateDefaultAccountState-1.json",
+      "instruction": "updateDefaultAccountState"
+    },
+    {
+      "file": "reallocate-1.json",
+      "instruction": "reallocate"
+    },
+    {
+      "file": "reallocate-2.json",
+      "instruction": "reallocate"
+    },
+    {
+      "file": "reallocate-3.json",
+      "instruction": "reallocate"
+    },
+    {
+      "file": "enableMemoTransfers-1.json",
+      "instruction": "enableMemoTransfers"
+    },
+    {
+      "file": "enableMemoTransfers-2.json",
+      "instruction": "enableMemoTransfers"
+    },
+    {
+      "file": "disableMemoTransfers-1.json",
+      "instruction": "disableMemoTransfers"
+    },
+    {
+      "file": "createNativeMint-1.json",
+      "instruction": "createNativeMint"
+    },
+    {
+      "file": "initializeNonTransferableMint-1.json",
+      "instruction": "initializeNonTransferableMint"
+    },
+    {
+      "file": "initializeInterestBearingMint-1.json",
+      "instruction": "initializeInterestBearingMint"
+    },
+    {
+      "file": "updateRateInterestBearingMint-1.json",
+      "instruction": "updateRateInterestBearingMint"
+    },
+    {
+      "file": "updateRateInterestBearingMint-2.json",
+      "instruction": "updateRateInterestBearingMint"
+    },
+    {
+      "file": "enableCpiGuard-1.json",
+      "instruction": "enableCpiGuard"
+    },
+    {
+      "file": "enableCpiGuard-2.json",
+      "instruction": "enableCpiGuard"
+    },
+    {
+      "file": "initializePermanentDelegate-1.json",
+      "instruction": "initializePermanentDelegate"
+    },
+    {
+      "file": "initializeTransferHook-1.json",
+      "instruction": "initializeTransferHook"
+    },
+    {
+      "file": "updateTransferHook-1.json",
+      "instruction": "updateTransferHook"
+    },
+    {
+      "file": "updateTransferHook-2.json",
+      "instruction": "updateTransferHook"
+    },
+    {
+      "file": "initializeConfidentialTransferFee-1.json",
+      "instruction": "initializeConfidentialTransferFee"
+    },
+    {
+      "file": "withdrawExcessLamports-1.json",
+      "instruction": "withdrawExcessLamports"
+    },
+    {
+      "file": "initializeMetadataPointer-1.json",
+      "instruction": "initializeMetadataPointer"
+    },
+    {
+      "file": "initializeGroupPointer-1.json",
+      "instruction": "initializeGroupPointer"
+    },
+    {
+      "file": "initializeGroupMemberPointer-1.json",
+      "instruction": "initializeGroupMemberPointer"
+    },
+    {
+      "file": "updateGroupMemberPointer-1.json",
+      "instruction": "updateGroupMemberPointer"
+    },
+    {
+      "file": "initializeConfidentialMintBurn-1.json",
+      "instruction": "initializeConfidentialMintBurn"
+    },
+    {
+      "file": "confidentialMint-1.json",
+      "instruction": "confidentialMint"
+    },
+    {
+      "file": "confidentialBurn-1.json",
+      "instruction": "confidentialBurn"
+    },
+    {
+      "file": "initializeScaledUiAmountMint-1.json",
+      "instruction": "initializeScaledUiAmountMint"
+    },
+    {
+      "file": "updateMultiplierScaledUiMint-1.json",
+      "instruction": "updateMultiplierScaledUiMint"
+    },
+    {
+      "file": "initializePausableConfig-1.json",
+      "instruction": "initializePausableConfig"
+    },
+    {
+      "file": "pause-1.json",
+      "instruction": "pause"
+    },
+    {
+      "file": "resume-1.json",
+      "instruction": "resume"
+    },
+    {
+      "file": "initializeTokenMetadata-1.json",
+      "instruction": "initializeTokenMetadata"
+    },
+    {
+      "file": "initializeTokenMetadata-2.json",
+      "instruction": "initializeTokenMetadata"
+    },
+    {
+      "file": "initializeTokenMetadata-3.json",
+      "instruction": "initializeTokenMetadata"
+    },
+    {
+      "file": "updateTokenMetadataField-1.json",
+      "instruction": "updateTokenMetadataField"
+    },
+    {
+      "file": "updateTokenMetadataField-2.json",
+      "instruction": "updateTokenMetadataField"
+    },
+    {
+      "file": "updateTokenMetadataField-3.json",
+      "instruction": "updateTokenMetadataField"
+    },
+    {
+      "file": "removeTokenMetadataKey-1.json",
+      "instruction": "removeTokenMetadataKey"
+    },
+    {
+      "file": "removeTokenMetadataKey-2.json",
+      "instruction": "removeTokenMetadataKey"
+    },
+    {
+      "file": "removeTokenMetadataKey-3.json",
+      "instruction": "removeTokenMetadataKey"
+    },
+    {
+      "file": "updateTokenMetadataUpdateAuthority-1.json",
+      "instruction": "updateTokenMetadataUpdateAuthority"
+    },
+    {
+      "file": "initializeTokenGroup-1.json",
+      "instruction": "initializeTokenGroup"
+    },
+    {
+      "file": "initializeTokenGroupMember-1.json",
+      "instruction": "initializeTokenGroupMember"
+    },
+    {
+      "file": "unwrapLamports-1.json",
+      "instruction": "unwrapLamports"
+    },
+    {
+      "file": "initializePermissionedBurn-1.json",
+      "instruction": "initializePermissionedBurn"
+    },
+    {
+      "file": "permissionedBurnChecked-1.json",
+      "instruction": "permissionedBurnChecked"
+    },
+    {
+      "file": "batch-1.json",
+      "instruction": "batch"
+    }
+  ]
+}

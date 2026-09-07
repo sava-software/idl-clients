@@ -1,0 +1,24 @@
+{
+  "instruction": "updateTransferHook",
+  "signature": "3SV3x89fDUPGdkvRBPjCPmPxFRNT7JXmX8DXerbS1uwiLpDqAJsqjiG4QMSQW1RVk5djcKLTF3Yp2xz1g7JvwwcV",
+  "slot": 247350779,
+  "position": "2.3",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "14mPbvVPezp1ZuubmfCspP4EBUvSDXstHnCbkmUbzsy",
+      "signer": true,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "5AdNuK2RfGxKhk7gGQZxN6S4a5LNRUn8Q1ry6fSWg85n",
+      "signer": true,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    }
+  ],
+  "data": "JAEOCThnJ0f1l+ELDEJ3FBb+fTE6tbuMqViumiKX0XZNHA=="
+}

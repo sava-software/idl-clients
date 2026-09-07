@@ -1,0 +1,24 @@
+{
+  "instruction": "enableCpiGuard",
+  "signature": "2rkbSRy4HGvzi75SBWcnKzyHcXqZhaVNS7S2oQzTWZ6D1qRAeQUtBfRYdRchyt4ujdjnqhKBYsHsdr8utwSBVnK4",
+  "slot": 375576143,
+  "position": "0",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "3M9SCbEaMMASpDSZ3LdoCjnA5m91hxC4mDEdK6mtBF9H",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "6GoRpnZeDBmeZyyTWqc6ScRdp7dnSg3T6ceE7Hk8Euz1",
+      "signer": true,
+      "writable": true,
+      "feePayer": true,
+      "multisig": false
+    }
+  ],
+  "data": "IgA="
+}

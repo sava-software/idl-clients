@@ -1,0 +1,17 @@
+{
+  "instruction": "initializeConfidentialTransferFee",
+  "signature": "4WXjtC5YaM4GPocsCHhbi9wqcEVoNfZhhtG1hN8YxKQKfcVTquzDqFmH2oMeyhJjJeWcf1oPP6UWJBGWpznMBnP9",
+  "slot": 263961855,
+  "position": "5",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "NZUSDpe8mCP8Qmi5pqrqdT46M6Ac6F5cx5oyqPKmT5h",
+      "signer": true,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    }
+  ],
+  "data": "JQAEahHKny+3EZUeifa5tx2ZmBOGSwGdsXUun1/W58BMNWDjpSjdG+p7I+A83n8/Ukxnn5U2kWZVND991IiFV6cf"
+}

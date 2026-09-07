@@ -1,0 +1,24 @@
+{
+  "instruction": "updateDefaultAccountState",
+  "signature": "4gCbwpUNq5LsTmBPx82JYt2RjyuPnUPTBmHnq5t8DEYwfqaFBDsJBJtR1dDSTb7bxf3CBBF73krTNfuutgnYGUoj",
+  "slot": 411237245,
+  "position": "2",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "1XGUezYiifCcy4faKvudHuoMEz5bKLyHTDZNhJdAtRB",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "5SPMNR64vPvJBwxwrqd3rmb5DxFVEKfFAjEUfeY9m34e",
+      "signer": true,
+      "writable": true,
+      "feePayer": true,
+      "multisig": false
+    }
+  ],
+  "data": "HAEC"
+}

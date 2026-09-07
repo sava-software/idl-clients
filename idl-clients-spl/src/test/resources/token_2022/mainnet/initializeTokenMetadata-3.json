@@ -1,0 +1,38 @@
+{
+  "instruction": "initializeTokenMetadata",
+  "signature": "4oxtB89uSxCsZdrnbVnpd7japHYJaFLcG9619JoapiaHB9ZhRadicxnZ1JN3N1QreGVcz2awLt5DoHvGFtcPKK47",
+  "slot": 444957982,
+  "position": "0.13",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "ExB3GFHqi9wSdYCo4Szz3JEko4TKbQ6RPynqKSRsxxwV",
+      "signer": true,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "HLnpSz9h2S4hiLQ43rnSD9XkcUThA7B8hQMKmDaiTLcC",
+      "signer": false,
+      "writable": false,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "ExB3GFHqi9wSdYCo4Szz3JEko4TKbQ6RPynqKSRsxxwV",
+      "signer": true,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "HLnpSz9h2S4hiLQ43rnSD9XkcUThA7B8hQMKmDaiTLcC",
+      "signer": false,
+      "writable": false,
+      "feePayer": false,
+      "multisig": false
+    }
+  ],
+  "data": "0uEeoli4TY0UAAAATWV0ZW9yYSBQb3NpdGlvbiBORlQDAAAATVBOWAAAAGh0dHBzOi8vcmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbS9NZXRlb3JhQWcvdG9rZW4tbWV0YWRhdGEvbWFpbi9tZXRlb3JhX3Bvc2l0aW9uX25mdC5wbmc="
+}

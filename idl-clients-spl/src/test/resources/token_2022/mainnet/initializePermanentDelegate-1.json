@@ -1,0 +1,17 @@
+{
+  "instruction": "initializePermanentDelegate",
+  "signature": "4PfMcxabgzVbujD4gAJ8xwTb9bsscRCWr9DvLiFHpu4pqz1cQUb8omQxrw4D8zSWnvKLEycsKNaxbPH2xdogaS42",
+  "slot": 387997047,
+  "position": "4",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "12ECt1LBZGExTBnbLPSyb5KSqFfqb4LW1uAvtdNwydd",
+      "signer": true,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    }
+  ],
+  "data": "I+WKqhdAvydh2LouHq0lKwjraNJka0hmiNGggbQhTCm9"
+}

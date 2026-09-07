@@ -1,0 +1,38 @@
+{
+  "instruction": "freezeAccount",
+  "signature": "3qrKYKamkiAVJpc52L3weUyCs3iR6zbZnTdJuaKHf4NXmajc3kBpVQp2VLt2tcYm69bx195HJtUs7JoCjstobvgu",
+  "slot": 400690406,
+  "position": "2.0",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "75kQD8gDnxWZG7g5tvYMSrbwX74FnpctUMXZuvULG9NB",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "7LWanZteUKtvFjv4MHYgKXXdAuCQYFPJysL9pxxdRQGn",
+      "signer": false,
+      "writable": false,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "DZ7j2YLDq7847t2HtCWaDQUTpLJ4BinPGsY8w9Aai63y",
+      "signer": false,
+      "writable": false,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "DZ7j2YLDq7847t2HtCWaDQUTpLJ4BinPGsY8w9Aai63y",
+      "signer": false,
+      "writable": false,
+      "feePayer": false,
+      "multisig": false
+    }
+  ],
+  "data": "Cg=="
+}

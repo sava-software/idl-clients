@@ -1,0 +1,24 @@
+{
+  "instruction": "setAuthority",
+  "signature": "4MUwstZbfzKTzKqhGHYTpJ5KqiBiuLKg1xa6CKHDgHxsZHoiyqCPaJNByQBeqvdQXVkB5xk2i4U8iZUrrGiscwNv",
+  "slot": 444957987,
+  "position": "2.5",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "7ArDTqT2qJp1MckXokXUNumZ5rMPGNz6Bsp3nvwZpRDw",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "2CjZBT8dWKFfk4SCiVkqRxojBjia71iw64rfFKFtBCtX",
+      "signer": true,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    }
+  ],
+  "data": "BgMBj+j2Bdbhx1VsN2LtvdFsH6CXLVxbqONpPh96uWTtVrQ="
+}

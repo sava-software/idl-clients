@@ -1,0 +1,24 @@
+{
+  "instruction": "initializeMint",
+  "signature": "5Xm1wQwJw9K2usMs2sZLs6BCgtw9AT3uFjM3KhEPZsynMd8kQ6brkfUWBCTPVXPjkmW4ddTms2N4x587KqHMdJWn",
+  "slot": 278308512,
+  "position": "3",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "111Aj7p1gK1gDr8sqZ6d2AtUSgwhGkqBKjrZmCE3SLV",
+      "signer": true,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "SysvarRent111111111111111111111111111111111",
+      "signer": false,
+      "writable": false,
+      "feePayer": false,
+      "multisig": false
+    }
+  ],
+  "data": "AAYJY8jbXX9t/4jn0qY4250kFh3ZzeM2z8+E+2Zi9tXkigA="
+}

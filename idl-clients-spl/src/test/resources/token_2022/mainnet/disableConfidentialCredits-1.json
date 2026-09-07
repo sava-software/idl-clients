@@ -1,0 +1,24 @@
+{
+  "instruction": "disableConfidentialCredits",
+  "signature": "4DefcsfmVgJXZtib7B7QL7T3QHhAgbRf4Y1oPJv1s4kzDLWa9xxaLzcSSS8mG9HuQS3r2PbfbW8L8mfx3x3ufhvq",
+  "slot": 444523252,
+  "position": "0.8",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "Hti914ETT8dmBdDGk9SiKarthDJrNxWMYEzk1fXFQXnA",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "BcH9L1W7sB7PVPhSSPQHNkjH6GyXNcYnzTVVW5TJzEuX",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    }
+  ],
+  "data": "Gwo="
+}

@@ -1,0 +1,24 @@
+{
+  "instruction": "setTransferFee",
+  "signature": "4qvhy1Q1KzaCMYp6TQYEjdqKUqaci9vuPfCBauNWG8f7EJjo3VHt9XQ75dmvGmRB1tvx2H3GHkuBdkuDKSxdcKPr",
+  "slot": 328888340,
+  "position": "3",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "1Bca5hivgKN8wzZkwkNMjjPz24GAFbNTjzQZeY1UhaR",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "Uv6nRLrtZLYHWaasv226r2unrj5xcnvDcRJiYunLwNC",
+      "signer": true,
+      "writable": true,
+      "feePayer": true,
+      "multisig": false
+    }
+  ],
+  "data": "GgUAAAAAAAAAAAAA"
+}

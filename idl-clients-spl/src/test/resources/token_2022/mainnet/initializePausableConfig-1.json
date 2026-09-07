@@ -1,0 +1,17 @@
+{
+  "instruction": "initializePausableConfig",
+  "signature": "4DPUnEPe5KvQoZtT4hKGzS1TVNXLLD6kmTEzhaQALkGZaAw4kgEMm22Whzb1xrtbFm1tp6jXFFLzV5keWDoouYnx",
+  "slot": 404501975,
+  "position": "0.5",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "1CtKV8XwPfK861urZpVGdCVLUG2ZY5j4K4aadxSondo",
+      "signer": true,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    }
+  ],
+  "data": "LADcOMeeUAajo3z3ODv2Yryf3pCKuJ7bbJS5RpOprAfSRA=="
+}

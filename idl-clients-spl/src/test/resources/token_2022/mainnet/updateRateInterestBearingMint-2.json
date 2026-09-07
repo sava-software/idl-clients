@@ -1,0 +1,24 @@
+{
+  "instruction": "updateRateInterestBearingMint",
+  "signature": "WeSUC8ZbbYZ6tbmJqDjJizsVYY8FXVoJShwiVrsbsP2QzQjsC1afPTdr8TEHb4csR3FHQevzL5quqzLxoMdSDy6",
+  "slot": 287380976,
+  "position": "0",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "BQ7G6Tk187cFdz2Mu1XDA59mFjeSmNegPZPFoQwQs8g",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "Bo28AZPrTr22d9XdbikT8fUucaHPbZZ2WrryyUn52V4G",
+      "signer": true,
+      "writable": true,
+      "feePayer": true,
+      "multisig": false
+    }
+  ],
+  "data": "IQGIEw=="
+}

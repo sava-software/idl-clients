@@ -1,0 +1,24 @@
+{
+  "instruction": "pause",
+  "signature": "4KFEaj9uWbHX4ZDGgmA58uhJioWW6Lt54i6hDK9bsr7FNdEEzX22rCaCbGTSJbiHrfQD85cTKWJNnwncgzPUsGgN",
+  "slot": 395320016,
+  "position": "3.1",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "13fuQC7nKfTAaNhbdYWtJND4RDcuHF5fUDNjLSSnondo",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "FpeumcjXquykWDgioLpwap8f4NUdggfMSYD42kF3EiLB",
+      "signer": false,
+      "writable": false,
+      "feePayer": false,
+      "multisig": false
+    }
+  ],
+  "data": "LAE="
+}

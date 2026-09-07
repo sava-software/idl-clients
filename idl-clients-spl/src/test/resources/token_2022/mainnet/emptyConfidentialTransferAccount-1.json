@@ -1,0 +1,31 @@
+{
+  "instruction": "emptyConfidentialTransferAccount",
+  "signature": "23Cpo1tWvMwM7wT9ZriTvTNEFTD4KNN9VJLmfgBAWno7TMpJkp668XZgahUMJkqvZLHF2int6Mhx4VxzcxdVCGD4",
+  "slot": 444522844,
+  "position": "0.1",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "C2BKLAx4xm3J84oQRMJ2jjq4SFWFS1zHAgQdXtXy3xtG",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "Fjt9JQ7H8VtwKvcZVsqr7q4WbFNHwK6r2bVWFgRhpgmC",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "DZiU5Qd2MG2jVgWrPRE9thvKkaJ3gT26BmEruHhGcS2N",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    }
+  ],
+  "data": "GwQA"
+}

@@ -1,0 +1,17 @@
+{
+  "instruction": "initializeNonTransferableMint",
+  "signature": "2tLsYVNLVBqEstMywzaGaPoEmAhv2bDW63rHQ3GGJPaNW6CLmzLYRtxWvka3mwXQtTWCgLhX2PoyvqAwQR2GRPAN",
+  "slot": 411707354,
+  "position": "1",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "17Ry5gcAJW5x9XnHqx8yF8soUpdGKaEzcXSViPNB6gp",
+      "signer": true,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    }
+  ],
+  "data": "IA=="
+}

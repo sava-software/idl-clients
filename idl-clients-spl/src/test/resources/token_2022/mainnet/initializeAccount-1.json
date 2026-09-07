@@ -1,0 +1,38 @@
+{
+  "instruction": "initializeAccount",
+  "signature": "3aQmV72aCEKm7v7qVRBjDGEDBox6wotAF6egFfRoQrXcmaugM4rMcKYVw6adme3vA9BxKsZJeTab9gY2ELssCnZR",
+  "slot": 444957976,
+  "position": "5",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "4WJT6bQoY35iQDdX2NS3f4Ma8KrGWexf2rAYMMBWdjA3",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "rd3inGi2MGrM9bLSF25jqET8BUobSoZUVxVxVt4pump",
+      "signer": false,
+      "writable": false,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "Hn9B5qcoHAQZg6YsjT6twgugzw1YTNF9qahC1n7UKBao",
+      "signer": true,
+      "writable": true,
+      "feePayer": true,
+      "multisig": false
+    },
+    {
+      "pubkey": "SysvarRent111111111111111111111111111111111",
+      "signer": false,
+      "writable": false,
+      "feePayer": false,
+      "multisig": false
+    }
+  ],
+  "data": "AQ=="
+}

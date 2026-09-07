@@ -1,0 +1,17 @@
+{
+  "instruction": "initializeConfidentialMintBurn",
+  "signature": "8Wk2TfttyR59CvXJ4bpH8u6ADDiBuN4sbHWCvpe4HLqdQCv73mzipfx2LSHxX3TWRbwoMki24jeGZfibetL71u5",
+  "slot": 441480320,
+  "position": "2",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "zKQsnrqGNKZ3e3F68v2sARVfB5Z5nkD98f8gfxC3Rua",
+      "signer": true,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    }
+  ],
+  "data": "KgDqb1YDQN+2UL21t35ky4it7hq12zVR2uNEu9e4golLBaD2fPNpK6ccIPpTbalnzfeUtXFBYF25ALNDOYlnspAz4GX1qg=="
+}

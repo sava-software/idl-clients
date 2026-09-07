@@ -1,0 +1,45 @@
+{
+  "instruction": "confidentialWithdraw",
+  "signature": "42NeDuNsTLPqX2nZzURsEpbrtBRcam4k4EMJPuRF8y9zByNAhKeT9A4QVD3hWSYRbYfVNGeArcgdtihTcJtSDgGK",
+  "slot": 444320409,
+  "position": "8",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "Hg16ocuXJxDSgXcz8nBNiTuG8jrZNhadSe3zxAGUzPLQ",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "3tMeZKTTnBmoyeayYjk7gAhNyBV8neRRatywiZPnULuo",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "HCFUY1NEHL2VZ3VBCCV9QkcDkYCXDS7fFnd7EsEWQXoc",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "7AGzknSGVwHpKpW1wS3R5z9SkXqH3M1VvochwHbrLZmx",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "ChWS7DCm3D78qXNxpx88UKfS56kdVgakesVCvF2R9XN8",
+      "signer": true,
+      "writable": true,
+      "feePayer": true,
+      "multisig": false
+    }
+  ],
+  "data": "GwYA5AtUAgAAAAZ4EQCd0tcoEgZX9yngOoHld4k2PIYLiXdrLrTnEqQFxyg579QAAA=="
+}

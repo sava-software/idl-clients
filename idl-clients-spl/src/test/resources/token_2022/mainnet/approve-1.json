@@ -1,0 +1,31 @@
+{
+  "instruction": "approve",
+  "signature": "5Ks3BjN9Pc1FDz6bLRLPFRR66MuskqAoR43zooH7GzF6FzJ7GAhEVssbTaL1DRMv3hu5KzPToMkNFVhF6jSnmjkR",
+  "slot": 258352014,
+  "position": "2.1",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "ChB5pq1mZFkDp21JCpcgc2U5q1GLZ5W4Cu2C7CtCxbhn",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "8UUWrFDKQoDHT5DhKHa6yzPtSj9M4Xbk5Hg4nsM9ZPhj",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "EsSQwahWXLkVK3dNBFAhB5FkK66LMYzH8QccawdXbPi",
+      "signer": true,
+      "writable": true,
+      "feePayer": true,
+      "multisig": false
+    }
+  ],
+  "data": "BAEAAAAAAAAA"
+}

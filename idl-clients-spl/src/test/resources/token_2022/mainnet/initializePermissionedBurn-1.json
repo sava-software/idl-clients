@@ -1,0 +1,17 @@
+{
+  "instruction": "initializePermissionedBurn",
+  "signature": "237VCgsvd6CsfZiMD3zEfDUcKCkGQ8FZc4xh1DBnHFd9Zs3psFWBuv66XqLJGyjQpdQ2dPnBcHQZo67s3NpG2EeN",
+  "slot": 428983177,
+  "position": "6",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "14Rg7TaptSo1Ndkz1ngBw2rE4EuFhQd2PzCrkyjGdsL1",
+      "signer": true,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    }
+  ],
+  "data": "LgA+bGpIaxt+/vItbgAC/0RP8BaaZgtZI6jtW54hbXfd7A=="
+}

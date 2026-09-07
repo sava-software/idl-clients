@@ -1,0 +1,38 @@
+{
+  "instruction": "initializeMultisig",
+  "signature": "4oJpDduLtUAHS61Yc3b8P51Jbi6kwFanM1FdYrnv6XKfJHoFmiK41Qa5XHWp8jbUXoXoTa7Gw5b1aLKpvfoQCp7p",
+  "slot": 386923208,
+  "position": "3",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "pq3XcYiEvtUibZPzY4qMiHGyCtZPrDxDf7pYHJ3Nt3k",
+      "signer": true,
+      "writable": true,
+      "feePayer": false,
+      "multisig": true
+    },
+    {
+      "pubkey": "SysvarRent111111111111111111111111111111111",
+      "signer": false,
+      "writable": false,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "GKzT5jtvcysvWoRN7Kgro1nqriS6QhHjyqrtL6UNK89t",
+      "signer": false,
+      "writable": false,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "2WpgARMHmfvvy6sqij5KfKvQFJen7R1DwEocmuMgfjX9",
+      "signer": false,
+      "writable": false,
+      "feePayer": false,
+      "multisig": false
+    }
+  ],
+  "data": "AgE="
+}

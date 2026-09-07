@@ -1,0 +1,45 @@
+{
+  "instruction": "initializeTokenGroupMember",
+  "signature": "4PfMcxabgzVbujD4gAJ8xwTb9bsscRCWr9DvLiFHpu4pqz1cQUb8omQxrw4D8zSWnvKLEycsKNaxbPH2xdogaS42",
+  "slot": 387997047,
+  "position": "8",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "12ECt1LBZGExTBnbLPSyb5KSqFfqb4LW1uAvtdNwydd",
+      "signer": true,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "12ECt1LBZGExTBnbLPSyb5KSqFfqb4LW1uAvtdNwydd",
+      "signer": true,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "GT2zuHVaZQYZSyQMgJPLzvkmyztfyXg2NJunqFp4p3A4",
+      "signer": true,
+      "writable": true,
+      "feePayer": true,
+      "multisig": false
+    },
+    {
+      "pubkey": "GT22s89nU4iWFkNXj1Bw6uYhJJWDRPpShHt4Bk8f99Te",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "GT2zuHVaZQYZSyQMgJPLzvkmyztfyXg2NJunqFp4p3A4",
+      "signer": true,
+      "writable": true,
+      "feePayer": true,
+      "multisig": false
+    }
+  ],
+  "data": "mCDesN/tdIY="
+}

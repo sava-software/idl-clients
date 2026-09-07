@@ -1,0 +1,24 @@
+{
+  "instruction": "enableMemoTransfers",
+  "signature": "2odVAYN6YsojQk37oKbHiwVue98LrhotdafwVeKyZhG9LesH3Xt46VE1vDRAa34ixZtUo1iqhYeBQRHCpgG5rp4y",
+  "slot": 327322442,
+  "position": "0",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "DFTt4tvj25g7nMc3Vc59E1kDX9H5y29YGZjvZ5nZxSd",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "J7uDADaJksXau5CWsTodqPBcHFEx59PbdkbinKosatEr",
+      "signer": true,
+      "writable": true,
+      "feePayer": true,
+      "multisig": false
+    }
+  ],
+  "data": "HgA="
+}

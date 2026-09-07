@@ -1,0 +1,17 @@
+{
+  "instruction": "initializeTransferFeeConfig",
+  "signature": "AYVcDNqiYBFYc7FDd7NgmzFAUz5gh8bXv26qCF5aS2gVkb5cX31B3s7EnFMuhkZZ4zwNwiuLk3cotiCz3L8mC2J",
+  "slot": 414498989,
+  "position": "2.2",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "1usZHuHQmtoiGRwx572BycDN1A34cq1kDDrE64twrV",
+      "signer": true,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    }
+  ],
+  "data": "GgAAAWc5RATCdVj76UrZTbq5lCzgWr8/k5iHyJ9hmCWd8QNfAAD//////////w=="
+}

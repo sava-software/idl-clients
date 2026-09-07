@@ -1,0 +1,24 @@
+{
+  "instruction": "removeTokenMetadataKey",
+  "signature": "CbvmmyhmRejf18AKbNxskBnJ6rLhAHZH9xnbSkPQ1mhExX2nefZvNuukexoGD9By9WWuxUKexexKBMwKPZnKXjt",
+  "slot": 259195716,
+  "position": "1.0",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "4wGyzz3tR1q9Nekb6Pe799BRSDfAKc9L8swesAw6shKq",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "AXMswr857LbsKj81KVB83c5HTYAd3Ujhpry3dkCMsppy",
+      "signer": false,
+      "writable": false,
+      "feePayer": false,
+      "multisig": false
+    }
+  ],
+  "data": "6hIgOFmNJbUBMAAAAF9yb180eWdLWkRLVEEzNktDWk5QWW16azlKb0pMNVlldTMxOHVDVnRLdXJrWWZGeQ=="
+}

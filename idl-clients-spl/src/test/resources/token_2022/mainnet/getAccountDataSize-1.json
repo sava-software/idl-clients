@@ -1,0 +1,17 @@
+{
+  "instruction": "getAccountDataSize",
+  "signature": "2VYudH6X1XeQPoUf2kWJvXQpVht2rqsCLAd2vPGyX7XWqWcSDhXwBoWA9vr576u43gDePTD7dAHaTk2vWaJpBE2N",
+  "slot": 444311899,
+  "position": "3.1",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    }
+  ],
+  "data": "FQcA"
+}

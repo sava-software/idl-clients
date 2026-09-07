@@ -1,0 +1,17 @@
+{
+  "instruction": "amountToUiAmount",
+  "signature": "5qfCzpWevk2AUemDtNgvALFoHD53oNXyKbNxC88qXhNfr1nP8aVcEurCCgS2Kca6RXAbGfPnPqbPhcR4LtfUWbEN",
+  "slot": 434360153,
+  "position": "1",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "4iXzwSDP98pGsTggRBHC898cUb7My9iVtufNdvRa1WPB",
+      "signer": false,
+      "writable": false,
+      "feePayer": false,
+      "multisig": false
+    }
+  ],
+  "data": "F0BCDwAAAAAA"
+}

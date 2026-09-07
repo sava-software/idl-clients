@@ -1,0 +1,17 @@
+{
+  "instruction": "syncNative",
+  "signature": "Dt4VLuLsKMuvbUCrgpSPsX7jYnqKaHwwRv5iSW8eEgJCsGWT6U9WAdACRyZDLhSfL3uQ4E2muyanDTugpc3Fvct",
+  "slot": 433319593,
+  "position": "4",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "BkLkQ2YSpCoPYjNWgbXjtgfwN2Yh3S7fd5Tjfc6fuBxZ",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    }
+  ],
+  "data": "EQ=="
+}

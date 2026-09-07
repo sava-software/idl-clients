@@ -1,0 +1,52 @@
+{
+  "instruction": "confidentialBurn",
+  "signature": "5zfJmYp88GoqYSUGcN8fgVN1AtFyy6cAPTTFLFCwYxmrWi31Truy7Nwa7UaQirKxXAswuUF1Dzp6VDevRiiBqyrH",
+  "slot": 441506441,
+  "position": "0",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "3rxy9SCXhumonZz4TN5nC43WAZ9Yqku6kiFXWxpJwPPc",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "zKQsnrqGNKZ3e3F68v2sARVfB5Z5nkD98f8gfxC3Rua",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "5nDkUfo7FTXd67YERjzcgffHBtUDU25Eszfte5kU9Gh5",
+      "signer": false,
+      "writable": false,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "HLJE4SBMpf72MciQY5D7DbuXuZEWokjJm5t3yKx95AAS",
+      "signer": false,
+      "writable": false,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "FZsRPQoFXMuWBuBtdk6iPrCWmbgdXccchKrUovMyrEB8",
+      "signer": false,
+      "writable": false,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "wARvfUk1LS97HZDF8G2MXXETCrbraSoAmwLw5R2kpnv",
+      "signer": true,
+      "writable": true,
+      "feePayer": true,
+      "multisig": false
+    }
+  ],
+  "data": "KgQ3p6a5Qrrd+X6lK4oO2fpPN1V8m1rabu7QtL1N7pJzBlAyfjhei2YIoytmMBH32VN3WVlwm+0JSHu/9rop9N57taMwVwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjKbcIUIRagRY6AVUmEB289NQGrHbDxWREn8r3bln03AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+}

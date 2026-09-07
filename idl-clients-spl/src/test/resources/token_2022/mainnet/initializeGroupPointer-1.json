@@ -1,0 +1,17 @@
+{
+  "instruction": "initializeGroupPointer",
+  "signature": "TVtW7twfs463QmaFL3bF9Xu6Wnms3qzyT8AY16xYuCGnQHjBz5oNugE2R2qmF3qo3Lh4knXUq43t3vAxfsz2TVL",
+  "slot": 247127987,
+  "position": "0.4",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "18gfUoDqGztncByFiGTBGCxToKzExV1EPuXH8s5iiTv",
+      "signer": true,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    }
+  ],
+  "data": "KACbrBseevrzq9JqgWHiK4ElTnWH+fyyVYxozZRW9MlZDwAIsCs5Jgu4y6dJQQW9oQtgKyE5dWrsS1Z9LLT0BJiF"
+}

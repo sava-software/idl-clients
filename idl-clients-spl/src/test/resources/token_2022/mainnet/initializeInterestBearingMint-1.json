@@ -1,0 +1,17 @@
+{
+  "instruction": "initializeInterestBearingMint",
+  "signature": "4hUT1AjoCfudRpWBwzzoNC21ntboKDsa3SP1z1s3dqxGyztKeGrdLU1EGrUZfLvQ4opawprVLX9DZ8sigz9X2SfW",
+  "slot": 248391820,
+  "position": "4",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "1BhUvj2oHXanDAEsbt2BYzcu1vgNR94txsUnT8ZpVrr",
+      "signer": true,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    }
+  ],
+  "data": "IQC6oZ2QZTWPJj7CrXAy2U1awu+Y8vW4hw5BPCApAplCaAIA"
+}

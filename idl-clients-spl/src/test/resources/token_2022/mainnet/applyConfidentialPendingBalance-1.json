@@ -1,0 +1,24 @@
+{
+  "instruction": "applyConfidentialPendingBalance",
+  "signature": "4ra2FNFutFo2BW3ZjbghybcdJnM8jzA23n5uVLcsTFWf2stLorCiFowEqQJjJwxgB32BzYDTGZHUdeK7ZNye44W2",
+  "slot": 338237618,
+  "position": "0",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "2zcd4kzKj6QyLqXovkqGPjh2w9m8z5cDW4PxEKKVJGPT",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "C57QTsmL3vE5HFVuRiNzT6CuTFhft1T5o2rKhFWhA1Yp",
+      "signer": true,
+      "writable": true,
+      "feePayer": true,
+      "multisig": false
+    }
+  ],
+  "data": "GwgBAAAAAAAAAClptdu89Yf7h/OujvtDV/orYB9WtWvwlTufwYexU8CmrbyrtA=="
+}

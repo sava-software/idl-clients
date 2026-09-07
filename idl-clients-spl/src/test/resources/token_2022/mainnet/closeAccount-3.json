@@ -1,0 +1,45 @@
+{
+  "instruction": "closeAccount",
+  "signature": "5aMVwL1RTZS3epc2PYcTTQjZ97G1cYQzgPmVQfMVVwbyRLvRQqUu9ZzK8MMP7Xu15rgJ7ptUYHgCf1wVbrDv1Q48",
+  "slot": 444961822,
+  "position": "1",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "4ijKiA6Ff524ejhFFtkczNxqj6Beadi4kwpsesfDST1S",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "4R482XL2uv3E6ZEDw5K96UNth9346oFQU6yagwQMjQJn",
+      "signer": true,
+      "writable": true,
+      "feePayer": true,
+      "multisig": false
+    },
+    {
+      "pubkey": "7BNinvaNePmhjPuNJCeY3HKPL3dQCSDS44ct7A8JDre4",
+      "signer": true,
+      "writable": false,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "4R482XL2uv3E6ZEDw5K96UNth9346oFQU6yagwQMjQJn",
+      "signer": true,
+      "writable": true,
+      "feePayer": true,
+      "multisig": false
+    },
+    {
+      "pubkey": "7BNinvaNePmhjPuNJCeY3HKPL3dQCSDS44ct7A8JDre4",
+      "signer": true,
+      "writable": false,
+      "feePayer": false,
+      "multisig": false
+    }
+  ],
+  "data": "CQ=="
+}

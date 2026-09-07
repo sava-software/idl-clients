@@ -1,0 +1,38 @@
+{
+  "instruction": "withdrawWithheldTokensFromAccounts",
+  "signature": "4DvEGXDFcaN4CY2KQzP8ZrmqxhR3pnu6i2S8mL6rdqsJcY4ESoHcE1e9DgArR9SoR2ip8wFJAnF58kS5NFVe84D3",
+  "slot": 444957988,
+  "position": "0.0",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "9ireMXEb32ZSitkkEuVx4eJVjPhUJ8Qd7H96Sbr9rqZk",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "BH7MVqBv7nJC7bQtqNRnWoxuyB2p1AtgHZZHedoch4ys",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "AYxdL8y6eZmXewQbKQVRgFA7CuKFhREPs7LQNAQjkq74",
+      "signer": false,
+      "writable": false,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "CzYbi7fxasFqHqQ8CX4BLj3HqmsxoDZEtxBfSvvg26a1",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    }
+  ],
+  "data": "GgMB"
+}

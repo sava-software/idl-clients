@@ -1,0 +1,17 @@
+{
+  "instruction": "initializeDefaultAccountState",
+  "signature": "3ynQWwx9tcdfbPDC99cgNTrkbMYLe6DBg7s8wXKSc3RBfMvVMpo7zgAXMFvGMWDMA5T2vvftfqBzFNJt9HMRsdAW",
+  "slot": 322804092,
+  "position": "6",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "139bJjvvWahsiFEvCvY4zhCi3rsrtvnnbNH3NJVUXHd",
+      "signer": true,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    }
+  ],
+  "data": "HAAB"
+}

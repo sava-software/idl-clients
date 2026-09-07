@@ -1,0 +1,38 @@
+{
+  "instruction": "withdrawWithheldTokensFromMint",
+  "signature": "y371Z9zymCJZLxwzRWfSxts17b1ioWykJTNkZv43LQV2aiznAHBg2BR9QhaEyHLDNyPWf8rjQmmFHLgeMqf73Nf",
+  "slot": 444961993,
+  "position": "0",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "HmM1cLPgB53LweeaDmqSVZwJYQGpWjk1YDhDiCx6wAD",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "AwxYw5qQzpGdvoNTN45o8VUy4pWTa57kBsjDi6LMjDzc",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "5KXDF6QnqhBj72hDtJNkkpFaQVUfbFXNybMsp3DiK6tD",
+      "signer": true,
+      "writable": true,
+      "feePayer": true,
+      "multisig": false
+    },
+    {
+      "pubkey": "5KXDF6QnqhBj72hDtJNkkpFaQVUfbFXNybMsp3DiK6tD",
+      "signer": true,
+      "writable": true,
+      "feePayer": true,
+      "multisig": false
+    }
+  ],
+  "data": "GgI="
+}

@@ -1,0 +1,31 @@
+{
+  "instruction": "updateRateInterestBearingMint",
+  "signature": "CYtQrL6RjmBANUuZmRD7rSG62oho2kUKubnNmLG99eUdpNvh4MsCnQrLspGNjzkWhtwuW82erq86ZR5goo3TfSJ",
+  "slot": 430041708,
+  "position": "1",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "7ugXNiVq4DQLXfQEFSpbYNHQTtMApr8cdhppaDtnEwu",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "2CUbbG22o4o1NH33TAADJe2YcuzTCbJR3RQztaWqn1g6",
+      "signer": true,
+      "writable": true,
+      "feePayer": true,
+      "multisig": false
+    },
+    {
+      "pubkey": "2CUbbG22o4o1NH33TAADJe2YcuzTCbJR3RQztaWqn1g6",
+      "signer": true,
+      "writable": true,
+      "feePayer": true,
+      "multisig": false
+    }
+  ],
+  "data": "IQH/fw=="
+}

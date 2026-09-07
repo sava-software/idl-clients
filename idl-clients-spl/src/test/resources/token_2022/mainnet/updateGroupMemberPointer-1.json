@@ -1,0 +1,24 @@
+{
+  "instruction": "updateGroupMemberPointer",
+  "signature": "3SV3x89fDUPGdkvRBPjCPmPxFRNT7JXmX8DXerbS1uwiLpDqAJsqjiG4QMSQW1RVk5djcKLTF3Yp2xz1g7JvwwcV",
+  "slot": 247350779,
+  "position": "1.1",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "14mPbvVPezp1ZuubmfCspP4EBUvSDXstHnCbkmUbzsy",
+      "signer": true,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "5AdNuK2RfGxKhk7gGQZxN6S4a5LNRUn8Q1ry6fSWg85n",
+      "signer": true,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    }
+  ],
+  "data": "KQH0grRlE5mJCxddGfzaDtLePFAa+jm/MZmb5pGNXmWrNg=="
+}

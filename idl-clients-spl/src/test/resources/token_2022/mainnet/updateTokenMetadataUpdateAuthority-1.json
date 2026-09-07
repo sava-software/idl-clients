@@ -1,0 +1,24 @@
+{
+  "instruction": "updateTokenMetadataUpdateAuthority",
+  "signature": "2bf8JA3RitDQjVf6new5x95gojCUSQAnogJxvRNJc7VW1RvQxG4FKPGRbHDdPvi5BLkLcDdGs86HRCoZZdp8rKqh",
+  "slot": 444957985,
+  "position": "2.11",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "AKhBsKUzbNeuKGqAba7zQzaZcmCY5uvVzocaEac1pump",
+      "signer": true,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "TSLvdd1pWpHVjahSpsvCXUbgwsL3JAcvokwaKt1eokM",
+      "signer": false,
+      "writable": false,
+      "feePayer": false,
+      "multisig": false
+    }
+  ],
+  "data": "1+Sm5FRkVnsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+}

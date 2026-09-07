@@ -1,0 +1,31 @@
+{
+  "instruction": "burn",
+  "signature": "3qK5Fi3bts4Uu2behNXULqUoGekESaD9xr7wEPLVbMQaejwMLEwhzwhoHjZSwtxCHxpyEARJo6s2mmQ8QvhkNXAG",
+  "slot": 444957953,
+  "position": "2.1",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "2kq2ny7YAuUx6gno46XZS7sUp4w5UcVF79XdiXeLjCA2",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "BijhsL5Typ1yG5co5V3vRAS9h5N9CEuCsEVhJ5gpKzcm",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "FXLwWmPQoTCus6pWHeRUcgS3iuNzGxR4ACHVVhQZNgw2",
+      "signer": false,
+      "writable": false,
+      "feePayer": false,
+      "multisig": false
+    }
+  ],
+  "data": "CFfZv4cBAAAA"
+}

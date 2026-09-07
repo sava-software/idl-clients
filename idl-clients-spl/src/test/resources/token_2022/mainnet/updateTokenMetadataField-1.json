@@ -1,0 +1,24 @@
+{
+  "instruction": "updateTokenMetadataField",
+  "signature": "5Uer5fkF6seexXZV7TQmC4YEZ6pQAxBML9J7uvYqR3JVrvZYLXa8wTWz8APeQRg5UitEJyMeCpdYMCAehtu6HSGK",
+  "slot": 286997272,
+  "position": "0",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "1117uDX1ekGuY8ydBYC3q4C9L3RhrZAJJxvMuYFMWgC",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "GELY1PDcRaabuQ6rFoLeoJ876xEJ2ewsy2rUQ4bUNe9y",
+      "signer": true,
+      "writable": true,
+      "feePayer": true,
+      "multisig": false
+    }
+  ],
+  "data": "3ekxLbXK3MgCUAAAAGh0dHBzOi8vZ2F0ZXdheS5waW5hdGEuY2xvdWQvaXBmcy9RbVp0RWtKeFVhQUg3Y1ZKWnVFYzk1SjVxQXBBRUdKdUVzeVVQYUdDcEZKaXlI"
+}

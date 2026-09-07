@@ -1,0 +1,38 @@
+{
+  "instruction": "reallocate",
+  "signature": "3ywFbYhL1GU5gUKRDY32w9pUpbSGFq6aBt1oqqUKpKPE1Zs4K1yYGvm7jhw6cZRiUHrZ2hViFyTcDTLVsY4zA8GF",
+  "slot": 430772108,
+  "position": "0",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "8x5b61UXGRWqc7uE8CKkmB1sqKfC5fS5Ru35XCwQ4czQ",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "Cs9F9sdycNUfYDLg7WGsYwbxRMubo2b4u8V4Mdv8Y8n6",
+      "signer": true,
+      "writable": true,
+      "feePayer": true,
+      "multisig": false
+    },
+    {
+      "pubkey": "11111111111111111111111111111111",
+      "signer": false,
+      "writable": false,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "Cs9F9sdycNUfYDLg7WGsYwbxRMubo2b4u8V4Mdv8Y8n6",
+      "signer": true,
+      "writable": true,
+      "feePayer": true,
+      "multisig": false
+    }
+  ],
+  "data": "HQUA"
+}

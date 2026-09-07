@@ -1,0 +1,24 @@
+{
+  "instruction": "removeTokenMetadataKey",
+  "signature": "5aby1wdDBbkywEG64o6tWLXLLZR3Jsc5Chi57CHaP7X5zS4qDD7qJmhJSHeX3pWJjHQfsPmK7gzPnPTCNvqNQNQy",
+  "slot": 344325268,
+  "position": "2.2",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "6FfeZRz74NFtz4LwKQP1DSoaJy8QTPp5tznG4csfJHTh",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "6FfeZRz74NFtz4LwKQP1DSoaJy8QTPp5tznG4csfJHTh",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    }
+  ],
+  "data": "6hIgOFmNJbUBBgAAAHdlaWdodA=="
+}

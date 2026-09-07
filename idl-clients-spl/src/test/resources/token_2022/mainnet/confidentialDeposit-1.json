@@ -1,0 +1,31 @@
+{
+  "instruction": "confidentialDeposit",
+  "signature": "4oDyYK4qDJJfStZ1qjB7MsapPArcb7xquTwm8qttywz3vrkh23B9EEDSRWAGAvQdu3F8BJMm3UVjRuDTw3bKX7Rk",
+  "slot": 338237356,
+  "position": "0",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "2zcd4kzKj6QyLqXovkqGPjh2w9m8z5cDW4PxEKKVJGPT",
+      "signer": false,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "mntccTgSXKidmyxxQ7cVT1Vwz6SM9LkexaJe8PWqDam",
+      "signer": false,
+      "writable": false,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "C57QTsmL3vE5HFVuRiNzT6CuTFhft1T5o2rKhFWhA1Yp",
+      "signer": true,
+      "writable": true,
+      "feePayer": true,
+      "multisig": false
+    }
+  ],
+  "data": "GwUAdDukCwAAAAk="
+}

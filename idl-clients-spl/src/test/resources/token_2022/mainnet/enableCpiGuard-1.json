@@ -1,0 +1,45 @@
+{
+  "instruction": "enableCpiGuard",
+  "signature": "4igGPKX718Fbk2p1pVdqGxL8FS3kyXrDENBuWPqLKtmJZ7YiEsWir83eW7hJvYDpoTonngwpFi5gNauzN8ADFaoa",
+  "slot": 413774807,
+  "position": "2",
+  "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+  "accounts": [
+    {
+      "pubkey": "4Aj8gxJ3XDAar8NAPxm13tnzcutqb8tggLjTCCQ5QkbY",
+      "signer": true,
+      "writable": true,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "9HWrvk9p1efsTFWNSymXb6rMf9RRuefFNMXyQk3nBh4u",
+      "signer": false,
+      "writable": false,
+      "feePayer": false,
+      "multisig": true
+    },
+    {
+      "pubkey": "AoMPpGqVuxeCZhyKXYtVb6EBCXnMbqEfUm6G6yKnymZK",
+      "signer": true,
+      "writable": false,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "CVeBfDvW4XaXSM8Ak8m9REtTcv38nZ6NmCF8CCCNz3rh",
+      "signer": true,
+      "writable": false,
+      "feePayer": false,
+      "multisig": false
+    },
+    {
+      "pubkey": "KxeEBde9KsYMTauwANh7bzKgtwQ1fmuy6yv1jkDFZ2m",
+      "signer": true,
+      "writable": false,
+      "feePayer": false,
+      "multisig": false
+    }
+  ],
+  "data": "IgA="
+}
