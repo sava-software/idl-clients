@@ -244,7 +244,7 @@ Instruction setAuthIx = TokenProgram.setAuthority(
     invokedTokenProgram,
     ownedKey,
     ownerKey,
-    AuthorityType.MintTokens,
+    AuthorityType.mintTokens,
     newAuthority
 );
 
