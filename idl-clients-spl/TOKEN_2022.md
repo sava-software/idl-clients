@@ -143,6 +143,20 @@ takes a remainder array of sub-instructions — each a `u8` account count follow
 payload — whose accounts are sliced out of the surrounding account list. None of that is expressible as a generated
 builder, so the entry declines it rather than emitting something misleading. `excludeTypes` is empty.
 
+One generated instruction is under-declared by the IDL itself: `getAccountDataSize` packs a trailing list of `u16`
+extension types after its discriminator (the program sizes the account for them), but the IDL declares only the
+discriminator, so the generated builder can request only the base size and `GetAccountDataSizeIxData.read` reports a
+one-byte length for a real instruction that carries more. The upstream IDL is the place to fix that.
+
+### Verification against the chain
+
+Three test suites keep this client honest against things it did not generate itself: `Token2022ReferenceEncodingTests`
+compares every instruction's bytes and account list with the program's own JavaScript client (`tools/token2022-vectors.mjs`
+regenerates the vectors); `Token2022OnChainInstructionTests` decodes and rebuilds real mainnet instructions pinned under
+`src/test/resources/token_2022/mainnet/`, including multisig-owner and CPI-signed cases; and `Token2022IxDataFuzz` drives
+all 99 instruction readers over arbitrary bytes. Account decoding is checked the same way on the sava-core side, against
+real mainnet accounts and the node's own parse of them.
+
 ### updateTokenMetadataField
 
 There are two implementations of this instruction, and they encode identical bytes.
