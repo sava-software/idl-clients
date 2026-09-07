@@ -35,7 +35,20 @@ One upload should not be assumed to count as one release against that allowance.
    publish it. The Gradle task uses `USER_MANAGED`: a successful workflow means
    an uploaded, validated deployment, not a publicly available release.
 
-The same dispatch is available from the CLI:
+To upload GitHub's latest published release, run the helper with the required
+release reason:
+
+```shell
+./publish-central.sh fix
+# Or, for the monthly feature release:
+./publish-central.sh monthly
+```
+
+It requires an authenticated GitHub CLI (`gh auth login`), looks up the latest
+release remotely, prints the selected tag, and dispatches the workflow on `main`.
+It always targets `sava-software/idl-clients`, regardless of the current directory.
+
+To select a specific release instead:
 
 ```shell
 gh workflow run publish-central.yml --ref main -f tag=25.19.6 -f reason=monthly

@@ -21,6 +21,7 @@
 !/gradlew
 !/gradlew.bat
 !/main_net_programs.json
+!/publish-central.sh
 !/release-please-config.json
 !/settings.gradle.kts
 
