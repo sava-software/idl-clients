@@ -59,3 +59,46 @@ One seed feeds all three parsers, so `data[0]` is the count each of them reads:
   payload, which must be rejected rather than read past the buffer.
 - `zero-count` — a count of 0, whose parse must yield an empty array from all
   three.
+
+## `token2022IxData/`
+
+A seed is one selector byte followed by an instruction payload: the harness reads
+the first byte modulo 99 to choose a reader from `Token2022Program`'s declaration
+order, so a seed only ever speaks for the instruction its selector names, and the
+selectors below move if that order does.
+
+These are bootstraps. Token-2022 dispatches on a `u8` the mutator finds at once,
+but the payload behind it does not fall out of random bytes — a 32-byte key, an
+8-byte token-metadata discriminator, a length-prefixed UTF-8 string — so without
+real payloads the campaign spends its budget on inputs every reader rejects
+before the first field. Each one is a devnet instruction already pinned by
+`Token2022ProgramTests` or `Token2022InstructionsTests`, so a seed that stops
+parsing is a change to the client, not to the corpus.
+
+- `initialize-transfer-hook` — selector 59, `InitializeTransferHook` from devnet
+  `3b7rYDCdxymqBXR3FLFgUtUoQyoYGg2ZF2bbKviuSQToSWyZeJmfb2wpjpTsZRf8FCWVMtuNetTAz2EAvmRSZLUi`.
+  An extension instruction: the `u8` dispatch, a second `u8` sub-discriminator,
+  then two keys.
+- `update-transfer-hook` — selector 60, `UpdateTransferHook` from devnet
+  `THZ3HTPAQZaEj6ggHSaLSxSS5CeGYp88VDa6NyXxY7pV9khHk1xJk1yHqP4jWByHjBUz34UuWLPffWQfeCzjNyi`.
+  The same extension at sub-discriminator 1, and one key rather than two.
+- `initialize-metadata-pointer` — selector 68, `InitializeMetadataPointer` from
+  the same transaction as the transfer-hook seed above.
+- `update-metadata-pointer` — selector 69, `UpdateMetadataPointer` from devnet
+  `3iKA2XCusAq2uCxuGyWhw8oBkdYQMQMq87t5sJTXJpCcD169NDzDjBE3fcuTv6Dg8QpjC4QNmwxZXFhSB8DLZkj2`.
+- `initialize-token-metadata` — selector 85, `InitializeTokenMetadata` from the
+  transfer-hook transaction. The token-metadata interface instead of the token
+  program's own: an 8-byte discriminator and three length-prefixed strings, which
+  is the only variable-length shape in the table and the one where a length
+  prefix decides where the next field starts.
+- `update-token-metadata-field-symbol` — selector 86, `UpdateTokenMetadataField`
+  from devnet
+  `5DYworNVzp7EZ8rrWqfZVtygrUMLKAh8d5E4vQGeCNRz1kbaM4GAgK5JoXKYjZic9i6wD5mokzqtwH6Yn3FyJyrY`,
+  setting the symbol to `T33`. Field ordinal 1, so the `TokenMetadataField`
+  variant carries nothing.
+- `update-token-metadata-field-key` — selector 86, `UpdateTokenMetadataField`
+  from devnet
+  `3GehERwU3DihQWk3FTvH5hMG7t6czg8vkBpV2BkFWdPZE3yjg3VVr26B1kLSKZd32DiCvckuugatp3dqA3G2TeUz`,
+  writing `visual-check` under the custom key `stage2`. Field ordinal 3, the one
+  variant that carries its own string, so the payload holds two length prefixes
+  and the second field's offset depends on the first.

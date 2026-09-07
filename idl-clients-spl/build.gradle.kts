@@ -71,7 +71,12 @@ hardening {
           "that program's generated encoder is pinned to an implementation neither this " +
           "repository nor its generator produced. The hand-written " +
           "layer stays mutated: core.math.SafeMath and the stake/stake-pool parsers are this " +
-          "suite's own baseline rows, and the four fuzz harnesses target them, not gen.",
+          "suite's own baseline rows, and four of the five fuzz harnesses target them. The " +
+          "fifth is the exception that points straight at gen: Token2022IxDataFuzz drives all " +
+          "99 generated Token-2022 instruction-data readers over arbitrary bytes and asserts " +
+          "the write/read round trip, so the readers a wallet or indexer runs against " +
+          "attacker-written instruction data are checked by execution over hostile inputs " +
+          "rather than left to the exclusion alone.",
     )
     targetTests = "software.sava.idl.clients.*Test*"
   }
@@ -98,6 +103,17 @@ hardening {
     // for findings to land rather than a bootstrap
     maxLen = 256
     seedCorpus = layout.projectDirectory.dir("src/test/resources/fuzz/precompileOffsets")
+  }
+  fuzz.register("token2022IxData") {
+    targetClass = "software.sava.idl.clients.spl.token_2022.Token2022IxDataFuzz"
+    // one selector byte plus an instruction payload. The largest fixed record is
+    // ConfidentialTransferWithFee at 171 bytes — a decryptable balance and two 64-byte
+    // auditor ciphertexts — so 512 leaves room for it, for the variable-length token
+    // metadata strings, and for over-long inputs the readers must not read past.
+    // Seeded with real devnet payloads: each of the 99 readers is behind its own
+    // selector byte, and a valid one is worth more than a mutated one
+    maxLen = 512
+    seedCorpus = layout.projectDirectory.dir("src/test/resources/fuzz/token2022IxData")
   }
   fuzz.register("stakeAccount") {
     targetClass = "software.sava.idl.clients.spl.stake.StakeAccountFuzz"
