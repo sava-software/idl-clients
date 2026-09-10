@@ -9,4 +9,4 @@ consecutive runs are worth diffing against each other.
 
 == Movement (1) ==
 
-Token 2022: the vcs IDL at https://raw.githubusercontent.com/solana-program/token-2022/refs/heads/main/idl.json moved since the last generation: program.name token-2022 -> token2022
+Jupiter Swap: the program was redeployed at slot 445747349, up from 445229245, and no IDL channel moved with it (the anchor IDL was last written at slot 445308835, between the previous deploy and this one; nothing has been written for this deploy); the stored program image changed: 2892224 payload bytes, was 2892224 — review required
