@@ -1,5 +1,17 @@
 # Changelog
 
+## [25.19.7](https://github.com/sava-software/idl-clients/compare/25.19.6...25.19.7) (2026-09-10)
+
+
+### Features
+
+* **jupiter-swap:** add new swap types and tranche kind support ([afb1f9a](https://github.com/sava-software/idl-clients/commit/afb1f9a99860d85c4930268f12d3a6834387414a))
+
+
+### Bug Fixes
+
+* **token2022:** key every extension instruction by both of its discriminator bytes ([84dfe03](https://github.com/sava-software/idl-clients/commit/84dfe037ce7dbb999652c1b92c67ed4b206ac617))
+
 ## [25.19.6](https://github.com/sava-software/idl-clients/compare/25.19.5...25.19.6) (2026-09-05)
 
 
