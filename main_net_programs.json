@@ -512,13 +512,6 @@
       "idlURL": "https://raw.githubusercontent.com/solana-program/token-2022/refs/heads/main/idl.json",
       "ignoreInstructions": [
         "batch"
-      ],
-      "externalTypes": {
-        "Mint": "software.sava.core.accounts.token.Token2022",
-        "Token": "software.sava.core.accounts.token.Token2022Account",
-        "Extension": "software.sava.core.accounts.token.extensions.TokenExtension"
-      },
-      "excludeTypes": [
       ]
     },
     {
