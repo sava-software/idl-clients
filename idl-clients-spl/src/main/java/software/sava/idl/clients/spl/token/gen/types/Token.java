@@ -8,6 +8,7 @@ import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
+import java.util.Objects;
 import java.util.OptionalLong;
 import java.util.function.BiFunction;
 
@@ -138,6 +139,7 @@ public record Token(PublicKey _address,
     i += 8;
     final PublicKey delegate;
     if (SerDeUtil.isAbsent(4, _data, i)) {
+      Objects.checkFromIndexSize(i, 36, _data.length);
       delegate = null;
       i += 32 + 4;
     } else {
@@ -149,6 +151,7 @@ public record Token(PublicKey _address,
     i += 1;
     final OptionalLong isNative;
     if (SerDeUtil.isAbsent(4, _data, i)) {
+      Objects.checkFromIndexSize(i, 12, _data.length);
       isNative = OptionalLong.empty();
       i += 8 + 4;
     } else {
@@ -160,6 +163,7 @@ public record Token(PublicKey _address,
     i += 8;
     final PublicKey closeAuthority;
     if (SerDeUtil.isAbsent(4, _data, i)) {
+      Objects.checkFromIndexSize(i, 36, _data.length);
       closeAuthority = null;
     } else {
       i += 4;

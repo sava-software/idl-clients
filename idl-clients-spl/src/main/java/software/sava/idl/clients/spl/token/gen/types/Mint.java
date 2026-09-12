@@ -7,6 +7,7 @@ import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
+import java.util.Objects;
 import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -97,6 +98,7 @@ public record Mint(PublicKey _address,
     int i = _offset;
     final PublicKey mintAuthority;
     if (SerDeUtil.isAbsent(4, _data, i)) {
+      Objects.checkFromIndexSize(i, 36, _data.length);
       mintAuthority = null;
       i += 32 + 4;
     } else {
@@ -112,6 +114,7 @@ public record Mint(PublicKey _address,
     ++i;
     final PublicKey freezeAuthority;
     if (SerDeUtil.isAbsent(4, _data, i)) {
+      Objects.checkFromIndexSize(i, 36, _data.length);
       freezeAuthority = null;
     } else {
       i += 4;

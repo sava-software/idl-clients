@@ -115,10 +115,16 @@ public final class SerDeUtil {
     }
   }
 
+  /// A prefix or tag is unsigned on the wire — a `u8`, `u16`, `u32` or `u64` — so every width
+  /// widens without a sign. A two-byte prefix used to come back through the signed short read,
+  /// which turned the top half of a `u16` range into a negative length: Token 2022's TLV length
+  /// word is a `u16` the program accepts up to 65535, and a 40 KB token-metadata entry was
+  /// refused as "-25536 bytes". The four- and eight-byte reads keep their signed form, since
+  /// a length above `Integer.MAX_VALUE` cannot describe a Java array either way.
   public static int val(final int prefixBytes, final byte[] data, final int offset) {
     return switch (prefixBytes) {
       case 1 -> data[offset] & 0xFF;
-      case 2 -> ByteUtil.getInt16LE(data, offset);
+      case 2 -> Short.toUnsignedInt(ByteUtil.getInt16LE(data, offset));
       case 4 -> ByteUtil.getInt32LE(data, offset);
       case 8 -> Math.toIntExact(ByteUtil.getInt64LE(data, offset));
       default -> throw new IllegalArgumentException("Invalid prefix bytes: " + prefixBytes);
@@ -127,10 +133,18 @@ public final class SerDeUtil {
 
   /// Reads a vector/string length prefix, validated against the bytes remaining after
   /// the prefix: every element occupies at least one byte, so a larger claim is
-  /// malformed and would otherwise drive an arbitrarily large allocation.
+  /// malformed and would otherwise drive an arbitrarily large allocation. A buffer that
+  /// ends inside the prefix itself is reported the same way, rather than as a bare index
+  /// error from the read that never had the bytes.
   public static int readLen(final int prefixBytes, final byte[] data, final int offset) {
-    final int len = val(prefixBytes, data, offset);
     final int remaining = data.length - offset - prefixBytes;
+    if (remaining < 0) {
+      throw new IndexOutOfBoundsException(String.format(
+          "A %d byte length prefix at offset %d needs %d more bytes than the %d remaining.",
+          prefixBytes, offset, -remaining, data.length - offset
+      ));
+    }
+    final int len = val(prefixBytes, data, offset);
     if (len < 0 || len > remaining) {
       throw new IndexOutOfBoundsException(String.format(
           "Length prefix %d exceeds the %d bytes remaining.", len, remaining
@@ -139,14 +153,22 @@ public final class SerDeUtil {
     return len;
   }
 
+  /// Writes a length prefix the way [#readLen(int,byte\[\],int)] reads it, refusing a value
+  /// the width cannot hold, and returns the width. This is the write half every generated size
+  /// prefix goes through — a codama `sizePrefixTypeNode`'s length word — so an over-long payload
+  /// fails here rather than framing the entry with a truncated length its own reader rejects.
+  public static int writeLen(final int prefixBytes, final int len, final byte[] data, final int offset) {
+    writeVal(prefixBytes, len, data, offset);
+    return prefixBytes;
+  }
+
   /// Length prefixes and presence flags pass through here; a value the prefix cannot
-  /// hold — or that [#val(int,byte\[\],int)] cannot read back, e.g. a length past
-  /// `Short.MAX_VALUE` under a 2-byte prefix — must fail fast instead of silently
-  /// truncating into data that cannot round trip.
+  /// hold must fail fast instead of silently truncating into data that cannot round trip.
+  /// The bounds are the unsigned ranges [#val(int,byte\[\],int)] reads back.
   private static void writeVal(final int prefixBytes, final int val, final byte[] data, final int offset) {
     if (val < 0
         || (prefixBytes == 1 && val > 0xFF)
-        || (prefixBytes == 2 && val > Short.MAX_VALUE)) {
+        || (prefixBytes == 2 && val > 0xFFFF)) {
       throw new IllegalArgumentException(String.format(
           "%d does not fit in a %d byte prefix.", val, prefixBytes
       ));

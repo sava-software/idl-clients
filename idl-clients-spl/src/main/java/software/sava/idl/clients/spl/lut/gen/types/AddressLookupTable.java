@@ -7,6 +7,7 @@ import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
+import java.util.Objects;
 import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -109,6 +110,7 @@ public record AddressLookupTable(PublicKey _address,
     ++i;
     final PublicKey authority;
     if (SerDeUtil.isAbsent(1, _data, i)) {
+      Objects.checkFromIndexSize(i, 33, _data.length);
       authority = null;
       i += 32 + 1;
     } else {
