@@ -6,8 +6,9 @@ time, and each re-derivation reintroduced the same false positives.
 
 **Everything here needs something outside the repository.** That is the rule for what
 belongs in `tools/` rather than in a test: `GroundTruth.java` needs a checkout of the
-program's Rust, and `stake-vectors.mjs` and `token2022-vectors.mjs` each need the
-matching `solana-program/*` checkout to resolve against. A check that needs nothing
+program's Rust, and `stake-vectors.mjs`, `token2022-vectors.mjs` and
+`token2022-account-vectors.mjs` each need the matching `solana-program/*` checkout to
+resolve against. A check that needs nothing
 outside the repo is a test, and lives with
 the code it reasons about — `tick_margin_sweep.py` was here until 2026-08-15 and is
 now `OrcaTickMarginSweep` in `idl-clients-bundle`'s test sources, beside the
@@ -64,6 +65,7 @@ from, so they can see a list that *moved* and never one that moved *wrongly*.
 | `GroundTruth.java` | Does our account order match the program's Rust? | instant, local |
 | `stake-vectors.mjs` | Does our Stake encoder agree with upstream's generated JS client? | seconds, needs their checkout |
 | `token2022-vectors.mjs` | Do our Token 2022 encoder **and account lists** agree with upstream's generated JS client? | seconds, needs their checkout |
+| `token2022-account-vectors.mjs` | Does our generated Token 2022 **account** decoding agree with upstream's JS client, on real accounts and on malformed buffers? | seconds, needs their checkout |
 
 
 ## `GroundTruth.java`
@@ -253,6 +255,42 @@ erase them. It compiles `src/generated` rather than `src`: the hand-written help
 beside it are not the encoder under comparison. Nothing is written inside the checkout,
 and a dirty tree under `clients/js/src/generated` or the lockfile is refused rather
 than recorded.
+
+## `token2022-account-vectors.mjs`
+
+```shell
+cd <solana-program/token-2022 checkout>/clients/js && pnpm install --frozen-lockfile
+cd <this repo> && node tools/token2022-account-vectors.mjs <that checkout>
+```
+
+Writes `idl-clients-spl/src/test/resources/token_2022/accounts/reference-decodes.json`: what
+upstream's `getMintDecoder()` and `getTokenDecoder()` make of **43 buffers** — the 25
+mainnet accounts pinned beside it, and 18 built in the script to probe the edges the
+corpus cannot: an account that stops at its base state, one that carries the type byte
+and nothing after it, zero tails of one to six bytes, an entry after a zero word, an
+unknown extension id, a wrong type byte, a pre-initialization mint, length words too
+short and too long, a truncation inside the mint padding, and the multisig. Each row
+records the decoded value or the error. `Token2022ReferenceDecodeTests` runs the
+generated `Mint.read` and `Token.read` over the same bytes and compares outcome and
+fields, keeping a named table of the divergences it expects — the generated reader
+decodes what the IDL declares past a zero word where the program, sava-core and
+upstream stop — and failing on any other.
+
+The argument is the sibling script's, on the account side: every other account test
+here reads a buffer with the generated reader and asserts what it produced, so there is
+one reader, and a systematic misreading is invisible to it. Upstream's is a second
+implementation, with one caveat the script's header spells out: `mint.ts` and `token.ts`
+are rendered from the IDL, but the TLV walk they delegate to is `src/hooked/extensions.ts`,
+hand-written by the program's maintainers to stop at a zero word the way the program
+does, so over the extension region this compares against a person's reading of the
+program rather than a second rendering of the document. That is why the script compiles
+`src` rather than `src/generated`, and why the validator's own `jsonParsed` decode of each
+mainnet account — the genuinely independent oracle, which `Token2022AccountConformanceTests`
+reads — sits beside the bytes and is not consulted here.
+
+Not ground truth, for the reason the other two vector scripts give: both sides descend
+from one IDL. Do not regenerate on a schedule; run it when a comparison has failed or
+the corpus grows, and review the diff.
 
 ## Adding to these
 

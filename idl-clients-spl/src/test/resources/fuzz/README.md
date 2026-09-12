@@ -102,3 +102,107 @@ parsing is a change to the client, not to the corpus.
   writing `visual-check` under the custom key `stage2`. Field ordinal 3, the one
   variant that carries its own string, so the payload holds two length prefixes
   and the second field's offset depends on the first.
+
+## `token2022Account/`
+
+A seed is one selector byte followed by whole account data: the harness reads an
+even first byte as `Mint.read` and an odd one as `Token.read`, so a seed speaks
+for one decoder over one account. Every seed is a byte-for-byte copy of an
+account under `src/test/resources/token_2022/accounts/`, named after the address
+it was fetched from, and `Token2022AccountFuzzSeedTests` re-derives the whole
+directory from that corpus so the two copies cannot drift.
+
+Provenance for the accounts themselves — program, slot, length, extension type
+list, `sha256` and a one-line note for each — lives beside them in
+`token_2022/accounts/manifest.json`, deliberately not in this directory, where a
+manifest file would itself be fed to the harness as a seed.
+
+These are bootstraps, and hard ones. A Token-2022 account is a fixed prefix, a
+one-byte account-type constant at offset 165, and then a TLV list whose every
+record is `u16` type + `u16` length + a value the type fixes the width of, with
+the generated readers refusing any length that disagrees. Random bytes get past
+none of that: every `COption` tag has to be 0 or 1 — two in a mint, three in a
+token account — the type byte has to be 1 or 2, and each TLV length has to equal
+its variant's own constant. Real accounts are the only practical way in.
+
+Twenty of the twenty-six also drive the harness's differential against
+sava-core's hand-written readers; the six that do not are named in
+`Token2022AccountFuzzSeedTests`, each standing for a divergence the harness class
+documents.
+
+Mints, under selector 0:
+
+- `113Dbys19a4PMNYt5v1153Kwta5aQSD6VFu5sqQw5tz` — 82 bytes, no extensions: a
+  mint authority, no freeze authority, non-zero supply. `Mint::LEN` exactly, so
+  `extensions()` is null and nothing is read past offset 82.
+- `9pan9bMn5HatX4EJdBwg9VgCa7Uz5HL8N1m5D3NdXejP` — 82 bytes, no extensions: the
+  native mint, both `COption` authorities absent.
+- `AF3SHn1AW61YrrEqyjVmGcDKLB2TgzFpTRLHtkfcJJ7` — 318 bytes, types 20, 21: a
+  token group with a populated size and maximum size.
+- `1DMqxdD2LQF8dR8qh5ULVK7pVx616DggBT3pKEKDPJ5` — 357 bytes, types 18, 19: a
+  mint whose extensions land on `Multisig::LEN`, so the program allocated the
+  two-byte pad that makes the two lengths distinguishable.
+- `zKQsnrqGNKZ3e3F68v2sARVfB5Z5nkD98f8gfxC3Rua` — 435 bytes, types 4, 24: a
+  confidential mint-burn supply beside a confidential transfer mint — two
+  extensions built entirely from 64-byte ElGamal ciphertexts.
+- `11oU7odA6rNfKbNuEfSSdndW1Gt27zEsuTLqmWcdE7z` — 519 bytes, types 18, 22, 19,
+  23: a token group member with a non-zero member number.
+- `14Rg7TaptSo1Ndkz1ngBw2rE4EuFhQd2PzCrkyjGdsL1` — 590 bytes, types 6, 12, 18,
+  26, 3, 28, 19: a permissioned burn authority behind six other extensions.
+- `1nbWT8JqE4MUJoZsTsqT5bo3dMXP3WHsZkNy1sGBchn` — 600 bytes, types 1, 10, 9, 18,
+  19: non-zero transfer-fee basis points and maximum fee (both `TransferFee`
+  epochs populated), an interest-bearing rate, non-transferable.
+- `13UnWveBycSEeYJFgvsmE2qHXP5ERienrhGZ5wUjWM8L` — 631 bytes, types 20, 22, 18,
+  14, 12, 19: group and group-member pointers, and a transfer hook naming a real
+  program.
+- `15YGYD1afQzrdjuzJBDonV7U5yPyBJs7qT5MQBLP49b` — 631 bytes, types 18, 6, 3, 12,
+  19: a five-entry `additionalMetadata` map and a frozen default account state.
+  The map is the only place a decoded account's re-encoding depends on iteration
+  order, which is why the generated writer keeps wire order rather than sorting.
+- `15SsCZqCsM9fZGhTmP4rdJTPT9WGZKazDSsgeQ8ondo` — 657 bytes, types 25, 18, 26, 6,
+  4, 14, 19: a scaled UI amount multiplier, a pausable config and a confidential
+  transfer mint.
+- `Uw2T438UX46ur4JzcA3ThZnzzKucNKgEatq8otZKjPd` — 683 bytes, types 12, 20, 18,
+  19, 21: a token group whose maximum size is `u64::MAX`, and a metadata URI
+  carrying escaped quotes.
+- `2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo` — 866 bytes, types 3, 12, 1, 4,
+  16, 14, 18, 19: PYUSD, eight extensions including confidential transfer fees
+  and embedded metadata. The largest account in the corpus, and what the target's
+  `maxLen` is sized for.
+
+Token accounts, under selector 1:
+
+- `1NSESJWVCQZf7Dctz8Bbfyo4WTS2nM5fram1z8WX59E` — 165 bytes, no extensions: a
+  delegated account whose delegated amount is above `Long.MAX_VALUE` read as a
+  signed long.
+- `1TeeextCMbWvAYDShphXyg9macWQCJkowqeU4iR9nUa` — 165 bytes, no extensions:
+  `Account::LEN` exactly, frozen, with a close authority.
+- `111LpjByCA598qgAyRQfv4maJJCFzAKpu23G1dqocb` — 170 bytes, type 7: an
+  associated token account carrying only `ImmutableOwner` — a zero-length TLV,
+  the shortest extension region the program writes.
+- `7KnAmPFf1EJ1xcrEQBqBjhmqsSysXt9JLDx7YkX4uKF` — 170 bytes, type 7: wrapped
+  SOL, so the `isNative` option is set and carries the rent-exempt reserve.
+- `11Sqd7aHSb8VuDoi3Jsbm6ug5toRKnRqHVyxA8AwgBj` — 171 bytes, type 15: a
+  transfer-hook account flag.
+- `DFECr53299QPTEssjcAywRCMo978SqRum24rjDvmTF3z` — 174 bytes, types 7, 13: a
+  non-transferable token account behind `ImmutableOwner`.
+- `12cvFbghNmNRybMZceSBkbVrvSvtqqqu5UwudKHs9Gf` — 175 bytes, types 27, 15: a
+  pausable account marker ahead of a transfer-hook account flag.
+- `6DbyAiRL6p6x1F1JxLBLdQA9jfp56nVyoN5G4RMgNDx` — 175 bytes, types 7, 8: an
+  account requiring an incoming transfer memo.
+- `12JVgXfDkvB2JrPDtHEiqECneGQYSUPpYUW5Dcss7XW` — 182 bytes, types 7, 2: a
+  non-zero withheld transfer-fee amount behind `ImmutableOwner`.
+- `iUNTPZxdDuZjtebeBtTzymAb598rXHsWCWQxBjmUULe` — 187 bytes, types 7, 2, 11: the
+  CPI guard locked, behind `ImmutableOwner` and a withheld fee amount.
+- `A9JXuXgm62QG3kTT5waRdEMiGw1w7TY2ovs8MoFWetmZ` — 469 bytes, types 7, 5: a
+  populated confidential-transfer token account — the 295-byte extension, the
+  largest single TLV in the corpus.
+
+The multisig, under both selectors:
+
+- `et1Arzfg3zufiKMyNtudiM7QVWzG4F9e3ukWxiHAZMs-mint` and
+  `-account` — the same real 2-of-3 multisig (355 bytes, `Multisig::LEN`) behind
+  selector 0 and selector 1. Neither decoder may accept it, and which one refuses
+  it where is the point of seeding it twice: the mint reader reaches offset 165
+  inside a signer key and finds no 1 there, the token reader trips on the
+  presence tags a public key puts where a `COption` belongs.

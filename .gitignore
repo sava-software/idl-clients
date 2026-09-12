@@ -66,6 +66,9 @@
 # Integration-style scratch files are never committed, even though they are .java
 # and would otherwise match the source rule above (see AGENTS.md).
 Integ.*
+# Jazzer writes a Java reproducer beside the binary crash file it names above, and the
+# source rule re-included it: a `Crash_<hash>.java` in a module root showed up as untracked.
+Crash_*.java
 
 # Re-ignore tool and IDE output that the broad source rules above would otherwise
 # pull back in (build/generated/**/*.java, reports, ...). Last match wins, and an

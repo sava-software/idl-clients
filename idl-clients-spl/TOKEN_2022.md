@@ -9,15 +9,19 @@ provides and how to use them together.
 |---------------------|---------------------------------|--------------------------------|---------------------------------------------------------------------------------------------|
 | **sava-core**       | `software.sava:sava-core`       | `software.sava.core`           | Account deserialization for Token 2022 mints, token accounts, and every token extension type |
 | **solana-programs** | `software.sava:solana-programs` | `software.sava.solana_programs` | Hand-written instruction helpers for a subset of the program. Deprecated                     |
-| **idl-clients-spl** | `software.sava:idl-clients-spl` | `software.sava.idl.clients.spl` | Generated instruction builders with instruction data parsers, and `Token2022Error`           |
+| **idl-clients-spl** | `software.sava:idl-clients-spl` | `software.sava.idl.clients.spl` | Generated instruction builders with instruction data parsers, `Token2022Error`, and generated `Mint`, `Token` and `Extension` account decoders |
 
 This page describes the code as it is built here: against **sava-core 25.11.0**, the version the Solana BOM pinned in
 `gradle/sava.properties` resolves to.
 
+Account decoding exists twice, deliberately: sava-core's hand-written `Token2022` and `Token2022Account`, and the
+`Mint`, `Token` and `Extension` types generated here from the program's IDL. They read the same bytes and, for every
+account the program itself wrote, agree; [how they differ](#generated-account-types-versus-sava-core) is a short table.
+
 ## sava-core — Account (De)Serialization
 
-sava-core provides full serialization and deserialization support for Token 2022 mint accounts, token accounts, and all
-token extension types.
+sava-core provides hand-written serialization and deserialization support for Token 2022 mint accounts, token accounts,
+and all token extension types.
 
 ### Key Classes
 
@@ -97,17 +101,81 @@ instruction data parsers (deserialization), making it the preferred choice for m
   `batch`, each with builders and an `IxData` record that parses the instruction back
 - `software.sava.idl.clients.spl.token_2022.gen.Token2022Error` — the program error codes the IDL declares, and their
   messages
+- `software.sava.idl.clients.spl.token_2022.gen.types.Mint` and `gen.types.Token` — the mint and token account
+  decoders: the base state, then the account-type byte (behind the mint's 83 bytes of padding) and the TLV extension
+  list as an `Extension[]` — `null` for an account that stops at its base state, empty for one that carries the type
+  byte and nothing after it
+- `software.sava.idl.clients.spl.token_2022.gen.types.Extension` — the sealed extension enum, one nested record per
+  variant named as the IDL spells it (`Extension.transferFeeConfig`, `Extension.tokenMetadata`, …, and
+  `Extension.uninitialized` for a zero type word), each reading, checking, writing and counting its `u16` length word
 - `software.sava.idl.clients.spl.token_2022.gen.types.Multisig` — the multisig account decoder (355 bytes: `m`, `n`,
   `isInitialized`, eleven signer slots), with `Filter` helpers for `getProgramAccounts`. sava-core has no multisig
   decoder, so this and its sibling in the SPL Token package are the only ones here
-- `software.sava.idl.clients.spl.token_2022.gen.types.*` — the argument types the instructions use: the `AccountState`,
-  `AuthorityType` and `ExtensionType` enums, the fixed-length `EncryptedBalance` (64 bytes) and `DecryptableBalance`
-  (36 bytes) ciphertext wrappers, the sealed `TokenMetadataField`, and `TransferFee`
+- `software.sava.idl.clients.spl.token_2022.gen.types.*` — the remaining types: the `AccountState`, `AuthorityType` and
+  `ExtensionType` enums, the fixed-length `EncryptedBalance` (64 bytes) and `DecryptableBalance` (36 bytes) ciphertext
+  wrappers, the sealed `TokenMetadataField`, and `TransferFee`
 - `software.sava.idl.clients.spl.token_2022.Token2022Instructions` — hand-written, and today only a second
   implementation of `updateTokenMetadataField` (see below)
 
-Note that `gen.types.ExtensionType` is the IDL's `u16` enum, used as an instruction argument by `reallocate`. It is
-unrelated to sava-core's account-side extension modelling, which has no enum at all.
+Note that `gen.types.ExtensionType` is the IDL's `u16` enum, used as an instruction argument by `reallocate`. It names
+the same ids `Extension.ordinal()` returns, but is a plain enum with no payload.
+
+### Reading accounts with the generated types
+
+```java
+import software.sava.idl.clients.spl.token_2022.gen.types.Extension;
+import software.sava.idl.clients.spl.token_2022.gen.types.Mint;
+
+Mint mint = Mint.read(publicKey, accountData);
+if (mint.extensions() != null) {
+  for (var extension : mint.extensions()) {
+    switch (extension) {
+      case Extension.transferFeeConfig fees -> handleFees(fees.newerTransferFee());
+      case Extension.tokenMetadata metadata -> handleMetadata(metadata.name(), metadata.additionalMetadata());
+      case Extension.metadataPointer(var authority, var metadataAddress) when metadataAddress != null -> follow(metadataAddress);
+      default -> {
+      }
+    }
+  }
+}
+byte[] bytes = mint.write(); // byte for byte what the program wrote, for every account it wrote
+```
+
+`Token.read` is the same shape over a token account. Both readers apply the IDL literally: the account-type byte must
+be the one the IDL declares (`1` for a mint, `2` for a token account), every extension's length word must equal the
+bytes its fields consume, and a type id the client was generated before is an error rather than a silently shortened
+list — the same rules the program's own JavaScript client applies, which is rendered from the same IDL.
+
+One thing the IDL gets wrong, and both generated and JS clients inherit: eight authority fields the program stores as
+`OptionalNonZeroPubkey` are declared plain `publicKeyTypeNode` rather than `zeroableOptionTypeNode` —
+`transferFeeConfig`'s two authorities, `mintCloseAuthority.closeAuthority`, `interestBearingConfig.rateAuthority`,
+`permanentDelegate.delegate`, `transferHook.authority` and `programId`, and `scaledUiAmountConfig.authority`. Those
+decode to `PublicKey.NONE` when unset, where the thirteen declared zeroable decode to `null`.
+`Token2022AccountConformanceTests` keeps the two lists and checks every variant against them; the fix belongs in the
+upstream IDL.
+
+### Generated account types versus sava-core
+
+Both decode every account the program has written and reproduce it byte for byte. The representation differs in these
+ways, and `Token2022AccountConformanceTests` asserts each one rather than skipping it:
+
+| Wire fact                                                                       | sava-core `Token2022` / `Token2022Account`                       | generated `Mint` / `Token`                                                                                    |
+|---------------------------------------------------------------------------------|------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------|
+| An absent zeroable authority (`MetadataPointer.authority`, `TransferHook.programId`, …) is 32 zero bytes | `PublicKey.NONE`, never `null`                                   | `null`                                                                                                        |
+| An absent `COption` (`mintAuthority`, `freezeAuthority`, `delegate`, `closeAuthority`) | `null`                                                           | `null`                                                                                                        |
+| The extension list                                                              | `Set<TokenExtension>`, matched by record type                    | `Extension[]` in wire order, matched by nested record type                                                    |
+| A zero type word (`Uninitialized` padding)                                      | the walk stops there, as the program's does; the entry is dropped unless it is the only one | kept as `Extension.uninitialized`, so the bytes round trip; the walk continues, so an entry *after* a zero word — which the program never writes and never reads — is decoded rather than ignored |
+| An extension id this library does not know                                      | `UnknownTokenExtension` carrying the bytes                       | `IllegalArgumentException`, as with the upstream JS client                                                    |
+| The account-type byte                                                           | must match the base state: the declared one behind an initialized base, `Uninitialized` behind a zeroed one (an account between two initializers) | must be the declared one, whatever the base says — a pre-initialization account throws, and a mint's bytes labelled `2` read as an uninitialized token account, both as with the upstream JS client |
+| An extension-free account (82 or 165 bytes)                                     | 25.11.0 throws; decodes on sava `main`, unreleased               | `extensions()` is `null`                                                                                      |
+| A tail shorter than a type word                                                 | 25.11.0 throws; ignored on sava `main`                           | ignored; a longer zero tail is `uninitialized` entries                                                        |
+| A length word disagreeing with the value                                        | rejected, except for token metadata                              | rejected for every variant                                                                                    |
+| A 355-byte buffer (`Multisig::LEN`)                                             | 25.11.0 decodes it as an uninitialized account; refused by length on sava `main` | no length rule; a real multisig fails on the first `COption` tag its signer bytes land on, before the account-type check |
+| The 83 padding bytes between a mint and its type byte                           | not inspected                                                    | must be zero, as the program and the upstream JS client require                                               |
+| A boolean byte other than 0 or 1                                                | `true` (`!= 0`, the program's `PodBool` rule)                    | `false` (`== 1`, the Kit codec's rule); the program never writes one                                          |
+| An extension list that lands the account on `Multisig::LEN`                     | `l()` and `write` add the program's two-byte pad                 | `l()` is the bytes as declared; allocate with the program's `getAccountDataSize`, not `l()`                    |
+| A truncated buffer                                                              | 25.11.0 decodes a short base state; refused on sava `main`      | refused: every slot, read or skipped, is bounds-checked                                                       |
+| Token metadata `additionalMetadata`                                             | unmodifiable `Map` in wire order                                 | `Map` in wire order, written back in iteration order                                                          |
 
 ### Configuration
 
@@ -117,31 +185,19 @@ The generator is driven by this program's entry in [main_net_programs.json](../m
 {
   "ignoreInstructions": [
     "batch"
-  ],
-  "externalTypes": {
-    "Mint": "software.sava.core.accounts.token.Token2022",
-    "Token": "software.sava.core.accounts.token.Token2022Account",
-    "Extension": "software.sava.core.accounts.token.extensions.TokenExtension"
-  },
-  "excludeTypes": [
   ]
 }
 ```
 
-`externalTypes` tells the generator not to emit Java for those three IDL types, and to import the configured class
-wherever an instruction references one. It exists because of `extension`: a 29-variant enum whose 28 struct variants are
-each prefixed by a `u16` length, which the generator cannot render — and the `mint` and `token` accounts embed it.
-Substituting sava-core's classes keeps the rest of the program generatable.
-
-**No instruction references any of the three.** They are reachable only from the mint and token account data, so
-`Token2022Program` imports none of the substituted classes; account decoding is entirely sava-core's job. The one
-visible consequence is `gen.types.TransferFee`, which is generated but referenced by nothing, because its only user was
-the substituted `extension` enum.
+Until 2026-09-12 the entry also mapped the IDL's `Mint`, `Token` and `Extension` to sava-core's classes through
+`externalTypes`, because the generator could not render a `u16`-size-prefixed struct, the hidden account-type constant
+or a remainder option. It can now, so the three types are generated like everything else; nothing in
+`Token2022Program` changed, because no instruction references them.
 
 `batch` is the single ignored instruction. It dispatches on discriminator 255, declares no accounts of its own, and
 takes a remainder array of sub-instructions — each a `u8` account count followed by a `u8`-length-prefixed instruction
 payload — whose accounts are sliced out of the surrounding account list. None of that is expressible as a generated
-builder, so the entry declines it rather than emitting something misleading. `excludeTypes` is empty.
+builder, so the entry declines it rather than emitting something misleading.
 
 One generated instruction is under-declared by the IDL itself: `getAccountDataSize` packs a trailing list of `u16`
 extension types after its discriminator (the program sizes the account for them), but the IDL declares only the
@@ -150,12 +206,21 @@ one-byte length for a real instruction that carries more. The upstream IDL is th
 
 ### Verification against the chain
 
-Three test suites keep this client honest against things it did not generate itself: `Token2022ReferenceEncodingTests`
-compares every instruction's bytes and account list with the program's own JavaScript client (`tools/token2022-vectors.mjs`
-regenerates the vectors); `Token2022OnChainInstructionTests` decodes and rebuilds real mainnet instructions pinned under
-`src/test/resources/token_2022/mainnet/`, including multisig-owner and CPI-signed cases; and `Token2022IxDataFuzz` drives
-all 99 instruction readers over arbitrary bytes. Account decoding is checked the same way on the sava-core side, against
-real mainnet accounts and the node's own parse of them.
+Three test suites keep the instruction side honest against things it did not generate itself:
+`Token2022ReferenceEncodingTests` compares every instruction's bytes and account list with the program's own JavaScript
+client (`tools/token2022-vectors.mjs` regenerates the vectors); `Token2022OnChainInstructionTests` decodes and rebuilds
+real mainnet instructions pinned under `src/test/resources/token_2022/mainnet/`, including multisig-owner and CPI-signed
+cases; and `Token2022IxDataFuzz` drives all 99 instruction readers over arbitrary bytes.
+
+The account side has its own three, over the 25 mainnet accounts pinned under `src/test/resources/token_2022/accounts/`
+(raw bytes, the validator's `jsonParsed` decode of each, and a manifest naming the slot and the TLV chain):
+`Token2022AccountConformanceTests` compares every field the node prints with the generated record, cross-checks
+sava-core's decode of the same bytes, and requires a byte-exact round trip; `Token2022ReferenceDecodeTests` compares
+the generated readers with the program's own JavaScript client over those accounts and over hand-built malformed
+buffers — pre-initialization, odd tails, unknown ids, wrong type bytes, bad length words — so that what is accepted
+and what is rejected is pinned to an implementation this repository did not produce
+(`tools/token2022-account-vectors.mjs` regenerates the fixture); and `Token2022AccountFuzz` drives both readers over
+arbitrary bytes, checking every decode against sava-core's.
 
 ### updateTokenMetadataField
 
@@ -400,9 +465,9 @@ Instruction ix = Token2022Program.initializeTokenMetadataInstruction(
 
 | Use Case                                   | Recommended Project                                                          |
 |--------------------------------------------|------------------------------------------------------------------------------|
-| Token 2022 mint accounts                   | **sava-core** (`Token2022`)                                                  |
-| Token 2022 token accounts                  | **sava-core** (`Token2022Account`)                                           |
-| Reading token extension data               | **sava-core** (the `TokenExtension` records)                                 |
+| Token 2022 mint accounts                   | **sava-core** (`Token2022`) or **idl-clients-spl** (`gen.types.Mint`); see the differences table |
+| Token 2022 token accounts                  | **sava-core** (`Token2022Account`) or **idl-clients-spl** (`gen.types.Token`) |
+| Reading token extension data               | **sava-core** (the `TokenExtension` records) or **idl-clients-spl** (the `Extension` variants) |
 | Multisig accounts                          | **idl-clients-spl** (`gen.types.Multisig`)                                   |
 | Building instructions                      | **idl-clients-spl** (`Token2022Program`)                                     |
 | Multisig-owner instructions                | **idl-clients-spl**, through a hand-built `List<AccountMeta>`                |

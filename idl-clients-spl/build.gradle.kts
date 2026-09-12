@@ -72,12 +72,13 @@ hardening {
           "that program's generated encoder is pinned to an implementation neither this " +
           "repository nor its generator produced. The hand-written " +
           "layer stays mutated: core.math.SafeMath and the stake/stake-pool parsers are this " +
-          "suite's own baseline rows, and four of the five fuzz harnesses target them. The " +
-          "fifth is the exception that points straight at gen: Token2022IxDataFuzz drives all " +
-          "99 generated Token-2022 instruction-data readers over arbitrary bytes and asserts " +
-          "the write/read round trip, so the readers a wallet or indexer runs against " +
-          "attacker-written instruction data are checked by execution over hostile inputs " +
-          "rather than left to the exclusion alone.",
+          "suite's own baseline rows, and four of the six fuzz harnesses target them. The " +
+          "other two point straight at gen: Token2022IxDataFuzz drives all 99 generated " +
+          "Token-2022 instruction-data readers over arbitrary bytes and asserts the write/read " +
+          "round trip, and Token2022AccountFuzz drives the generated Mint and Token account " +
+          "readers the same way and checks every decode against sava-core's hand-written " +
+          "reader, so the readers a wallet or indexer runs against attacker-written bytes are " +
+          "checked by execution over hostile inputs rather than left to the exclusion alone.",
     )
     targetTests = "software.sava.idl.clients.*Test*"
   }
@@ -115,6 +116,15 @@ hardening {
     // selector byte, and a valid one is worth more than a mutated one
     maxLen = 512
     seedCorpus = layout.projectDirectory.dir("src/test/resources/fuzz/token2022IxData")
+  }
+  fuzz.register("token2022Account") {
+    targetClass = "software.sava.idl.clients.spl.token_2022.Token2022AccountFuzz"
+    // one selector byte plus whole account data. The largest account in the mainnet corpus
+    // is PYUSD at 866 bytes — eight extensions, including an embedded token metadata with a
+    // URI — so 1024 covers its 867-byte seed and leaves the mutator room to append TLV
+    // records past the longest real account and to overrun the ones it finds there.
+    maxLen = 1024
+    seedCorpus = layout.projectDirectory.dir("src/test/resources/fuzz/token2022Account")
   }
   fuzz.register("stakeAccount") {
     targetClass = "software.sava.idl.clients.spl.stake.StakeAccountFuzz"
