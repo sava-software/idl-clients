@@ -1,5 +1,19 @@
 # Changelog
 
+## [25.19.7](https://github.com/sava-software/idl-clients/compare/25.19.6...25.19.7) (2026-09-13)
+
+
+### Features
+
+* **jupiter-swap:** add new swap types and tranche kind support ([afb1f9a](https://github.com/sava-software/idl-clients/commit/afb1f9a99860d85c4930268f12d3a6834387414a))
+* **token-2022:** generate the Mint, Token and Extension types from the IDL ([87fb935](https://github.com/sava-software/idl-clients/commit/87fb935f8688fa276cc82c6142b2b912f9c06875))
+
+
+### Bug Fixes
+
+* **spl:** refuse truncated accounts and read u16 length prefixes unsigned ([496bb28](https://github.com/sava-software/idl-clients/commit/496bb282fef10136f37bcc7ef966b3f1fea4740f))
+* **token2022:** key every extension instruction by both of its discriminator bytes ([84dfe03](https://github.com/sava-software/idl-clients/commit/84dfe037ce7dbb999652c1b92c67ed4b206ac617))
+
 ## [25.19.6](https://github.com/sava-software/idl-clients/compare/25.19.5...25.19.6) (2026-09-05)
 
 
