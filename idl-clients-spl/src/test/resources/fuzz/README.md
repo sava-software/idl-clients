@@ -125,10 +125,9 @@ none of that: every `COption` tag has to be 0 or 1 — two in a mint, three in a
 token account — the type byte has to be 1 or 2, and each TLV length has to equal
 its variant's own constant. Real accounts are the only practical way in.
 
-Twenty of the twenty-six also drive the harness's differential against
-sava-core's hand-written readers; the six that do not are named in
-`Token2022AccountFuzzSeedTests`, each standing for a divergence the harness class
-documents.
+Twenty-four of the twenty-six also drive the harness's differential against
+sava-core's hand-written readers; the two that do not are the multisig, named in
+`Token2022AccountFuzzSeedTests`, which sava-core refuses by length.
 
 Mints, under selector 0:
 
@@ -203,6 +202,7 @@ The multisig, under both selectors:
 - `et1Arzfg3zufiKMyNtudiM7QVWzG4F9e3ukWxiHAZMs-mint` and
   `-account` — the same real 2-of-3 multisig (355 bytes, `Multisig::LEN`) behind
   selector 0 and selector 1. Neither decoder may accept it, and which one refuses
-  it where is the point of seeding it twice: the mint reader reaches offset 165
-  inside a signer key and finds no 1 there, the token reader trips on the
-  presence tags a public key puts where a `COption` belongs.
+  it where is the point of seeding it twice: both generated readers trip on the
+  presence tags a signer key puts where a `COption` belongs — the mint reader at
+  offset 0, the token reader at offset 72 — and sava-core refuses the length
+  before reading a byte.

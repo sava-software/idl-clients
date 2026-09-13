@@ -7,6 +7,7 @@ import software.sava.core.accounts.token.Token2022Account;
 import software.sava.core.accounts.token.extensions.AccountType;
 import software.sava.core.accounts.token.extensions.TokenExtension;
 import software.sava.core.accounts.token.extensions.UnknownTokenExtension;
+import software.sava.core.serial.Serializable;
 import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.spl.token_2022.gen.types.AccountState;
 import software.sava.idl.clients.spl.token_2022.gen.types.DecryptableBalance;
@@ -24,6 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.HexFormat;
 import java.util.LinkedHashMap;
@@ -57,7 +59,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 /// kind and the TLV extension type ids in wire order. A disagreement here is therefore a
 /// disagreement between two independent decoders of one byte string.
 ///
-/// sava-core 25.11.0 — the release the Solana BOM in `gradle/sava.properties` resolves to — is a
+/// sava-core 25.11.1 — the release the Solana BOM in `gradle/sava.properties` resolves to — is a
 /// **second comparator**, not the oracle. It decodes the same accounts with hand-written records
 /// written from the program's Rust rather than from the IDL, so where the two agree the agreement
 /// is between two independent implementations of one wire format, and where they differ in
@@ -256,7 +258,7 @@ final class Token2022AccountConformanceTests {
       "tokenGroupMember.group"
   );
 
-  /// Generated component to sava-core 25.11.0 accessor, keyed `<variant>.<component>`, for the
+  /// Generated component to sava-core 25.11.1 accessor, keyed `<variant>.<component>`, for the
   /// nine names that release spells differently. The rest match exactly.
   private static final Map<String, String> SAVA_CORE_ALIASES = Map.ofEntries(
       Map.entry("transferFeeAmount.withheldAmount", "withHeldAmount"),
@@ -753,37 +755,46 @@ final class Token2022AccountConformanceTests {
   /// [PublicKey#NONE] where the generated record holds `null`, and it keeps a ciphertext as a raw
   /// `byte[]` where the generated record wraps it in `EncryptedBalance`/`DecryptableBalance`.
   ///
-  /// Oracle: sava-core 25.11.0, resolved through the version catalog. Not independent of this
+  /// Oracle: sava-core 25.11.1, resolved through the version catalog. Not independent of this
   /// repository's *corpus* — it is the same capture — but independent of its generator.
   @Test
   void savaCoreAndTheGeneratedReaderAgree() {
     int compared = 0;
     for (final var fixture : FIXTURES) {
-      if (fixture.multisig() || fixture.baseLengthOnly()) {
-        // the base-length four are in savaCore25_11_0CannotDecodeABaseLengthAccount instead
+      if (fixture.multisig()) {
         continue;
       }
       ++compared;
       final var where = fixture + " ";
       final var generated = decode(fixture.key(), fixture.data(), fixture.kind());
       final var savaCoreExtensions = new ArrayList<TokenExtension>();
+      // An extension-free account carries no account-type byte at all: sava-core reads null
+      // there where the generated reader finds nothing to check its hidden prefix against.
+      final boolean baseLength = fixture.baseLengthOnly();
       if (generated instanceof Mint mint) {
         final var savaCore = Token2022.read(fixture.key(), fixture.data());
-        assertEquals(AccountType.Mint, savaCore.accountType(),
+        assertEquals(baseLength ? null : AccountType.Mint, savaCore.accountType(),
             where + "the account-type byte the generated reader checks as its hidden prefix");
         assertSameMint(where, mint, savaCore.mint());
         savaCoreExtensions.addAll(savaCore.tokenExtensions());
       } else {
         final var savaCore = Token2022Account.read(fixture.key(), fixture.data());
-        assertEquals(AccountType.Account, savaCore.type(),
+        assertEquals(baseLength ? null : AccountType.Account, savaCore.type(),
             where + "the account-type byte the generated reader checks as its hidden prefix");
         assertSameToken(where, (Token) generated, savaCore.tokenAccount());
         savaCoreExtensions.addAll(savaCore.tokenExtensions());
       }
 
       // sava-core's parseExtensions returns at the first zero type word, so the generated array
-      // is truncated there rather than filtered — see carried
-      final var generatedExtensions = carried(extensionsOf(generated));
+      // is truncated there rather than filtered — see carried. An extension-free account has no
+      // array at all, and sava-core reads an empty set for it.
+      final List<Extension> generatedExtensions;
+      if (baseLength) {
+        assertNull(extensionsOf(generated), where + "an extension-free account has no extensions array");
+        generatedExtensions = List.of();
+      } else {
+        generatedExtensions = carried(extensionsOf(generated));
+      }
       final var savaCoreIds = new ArrayList<Integer>();
       for (final var extension : savaCoreExtensions) {
         assertFalse(extension instanceof UnknownTokenExtension,
@@ -799,7 +810,7 @@ final class Token2022AccountConformanceTests {
             savaCoreExtensions.get(i));
       }
     }
-    assertEquals(20, compared, "extended fixtures compared against sava-core");
+    assertEquals(24, compared, "every mint and token account in the corpus compared against sava-core");
   }
 
   private static void assertSameMint(final String where,
@@ -845,7 +856,7 @@ final class Token2022AccountConformanceTests {
       }
       final var name = SAVA_CORE_ALIASES.getOrDefault(coordinate, component.getName());
       final var counterpart = component(savaCore, name);
-      assertNotNull(counterpart, where + coordinate + ": sava-core 25.11.0 has no component '"
+      assertNotNull(counterpart, where + coordinate + ": sava-core has no component '"
           + name + "' — give it a SAVA_CORE_ALIASES entry, or add it to NOT_IN_SAVA_CORE with "
           + "the reason");
       assertSameValue(where + coordinate, value(component, generated),
@@ -891,34 +902,100 @@ final class Token2022AccountConformanceTests {
     }
   }
 
-  /// The reader bug that keeps the four extension-free fixtures out of the cross-check above:
-  /// sava-core 25.11.0 indexes the account-type byte at offset 165 unconditionally, so a mint of
-  /// exactly `Mint::LEN` or a token account of exactly `Account::LEN` — perfectly legal accounts
-  /// with no remainder at all — throw instead of decoding. The generated readers decode them.
+  /// The four extension-free fixtures — two mints of exactly `Mint::LEN`, two token accounts of
+  /// exactly `Account::LEN`, the shape of every account the original Token program ever wrote —
+  /// carry no account-type byte and no TLV region. Both decoders read them as the base state
+  /// alone: sava-core with a null discriminant and an empty extension set, sized and written
+  /// back as exactly the bytes that went in, the generated record with a null `extensions()`.
+  /// Each reader also refuses the other kind's bytes — 82 are not a whole token account, and a
+  /// token account read as a mint fails at its first presence tag, where its mint address lands
+  /// — and a mint padded past its base state but short of its type byte is malformed to both,
+  /// which is the mint length rule the differences table names.
   ///
-  /// **This assertion is the checker that says when to widen the comparison.** The fix is on
-  /// sava `main` (commit 28e30ad, "fix: decode extension-free Token-2022 mints and token
-  /// accounts") and unreleased: when the version catalog moves to a sava-core carrying it, this
-  /// test stops passing, and the four fixtures should then come out of the exclusion in
-  /// [#savaCoreAndTheGeneratedReaderAgree()] and be compared like every other one.
+  /// sava-core 25.11.0 indexed the type byte at offset 165 unconditionally and threw on all
+  /// four, which kept them out of [#savaCoreAndTheGeneratedReaderAgree()] until the catalog
+  /// moved; they are compared there like every other fixture now, and this test pins the shape.
   @Test
-  void savaCore25_11_0CannotDecodeABaseLengthAccount() {
-    int refused = 0;
+  void bothReadABaseLengthAccountAsTheBaseStateAlone() {
+    int baseLength = 0;
     for (final var fixture : FIXTURES) {
       if (!fixture.baseLengthOnly()) {
         continue;
       }
-      ++refused;
+      ++baseLength;
       final var data = fixture.data();
       final var key = fixture.key();
-      assertNotNull(decode(key, data, fixture.kind()),
-          fixture + ": the generated reader decodes a base-length account");
-      assertThrows(ArrayIndexOutOfBoundsException.class, () -> Token2022.read(key, data),
-          fixture + ": sava-core 25.11.0's mint reader indexes past the end of the account");
-      assertThrows(ArrayIndexOutOfBoundsException.class, () -> Token2022Account.read(key, data),
-          fixture + ": sava-core 25.11.0's token-account reader does the same");
+      final var generated = decode(key, data, fixture.kind());
+      assertNotNull(generated, fixture + ": the generated reader decodes a base-length account");
+      assertNull(extensionsOf(generated), fixture + ": and reads no extensions array");
+      final Serializable savaCore;
+      if (generated instanceof Mint) {
+        final var mint = Token2022.read(key, data);
+        assertNull(mint.accountType(), fixture + ": sava-core reads no discriminant");
+        assertTrue(mint.tokenExtensions().isEmpty(), fixture + ": and no extensions");
+        assertEquals("A token account of 82 bytes is malformed: an extension-free token account is"
+                + " 165 bytes, and a token account with extensions is at least 166.",
+            assertThrows(IllegalArgumentException.class, () -> Token2022Account.read(key, data),
+                fixture + ": a mint's 82 bytes are not a whole token account").getMessage());
+        // padded past the base state but short of the type byte: 83..165 bytes is no mint at all
+        final byte[] shortOfTypeByte = Arrays.copyOf(data, 100);
+        assertEquals("A mint of 100 bytes is malformed: an extension-free mint is 82 bytes,"
+                + " and a mint with extensions is at least 166.",
+            assertThrows(IllegalArgumentException.class, () -> Token2022.read(key, shortOfTypeByte),
+                fixture + ": sava-core's mint length rule").getMessage());
+        assertEquals("A hidden prefix of 84 bytes at offset 82 runs past the 100 byte buffer.",
+            assertThrows(IllegalArgumentException.class, () -> Mint.read(key, shortOfTypeByte),
+                fixture + ": the generated reader's hidden-prefix bound").getMessage());
+        savaCore = mint;
+      } else {
+        final var token = Token2022Account.read(key, data);
+        assertNull(token.type(), fixture + ": sava-core reads no discriminant");
+        assertTrue(token.tokenExtensions().isEmpty(), fixture + ": and no extensions");
+        // read as a mint, the account's mint address lands in the mint-authority tag slot
+        assertTrue(assertThrows(IllegalArgumentException.class, () -> Token2022.read(key, data),
+                fixture + ": a token account's bytes are refused as a mint").getMessage()
+                .startsWith("Invalid mint authority tag "),
+            fixture + ": at the first presence tag");
+        savaCore = token;
+      }
+      assertEquals(data.length, savaCore.l(), fixture + ": sava-core sizes the record as the base state");
+      final byte[] written = new byte[data.length];
+      assertEquals(data.length, savaCore.write(written, 0), fixture + ": and writes exactly that");
+      assertArrayEquals(data, written, fixture + ": byte for byte");
     }
-    assertEquals(4, refused, "two mints at 82 bytes and two token accounts at 165");
+    assertEquals(4, baseLength, "two mints at 82 bytes and two token accounts at 165");
+  }
+
+  /// A tail shorter than a type word — the account-type byte and then nothing, or one stray byte
+  /// — is not an extension region either reader looks into: sava-core's TLV walk needs a whole
+  /// type word to start and answers an empty set, and the generated remainder array stops for
+  /// the same reason and answers an empty array; both size the record without the stray byte.
+  /// Derived from the two 82-byte mint fixtures by appending the 83 zero padding bytes, the mint
+  /// type byte, and then no byte or one.
+  @Test
+  void bothIgnoreATailShorterThanATypeWord() {
+    int mints = 0;
+    for (final var fixture : FIXTURES) {
+      if (!fixture.baseLengthOnly() || fixture.length() != MINT_LEN) {
+        continue;
+      }
+      ++mints;
+      final var key = fixture.key();
+      final int typed = MINT_LEN + 83 + 1;
+      for (int tail = 0; tail <= 1; ++tail) {
+        final byte[] data = Arrays.copyOf(fixture.data(), typed + tail);
+        data[typed - 1] = 1;
+        final var where = fixture + " with a " + tail + " byte tail: ";
+        final var generated = Mint.read(key, data);
+        assertEquals(0, generated.extensions().length, where + "the generated reader reads no extension");
+        assertEquals(typed, generated.l(), where + "and sizes the record without it");
+        final var savaCore = Token2022.read(key, data);
+        assertEquals(AccountType.Mint, savaCore.accountType(), where + "sava-core reads the type byte");
+        assertTrue(savaCore.tokenExtensions().isEmpty(), where + "and no extension");
+        assertEquals(typed, savaCore.l(), where + "and sizes the record without it");
+      }
+    }
+    assertEquals(2, mints, "the two base-length mints");
   }
 
   // ---------------------------------------------------------------------------------------
@@ -939,12 +1016,12 @@ final class Token2022AccountConformanceTests {
   /// this particular multisig happens to carry, so
   /// [#theAccountTypeDiscriminantIsTheBackstopBehindTheOptionTags()] exercises it separately.
   ///
-  /// sava-core 25.11.0 does **not** refuse it. It reads that same zero as
-  /// `AccountType.Uninitialized`, finds a zero type word where a TLV chain would start, and hands
-  /// back a record whose `l()` is 170 against the 355 bytes that went in — so what it would write
-  /// is neither the account it read nor anything the program would unpack. The length guard is in
-  /// the same unreleased sava commit as the base-length fix (28e30ad), so what that release does
-  /// is asserted here and this test moves with it.
+  /// sava-core 25.11.1 refuses it too, and by length alone: `Multisig::LEN` is the one buffer
+  /// length that can never be an extended mint or token account, so both of its readers throw
+  /// before reading a byte. 25.11.0 did not — it read that same zero as
+  /// `AccountType.Uninitialized`, found a zero type word where a TLV chain would start, and
+  /// handed back a record whose `l()` was 170 against the 355 bytes that went in — and this test
+  /// pinned that until the catalog moved.
   @Test
   void theMultisigFixtureIsRefusedByBothGeneratedReaders() {
     int multisigs = 0;
@@ -969,16 +1046,15 @@ final class Token2022AccountConformanceTests {
           assertThrows(RuntimeException.class, () -> Token.read(key, data),
               fixture + ": the generated token reader must refuse a multisig").getMessage());
 
-      // what the pinned sava-core release does instead, asserted so that the release which starts
-      // refusing it fails here and this comparison can be tightened
-      final var asMint = Token2022.read(key, data);
-      assertEquals(AccountType.Uninitialized, asMint.accountType(),
-          fixture + ": sava-core 25.11.0 reads the zeroed signer slot as an account type");
-      assertNotEquals(fixture.length(), asMint.l(),
-          fixture + ": and sizes the record it built from something that is not a mint");
-      final var asAccount = Token2022Account.read(key, data);
-      assertEquals(AccountType.Uninitialized, asAccount.type(), fixture + ": the same both ways");
-      assertNotEquals(fixture.length(), asAccount.l(), fixture + ": the same both ways");
+      // sava-core refuses the same bytes by their length alone, before either base state is read
+      final var refusedByLength =
+          "Account data of 355 bytes is the length of a Multisig, which is never extensible.";
+      assertEquals(refusedByLength,
+          assertThrows(IllegalArgumentException.class, () -> Token2022.read(key, data),
+              fixture + ": sava-core's mint reader must refuse Multisig::LEN").getMessage());
+      assertEquals(refusedByLength,
+          assertThrows(IllegalArgumentException.class, () -> Token2022Account.read(key, data),
+              fixture + ": and so must its token-account reader").getMessage());
     }
     assertEquals(1, multisigs, "the corpus must carry exactly one real multisig");
   }
@@ -989,8 +1065,8 @@ final class Token2022AccountConformanceTests {
   /// token account — and a multisig has an eleventh signer slot there, all zeros for a 2-of-3.
   ///
   /// The input is the real fixture with its three (respectively five) option tags zeroed, so it
-  /// is derived from a captured account rather than invented, and it is the only synthetic input
-  /// in this class. Without it the multisig assertions above would only say that *these* signer
+  /// is derived from a captured account rather than invented, and it is one of three synthetic
+  /// inputs in this class, beside the padded and stray-tailed mints of the base-length tests. Without it the multisig assertions above would only say that *these* signer
   /// keys are not valid option tags.
   ///
   /// A mint has one more backstop ahead of the discriminant: the 83 bytes between its base state

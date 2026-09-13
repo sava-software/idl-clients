@@ -109,20 +109,16 @@ final class Token2022AccountFuzzSeedTests {
     }
     // The differential is the harness's strongest oracle and the easiest to render inert:
     // every one of its guards is a reason to skip, so a corpus none of them admits would
-    // pass while comparing nothing. Twenty of the twenty-six seeds are inside it, and the
-    // six that are not are named rather than counted, because each one stands for a
-    // documented divergence: the four extension-free accounts sava-core 25.11.0 itself
-    // refuses (Mint::LEN and Account::LEN exactly), and the multisig, whose byte 165 lands
-    // inside a signer key and so names no AccountType.
-    assertEquals(List.of("113Dbys19a4PMNYt5v1153Kwta5aQSD6VFu5sqQw5tz",
-                         "1NSESJWVCQZf7Dctz8Bbfyo4WTS2nM5fram1z8WX59E",
-                         "1TeeextCMbWvAYDShphXyg9macWQCJkowqeU4iR9nUa",
-                         "9pan9bMn5HatX4EJdBwg9VgCa7Uz5HL8N1m5D3NdXejP",
-                         "et1Arzfg3zufiKMyNtudiM7QVWzG4F9e3ukWxiHAZMs-account",
+    // pass while comparing nothing. Twenty-four of the twenty-six seeds are inside it, and
+    // the two that are not are named rather than counted: both are the multisig, whose 355
+    // bytes sava-core refuses by length before reading them. The four extension-free
+    // accounts were outside it too while the catalog pinned sava-core 25.11.0, which threw
+    // on Mint::LEN and Account::LEN exactly; 25.11.1 decodes them.
+    assertEquals(List.of("et1Arzfg3zufiKMyNtudiM7QVWzG4F9e3ukWxiHAZMs-account",
                          "et1Arzfg3zufiKMyNtudiM7QVWzG4F9e3ukWxiHAZMs-mint"),
                  outside,
                  "the seeds outside the sava-core differential changed");
-    assertEquals(20, differential, "the sava-core differential fires on a different number of seeds");
+    assertEquals(24, differential, "the sava-core differential fires on a different number of seeds");
   }
 
   private static TreeMap<String, byte[]> seedFiles() throws IOException, URISyntaxException {

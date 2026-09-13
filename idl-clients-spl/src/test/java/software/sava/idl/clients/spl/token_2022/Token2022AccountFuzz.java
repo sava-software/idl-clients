@@ -6,7 +6,6 @@ import software.sava.core.accounts.token.Token2022Account;
 import software.sava.core.accounts.token.extensions.AccountType;
 import software.sava.core.accounts.token.extensions.TokenExtension;
 import software.sava.core.accounts.token.extensions.UnknownTokenExtension;
-import software.sava.core.encoding.ByteUtil;
 import software.sava.core.serial.Serializable;
 import software.sava.idl.clients.core.gen.RustEnum;
 import software.sava.idl.clients.core.gen.SerDe;
@@ -38,7 +37,7 @@ import java.util.Objects;
 /// `l()` and `write` dereference it, so the harness walks the parsed record for null
 /// enum-typed components and treats one as a rejection — the same move
 /// [Token2022IxDataFuzz] makes. A null that is an absent `Option` is not one. Such an
-/// input is also outside the differential below; divergence 6 says why.
+/// input is also outside the differential below; divergence 4 says why.
 ///
 /// On a successful read the harness asserts:
 ///
@@ -56,7 +55,7 @@ import java.util.Objects;
 /// ## The differential against sava-core
 ///
 /// sava-core ships hand-written readers for the same two accounts — `Token2022.read` and
-/// `Token2022Account.read`, at the pinned 25.11.0 release — written from the SPL sources
+/// `Token2022Account.read`, at the 25.11.1 release the Solana BOM pins — written from the SPL sources
 /// rather than generated from the IDL. Two independent decoders of one wire format are a
 /// differential oracle, so whenever sava-core reads an input the generated decoder must
 /// read it too, byte-identically and with the same extension list.
@@ -67,13 +66,17 @@ import java.util.Objects;
 /// - its `write` into `new byte[l()]` reproduces the input exactly, so it consumed and
 ///   accounted for every byte rather than stopping early or normalising something;
 /// - its account type is the one the selected reader is for — `Mint` for [Mint#read],
-///   `Account` for [Token#read];
+///   `Account` for [Token#read] — or null for an account of exactly `Mint::LEN` or
+///   `Account::LEN`, which carries no type byte at all;
 /// - none of its `tokenExtensions()` is an [UnknownTokenExtension], i.e. every TLV was
-///   one it has a layout for;
-/// - every `COption` presence tag in the input is 0 or 1.
+///   one it has a layout for.
 ///
-/// Each of those exclusions is a documented divergence between the two decoders rather
-/// than a hole in the oracle:
+/// Two more exclusions used to stand here for what sava-core 25.11.0 did: it threw on an
+/// extension-free account (`Mint::LEN` or `Account::LEN` exactly) and decoded a `COption`
+/// presence tag other than 0 or 1. 25.11.1 decodes the former like the generated readers, so
+/// those inputs are inside the differential, and refuses the latter like them, so those are
+/// outside it by its own rejection. Each exclusion that remains is a documented divergence
+/// between the two decoders rather than a hole in the oracle:
 ///
 /// 1. **Any account-type byte but the selected reader's own.** The generated readers model
 ///    the byte at [#ACCOUNT_TYPE_OFFSET] as a fixed constant — 1 for a mint, 2 for a token
@@ -83,9 +86,10 @@ import java.util.Objects;
 ///    becomes `Uninitialized`, a byte naming no variant becomes null, and — the case that
 ///    matters — a byte naming the *other* kind still decodes, because neither hand-written
 ///    reader checks that the byte agrees with the layout it has just read. `Token2022Account`
-///    will read a real mint, and write it back verbatim, type byte included. So the guard
-///    requires the type to be the selected reader's own rather than merely known and
-///    non-zero: otherwise the reference is decoding a different account than the subject.
+///    will read a real mint, and write it back verbatim, type byte included. So past the base
+///    length the guard requires the type to be the selected reader's own rather than merely
+///    known and non-zero: otherwise the reference is decoding a different account than the
+///    subject.
 ///    Found by this harness on its first campaign (the `Token` selector over a 435-byte
 ///    mint, where `Token.read` rightly refuses the 1 at offset 165).
 /// 2. **Unknown extension types.** Token-2022 keeps adding `ExtensionType` variants, so a
@@ -93,14 +97,7 @@ import java.util.Objects;
 ///    [UnknownTokenExtension] and leaves the caller to decide; the generated reader throws
 ///    `Unknown Extension at offset N`, because it has no length for the TLV and so cannot
 ///    find where the next one starts.
-/// 3. **Extension-free accounts.** sava-core 25.11.0 throws on an 82-byte mint and a
-///    165-byte token account — `Mint::LEN` and `Account::LEN` exactly, the shape of every
-///    account the original Token program ever wrote — because it reads the account-type
-///    byte at a fixed offset past the end of the buffer. The generated readers decode both
-///    (`extensions()` is null). The guard tolerates it for free: it fires only when
-///    sava-core succeeds, so these inputs are simply outside the oracle, and the round
-///    trip above still covers them.
-/// 4. **`Uninitialized` padding.** A zero type word ends the TLV list as far as the
+/// 3. **`Uninitialized` padding.** A zero type word ends the TLV list as far as the
 ///    program is concerned: it, sava-core, and the upstream JS client's hand-written walk
 ///    all stop there and ignore whatever follows. The generated decoder instead decodes
 ///    what the IDL declares, reading each zero word as an `Extension.uninitialized`
@@ -118,32 +115,15 @@ import java.util.Objects;
 ///    in the first place: extension space is appended, so the zeroed tail is always last.
 ///    A tail that is *only* zero words stays inside the comparison — both writers put it
 ///    back verbatim.
-/// 5. **Non-canonical `COption` tags.** `TokenAccount` keeps each four-byte presence tag
-///    as a raw `int` — `delegateOption`, `isNativeOption`, `closeAuthorityOption` — and
-///    writes it back unchanged, so a tag of, say, `0x02000000` survives sava-core's round trip
-///    byte for byte and would satisfy the "writes back verbatim" test above while standing
-///    for bytes no token program writes: an account's data is all zero when a program
-///    receives it, and neither Token-2022 nor p-token ever puts anything but 0 or 1 in a tag.
-///    No decoder agrees on what a third value means — the `Pack` decoder's
-///    `unpack_coption_key` and `unpack_coption_u64` (the validator's parsed encoding,
-///    Token-2022's `Reallocate`) answer `InvalidAccountData`, Token-2022's other instructions
-///    read it zero-copy and reject it only in `WithdrawExcessLamports` on a mint, and p-token
-///    reads the first byte alone — and the generated reader refuses it, enforcing the
-///    encoding. Byte identity therefore does not imply sava-core decoded something the
-///    program would have written, so the guard requires the tags to be canonical rather than
-///    merely preserved — otherwise the reference, not the subject, is the one that is wrong.
-///    Found by this harness on its first campaign (`Token`, 175 bytes, `isNativeOption` =
-///    33554432).
-/// 6. **Enum bytes the reference never validates.** The same leniency runs deeper than the
-///    presence tags: `DefaultAccountState` holds its state as a raw `int` and writes it
-///    back, so sava-core reproduces a `defaultAccountState` extension whose state byte is
+/// 4. **Enum bytes the reference never validates.** `DefaultAccountState` holds its state as
+///    a raw `int` and writes it back, so sava-core reproduces a `defaultAccountState` extension whose state byte is
 ///    49 while the generated `AccountState.read` answers null for it — and the program's own
 ///    `#[repr(u8)] AccountState` has three variants and rejects the rest. Because the
 ///    reference does not model these bytes as an enum at all, "sava-core succeeded" carries
 ///    no information about them, so an input the generated reader turns into a null
 ///    enum-typed slot leaves the differential rather than failing it. The `Token.state`
-///    byte is the one enum sava-core does index (`AccountState.values()[data[108]]`), and
-///    it throws out of range, so that slot is excluded by the reference's own rejection.
+///    byte is the one enum sava-core does model (`TokenAccount.parseState`, which refuses a
+///    byte past the last variant), so that slot is excluded by the reference's own rejection.
 ///    Found by this harness (`Mint`, 657 bytes, `defaultAccountState` state byte 0x31).
 ///
 /// Seeded with the 25-account mainnet corpus under `src/test/resources/token_2022/accounts`,
@@ -201,7 +181,7 @@ public final class Token2022AccountFuzz {
       // input is a rejection rather than a parse. It is outside the differential too, and
       // not merely unasserted: the reference keeps such a byte as a raw int and writes it
       // straight back, so its success says nothing about whether the byte named a variant
-      // (divergence 6).
+      // (divergence 4).
       return;
     }
 
@@ -248,22 +228,24 @@ public final class Token2022AccountFuzz {
   /// stands for. Ordinal 0 is dropped: sava-core reports it only as a lone `Uninitialized`
   /// standing for an all-padding extension region, never alongside a real extension.
   static int[] referenceOrdinals(final boolean asMint, final byte[] account) {
-    if (account.length <= ACCOUNT_TYPE_OFFSET || !canonicalOptionTags(asMint, account)) {
-      return null;
-    }
     try {
+      // An extension-free account — Mint::LEN or Account::LEN exactly — carries no account-type
+      // byte, and sava-core reads null there; anything longer must name the selected reader's
+      // own kind (divergence 1).
       final Serializable core;
       final Collection<TokenExtension> extensions;
       if (asMint) {
         final var mint = Token2022.read(ADDRESS, account);
-        if (mint == null || mint.accountType() != AccountType.Mint) {
+        if (mint == null
+            || (account.length != Mint.EXTENSIONS_OFFSET && mint.accountType() != AccountType.Mint)) {
           return null;
         }
         core = mint;
         extensions = mint.tokenExtensions();
       } else {
         final var token = Token2022Account.read(ADDRESS, account);
-        if (token == null || token.type() != AccountType.Account) {
+        if (token == null
+            || (account.length != Token.EXTENSIONS_OFFSET && token.type() != AccountType.Account)) {
           return null;
         }
         core = token;
@@ -296,27 +278,6 @@ public final class Token2022AccountFuzz {
   static boolean differentialApplies(final byte[] data) {
     return data.length >= 2
         && referenceOrdinals((data[0] & 1) == 0, Arrays.copyOfRange(data, 1, data.length)) != null;
-  }
-
-  private static final int[] MINT_OPTION_OFFSETS = {
-      Mint.MINT_AUTHORITY_OPTION_OFFSET, Mint.FREEZE_AUTHORITY_OPTION_OFFSET
-  };
-
-  private static final int[] TOKEN_OPTION_OFFSETS = {
-      Token.DELEGATE_OPTION_OFFSET, Token.IS_NATIVE_OPTION_OFFSET, Token.CLOSE_AUTHORITY_OPTION_OFFSET
-  };
-
-  /// Whether every four-byte `COption` presence tag in the fixed prefix is 0 or 1 — the
-  /// only two values the token programs ever write. The caller has already checked that
-  /// the input reaches [#ACCOUNT_TYPE_OFFSET], so every offset here is in range.
-  private static boolean canonicalOptionTags(final boolean asMint, final byte[] account) {
-    for (final int offset : asMint ? MINT_OPTION_OFFSETS : TOKEN_OPTION_OFFSETS) {
-      final int tag = ByteUtil.getInt32LE(account, offset);
-      if (tag != 0 && tag != 1) {
-        return false;
-      }
-    }
-    return true;
   }
 
   private static Extension[] extensionsOf(final SerDe parsed) {

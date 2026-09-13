@@ -11,7 +11,7 @@ provides and how to use them together.
 | **solana-programs** | `software.sava:solana-programs` | `software.sava.solana_programs` | Hand-written instruction helpers for a subset of the program. Deprecated                     |
 | **idl-clients-spl** | `software.sava:idl-clients-spl` | `software.sava.idl.clients.spl` | Generated instruction builders with instruction data parsers, `Token2022Error`, and generated `Mint`, `Token` and `Extension` account decoders |
 
-This page describes the code as it is built here: against **sava-core 25.11.0**, the version the Solana BOM pinned in
+This page describes the code as it is built here: against **sava-core 25.11.1**, the version the Solana BOM pinned in
 `gradle/sava.properties` resolves to.
 
 Account decoding exists twice, deliberately: sava-core's hand-written `Token2022` and `Token2022Account`, and the
@@ -167,14 +167,14 @@ ways, and `Token2022AccountConformanceTests` asserts each one rather than skippi
 | A zero type word (`Uninitialized` padding)                                      | the walk stops there, as the program's does; the entry is dropped unless it is the only one | kept as `Extension.uninitialized`, so the bytes round trip; the walk continues, so an entry *after* a zero word — which the program never writes and never reads — is decoded rather than ignored |
 | An extension id this library does not know                                      | `UnknownTokenExtension` carrying the bytes                       | `IllegalArgumentException`, as with the upstream JS client                                                    |
 | The account-type byte                                                           | must match the base state: the declared one behind an initialized base, `Uninitialized` behind a zeroed one (an account between two initializers) | must be the declared one, whatever the base says — a pre-initialization account throws, and a mint's bytes labelled `2` read as an uninitialized token account, both as with the upstream JS client |
-| An extension-free account (82 or 165 bytes)                                     | 25.11.0 throws; decodes on sava `main`, unreleased               | `extensions()` is `null`                                                                                      |
-| A tail shorter than a type word                                                 | 25.11.0 throws; ignored on sava `main`                           | ignored; a longer zero tail is `uninitialized` entries                                                        |
+| An extension-free account (82 or 165 bytes)                                     | decodes; the discriminant (`accountType()` / `type()`) is `null` and `tokenExtensions()` empty | `extensions()` is `null`                                                                                      |
+| A tail shorter than a type word                                                 | ignored; `tokenExtensions()` is empty                            | ignored; a longer zero tail is `uninitialized` entries                                                        |
 | A length word disagreeing with the value                                        | rejected, except for token metadata                              | rejected for every variant                                                                                    |
-| A 355-byte buffer (`Multisig::LEN`)                                             | 25.11.0 decodes it as an uninitialized account; refused by length on sava `main` | no length rule; a real multisig fails on the first `COption` tag its signer bytes land on, before the account-type check |
+| A 355-byte buffer (`Multisig::LEN`)                                             | refused by length, before a byte is read                         | no length rule; a real multisig fails on the first `COption` tag its signer bytes land on, before the account-type check |
 | The 83 padding bytes between a mint and its type byte                           | not inspected                                                    | must be zero, as the program and the upstream JS client require                                               |
 | A boolean byte other than 0 or 1                                                | `true` (`!= 0`, the program's `PodBool` rule)                    | `false` (`== 1`, the Kit codec's rule); the program never writes one                                          |
 | An extension list that lands the account on `Multisig::LEN`                     | `l()` and `write` add the program's two-byte pad                 | `l()` is the bytes as declared; allocate with the program's `getAccountDataSize`, not `l()`                    |
-| A truncated buffer                                                              | 25.11.0 decodes a short base state; refused on sava `main`      | refused: every slot, read or skipped, is bounds-checked                                                       |
+| A truncated buffer                                                              | refused: a mint of 83 to 165 bytes or a token account under 165 is malformed | refused: every slot, read or skipped, is bounds-checked                                                       |
 | Token metadata `additionalMetadata`                                             | unmodifiable `Map` in wire order                                 | `Map` in wire order, written back in iteration order                                                          |
 
 ### Configuration
