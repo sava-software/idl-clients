@@ -7,6 +7,6 @@ nobody took. The standing disagreements live beside this file, at its name with 
 before the extension. Ordered by program and channel, and carrying no timestamp, so
 consecutive runs are worth diffing against each other.
 
-== Movement (0) ==
+== Movement (1) ==
 
-Nothing moved since the last generation.
+Stake: the vcs IDL at https://raw.githubusercontent.com/solana-program/stake/refs/heads/main/idl.json moved since the last generation: program.version 4.4.0 -> 5.0.0
