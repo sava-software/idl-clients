@@ -200,7 +200,9 @@ public sealed interface Swap extends RustEnum permits
   Swap.PerenaStarV2TrancheDeposit,
   Swap.PerenaStarV2TrancheWithdrawFromExternal,
   Swap.Quay,
-  Swap.HumidiFiRouter {
+  Swap.HumidiFiRouter,
+  Swap.HumidiFiRouterV2,
+  Swap.PumpWrappedBuyV6 {
 
   static Swap read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -392,6 +394,8 @@ public sealed interface Swap extends RustEnum permits
       case 183 -> PerenaStarV2TrancheWithdrawFromExternal.read(_data, i);
       case 184 -> Quay.read(_data, i);
       case 185 -> HumidiFiRouter.read(_data, i);
+      case 186 -> HumidiFiRouterV2.read(_data, i);
+      case 187 -> PumpWrappedBuyV6.read(_data, i);
       default -> null;
     };
   }
@@ -3233,6 +3237,109 @@ public sealed interface Swap extends RustEnum permits
     @Override
     public int ordinal() {
       return 185;
+    }
+  }
+
+  /// @param routerId: u64
+  /// @param claimedMs: u64
+  record HumidiFiRouterV2(long routerId,
+                          long claimedMs,
+                          byte[] seedRng,
+                          byte[] token,
+                          boolean isBaseToQuote) implements Swap {
+
+    public static final int BYTES = 65;
+    public static final int SEED_RNG_LEN = 32;
+    public static final int TOKEN_LEN = 16;
+
+    public static final int ROUTER_ID_OFFSET = 0;
+    public static final int CLAIMED_MS_OFFSET = 8;
+    public static final int SEED_RNG_OFFSET = 16;
+    public static final int TOKEN_OFFSET = 48;
+    public static final int IS_BASE_TO_QUOTE_OFFSET = 64;
+
+    public static HumidiFiRouterV2 read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var routerId = getInt64LE(_data, i);
+      i += 8;
+      final var claimedMs = getInt64LE(_data, i);
+      i += 8;
+      final var seedRng = new byte[32];
+      i += SerDeUtil.readArray(seedRng, _data, i);
+      final var token = new byte[16];
+      i += SerDeUtil.readArray(token, _data, i);
+      final var isBaseToQuote = _data[i] == 1;
+      return new HumidiFiRouterV2(routerId,
+                                  claimedMs,
+                                  seedRng,
+                                  token,
+                                  isBaseToQuote);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + writeOrdinal(_data, _offset);
+      putInt64LE(_data, i, routerId);
+      i += 8;
+      putInt64LE(_data, i, claimedMs);
+      i += 8;
+      i += SerDeUtil.writeArrayChecked(seedRng, 32, _data, i);
+      i += SerDeUtil.writeArrayChecked(token, 16, _data, i);
+      _data[i] = (byte) (isBaseToQuote ? 1 : 0);
+      ++i;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return ordinalBytes() + BYTES;
+    }
+
+    @Override
+    public int ordinal() {
+      return 186;
+    }
+  }
+
+  record PumpWrappedBuyV6(boolean claimCashback, boolean allowPartialFill) implements Swap {
+
+    public static final int BYTES = 2;
+
+    public static final int CLAIM_CASHBACK_OFFSET = 0;
+    public static final int ALLOW_PARTIAL_FILL_OFFSET = 1;
+
+    public static PumpWrappedBuyV6 read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var claimCashback = _data[i] == 1;
+      ++i;
+      final var allowPartialFill = _data[i] == 1;
+      return new PumpWrappedBuyV6(claimCashback, allowPartialFill);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + writeOrdinal(_data, _offset);
+      _data[i] = (byte) (claimCashback ? 1 : 0);
+      ++i;
+      _data[i] = (byte) (allowPartialFill ? 1 : 0);
+      ++i;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return ordinalBytes() + BYTES;
+    }
+
+    @Override
+    public int ordinal() {
+      return 187;
     }
   }
 }

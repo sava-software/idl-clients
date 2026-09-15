@@ -23,7 +23,8 @@ public sealed interface CandidateSwap extends RustEnum permits
   CandidateSwap.BisonFiMarketBacked,
   CandidateSwap.RaydiumClmmV2,
   CandidateSwap.TesseraVV2,
-  CandidateSwap.HumidiFiRouter {
+  CandidateSwap.HumidiFiRouter,
+  CandidateSwap.HumidiFiRouterV2 {
 
   static CandidateSwap read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -45,6 +46,7 @@ public sealed interface CandidateSwap extends RustEnum permits
       case 13 -> RaydiumClmmV2.INSTANCE;
       case 14 -> TesseraVV2.read(_data, i);
       case 15 -> HumidiFiRouter.read(_data, i);
+      case 16 -> HumidiFiRouterV2.read(_data, i);
       default -> null;
     };
   }
@@ -373,6 +375,70 @@ public sealed interface CandidateSwap extends RustEnum permits
     @Override
     public int ordinal() {
       return 15;
+    }
+  }
+
+  /// @param routerId: u64
+  /// @param claimedMs: u64
+  record HumidiFiRouterV2(long routerId,
+                          long claimedMs,
+                          byte[] seedRng,
+                          byte[] token,
+                          boolean isBaseToQuote) implements CandidateSwap {
+
+    public static final int BYTES = 65;
+    public static final int SEED_RNG_LEN = 32;
+    public static final int TOKEN_LEN = 16;
+
+    public static final int ROUTER_ID_OFFSET = 0;
+    public static final int CLAIMED_MS_OFFSET = 8;
+    public static final int SEED_RNG_OFFSET = 16;
+    public static final int TOKEN_OFFSET = 48;
+    public static final int IS_BASE_TO_QUOTE_OFFSET = 64;
+
+    public static HumidiFiRouterV2 read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var routerId = getInt64LE(_data, i);
+      i += 8;
+      final var claimedMs = getInt64LE(_data, i);
+      i += 8;
+      final var seedRng = new byte[32];
+      i += SerDeUtil.readArray(seedRng, _data, i);
+      final var token = new byte[16];
+      i += SerDeUtil.readArray(token, _data, i);
+      final var isBaseToQuote = _data[i] == 1;
+      return new HumidiFiRouterV2(routerId,
+                                  claimedMs,
+                                  seedRng,
+                                  token,
+                                  isBaseToQuote);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + writeOrdinal(_data, _offset);
+      putInt64LE(_data, i, routerId);
+      i += 8;
+      putInt64LE(_data, i, claimedMs);
+      i += 8;
+      i += SerDeUtil.writeArrayChecked(seedRng, 32, _data, i);
+      i += SerDeUtil.writeArrayChecked(token, 16, _data, i);
+      _data[i] = (byte) (isBaseToQuote ? 1 : 0);
+      ++i;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return ordinalBytes() + BYTES;
+    }
+
+    @Override
+    public int ordinal() {
+      return 16;
     }
   }
 }

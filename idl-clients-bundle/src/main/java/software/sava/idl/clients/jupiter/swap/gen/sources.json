@@ -9,7 +9,7 @@
   "channels": {
     "anchor": {
       "origin": "C88XWfp26heEmDkmfSzeXP7Fd7GQJ2j9dDTUsyiZbUTa",
-      "hash": "67749e05d913dcfc221639ec7c6338241b2bc4c369b3cb188b29f345c1669f5c",
+      "hash": "cc0efc48ea74ac3099c584b00ed74bc50cb7f985d3aa5d81380a6e4679cb7722",
       "matchesDeployed": true,
       "verbatim": "idl.json"
     },
