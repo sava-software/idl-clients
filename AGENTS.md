@@ -355,6 +355,14 @@ the generation was run without retaining its channel-movement evidence. The gap 
 is not evidence of anything — it re-renders whether or not this run saw movement, which
 is why it was split out (idl-src-gen#3) and why only the movement file is gated.
 
+`genSrc.sh` refuses to start (exit 6) while the movement report on disk carries entries and
+its content is not what HEAD holds — the report of a run whose records were committed
+without it, or of a run not committed at all. A second generation would compare against
+the records the first already rewrote, report nothing, and overwrite the only copy of what
+it saw. The refusal spells out how to keep the report and when discarding it is still safe;
+`reportGuard.sh` beside `genSrc.sh` in idl-src-gen is the check, and it never refuses a
+fresh checkout, whose report is exactly HEAD's.
+
 A redeploy line that says *review required* is answered in `main_net_programs.json`, not in
 a commit message: `"review": {"deploySlot": N, "verdict": "…"}` on the program, held against
 the deploy it answered. The gap report then carries it as a standing entry until a later
