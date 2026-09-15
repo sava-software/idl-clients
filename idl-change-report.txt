@@ -9,4 +9,4 @@ consecutive runs are worth diffing against each other.
 
 == Movement (1) ==
 
-Stake: the vcs IDL at https://raw.githubusercontent.com/solana-program/stake/refs/heads/main/idl.json moved since the last generation: program.version 4.4.0 -> 5.0.0
+Phoenix Perpetuals Dev: the program was redeployed at slot 447084801, up from 443800559, and no IDL channel moved with it (the metadata IDL was last written at slot 420691791, before the previous deploy); the stored program image changed: 3359480 payload bytes, was 3197584 — review required
