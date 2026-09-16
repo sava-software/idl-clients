@@ -1,8 +1,10 @@
 package software.sava.idl.clients.phoenix;
 
 import org.junit.jupiter.api.Test;
+import software.sava.core.programs.Discriminator;
 import software.sava.idl.clients.phoenix.perpetuals.gen.events.EternalEvent;
 import software.sava.idl.clients.phoenix.perpetuals.gen.events.SlotContextEvent;
+import software.sava.idl.clients.phoenix.perpetuals.gen.events.TraderRegisteredEvent;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -12,12 +14,14 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
 
 /// Decodes real Phoenix Perpetuals events captured from mainnet.
 ///
-/// Phoenix declares all 67 of its events as **one-byte** discriminators, tags 0..66 — those are
+/// Phoenix declares all 71 of its events as **one-byte** discriminators, tags 0..70 — those are
 /// Borsh enum variant indices, not Anchor's eight-byte `sha256("event:Name")`. Upstream serializes
 /// `MarketEvent` with `#[derive(BorshSerialize)]`, and a Borsh enum tag is one byte, so an event's
 /// wire form is a single tag byte followed by the variant's fields.
@@ -33,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /// with `getTransaction` and de-framed from those instructions; see the header of
 /// `/phoenix/market-events.txt`.
 ///
-/// Coverage is 24 of the 67 variants — whichever the ten captured transactions happened to emit.
+/// Coverage is 31 of the 71 variants — whichever the thirteen captured transactions happened to emit.
 /// `AuthorityChangedEvent` (tag 46), where the defect was first spotted, is not among them; the
 /// evidence for that one stays structural.
 final class PhoenixEventFixtureTests {
@@ -72,11 +76,25 @@ final class PhoenixEventFixtureTests {
     return transactions;
   }
 
+  /// The declaration the class javadoc describes, held to the generated decoder: every variant
+  /// `EternalEvent` permits has a one-byte discriminator, and together they are exactly the
+  /// tags 0..70 with none skipped or repeated. A variant added upstream moves this count first.
+  @Test
+  void everyDeclaredEventIsAOneByteTag() throws ReflectiveOperationException {
+    final var tags = new ArrayList<Integer>();
+    for (final var variant : EternalEvent.class.getPermittedSubclasses()) {
+      final var discriminator = (Discriminator) variant.getField("DISCRIMINATOR").get(null);
+      assertEquals(1, discriminator.length(), variant.getSimpleName());
+      tags.add(discriminator.data()[0] & 0xFF);
+    }
+    assertEquals(IntStream.range(0, 71).boxed().toList(), tags.stream().sorted().toList());
+  }
+
   @Test
   void theFixtureCarriesWhatWasCaptured() {
     final var transactions = fixture();
-    assertEquals(10, transactions.size());
-    assertEquals(96, transactions.stream().mapToInt(tx -> tx.events().size()).sum());
+    assertEquals(13, transactions.size());
+    assertEquals(113, transactions.stream().mapToInt(tx -> tx.events().size()).sum());
     // every payload is exactly as long as the program said it would be
     for (final var tx : transactions) {
       for (final var event : tx.events()) {
@@ -121,7 +139,7 @@ final class PhoenixEventFixtureTests {
         byTag.merge(event.tag(), 1, Integer::sum);
       }
     }
-    assertEquals(24, byTag.size(), () -> "distinct variants covered: " + byTag);
+    assertEquals(31, byTag.size(), () -> "distinct variants covered: " + byTag);
   }
 
   /// A round-trip through `write` must reproduce the bytes the chain carried. This catches an
@@ -158,7 +176,7 @@ final class PhoenixEventFixtureTests {
         checked.add(tx.signature());
       }
     }
-    assertTrue(checked.size() >= 10, () -> "expected a SlotContextEvent per transaction, saw " + checked.size());
+    assertEquals(13, checked.stream().distinct().count(), "a SlotContextEvent in every transaction");
   }
 
   /// The sharpest edge case the capture contains: a one-byte event, whose entire wire form is its
@@ -181,5 +199,34 @@ final class PhoenixEventFixtureTests {
       }
     }
     assertFalse(singleByte.isEmpty(), "the capture is expected to contain a one-byte event");
+  }
+
+  /// `TraderRegisteredEvent` carries `maxPositions` and `traderPreferenceBits` as two `u32`s, where
+  /// the IDL used to declare a single `u64`. The captured registration `3iKV7GNv…` set preference
+  /// bit 0, which is the case the two readings disagree on: the program logged "Trader registered
+  /// successfully with 1 max positions", and the same eight bytes read as one `u64` say 4294967297.
+  @Test
+  void traderRegisteredReadsMaxPositionsAndPreferenceBitsAsTwoU32s() {
+    final var registered = new ArrayList<TraderRegisteredEvent>();
+    for (final var tx : fixture()) {
+      if (!tx.signature().equals(
+          "3iKV7GNvGrfWBYJcB68uQkkiLvcRpraD7uKGhsLtWEoseVopVnPcXhXAqL9rCvcst7gqquAHiUH8h9VxXdPHE3uw")) {
+        continue;
+      }
+      for (final var event : tx.events()) {
+        if (event.tag() == 9) {
+          registered.add(assertInstanceOf(TraderRegisteredEvent.class, EternalEvent.read(event.payload(), 0)));
+        }
+      }
+    }
+    assertEquals(List.of(0, 1), registered.stream().map(TraderRegisteredEvent::traderPdaIndex).toList(),
+        "two trader accounts registered in one transaction");
+    for (final var event : registered) {
+      assertEquals(1L, event.maxPositions(), "the program logged 1 max positions");
+      assertEquals(1L, event.traderPreferenceBits());
+      assertEquals(74, event.traderSubaccountIndex());
+      assertEquals((1L << 32) | 1L, getInt64LE(event.write(), TraderRegisteredEvent.MAX_POSITIONS_OFFSET),
+          "what the previous single-u64 reading returned for the same bytes");
+    }
   }
 }

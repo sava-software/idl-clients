@@ -71,7 +71,11 @@ public sealed interface MarketEvent extends RustEnum permits
   MarketEvent.SplinePositionLimitsConfigUpdated,
   MarketEvent.MarketTombstoned,
   MarketEvent.ShutdownClosePositions,
-  MarketEvent.OrderResidualDiscarded {
+  MarketEvent.OrderResidualDiscarded,
+  MarketEvent.SpotCollateralDeposited,
+  MarketEvent.SpotCollateralWithdrawn,
+  MarketEvent.SpotCollateralLiquidated,
+  MarketEvent.RestartAcknowledged {
 
   static MarketEvent read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -144,6 +148,10 @@ public sealed interface MarketEvent extends RustEnum permits
       case 64 -> MarketTombstoned.read(_data, i);
       case 65 -> ShutdownClosePositions.read(_data, i);
       case 66 -> OrderResidualDiscarded.read(_data, i);
+      case 67 -> SpotCollateralDeposited.read(_data, i);
+      case 68 -> SpotCollateralWithdrawn.read(_data, i);
+      case 69 -> SpotCollateralLiquidated.read(_data, i);
+      case 70 -> RestartAcknowledged.read(_data, i);
       default -> null;
     };
   }
@@ -949,6 +957,54 @@ public sealed interface MarketEvent extends RustEnum permits
     @Override
     public int ordinal() {
       return 66;
+    }
+  }
+
+  record SpotCollateralDeposited(SpotCollateralDepositedEvent val) implements SerDeEnum, MarketEvent {
+
+    public static SpotCollateralDeposited read(final byte[] _data, final int _offset) {
+      return new SpotCollateralDeposited(SpotCollateralDepositedEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 67;
+    }
+  }
+
+  record SpotCollateralWithdrawn(SpotCollateralWithdrawnEvent val) implements SerDeEnum, MarketEvent {
+
+    public static SpotCollateralWithdrawn read(final byte[] _data, final int _offset) {
+      return new SpotCollateralWithdrawn(SpotCollateralWithdrawnEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 68;
+    }
+  }
+
+  record SpotCollateralLiquidated(SpotCollateralLiquidatedEvent val) implements SerDeEnum, MarketEvent {
+
+    public static SpotCollateralLiquidated read(final byte[] _data, final int _offset) {
+      return new SpotCollateralLiquidated(SpotCollateralLiquidatedEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 69;
+    }
+  }
+
+  record RestartAcknowledged(RestartAcknowledgedEvent val) implements SerDeEnum, MarketEvent {
+
+    public static RestartAcknowledged read(final byte[] _data, final int _offset) {
+      return new RestartAcknowledged(RestartAcknowledgedEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 70;
     }
   }
 }

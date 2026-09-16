@@ -9,9 +9,11 @@ import software.sava.idl.clients.phoenix.ember.gen.EmberPDAs;
 import software.sava.idl.clients.phoenix.ember.gen.types.DepositParams;
 import software.sava.idl.clients.phoenix.perpetuals.gen.EternalPDAs;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.DepositFundsInstruction;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.RegisterTraderParams;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.WithdrawFundsInstruction;
 
 import java.util.Arrays;
+import java.util.HexFormat;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -170,6 +172,34 @@ final class PhoenixClientTests {
     assertTrue(ix.accounts().get(6).write(), "global trader index is writable");
     // exactly one signer
     assertEquals(1, ix.accounts().stream().filter(AccountMeta::signer).count());
+  }
+
+  /// `RegisterTraderParams` is `maxPositions` and `traderPreferenceBits` as two `u32`s, where the
+  /// IDL used to declare one `u64`. The expected bytes are the instruction data of a real mainnet
+  /// registration (`3iKV7GNv…`, slot 447542179), which the program accepted and logged as "Trader
+  /// registered successfully with 1 max positions". It set preference bit 0, and with any
+  /// preference bit set those eight bytes read as a single `u64` give a different number.
+  ///
+  /// That registration carries 1 in both fields, so it cannot tell them apart; the order —
+  /// `max_positions` first — is `encode_register_trader` in rise-public `rust/ix/src/register_trader.rs`,
+  /// pinned here with distinct values.
+  @Test
+  void registerTraderEncodesWhatAMainnetRegistrationSent() {
+    final byte[] mainnet = HexFormat.of().parseHex("4bf3e0a7010533200100000001000000004a");
+
+    final var ix = CLIENT.registerTrader(key(0x12), OWNER, TRADER_ACCOUNT, new RegisterTraderParams(1L, 1L, 0, 74));
+    assertArrayEquals(mainnet, ix.data());
+
+    assertArrayEquals(
+        HexFormat.of().parseHex("4bf3e0a7010533200300000002000000004a"),
+        CLIENT.registerTrader(key(0x12), OWNER, TRADER_ACCOUNT, new RegisterTraderParams(3L, 2L, 0, 74)).data(),
+        "max positions, then preference bits");
+
+    final var params = RegisterTraderParams.read(mainnet, 8);
+    assertEquals(1L, params.maxPositions());
+    assertEquals(1L, params.traderPreferenceBits());
+    assertEquals(0, params.traderPdaIndex());
+    assertEquals(74, params.traderSubaccountIndex());
   }
 
   @Test

@@ -3,11 +3,14 @@ package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.idl.clients.core.gen.RustEnum;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
+import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 public sealed interface AdminParameterUpdateKind extends RustEnum permits
@@ -24,7 +27,13 @@ public sealed interface AdminParameterUpdateKind extends RustEnum permits
   AdminParameterUpdateKind.FundingParameters,
   AdminParameterUpdateKind.MarketFees,
   AdminParameterUpdateKind.OpenInterestAdjustment,
-  AdminParameterUpdateKind.CommodityMarketState {
+  AdminParameterUpdateKind.CommodityMarketState,
+  AdminParameterUpdateKind.MaxLiquidationSize,
+  AdminParameterUpdateKind.FeatureSet,
+  AdminParameterUpdateKind.SpotCollateralConfig,
+  AdminParameterUpdateKind.RiskFactors,
+  AdminParameterUpdateKind.TraderCapOverride,
+  AdminParameterUpdateKind.TransferFeeTiers {
 
   static AdminParameterUpdateKind read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -44,6 +53,12 @@ public sealed interface AdminParameterUpdateKind extends RustEnum permits
       case 11 -> MarketFees.read(_data, i);
       case 12 -> OpenInterestAdjustment.read(_data, i);
       case 13 -> CommodityMarketState.read(_data, i);
+      case 14 -> MaxLiquidationSize.read(_data, i);
+      case 15 -> FeatureSet.read(_data, i);
+      case 16 -> SpotCollateralConfig.read(_data, i);
+      case 17 -> RiskFactors.read(_data, i);
+      case 18 -> TraderCapOverride.read(_data, i);
+      case 19 -> TransferFeeTiers.read(_data, i);
       default -> null;
     };
   }
@@ -589,6 +604,267 @@ public sealed interface AdminParameterUpdateKind extends RustEnum permits
     @Override
     public int ordinal() {
       return 13;
+    }
+  }
+
+  /// @param previous: u64
+  /// @param _new: u64
+  record MaxLiquidationSize(long previous, long _new) implements AdminParameterUpdateKind {
+
+    public static final int BYTES = 16;
+
+    public static final int PREVIOUS_OFFSET = 0;
+    public static final int _NEW_OFFSET = 8;
+
+    public static MaxLiquidationSize read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var previous = getInt64LE(_data, i);
+      i += 8;
+      final var _new = getInt64LE(_data, i);
+      return new MaxLiquidationSize(previous, _new);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + writeOrdinal(_data, _offset);
+      putInt64LE(_data, i, previous);
+      i += 8;
+      putInt64LE(_data, i, _new);
+      i += 8;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return ordinalBytes() + BYTES;
+    }
+
+    @Override
+    public int ordinal() {
+      return 14;
+    }
+  }
+
+  record FeatureSet(software.sava.idl.clients.phoenix.perpetuals.gen.types.FeatureSet previous, software.sava.idl.clients.phoenix.perpetuals.gen.types.FeatureSet _new) implements AdminParameterUpdateKind {
+
+    public static final int BYTES = 8;
+
+    public static final int PREVIOUS_OFFSET = 0;
+    public static final int _NEW_OFFSET = 4;
+
+    public static FeatureSet read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var previous = software.sava.idl.clients.phoenix.perpetuals.gen.types.FeatureSet.read(_data, i);
+      i += 4;
+      final var _new = software.sava.idl.clients.phoenix.perpetuals.gen.types.FeatureSet.read(_data, i);
+      return new FeatureSet(previous, _new);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + writeOrdinal(_data, _offset);
+      i += previous.write(_data, i);
+      i += _new.write(_data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return ordinalBytes() + BYTES;
+    }
+
+    @Override
+    public int ordinal() {
+      return 15;
+    }
+  }
+
+  /// @param assetIndex: u32
+  record SpotCollateralConfig(long assetIndex,
+                              SpotCollateralMetadata previous,
+                              SpotCollateralMetadata _new) implements AdminParameterUpdateKind {
+
+    public static final int BYTES = 644;
+
+    public static final int ASSET_INDEX_OFFSET = 0;
+    public static final int PREVIOUS_OFFSET = 4;
+    public static final int _NEW_OFFSET = 324;
+
+    public static SpotCollateralConfig read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var assetIndex = Integer.toUnsignedLong(getInt32LE(_data, i));
+      i += 4;
+      final var previous = SpotCollateralMetadata.read(_data, i);
+      i += 320;
+      final var _new = SpotCollateralMetadata.read(_data, i);
+      return new SpotCollateralConfig(assetIndex, previous, _new);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + writeOrdinal(_data, _offset);
+      putInt32LE(_data, i, (int) assetIndex);
+      i += 4;
+      i += previous.write(_data, i);
+      i += _new.write(_data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return ordinalBytes() + BYTES;
+    }
+
+    @Override
+    public int ordinal() {
+      return 16;
+    }
+  }
+
+  record RiskFactors(BasisPointsU16[] previous, BasisPointsU16[] _new) implements AdminParameterUpdateKind {
+
+    public static final int BYTES = 12;
+    public static final int PREVIOUS_LEN = 3;
+    public static final int _NEW_LEN = 3;
+
+    public static final int PREVIOUS_OFFSET = 0;
+    public static final int _NEW_OFFSET = 6;
+
+    public static RiskFactors read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var previous = new BasisPointsU16[3];
+      i += SerDeUtil.readArray(previous, BasisPointsU16::read, _data, i);
+      final var _new = new BasisPointsU16[3];
+      SerDeUtil.readArray(_new, BasisPointsU16::read, _data, i);
+      return new RiskFactors(previous, _new);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + writeOrdinal(_data, _offset);
+      i += SerDeUtil.writeArrayChecked(previous, 3, _data, i);
+      i += SerDeUtil.writeArrayChecked(_new, 3, _data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return ordinalBytes() + BYTES;
+    }
+
+    @Override
+    public int ordinal() {
+      return 17;
+    }
+  }
+
+  /// @param assetIndex: u32
+  /// @param previous: u64
+  /// @param _new: u64
+  record TraderCapOverride(PublicKey trader,
+                           long assetIndex,
+                           long previous,
+                           long _new) implements AdminParameterUpdateKind {
+
+    public static final int BYTES = 52;
+
+    public static final int TRADER_OFFSET = 0;
+    public static final int ASSET_INDEX_OFFSET = 32;
+    public static final int PREVIOUS_OFFSET = 36;
+    public static final int _NEW_OFFSET = 44;
+
+    public static TraderCapOverride read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var trader = readPubKey(_data, i);
+      i += 32;
+      final var assetIndex = Integer.toUnsignedLong(getInt32LE(_data, i));
+      i += 4;
+      final var previous = getInt64LE(_data, i);
+      i += 8;
+      final var _new = getInt64LE(_data, i);
+      return new TraderCapOverride(trader,
+                                   assetIndex,
+                                   previous,
+                                   _new);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + writeOrdinal(_data, _offset);
+      trader.write(_data, i);
+      i += 32;
+      putInt32LE(_data, i, (int) assetIndex);
+      i += 4;
+      putInt64LE(_data, i, previous);
+      i += 8;
+      putInt64LE(_data, i, _new);
+      i += 8;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return ordinalBytes() + BYTES;
+    }
+
+    @Override
+    public int ordinal() {
+      return 18;
+    }
+  }
+
+  record TransferFeeTiers(TransferFeeTier[] previous, TransferFeeTier[] _new) implements AdminParameterUpdateKind {
+
+    public static final int BYTES = 128;
+    public static final int PREVIOUS_LEN = 4;
+    public static final int _NEW_LEN = 4;
+
+    public static final int PREVIOUS_OFFSET = 0;
+    public static final int _NEW_OFFSET = 64;
+
+    public static TransferFeeTiers read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var previous = new TransferFeeTier[4];
+      i += SerDeUtil.readArray(previous, TransferFeeTier::read, _data, i);
+      final var _new = new TransferFeeTier[4];
+      SerDeUtil.readArray(_new, TransferFeeTier::read, _data, i);
+      return new TransferFeeTiers(previous, _new);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + writeOrdinal(_data, _offset);
+      i += SerDeUtil.writeArrayChecked(previous, 4, _data, i);
+      i += SerDeUtil.writeArrayChecked(_new, 4, _data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return ordinalBytes() + BYTES;
+    }
+
+    @Override
+    public int ordinal() {
+      return 19;
     }
   }
 }

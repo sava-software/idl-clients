@@ -3,21 +3,21 @@ package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 
 import software.sava.idl.clients.core.gen.SerDe;
 
-/// Bitmask flags applied to an order: bit 7 reduce-only, bit 6 stop-loss, bit 5 conditional-order, bit 4 stop-loss-direction, bit 3 clear-on-position-flip.
+/// Per-order flag bits for CondensedOrderV2: bit 0 = slide, bit 1 = reduce-only. Undefined bits are rejected.
 ///
 /// @param flags: u8
-public record OrderFlags(int flags) implements SerDe {
+public record CondensedOrderFlags(int flags) implements SerDe {
 
   public static final int BYTES = 1;
 
   public static final int FLAGS_OFFSET = 0;
 
-  public static OrderFlags read(final byte[] _data, final int _offset) {
+  public static CondensedOrderFlags read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
     final var flags = _data[_offset] & 0xFF;
-    return new OrderFlags(flags);
+    return new CondensedOrderFlags(flags);
   }
 
   @Override

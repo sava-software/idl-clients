@@ -9,15 +9,15 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
-/// Zero-copy ShortMapV2<Symbol, PerpAssetMetadata, 1024> layout.
+/// Zero-copy StableIndexedShortMap<Symbol, PerpAssetMetadata, 1024> layout.
 ///
 /// @param slotsUsed: u32
 /// @param tombstones: u32
 /// @param capacity: u64
-public record PerpAssetMetadataShortMapV2(long slotsUsed,
-                                          long tombstones,
-                                          long capacity,
-                                          PerpAssetMapEntry[] data) implements SerDe {
+public record PerpAssetMetadataStableIndexedShortMap(long slotsUsed,
+                                                     long tombstones,
+                                                     long capacity,
+                                                     PerpAssetMapEntry[] data) implements SerDe {
 
   public static final int BYTES = 1622032;
   public static final int DATA_LEN = 1024;
@@ -27,7 +27,7 @@ public record PerpAssetMetadataShortMapV2(long slotsUsed,
   public static final int CAPACITY_OFFSET = 8;
   public static final int DATA_OFFSET = 16;
 
-  public static PerpAssetMetadataShortMapV2 read(final byte[] _data, final int _offset) {
+  public static PerpAssetMetadataStableIndexedShortMap read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
@@ -40,10 +40,10 @@ public record PerpAssetMetadataShortMapV2(long slotsUsed,
     i += 8;
     final var data = new PerpAssetMapEntry[1024];
     SerDeUtil.readArray(data, PerpAssetMapEntry::read, _data, i);
-    return new PerpAssetMetadataShortMapV2(slotsUsed,
-                                           tombstones,
-                                           capacity,
-                                           data);
+    return new PerpAssetMetadataStableIndexedShortMap(slotsUsed,
+                                                      tombstones,
+                                                      capacity,
+                                                      data);
   }
 
   @Override

@@ -3,27 +3,25 @@ package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 
 import software.sava.idl.clients.core.gen.SerDe;
 
-/// Bitmask flags applied to an order: bit 7 reduce-only, bit 6 stop-loss, bit 5 conditional-order, bit 4 stop-loss-direction, bit 3 clear-on-position-flip.
-///
-/// @param flags: u8
-public record OrderFlags(int flags) implements SerDe {
+/// @param state: u8
+public record PackedAccountMeta(int state) implements SerDe {
 
   public static final int BYTES = 1;
 
-  public static final int FLAGS_OFFSET = 0;
+  public static final int STATE_OFFSET = 0;
 
-  public static OrderFlags read(final byte[] _data, final int _offset) {
+  public static PackedAccountMeta read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var flags = _data[_offset] & 0xFF;
-    return new OrderFlags(flags);
+    final var state = _data[_offset] & 0xFF;
+    return new PackedAccountMeta(state);
   }
 
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    _data[i] = (byte) flags;
+    _data[i] = (byte) state;
     ++i;
     return i - _offset;
   }

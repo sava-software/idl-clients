@@ -122,8 +122,8 @@ final class PhoenixClientWiringTests {
   void traderLifecycleBindings() {
     assertIx(
         EternalProgram.registerTrader(INVOKED, ETERNAL, LOG, CONFIG, PAYER, OWNER, TRADER_ACCOUNT,
-            SYSTEM, new RegisterTraderParams(8L, 1, 2)),
-        CLIENT.registerTrader(PAYER, OWNER, TRADER_ACCOUNT, new RegisterTraderParams(8L, 1, 2)));
+            SYSTEM, new RegisterTraderParams(8L, 1L, 1, 2)),
+        CLIENT.registerTrader(PAYER, OWNER, TRADER_ACCOUNT, new RegisterTraderParams(8L, 1L, 1, 2)));
     assertIx(
         EternalProgram.delegateTrader(INVOKED, ETERNAL, LOG, CONFIG, OWNER, TRADER_ACCOUNT, NEW_AUTHORITY),
         CLIENT.delegateTrader(OWNER, TRADER_ACCOUNT, NEW_AUTHORITY));

@@ -70,7 +70,11 @@ public sealed interface EternalEvent extends SerDe permits
     SplinePositionLimitsConfigUpdatedEvent,
     MarketTombstonedEvent,
     ShutdownClosePositionsEvent,
-    OrderResidualDiscardedEvent {
+    OrderResidualDiscardedEvent,
+    SpotCollateralDepositedEvent,
+    SpotCollateralWithdrawnEvent,
+    SpotCollateralLiquidatedEvent,
+    RestartAcknowledgedEvent {
 
   static EternalEvent read(final byte[] _data, final int _offset) {
     if (SlotContextEvent.DISCRIMINATOR.equals(_data, _offset)) {
@@ -207,6 +211,14 @@ public sealed interface EternalEvent extends SerDe permits
       return ShutdownClosePositionsEvent.read(_data, _offset);
     } else if (OrderResidualDiscardedEvent.DISCRIMINATOR.equals(_data, _offset)) {
       return OrderResidualDiscardedEvent.read(_data, _offset);
+    } else if (SpotCollateralDepositedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return SpotCollateralDepositedEvent.read(_data, _offset);
+    } else if (SpotCollateralWithdrawnEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return SpotCollateralWithdrawnEvent.read(_data, _offset);
+    } else if (SpotCollateralLiquidatedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return SpotCollateralLiquidatedEvent.read(_data, _offset);
+    } else if (RestartAcknowledgedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return RestartAcknowledgedEvent.read(_data, _offset);
     } else {
       return null;
     }

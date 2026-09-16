@@ -5,17 +5,21 @@ import software.sava.core.accounts.PublicKey;
 import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// @param traderSequenceNumber: u64
-/// @param maxPositions: u64
+/// @param maxPositions: u32
+/// @param traderPreferenceBits: u32
 /// @param traderPdaIndex: u8
 /// @param traderSubaccountIndex: u8
 public record TraderRegisteredEvent(long traderSequenceNumber,
                                     PublicKey trader,
                                     PublicKey authority,
                                     long maxPositions,
+                                    long traderPreferenceBits,
                                     int traderPdaIndex,
                                     int traderSubaccountIndex) implements SerDe {
 
@@ -25,6 +29,7 @@ public record TraderRegisteredEvent(long traderSequenceNumber,
   public static final int TRADER_OFFSET = 8;
   public static final int AUTHORITY_OFFSET = 40;
   public static final int MAX_POSITIONS_OFFSET = 72;
+  public static final int TRADER_PREFERENCE_BITS_OFFSET = 76;
   public static final int TRADER_PDA_INDEX_OFFSET = 80;
   public static final int TRADER_SUBACCOUNT_INDEX_OFFSET = 81;
 
@@ -39,8 +44,10 @@ public record TraderRegisteredEvent(long traderSequenceNumber,
     i += 32;
     final var authority = readPubKey(_data, i);
     i += 32;
-    final var maxPositions = getInt64LE(_data, i);
-    i += 8;
+    final var maxPositions = Integer.toUnsignedLong(getInt32LE(_data, i));
+    i += 4;
+    final var traderPreferenceBits = Integer.toUnsignedLong(getInt32LE(_data, i));
+    i += 4;
     final var traderPdaIndex = _data[i] & 0xFF;
     ++i;
     final var traderSubaccountIndex = _data[i] & 0xFF;
@@ -48,6 +55,7 @@ public record TraderRegisteredEvent(long traderSequenceNumber,
                                      trader,
                                      authority,
                                      maxPositions,
+                                     traderPreferenceBits,
                                      traderPdaIndex,
                                      traderSubaccountIndex);
   }
@@ -61,8 +69,10 @@ public record TraderRegisteredEvent(long traderSequenceNumber,
     i += 32;
     authority.write(_data, i);
     i += 32;
-    putInt64LE(_data, i, maxPositions);
-    i += 8;
+    putInt32LE(_data, i, (int) maxPositions);
+    i += 4;
+    putInt32LE(_data, i, (int) traderPreferenceBits);
+    i += 4;
     _data[i] = (byte) traderPdaIndex;
     ++i;
     _data[i] = (byte) traderSubaccountIndex;

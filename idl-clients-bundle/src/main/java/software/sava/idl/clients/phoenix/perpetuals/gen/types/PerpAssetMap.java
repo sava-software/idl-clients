@@ -23,7 +23,7 @@ public record PerpAssetMap(PublicKey _address,
                            SequenceNumber sequenceNumber,
                            int numAssets,
                            byte[] padding0,
-                           PerpAssetMetadataShortMapV2 metadatas) implements SerDe {
+                           PerpAssetMetadataStableIndexedShortMap metadatas) implements SerDe {
 
   public static final int BYTES = 1622064;
   public static final int PADDING_0_LEN = 6;
@@ -87,7 +87,7 @@ public record PerpAssetMap(PublicKey _address,
     i += 2;
     final var padding0 = new byte[6];
     i += SerDeUtil.readArray(padding0, _data, i);
-    final var metadatas = PerpAssetMetadataShortMapV2.read(_data, i);
+    final var metadatas = PerpAssetMetadataStableIndexedShortMap.read(_data, i);
     return new PerpAssetMap(_address,
                             discriminator,
                             sequenceNumber,

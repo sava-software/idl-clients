@@ -12,7 +12,9 @@ import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
@@ -20,13 +22,13 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param quoteDecimals: u8
 /// @param withdrawalMarginFactorBps: u16
 /// @param padding1: u64[]
+/// @param acknowledgedRestartSlot: u64
 /// @param padding2: u64[]
 /// @param padding3: u64[]
 /// @param padding4: u64[]
 /// @param padding5: u64[]
 /// @param padding6: u64[]
 /// @param padding7: u64[]
-/// @param padding8: u64[]
 public record GlobalConfiguration(PublicKey _address,
                                   Discriminator discriminator,
                                   PublicKey accountKey,
@@ -51,24 +53,23 @@ public record GlobalConfiguration(PublicKey _address,
                                   int withdrawalMarginFactorBps,
                                   byte[] padding0,
                                   long[] padding1,
+                                  long acknowledgedRestartSlot,
                                   long[] padding2,
                                   long[] padding3,
                                   long[] padding4,
                                   long[] padding5,
                                   long[] padding6,
-                                  long[] padding7,
-                                  long[] padding8) implements SerDe {
+                                  long[] padding7) implements SerDe {
 
   public static final int BYTES = 2560;
   public static final int PADDING_0_LEN = 4;
-  public static final int PADDING_1_LEN = 32;
-  public static final int PADDING_2_LEN = 32;
+  public static final int PADDING_1_LEN = 73;
+  public static final int PADDING_2_LEN = 22;
   public static final int PADDING_3_LEN = 32;
   public static final int PADDING_4_LEN = 32;
   public static final int PADDING_5_LEN = 32;
   public static final int PADDING_6_LEN = 32;
   public static final int PADDING_7_LEN = 32;
-  public static final int PADDING_8_LEN = 32;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(37, 146, 212, 210, 47, 136, 111, 20);
@@ -96,13 +97,13 @@ public record GlobalConfiguration(PublicKey _address,
   public static final int WITHDRAWAL_MARGIN_FACTOR_BPS_OFFSET = 506;
   public static final int PADDING_0_OFFSET = 508;
   public static final int PADDING_1_OFFSET = 512;
-  public static final int PADDING_2_OFFSET = 768;
-  public static final int PADDING_3_OFFSET = 1024;
-  public static final int PADDING_4_OFFSET = 1280;
-  public static final int PADDING_5_OFFSET = 1536;
-  public static final int PADDING_6_OFFSET = 1792;
-  public static final int PADDING_7_OFFSET = 2048;
-  public static final int PADDING_8_OFFSET = 2304;
+  public static final int ACKNOWLEDGED_RESTART_SLOT_OFFSET = 1096;
+  public static final int PADDING_2_OFFSET = 1104;
+  public static final int PADDING_3_OFFSET = 1280;
+  public static final int PADDING_4_OFFSET = 1536;
+  public static final int PADDING_5_OFFSET = 1792;
+  public static final int PADDING_6_OFFSET = 2048;
+  public static final int PADDING_7_OFFSET = 2304;
 
   public static Filter createAccountKeyFilter(final PublicKey accountKey) {
     return Filter.createMemCompFilter(ACCOUNT_KEY_OFFSET, accountKey);
@@ -186,6 +187,12 @@ public record GlobalConfiguration(PublicKey _address,
     return Filter.createMemCompFilter(WITHDRAWAL_MARGIN_FACTOR_BPS_OFFSET, _data);
   }
 
+  public static Filter createAcknowledgedRestartSlotFilter(final long acknowledgedRestartSlot) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, acknowledgedRestartSlot);
+    return Filter.createMemCompFilter(ACKNOWLEDGED_RESTART_SLOT_OFFSET, _data);
+  }
+
   public static GlobalConfiguration read(final byte[] _data, final int _offset) {
     return read(null, _data, _offset);
   }
@@ -262,9 +269,11 @@ public record GlobalConfiguration(PublicKey _address,
     i += 2;
     final var padding0 = new byte[4];
     i += SerDeUtil.readArray(padding0, _data, i);
-    final var padding1 = new long[32];
+    final var padding1 = new long[73];
     i += SerDeUtil.readArray(padding1, _data, i);
-    final var padding2 = new long[32];
+    final var acknowledgedRestartSlot = getInt64LE(_data, i);
+    i += 8;
+    final var padding2 = new long[22];
     i += SerDeUtil.readArray(padding2, _data, i);
     final var padding3 = new long[32];
     i += SerDeUtil.readArray(padding3, _data, i);
@@ -275,9 +284,7 @@ public record GlobalConfiguration(PublicKey _address,
     final var padding6 = new long[32];
     i += SerDeUtil.readArray(padding6, _data, i);
     final var padding7 = new long[32];
-    i += SerDeUtil.readArray(padding7, _data, i);
-    final var padding8 = new long[32];
-    SerDeUtil.readArray(padding8, _data, i);
+    SerDeUtil.readArray(padding7, _data, i);
     return new GlobalConfiguration(_address,
                                    discriminator,
                                    accountKey,
@@ -302,13 +309,13 @@ public record GlobalConfiguration(PublicKey _address,
                                    withdrawalMarginFactorBps,
                                    padding0,
                                    padding1,
+                                   acknowledgedRestartSlot,
                                    padding2,
                                    padding3,
                                    padding4,
                                    padding5,
                                    padding6,
-                                   padding7,
-                                   padding8);
+                                   padding7);
   }
 
   @Override
@@ -353,14 +360,15 @@ public record GlobalConfiguration(PublicKey _address,
     putInt16LE(_data, i, withdrawalMarginFactorBps);
     i += 2;
     i += SerDeUtil.writeArrayChecked(padding0, 4, _data, i);
-    i += SerDeUtil.writeArrayChecked(padding1, 32, _data, i);
-    i += SerDeUtil.writeArrayChecked(padding2, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding1, 73, _data, i);
+    putInt64LE(_data, i, acknowledgedRestartSlot);
+    i += 8;
+    i += SerDeUtil.writeArrayChecked(padding2, 22, _data, i);
     i += SerDeUtil.writeArrayChecked(padding3, 32, _data, i);
     i += SerDeUtil.writeArrayChecked(padding4, 32, _data, i);
     i += SerDeUtil.writeArrayChecked(padding5, 32, _data, i);
     i += SerDeUtil.writeArrayChecked(padding6, 32, _data, i);
     i += SerDeUtil.writeArrayChecked(padding7, 32, _data, i);
-    i += SerDeUtil.writeArrayChecked(padding8, 32, _data, i);
     return i - _offset;
   }
 

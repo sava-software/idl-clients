@@ -3,7 +3,7 @@ package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 
 import software.sava.idl.clients.core.gen.SerDe;
 
-/// One fixed slot in the PerpAssetMap ShortMapV2 backing array.
+/// One fixed slot in the PerpAssetMap StableIndexedShortMap backing array.
 ///
 public record PerpAssetMapEntry(Symbol key, PerpAssetMetadata value) implements SerDe {
 

@@ -343,7 +343,11 @@
       "package": "phoenix.perpetuals",
       "program": "EtrnLzgbS7nMMy5fbD42kXiUzGg8XQzJ972Xtk1cjWih",
       "idlAccountProgramOwner": "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S",
-      "idlType": "anchor"
+      "idlType": "anchor",
+      "review": {
+        "deploySlot": 447323692,
+        "verdict": "metadata IDL republished at slot 447589572 names exactly the 113 dispatched instructions; still stale upstream: Trader.maxPositions is a u64 over u32 max_positions + u32 trader_preference_bits, and GlobalConfiguration padding1 hides the native SOL collateral config"
+      }
     },
     {
       "name": "Phoenix Perpetuals Dev",
