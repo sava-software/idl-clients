@@ -7,9 +7,6 @@ nobody took. The standing disagreements live beside this file, at its name with 
 before the extension. Ordered by program and channel, and carrying no timestamp, so
 consecutive runs are worth diffing against each other.
 
-== Movement (2) ==
+== Movement (1) ==
 
-Jupiter Swap: the anchor IDL at C88XWfp26heEmDkmfSzeXP7Fd7GQJ2j9dDTUsyiZbUTa moved since the last generation: types ~2
-  types changed (2): every one type changed
-
-Phoenix Perpetuals: the program was redeployed at slot 447299234, up from 444043696, and no IDL channel moved with it (the metadata IDL was last written at slot 424405036, before the previous deploy); the stored program image changed: 3359480 payload bytes, was 3197584 — review required
+Phoenix Perpetuals: the program was redeployed at slot 447323692, up from 447299234, and no IDL channel moved with it (the metadata IDL was last written at slot 424405036, before the previous deploy); the stored program image changed: 3359480 payload bytes, was 3359480 — review required
