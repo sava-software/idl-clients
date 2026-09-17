@@ -12173,10 +12173,6 @@
         "kind": "struct",
         "fields": [
           {
-            "name": "discriminant",
-            "type": "u64"
-          },
-          {
             "name": "marketStatus",
             "type": "u8"
           },
@@ -12273,10 +12269,6 @@
         "kind": "struct",
         "fields": [
           {
-            "name": "discriminant",
-            "type": "u64"
-          },
-          {
             "name": "market",
             "type": "pubkey"
           },
@@ -12359,10 +12351,6 @@
       "type": {
         "kind": "struct",
         "fields": [
-          {
-            "name": "discriminant",
-            "type": "u64"
-          },
           {
             "name": "sequenceNumber",
             "type": {
@@ -12489,10 +12477,6 @@
       "type": {
         "kind": "struct",
         "fields": [
-          {
-            "name": "discriminant",
-            "type": "u64"
-          },
           {
             "name": "accountKey",
             "type": "pubkey"
@@ -12737,10 +12721,6 @@
         "kind": "struct",
         "fields": [
           {
-            "name": "discriminant",
-            "type": "u64"
-          },
-          {
             "name": "sequenceNumber",
             "type": {
               "defined": {
@@ -12818,10 +12798,6 @@
         "kind": "struct",
         "fields": [
           {
-            "name": "discriminant",
-            "type": "u64"
-          },
-          {
             "name": "sequenceNumber",
             "type": {
               "defined": {
@@ -12876,10 +12852,6 @@
       "type": {
         "kind": "struct",
         "fields": [
-          {
-            "name": "discriminant",
-            "type": "u64"
-          },
           {
             "name": "authority",
             "type": "pubkey"
@@ -12989,10 +12961,6 @@
         "kind": "struct",
         "fields": [
           {
-            "name": "discriminant",
-            "type": "u64"
-          },
-          {
             "name": "stopLosses",
             "type": {
               "array": [
@@ -13054,10 +13022,6 @@
         "kind": "struct",
         "fields": [
           {
-            "name": "discriminant",
-            "type": "u64"
-          },
-          {
             "name": "authority",
             "type": "pubkey"
           },
@@ -13093,10 +13057,6 @@
       "type": {
         "kind": "struct",
         "fields": [
-          {
-            "name": "discriminant",
-            "type": "u64"
-          },
           {
             "name": "traderKey",
             "type": "pubkey"
