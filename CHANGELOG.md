@@ -1,5 +1,12 @@
 # Changelog
 
+## [25.19.8](https://github.com/sava-software/idl-clients/compare/25.19.7...25.19.8) (2026-09-19)
+
+
+### Bug Fixes
+
+* **idl:** sync Phoenix Perpetuals IDL types ([22677d7](https://github.com/sava-software/idl-clients/commit/22677d7b8c6acf2c0b408110592d3f436678543f))
+
 ## [25.19.7](https://github.com/sava-software/idl-clients/compare/25.19.6...25.19.7) (2026-09-13)
 
 
