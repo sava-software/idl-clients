@@ -9,7 +9,7 @@
   "channels": {
     "vcs": {
       "origin": "https://raw.githubusercontent.com/solana-program/stake/refs/heads/main/idl.json",
-      "hash": "922b6ded844de2a7f3580b08d67222db28471df390a281df400060457d6baa5c",
+      "hash": "d91a6bcce5957dc5e629f555b049da5138cb582db2b01cdf389349b9af5332a2",
       "matchesDeployed": true,
       "verbatim": "idl.json"
     }
