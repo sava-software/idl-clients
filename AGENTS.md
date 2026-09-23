@@ -656,6 +656,13 @@ this line, and treat the engine column as that run's sample:
 | `scope` | 302/339 (89%) | 37 | 0 | 37 | 20s |
 | `clients` | 1586/1621 (97%) | 35 | 0 | 35 | 57s |
 
+Re-measured 2026-09-23 on sava-build 21.6.0 by `:hardeningCertifyAll` (the same
+PIT, ArcMutate and Jazzer versions): every population and kill count above is
+unchanged, no suite reported a new gated row, and `orca`'s one audited timeout
+still times out. That run is a certification, not a solo history-free
+observation, and the machine carried a load average near 50 from other work, so
+its engine times are not a sample.
+
 Against the 2026-08-07 table the populations read 835/635/339/1621 rather than
 830/634/337/1621. That difference cannot be split between the engine and the
 hand-written sources that changed in between — no PIT 1.25.9 observation of the
