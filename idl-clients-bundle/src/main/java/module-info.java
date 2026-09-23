@@ -80,6 +80,7 @@ module software.sava.idl.clients.bundle {
   exports software.sava.idl.clients.marinade.stake_pool;
   exports software.sava.idl.clients.metaplex.token.metadata.gen.types;
   exports software.sava.idl.clients.metaplex.token.metadata.gen;
+  exports software.sava.idl.clients.metaplex.token.metadata;
   exports software.sava.idl.clients.metaplex;
   exports software.sava.idl.clients.meteora.dlmm.gen.events;
   exports software.sava.idl.clients.meteora.dlmm.gen.types;
