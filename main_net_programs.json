@@ -199,6 +199,7 @@
       "source": "idl-clients-bundle",
       "module": "bundle",
       "package": "kamino.staging.lend",
+      "exportPackages": false,
       "program": "SLendK7ySfcEzyaFqy93gDnD3RtrpXJcnRwb6zFHJSh"
     },
     {
@@ -354,6 +355,7 @@
       "source": "idl-clients-bundle",
       "module": "bundle",
       "package": "phoenix.dev.perpetuals",
+      "exportPackages": false,
       "program": "phDEVv4w6BcfkLrLNeXr8HhhgQxnxziVGXpGPcaadMf",
       "idlAccountProgramOwner": "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S",
       "idlType": "anchor"

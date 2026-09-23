@@ -31,7 +31,9 @@ here across plugin bumps.
 
 Inside the jars, the module build scripts leave out the IDL JSON committed beside
 `gen/` (from the sources jar; the binary jar never carried it), any staged `next`
-client, the git-ignored `Integ` scratch mains, and the javadoc of generated
+client, the clients of non-mainnet deployments (`kamino.staging.lend`,
+`phoenix.dev.perpetuals`; see "Generated is not the same as published" in
+`AGENTS.md`), the git-ignored `Integ` scratch mains, and the javadoc of generated
 packages. Generated sources carry the IDL's own documentation as `///` comments,
 some 22,700 lines in the bundle against 1,100 hand-written, and that documentation
 ships in the sources jar, where IDEs read it; rendered as HTML it made the bundle's
@@ -53,9 +55,10 @@ The Usage Center defines release size as the total size of the published files, 
 sum the entries of `gradle/aggregation/build/central-portal/deployment.zip` rather
 than reading the zip's size, and add one `.asc` per artifact to its file count: the
 local bundle is unsigned. Measured 2026-09-22 on a clean checkout, a release went
-from 52.0 MB and 50 files to 15.3 MB and 40 files, 36.0 MB of it the javadoc.
+from 52.0 MB and 50 files to 13.6 MB and 40 files: 36.0 MB of the difference is
+javadoc and 1.7 MB the two non-mainnet clients.
 
-Trims considered and declined, with what each would have saved of the 15.3 MB
+Trims considered and declined, with what each would have saved of the 13.6 MB
 (compressed bytes, measured the same day), so the next packaging decision can be
 ranked against these rather than re-derived:
 

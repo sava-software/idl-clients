@@ -22,6 +22,10 @@ dependencies {
 // equal to the packages each jar carries, so an exclusion and an export cannot drift apart.
 // - A staged "next" client previews an undeployed IDL and is never exported, but an
 //   unexported package is still reachable on the class path, so the jar leaves it out.
+//   The same goes for the clients of non-mainnet deployments, which duplicate a mainnet
+//   client and exist for their channel records: main_net_programs.json declares them
+//   "exportPackages": false, and they are listed here (AGENTS.md, "Generated is not
+//   the same as published").
 // - The idl.json and channel records beside gen/ are generation provenance; the sources
 //   jar carries no JSON at all (the binary jar never did).
 // - Git-ignored Integ.java scratch mains stay out of a locally built jar, as they stay
@@ -35,6 +39,8 @@ dependencies {
 //   says where the generated documentation is.
 val unpublished = listOf(
   "**/next/gen/**",
+  "software/sava/idl/clients/kamino/staging/lend/**",
+  "software/sava/idl/clients/phoenix/dev/perpetuals/**",
 )
 tasks.jar {
   exclude(unpublished + listOf("**/Integ.class", "**/Integ\$*.class"))

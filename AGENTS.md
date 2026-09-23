@@ -349,6 +349,19 @@ staged client would exist permanently, ahead or behind. That comparison being
 docs-stripped is a generator change worth making before `generateNext` is ever
 opted into again.
 
+**Generated is not the same as published.** A client that duplicates a mainnet
+client — `kamino.staging.lend` is `kamino.lend` file for file, and
+`phoenix.dev.perpetuals` describes the dev deployment — stays in
+`main_net_programs.json` for its channel record and is generated like any other,
+but declares `"exportPackages": false`, so the generator writes no `exports` for
+it, and the bundle's `build.gradle.kts` lists its package under `unpublished`, so
+the jars leave it out. Both halves are needed: an unexported package is still
+reachable on the class path, and an exported package missing from the jar fails
+every module-path consumer at resolution. `ModuleJarAuditTests`, run by
+`moduleJarAudit` inside `check`, holds `module-info`'s exports equal to the
+packages each jar carries, so the two cannot drift apart. A new non-mainnet
+duplicate gets the same two entries.
+
 Always generate with `--report=idl-change-report.txt` and commit **both** reports one
 run writes: that file, which carries the movement this run saw, and
 `idl-change-report-gap.txt` beside it, the standing gap dashboard. A change to a
