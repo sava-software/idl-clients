@@ -27,7 +27,10 @@ Gradle module metadata, each with an `.asc` signature and the two checksums
 Central requires, `.md5` and `.sha1`: `publish-central.yml` passes
 `-PmavenCentralExcludeChecksums=sha256,sha512`, and sava-build drops the
 signature checksums itself. sava-build's default is the policy; the flag pins it
-here across plugin bumps.
+here across plugin bumps. GitHub Packages, which every tag reaches, gets each of
+those files with its `.asc`, `.sha1` and `.sha256`, uploaded by the plugin itself
+since sava-build 21.6.0, and nothing else; the registry regenerates
+`maven-metadata.xml` and serves any other checksum on request.
 
 Inside the jars, the module build scripts leave out the IDL JSON committed beside
 `gen/` (from the sources jar; the binary jar never carried it), any staged `next`

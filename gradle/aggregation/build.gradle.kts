@@ -9,12 +9,6 @@ val idlClientModules = setOf(
 
 dependencies {
   for (module in idlClientModules) {
-    nmcpAggregation(project(":$module"))
+    centralPortalAggregation(project(":$module"))
   }
-}
-
-tasks.register("publishToGitHubPackages") {
-  group = "publishing"
-  val publishTasks = idlClientModules.map { ":$it:publishMavenJavaPublicationToSavaGithubPackagesPublishRepository" }
-  dependsOn(publishTasks)
 }
