@@ -202,7 +202,8 @@ public sealed interface Swap extends RustEnum permits
   Swap.Quay,
   Swap.HumidiFiRouter,
   Swap.HumidiFiRouterV2,
-  Swap.PumpWrappedBuyV6 {
+  Swap.PumpWrappedBuyV6,
+  Swap.HyloRouter {
 
   static Swap read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -396,6 +397,7 @@ public sealed interface Swap extends RustEnum permits
       case 185 -> HumidiFiRouter.read(_data, i);
       case 186 -> HumidiFiRouterV2.read(_data, i);
       case 187 -> PumpWrappedBuyV6.read(_data, i);
+      case 188 -> HyloRouter.INSTANCE;
       default -> null;
     };
   }
@@ -3340,6 +3342,16 @@ public sealed interface Swap extends RustEnum permits
     @Override
     public int ordinal() {
       return 187;
+    }
+  }
+
+  record HyloRouter() implements EnumNone, Swap {
+
+    public static final HyloRouter INSTANCE = new HyloRouter();
+
+    @Override
+    public int ordinal() {
+      return 188;
     }
   }
 }
