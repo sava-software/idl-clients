@@ -296,7 +296,9 @@ which the generator clears before every run.
 
 It is a preview of a deploy that has not happened, so it is generated and
 readable but **never exported** from `module-info`: a dependent compiling
-against it would be committing to an interface the chain does not serve yet. It
+against it would be committing to an interface the chain does not serve yet.
+Nor is it published: an unexported package is still reachable on the class path,
+so the module build scripts leave `**/next/gen/**` out of the jar and sources jar. It
 shares no `typeRefs` or `externalTypes` with the deployed client — a shared type
 reference would resolve into another program's *deployed* package and silently
 decode the wrong bytes — and emits its own `types` subpackage. It is removed when

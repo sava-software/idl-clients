@@ -18,6 +18,66 @@ not track it. One workflow uploads both `idl-clients-spl` and
 `idl-clients-bundle` together because bundle depends on the same SPL version.
 One upload should not be assumed to count as one release against that allowance.
 
+## What an upload contains
+
+Central also limits the files and bytes an organization publishes each month,
+counting signatures and checksums as files, so an upload carries only what a
+consumer needs. Each module sends its jar, sources jar, javadoc jar, POM and
+Gradle module metadata, each with an `.asc` signature and the two checksums
+Central requires, `.md5` and `.sha1`: `publish-central.yml` passes
+`-PmavenCentralExcludeChecksums=sha256,sha512`, and sava-build drops the
+signature checksums itself. sava-build's default is the policy; the flag pins it
+here across plugin bumps.
+
+Inside the jars, the module build scripts leave out the IDL JSON committed beside
+`gen/` (from the sources jar; the binary jar never carried it), any staged `next`
+client, the git-ignored `Integ` scratch mains, and the javadoc of generated
+packages. Generated sources carry the IDL's own documentation as `///` comments,
+some 22,700 lines in the bundle against 1,100 hand-written, and that documentation
+ships in the sources jar, where IDEs read it; rendered as HTML it made the bundle's
+javadoc jar 35 MB. The javadoc jar documents the hand-written layer and the
+`core.gen` commons every consumer implements against, and says so on every page.
+`ModuleJarAuditTests`, run by the bundle's `moduleJarAudit` task inside `check`,
+holds `module-info` exports equal to what each jar carries, so a jar exclusion and
+an export cannot drift apart. The exclusions belong to the tagged source, so they
+apply only to tags cut after them, while the checksum flag belongs to the workflow
+on `main` and applies to any tag.
+
+Measure a packaging change before relying on it:
+
+```shell
+./gradlew -Pversion=25.99.0 -PmavenCentralExcludeChecksums=sha256,sha512 :aggregation:zipCentralPortalDeployment
+```
+
+The Usage Center defines release size as the total size of the published files, so
+sum the entries of `gradle/aggregation/build/central-portal/deployment.zip` rather
+than reading the zip's size, and add one `.asc` per artifact to its file count: the
+local bundle is unsigned. Measured 2026-09-22 on a clean checkout, a release went
+from 52.0 MB and 50 files to 15.3 MB and 40 files, 36.0 MB of it the javadoc.
+
+Trims considered and declined, with what each would have saved of the 15.3 MB
+(compressed bytes, measured the same day), so the next packaging decision can be
+ranked against these rather than re-derived:
+
+| declined | saves | why |
+|---|---|---|
+| an enum per program error instead of one record per error code | ~2.1 MB | a generator change and a second breaking API |
+| stripping debug attributes (`-g:source,lines`) | ~0.8 MB | stack traces and debuggers lose parameter and local names; no API cost, and ranked below the removals above on purpose |
+| `-noindex`, `-notree`, `-nohelp` | ~340 KB | search and the index go |
+| classpath-mode javadoc (no module pages) | ~250 KB | every page URL changes and the module summary goes |
+| ZIP directory entries | ~120 KB | classpath scanners rely on them |
+| deflate level 9 | ~48 KB | a re-zip step for 0.3% |
+| javadoc `legal/` notices | ~22 KB | they cover the jQuery and JDK scripts that do ship |
+| Gradle module metadata (`.module`) | ~10 KB, 8 files | variant-aware resolution for Gradle consumers |
+| merging spl into bundle | ~90 KB, 20 files | spl-only consumers would take the whole bundle |
+
+Release count is the one metric this repository does not move. Central's 90th
+percentile is 7 releases a month per organization, and the roughly 13 sava
+deployments of July 2026 (repo1.maven.org listings: sava-core 25.5.0 through
+25.8.2, and six json-iterator releases) came from tags in those repositories,
+which publish on every tag through sava-build's `publish.yml`; idl-clients reaches
+Central only by dispatch.
+
 ## Run a release
 
 1. Select an existing, published GitHub release tag and review its changes since

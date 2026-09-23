@@ -10,6 +10,54 @@ testModuleInfo {
   requires("systems.comodal.json_iterator")
 }
 
+// Published contents. Keep in sync with idl-clients-bundle/build.gradle.kts, which carries
+// the reasoning and the moduleJarAudit task that checks both modules' jars.
+val unpublished = listOf(
+  "**/next/gen/**",
+)
+tasks.jar {
+  exclude(unpublished + listOf("**/Integ.class", "**/Integ\$*.class"))
+  includeEmptyDirs = false
+}
+tasks.named<Jar>("sourcesJar") {
+  exclude(unpublished + listOf("**/*.json", "**/Integ.java"))
+  includeEmptyDirs = false
+}
+tasks.javadoc {
+  // The core.gen commons (Factory, SerDe, RustEnum, ProgramError) are the API every
+  // consumer implements against, so they stay documented; every other gen package goes.
+  exclude { element ->
+    val path = element.relativePath.pathString
+    path.contains("/gen/") && !path.startsWith("software/sava/idl/clients/core/gen/")
+  }
+  exclude("**/Integ.java")
+  // Already on the javadoc classpath, and so tracked as an input. Relative to the project
+  // directory the javadoc tool runs in, so the option does not tie the cache key to a checkout.
+  val moduleClasses = tasks.compileJava.get().destinationDirectory.get().asFile
+  val docletOptions = options as StandardJavadocDocletOptions
+  docletOptions.addStringOption(
+    "-patch-module", "software.sava.idl.clients.spl=${moduleClasses.relativeTo(projectDir).invariantSeparatorsPath}"
+  )
+  docletOptions.bottom = "Generated program packages (&hellip;gen) are documented in the sources jar, " +
+      "which carries the IDL's own documentation; only the hand-written layer and core.gen are documented here."
+  doLast {
+    val docs = (this as Javadoc).destinationDir!!
+    val elementList = docs.resolve("element-list")
+    var module = ""
+    val documented = elementList.readLines().filter { line ->
+      if (line.startsWith("module:")) {
+        module = line.removePrefix("module:")
+        true
+      } else {
+        docs.resolve(module).resolve(line.replace('.', '/')).listFiles()?.any {
+          it.name.endsWith(".html") && it.name != "package-summary.html" && it.name != "package-tree.html"
+        } == true
+      }
+    }
+    elementList.writeText(documented.joinToString("\n", postfix = "\n"))
+  }
+}
+
 hardening {
   mutation.register("spl") {
     // catch-all by exclusion, so a new hand-written class is mutated by default

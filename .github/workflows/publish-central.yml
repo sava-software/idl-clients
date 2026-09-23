@@ -93,6 +93,11 @@ jobs:
           ORG_GRADLE_PROJECT_savaGithubPackagesPassword: ${{ secrets.READ_SAVA_PACKAGES }}
         run: ./gradlew --stacktrace -Psign=true -PjavaVersion="$RELEASE_JAVA_VERSION" -Pversion="$RELEASE_TAG" check
 
+      # Central requires only .md5 and .sha1 checksums, and counts every file against
+      # the organization's monthly allowance. sava-build's default is the policy: it drops
+      # .sha256 and the checksums of .asc signatures, and .sha512 once its next release
+      # lands. Naming both here pins that across plugin bumps; the flag is additive, so
+      # it also overrides -PmavenCentralPublishAllChecksums for these two.
       - name: Upload to Maven Central
         env:
           RELEASE_JAVA_VERSION: ${{ steps.release.outputs.java-version }}
@@ -102,7 +107,7 @@ jobs:
           MAVEN_CENTRAL_SECRET: ${{ secrets.MAVEN_CENTRAL_SECRET }}
           ORG_GRADLE_PROJECT_savaGithubPackagesUsername: ${{ github.actor }}
           ORG_GRADLE_PROJECT_savaGithubPackagesPassword: ${{ secrets.READ_SAVA_PACKAGES }}
-        run: ./gradlew --stacktrace -Psign=true -PjavaVersion="$RELEASE_JAVA_VERSION" -Pversion="$RELEASE_TAG" :aggregation:publishCentralPortalDeployment
+        run: ./gradlew --stacktrace -Psign=true -PjavaVersion="$RELEASE_JAVA_VERSION" -Pversion="$RELEASE_TAG" -PmavenCentralExcludeChecksums=sha256,sha512 :aggregation:publishCentralPortalDeployment
 
       - name: Release instructions
         run: |

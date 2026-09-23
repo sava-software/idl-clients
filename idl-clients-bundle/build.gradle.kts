@@ -14,6 +14,82 @@ dependencies {
   project(":idl-clients-spl")
 }
 
+// Published contents. Maven Central counts every published file and byte against the
+// organization's monthly allowance, so a release carries only what a consumer of the
+// library needs, and GitHub Packages receives the same bytes so one version resolves
+// identically from either. Keep in sync with idl-clients-spl/build.gradle.kts;
+// ModuleJarAuditTests, run by the moduleJarAudit task below, holds module-info's exports
+// equal to the packages each jar carries, so an exclusion and an export cannot drift apart.
+// - A staged "next" client previews an undeployed IDL and is never exported, but an
+//   unexported package is still reachable on the class path, so the jar leaves it out.
+// - The idl.json and channel records beside gen/ are generation provenance; the sources
+//   jar carries no JSON at all (the binary jar never did).
+// - Git-ignored Integ.java scratch mains stay out of a locally built jar, as they stay
+//   out of the hardening recompile below; a CI release builds from a tag and has none.
+// - The javadoc jar documents the hand-written layer only. Generated sources carry the
+//   IDL's own documentation, some 22,700 /// lines here, and it ships in the sources jar,
+//   where IDEs read it; rendered as HTML it made this jar 35 MB rather than 1.3 MB. The
+//   compiled classes are patched into the module so hand-written pages still resolve
+//   generated types, element-list is pruned to the packages that have pages so a -link
+//   consumer renders generated types as text rather than dead links, and every page
+//   says where the generated documentation is.
+val unpublished = listOf(
+  "**/next/gen/**",
+)
+tasks.jar {
+  exclude(unpublished + listOf("**/Integ.class", "**/Integ\$*.class"))
+  includeEmptyDirs = false
+}
+tasks.named<Jar>("sourcesJar") {
+  exclude(unpublished + listOf("**/*.json", "**/Integ.java"))
+  includeEmptyDirs = false
+}
+tasks.javadoc {
+  exclude("**/gen/**", "**/Integ.java")
+  // Already on the javadoc classpath, and so tracked as an input. Relative to the project
+  // directory the javadoc tool runs in, so the option does not tie the cache key to a checkout.
+  val moduleClasses = tasks.compileJava.get().destinationDirectory.get().asFile
+  val docletOptions = options as StandardJavadocDocletOptions
+  docletOptions.addStringOption(
+    "-patch-module", "software.sava.idl.clients.bundle=${moduleClasses.relativeTo(projectDir).invariantSeparatorsPath}"
+  )
+  docletOptions.bottom = "Generated program packages (&hellip;gen) are documented in the sources jar, " +
+      "which carries the IDL's own documentation; only the hand-written layer is documented here."
+  doLast {
+    val docs = (this as Javadoc).destinationDir!!
+    val elementList = docs.resolve("element-list")
+    var module = ""
+    val documented = elementList.readLines().filter { line ->
+      if (line.startsWith("module:")) {
+        module = line.removePrefix("module:")
+        true
+      } else {
+        docs.resolve(module).resolve(line.replace('.', '/')).listFiles()?.any {
+          it.name.endsWith(".html") && it.name != "package-summary.html" && it.name != "package-tree.html"
+        } == true
+      }
+    }
+    elementList.writeText(documented.joinToString("\n", postfix = "\n"))
+  }
+}
+
+// Nothing else in the build loads the bundle's own jar, and spl's is loaded only as a
+// dependency; ModuleJarAuditTests says what a mismatch costs a consumer.
+val moduleJarAudit = tasks.register<Test>("moduleJarAudit") {
+  group = "verification"
+  description = "Checks that module-info exports exactly the packages each published jar carries"
+  val jars = files(tasks.jar.flatMap { it.archiveFile }, configurations.runtimeClasspath).filter {
+    it.name.startsWith("idl-clients-")
+  }
+  inputs.files(jars)
+  testClassesDirs = sourceSets.test.get().output.classesDirs
+  classpath = sourceSets.test.get().runtimeClasspath
+  useJUnitPlatform()
+  filter { includeTestsMatching("software.sava.idl.clients.ModuleJarAuditTests") }
+  jvmArgumentProviders.add(CommandLineArgumentProvider { listOf("-Dsava.moduleJars=" + jars.joinToString(",")) })
+}
+tasks.check { dependsOn(moduleJarAudit) }
+
 hardening {
   // Ignored live-RPC scratch drivers stay available to the normal local compile,
   // but must not enter the PIT/Jazzer recompile or its production-class audit.
