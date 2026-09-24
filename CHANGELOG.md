@@ -1,5 +1,22 @@
 # Changelog
 
+## [25.19.8](https://github.com/sava-software/idl-clients/compare/25.19.7...25.19.8) (2026-09-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* **kamino,phoenix:** the packages software.sava.idl.clients.kamino.staging.lend.gen, .gen.types and .gen.events, and software.sava.idl.clients.phoenix.dev.perpetuals.gen, .gen.types and .gen.events are gone. Import kamino.lend in place of kamino.staging.lend, and phoenix.perpetuals in place of phoenix.dev.perpetuals. Every instruction of the dev client exists there with the same discriminator, and 77 of its 81 builders and readers are identical; closeMatchedPositions takes a further maybePermissionAccount, and forceCancelRiskIncreasing and forceCancelAfterHours a further authority, as the mainnet IDL declares them. Of its types, UpdateSplineParametersParams is now UpdateSplineParametersParamsWithOrdering and PerpAssetMetadataShortMapV2 is PerpAssetMetadataStableIndexedShortMap, and GlobalConfiguration, RegisterTraderParams, MarketEvent, OrderFlags, PerpAssetMap, PerpAssetMapEntry, AdminParameterUpdateKind, TraderRegisteredEvent and 48 event records carry the mainnet IDL's newer layout (GlobalConfiguration gains acknowledgedRestartSlot; maxPositions in RegisterTraderParams is a u32 followed by traderPreferenceBits). The staging and dev programs stay reachable through the same clients: pass SLendK7ySfcEzyaFqy93gDnD3RtrpXJcnRwb6zFHJSh to KaminoAccounts.createAccounts and phDEVv4w6BcfkLrLNeXr8HhhgQxnxziVGXpGPcaadMf to PhoenixAccounts.createAccounts, which is where the program key was always taken from. The dev program's own IDL was not republished after its 2026-09-15 redeploy, so which of those layouts the dev binary reads is not something this library can vouch for either way.
+
+### Bug Fixes
+
+* **gradle:** update Gradle wrapper to v9.8.0 and improve script error handling ([73c957b](https://github.com/sava-software/idl-clients/commit/73c957b196970e3bb95307d6d7a9b0ccc7080cbb))
+* **idl:** sync Jupiter Swap IDL. ([6b0d565](https://github.com/sava-software/idl-clients/commit/6b0d565963ecc2ef3dd4140b6cd3dcc45de8a422))
+* **idl:** sync Phoenix Perpetuals IDL types ([22677d7](https://github.com/sava-software/idl-clients/commit/22677d7b8c6acf2c0b408110592d3f436678543f))
+* **idl:** sync Stake and Phoenix Perpetuals dev IDLs for redeployments ([7ea656f](https://github.com/sava-software/idl-clients/commit/7ea656f3993f286289aa0367cfc6388ed3449e1d))
+* **kamino,phoenix:** stop publishing the Lend staging and Perpetuals dev clients ([49bb39c](https://github.com/sava-software/idl-clients/commit/49bb39c15b382ce8f8a7ff7b84c6e70863f32166))
+* **metaplex:** export the package holding TokenMetadataRemainingAccounts ([48afa8c](https://github.com/sava-software/idl-clients/commit/48afa8c9a8d60df709310109528771e5ef071434))
+* **publish:** document only the hand-written layer in the javadoc jar, and drop IDL JSON from the sources jar ([37a14ef](https://github.com/sava-software/idl-clients/commit/37a14ef22db972b85af3a4b63539dabc025f42b7))
+
 ## [25.19.7](https://github.com/sava-software/idl-clients/compare/25.19.6...25.19.7) (2026-09-13)
 
 
