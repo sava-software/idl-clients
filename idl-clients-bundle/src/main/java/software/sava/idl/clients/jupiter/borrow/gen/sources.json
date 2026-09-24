@@ -1,15 +1,15 @@
 {
   "program": "jupr81YtYssSyPt8jbnGuiWon5f6x9TcDEFxYe3Bdzi",
   "deployed": "vcs",
-  "lastDeploySlot": 433245735,
+  "lastDeploySlot": 449989995,
   "programDataState": "upgradeable",
   "programDataStateSlot": 440077852,
-  "programDataPayloadSha256": "3d1003f482d28c6f4581da39004700e594538a00236293eecc68cec2e403e0a5",
+  "programDataPayloadSha256": "2f2d6f759197ce02f27e4397a6674f18919bfb3c6704de19c308be6c8c415612",
   "programDataPayloadLength": 2187996,
   "channels": {
     "vcs": {
       "origin": "https://raw.githubusercontent.com/jup-ag/jupiter-lend/refs/heads/main/target/idl/vaults.json",
-      "hash": "281333b51f45936fd62952472b864101a67ecdf547b79d5e1869b16f6308649b",
+      "hash": "27c55c97c94dd3b60cb6c2e9f85b166cc1d126898d2a8abb949db58cbc5ce834",
       "matchesDeployed": true,
       "verbatim": "idl.json"
     }
