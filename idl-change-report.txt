@@ -7,9 +7,6 @@ nobody took. The standing disagreements live beside this file, at its name with 
 before the extension. Ordered by program and channel, and carrying no timestamp, so
 consecutive runs are worth diffing against each other.
 
-== Movement (2) ==
+== Movement (0) ==
 
-Jupiter Borrow: the program was redeployed at slot 449989995, up from 433245735; the stored program image changed: 2187996 payload bytes, was 2187996 — review required
-
-Jupiter Borrow: the vcs IDL at https://raw.githubusercontent.com/jup-ag/jupiter-lend/refs/heads/main/target/idl/vaults.json moved since the last generation, 281333b51f45936fd62952472b864101a67ecdf547b79d5e1869b16f6308649b -> 27c55c97c94dd3b60cb6c2e9f85b166cc1d126898d2a8abb949db58cbc5ce834: types ~1; version 0.1.5 -> 0.1.8
-  types changed (1): SourceType
+Nothing moved since the last generation.
