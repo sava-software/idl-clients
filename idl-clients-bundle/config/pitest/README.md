@@ -788,14 +788,17 @@ program was checked rather than assumed: the IDL pins
 `MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr` and `solanaAccounts.memoProgramV2()`
 is that address, so v2-vs-v1 is correct.
 
-One structural surprise worth recording: the **published IDL declares
-`whirlpool_program` as a trailing account on all 66 instructions, and the repo's
-Rust declares it on none.** Verified against the live on-chain IDL account, not
-just our stored copy. Versions match (0.9.0 both, repo HEAD 2026-07-15), so this
-is not staleness — the published IDL simply does not correspond 1:1 to the
-repo's `#[derive(Accounts)]`. Our client follows the IDL, which is what every
-other Orca client does too. Normalise this away before reading an Orca diff or
-it swamps the real signal.
+One structural surprise worth recording, together with the wrong conclusion it
+was given at the time: the **anchor IDL account declares `whirlpool_program` as
+a trailing account on all 66 instructions, and the repo's Rust declares it on
+none.** It was "verified against the live on-chain IDL account" — the account the
+client was generated from, so the check was circular. The program-metadata PDA
+and Orca's own SDK copy carry no such account, Orca's generated TypeScript client
+passes none, and the Rust never has. Nor was it noise: it arrived as the first
+remaining account and shifted every transfer-hook and supplemental-tick-array
+slice on the nine V2 instructions that take `remaining_accounts_info` by one. Since
+2026-09-26 the client is generated from the metadata channel
+(`"deployed": "metadata"`) and the diff is clean with no normalisation.
 
 **Meteora — cannot be ground-truthed at all.** `dlmm-sdk` contains only
 `commons` (math) and `cli`; there is no `programs/` directory, and

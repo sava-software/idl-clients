@@ -189,12 +189,23 @@ program address we actually call. An IDL committed to a repo or SDK carries the
 opposite risk: the default branch may describe code that is **not yet deployed**,
 which breaks the client just as quietly because it still compiles.
 
-Two traps are worth carrying around even when you are not investigating:
+Three traps are worth carrying around even when you are not investigating:
 
 - **"The on-chain IDL agrees with our generated code" proves nothing.** It shows
   our code matches *the IDL* — a separate account that a deploy does not update.
 - **A repo under a different org may still be the program's home.** Teams
   rebrand; treat provenance as a question to answer, not a disqualifier.
+- **There are two on-chain accounts, and the default is the anchor one.** A
+  program declaring none of `deployed`, `syncIdl`, `idlURL`, `idlFile` or
+  `idlAccountProgramOwner` is generated from the anchor IDL account, and
+  `syncIdl` chooses between the two by last-write slot; neither rule reads
+  content. Orca's anchor account (last written 2026-02-22) declares a trailing
+  `whirlpool_program` on all 66 instructions that its metadata PDA
+  (2026-02-13), its SDK copy and its Rust all lack, so both rules chose it, and
+  the client generated from it passed that account as the first remaining
+  account from 2026-05-20 to 2026-09-26. When the two on-chain channels
+  disagree on *accounts*, read both against the Rust and declare `"deployed"` —
+  Marginfi and Orca both do.
 
 The program can be asked directly, by simulating an instruction and reading the
 dispatch error. There is no tool for it: `tools/idl_probe.py` did this and was

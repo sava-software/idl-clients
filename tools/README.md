@@ -76,7 +76,7 @@ java tools/GroundTruth.java shank  <instructions.rs> <Program.java>
 
 # per-program normalisations, see the class doc
 --strip-suffix=Context            # CCTP names its structs AcceptOwnershipContext
---drop-trailing=whirlpoolProgram  # Orca's IDL adds an account its Rust has not
+--drop-trailing=<name>            # a published IDL appends an account its Rust lacks
 ```
 
 **Read the output critically.** Most differences it reports are artifacts, and
@@ -92,7 +92,7 @@ reference clones as they stood that day:
 |---|---|
 | Squads v4 | `compared 23 match 23` |
 | CCTP Message Transmitter V2 (`--strip-suffix=Context`) | `compared 15 match 15` |
-| Orca Whirlpools (`--drop-trailing=whirlpoolProgram`) | `compared 61 match 61` |
+| Orca Whirlpools | `compared 61 match 61` — measured with `--drop-trailing=whirlpoolProgram` against the anchor-account client; re-measured 2026-09-26 with no flag against the metadata-channel client, same output |
 | Pyth Solana Receiver | `compared 7 match 7` |
 | Metaplex Token Metadata (shank) | `compared 58 match 58` |
 | Solana Attestation Service (shank) | `compared 12 match 12` |

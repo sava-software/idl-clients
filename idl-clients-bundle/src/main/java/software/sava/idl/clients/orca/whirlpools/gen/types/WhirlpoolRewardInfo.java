@@ -11,23 +11,6 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 
-/// Stores the state relevant for tracking liquidity mining rewards at the `Whirlpool` level.
-/// These values are used in conjunction with `PositionRewardInfo`, `Tick.reward_growths_outside`,
-/// and `Whirlpool.reward_last_updated_timestamp` to determine how many rewards are earned by open
-/// positions.
-///
-/// @param mint Reward token mint.
-/// @param vault Reward vault token account.
-/// @param extension reward_infos0: Authority account that has permission to initialize the reward and set emissions.
-///                  reward_infos1: used for a struct that contains fields for extending the functionality of Whirlpool.
-///                  reward_infos2: reserved for future use.
-///
-///                  Historical notes:
-///                  Originally, this was a field named "authority", but it was found that there was no opportunity
-///                  to set different authorities for the three rewards. Therefore, the use of this field was changed for Whirlpool's future extensibility.
-/// @param emissionsPerSecondX64 Q64.64 number that indicates how many tokens per second are earned per unit of liquidity.
-/// @param growthGlobalX64 Q64.64 number that tracks the total tokens earned per unit of liquidity since the reward
-///                        emissions were turned on.
 public record WhirlpoolRewardInfo(PublicKey mint,
                                   PublicKey vault,
                                   byte[] extension,

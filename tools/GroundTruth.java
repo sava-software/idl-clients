@@ -52,7 +52,8 @@ final class GroundTruth {
       WHAT THIS IS NOT
       An oracle. It is an *assistive* diff: every reported difference needs triage,
       and in practice most are artifacts. Read docs/PROGRAM_VERIFICATION.md before
-      acting on output. The recurring traps, all of which have produced false alarms:
+      acting on output. The recurring traps; most produce false alarms, and one
+      (Orca's) hid a real defect:
 
         * Auto-wired accounts. The client resolves well-known programs and sysvars
           internally instead of taking them as parameters, so `rent` reads as
@@ -66,9 +67,13 @@ final class GroundTruth {
           (`AcceptOwnershipContext` -> `acceptOwnership`); `--strip-suffix` handles
           that shape. A run reporting "compared 0" is a failure to compare, not a
           pass, so the compared count is always printed.
-        * Published IDLs that do not match the repo. Orca's IDL declares a trailing
-          `whirlpool_program` on all 66 instructions and its Rust declares it on none.
-          Verify against the on-chain IDL before treating that as a defect.
+        * Published IDLs that do not match the repo. Orca's anchor IDL account declares
+          a trailing `whirlpool_program` on all 66 instructions that its Rust, its
+          program-metadata IDL and its SDK copy all lack; the client was generated from
+          it until 2026-09-26 and shipped that account into `remaining_accounts`. A
+          trailing account the Rust does not declare is a finding; `--drop-trailing` is
+          licensed only by the Rust showing the deployed handlers never read past their
+          declared accounts, never by the other channels agreeing.
       """;
 
   /// UTF-8 explicitly: the report pads with an em dash, and a JVM started under a
@@ -665,9 +670,11 @@ final class GroundTruth {
 
     var java = javaBuilders(javaPath);
     if (dropTrailing != null) {
-      // Some published IDLs append an account the repo's Rust never declares — Orca adds
-      // `whirlpool_program` to all 66 instructions. Verify against the on-chain IDL first,
-      // then normalise it away so it does not swamp the diff.
+      // Some published IDLs append an account the repo's Rust never declares — Orca's anchor
+      // IDL account adds `whirlpool_program` to all 66 instructions, and a client generated
+      // from it put that account into `remaining_accounts`. Normalise only once the Rust shows
+      // the handlers never read past their declared accounts, so an account already
+      // established as inert does not swamp the diff.
       final var want = core(dropTrailing);
       final var trimmed = new LinkedHashMap<String, List<String>>();
       java.forEach((k, v) -> trimmed.put(k,

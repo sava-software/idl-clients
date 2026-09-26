@@ -486,10 +486,20 @@ time:
 - **`compared 0` is a failure to compare, not a pass.** CCTP suffixes its
   structs `Context`; use `--strip-suffix=Context`. The compared count is always
   printed for this reason.
-- **A published IDL may not match the repo.** Orca's IDL declares a trailing
-  `whirlpool_program` on all 66 instructions and its Rust declares it on none —
-  verified against the live on-chain IDL, versions matching, so it is not
-  staleness. Use `--drop-trailing=whirlpoolProgram`.
+- **A published IDL may not match the repo — and a trailing account the Rust
+  lacks is a finding, not an artifact.** Orca's *anchor* IDL account declares a
+  trailing `whirlpool_program` on all 66 instructions; its Rust has never
+  declared it (full history), and neither the program-metadata PDA nor the SDK
+  copy carries it. The client was generated from that account until 2026-09-26,
+  "verified against the live on-chain IDL" — the same account, so the check was
+  circular — and the account arrived as the first remaining account, shifting
+  every transfer-hook and supplemental-tick-array slice on the nine V2
+  instructions that take `remaining_accounts_info` by one. The config now
+  declares `"deployed": "metadata"` and the diff needs no normalisation
+  (`compared 61 match 61`). `--drop-trailing=<name>` stays for the next program
+  that publishes such an account, but only the Rust can license it: normalise
+  after showing that the deployed handlers never read past their declared
+  accounts, never because the other channels agree.
 
 ### Anchor specifics
 

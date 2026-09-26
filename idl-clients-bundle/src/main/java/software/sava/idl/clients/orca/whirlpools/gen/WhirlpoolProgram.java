@@ -44,46 +44,20 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator CLOSE_BUNDLED_POSITION_DISCRIMINATOR = toDiscriminator(41, 36, 216, 245, 27, 85, 103, 67);
 
-  /// Close a bundled position in a Whirlpool.
-  ///
-  /// ### Authority
-  /// - `position_bundle_authority` - authority that owns the token corresponding to this desired position bundle.
-  ///
-  /// ### Parameters
-  /// - `bundle_index` - The bundle index that we'd like to close.
-  ///
-  /// #### Special Errors
-  /// - `InvalidBundleIndex` - If the provided bundle index is out of bounds.
-  /// - `ClosePositionNotEmpty` - The provided position account is not empty.
-  ///
   public static List<AccountMeta> closeBundledPositionKeys(final PublicKey bundledPositionKey,
                                                            final PublicKey positionBundleKey,
                                                            final PublicKey positionBundleTokenAccountKey,
                                                            final PublicKey positionBundleAuthorityKey,
-                                                           final PublicKey receiverKey,
-                                                           final PublicKey whirlpoolProgramKey) {
+                                                           final PublicKey receiverKey) {
     return List.of(
       createWrite(bundledPositionKey),
       createWrite(positionBundleKey),
       createRead(positionBundleTokenAccountKey),
       createReadOnlySigner(positionBundleAuthorityKey),
-      createWrite(receiverKey),
-      createRead(whirlpoolProgramKey)
+      createWrite(receiverKey)
     );
   }
 
-  /// Close a bundled position in a Whirlpool.
-  ///
-  /// ### Authority
-  /// - `position_bundle_authority` - authority that owns the token corresponding to this desired position bundle.
-  ///
-  /// ### Parameters
-  /// - `bundle_index` - The bundle index that we'd like to close.
-  ///
-  /// #### Special Errors
-  /// - `InvalidBundleIndex` - If the provided bundle index is out of bounds.
-  /// - `ClosePositionNotEmpty` - The provided position account is not empty.
-  ///
   /// @param bundleIndex: u16
   public static Instruction closeBundledPosition(final AccountMeta invokedWhirlpoolProgramMeta,
                                                  final PublicKey bundledPositionKey,
@@ -91,31 +65,17 @@ public final class WhirlpoolProgram {
                                                  final PublicKey positionBundleTokenAccountKey,
                                                  final PublicKey positionBundleAuthorityKey,
                                                  final PublicKey receiverKey,
-                                                 final PublicKey whirlpoolProgramKey,
                                                  final int bundleIndex) {
     final var keys = closeBundledPositionKeys(
       bundledPositionKey,
       positionBundleKey,
       positionBundleTokenAccountKey,
       positionBundleAuthorityKey,
-      receiverKey,
-      whirlpoolProgramKey
+      receiverKey
     );
     return closeBundledPosition(invokedWhirlpoolProgramMeta, keys, bundleIndex);
   }
 
-  /// Close a bundled position in a Whirlpool.
-  ///
-  /// ### Authority
-  /// - `position_bundle_authority` - authority that owns the token corresponding to this desired position bundle.
-  ///
-  /// ### Parameters
-  /// - `bundle_index` - The bundle index that we'd like to close.
-  ///
-  /// #### Special Errors
-  /// - `InvalidBundleIndex` - If the provided bundle index is out of bounds.
-  /// - `ClosePositionNotEmpty` - The provided position account is not empty.
-  ///
   /// @param bundleIndex: u16
   public static Instruction closeBundledPosition(final AccountMeta invokedWhirlpoolProgramMeta,
                                                  final List<AccountMeta> keys,
@@ -164,68 +124,40 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator CLOSE_POSITION_DISCRIMINATOR = toDiscriminator(123, 134, 81, 0, 49, 68, 98, 98);
 
-  /// Close a position in a Whirlpool. Burns the position token in the owner's wallet.
-  ///
-  /// ### Authority
-  /// - "position_authority" - The authority that owns the position token.
-  ///
-  /// #### Special Errors
-  /// - `ClosePositionNotEmpty` - The provided position account is not empty.
-  ///
   public static List<AccountMeta> closePositionKeys(final PublicKey positionAuthorityKey,
                                                     final PublicKey receiverKey,
                                                     final PublicKey positionKey,
                                                     final PublicKey positionMintKey,
                                                     final PublicKey positionTokenAccountKey,
-                                                    final PublicKey tokenProgramKey,
-                                                    final PublicKey whirlpoolProgramKey) {
+                                                    final PublicKey tokenProgramKey) {
     return List.of(
       createReadOnlySigner(positionAuthorityKey),
       createWrite(receiverKey),
       createWrite(positionKey),
       createWrite(positionMintKey),
       createWrite(positionTokenAccountKey),
-      createRead(tokenProgramKey),
-      createRead(whirlpoolProgramKey)
+      createRead(tokenProgramKey)
     );
   }
 
-  /// Close a position in a Whirlpool. Burns the position token in the owner's wallet.
-  ///
-  /// ### Authority
-  /// - "position_authority" - The authority that owns the position token.
-  ///
-  /// #### Special Errors
-  /// - `ClosePositionNotEmpty` - The provided position account is not empty.
-  ///
   public static Instruction closePosition(final AccountMeta invokedWhirlpoolProgramMeta,
                                           final PublicKey positionAuthorityKey,
                                           final PublicKey receiverKey,
                                           final PublicKey positionKey,
                                           final PublicKey positionMintKey,
                                           final PublicKey positionTokenAccountKey,
-                                          final PublicKey tokenProgramKey,
-                                          final PublicKey whirlpoolProgramKey) {
+                                          final PublicKey tokenProgramKey) {
     final var keys = closePositionKeys(
       positionAuthorityKey,
       receiverKey,
       positionKey,
       positionMintKey,
       positionTokenAccountKey,
-      tokenProgramKey,
-      whirlpoolProgramKey
+      tokenProgramKey
     );
     return closePosition(invokedWhirlpoolProgramMeta, keys);
   }
 
-  /// Close a position in a Whirlpool. Burns the position token in the owner's wallet.
-  ///
-  /// ### Authority
-  /// - "position_authority" - The authority that owns the position token.
-  ///
-  /// #### Special Errors
-  /// - `ClosePositionNotEmpty` - The provided position account is not empty.
-  ///
   public static Instruction closePosition(final AccountMeta invokedWhirlpoolProgramMeta,
                                           final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, CLOSE_POSITION_DISCRIMINATOR);
@@ -233,71 +165,40 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator CLOSE_POSITION_WITH_TOKEN_EXTENSIONS_DISCRIMINATOR = toDiscriminator(1, 182, 135, 59, 155, 25, 99, 223);
 
-  /// Close a position in a Whirlpool. Burns the position token in the owner's wallet.
-  /// Mint and TokenAccount are based on Token-2022. And Mint accout will be also closed.
-  ///
-  /// ### Authority
-  /// - "position_authority" - The authority that owns the position token.
-  ///
-  /// #### Special Errors
-  /// - `ClosePositionNotEmpty` - The provided position account is not empty.
-  ///
   public static List<AccountMeta> closePositionWithTokenExtensionsKeys(final PublicKey positionAuthorityKey,
                                                                        final PublicKey receiverKey,
                                                                        final PublicKey positionKey,
                                                                        final PublicKey positionMintKey,
                                                                        final PublicKey positionTokenAccountKey,
-                                                                       final PublicKey token2022ProgramKey,
-                                                                       final PublicKey whirlpoolProgramKey) {
+                                                                       final PublicKey token2022ProgramKey) {
     return List.of(
       createReadOnlySigner(positionAuthorityKey),
       createWrite(receiverKey),
       createWrite(positionKey),
       createWrite(positionMintKey),
       createWrite(positionTokenAccountKey),
-      createRead(token2022ProgramKey),
-      createRead(whirlpoolProgramKey)
+      createRead(token2022ProgramKey)
     );
   }
 
-  /// Close a position in a Whirlpool. Burns the position token in the owner's wallet.
-  /// Mint and TokenAccount are based on Token-2022. And Mint accout will be also closed.
-  ///
-  /// ### Authority
-  /// - "position_authority" - The authority that owns the position token.
-  ///
-  /// #### Special Errors
-  /// - `ClosePositionNotEmpty` - The provided position account is not empty.
-  ///
   public static Instruction closePositionWithTokenExtensions(final AccountMeta invokedWhirlpoolProgramMeta,
                                                              final PublicKey positionAuthorityKey,
                                                              final PublicKey receiverKey,
                                                              final PublicKey positionKey,
                                                              final PublicKey positionMintKey,
                                                              final PublicKey positionTokenAccountKey,
-                                                             final PublicKey token2022ProgramKey,
-                                                             final PublicKey whirlpoolProgramKey) {
+                                                             final PublicKey token2022ProgramKey) {
     final var keys = closePositionWithTokenExtensionsKeys(
       positionAuthorityKey,
       receiverKey,
       positionKey,
       positionMintKey,
       positionTokenAccountKey,
-      token2022ProgramKey,
-      whirlpoolProgramKey
+      token2022ProgramKey
     );
     return closePositionWithTokenExtensions(invokedWhirlpoolProgramMeta, keys);
   }
 
-  /// Close a position in a Whirlpool. Burns the position token in the owner's wallet.
-  /// Mint and TokenAccount are based on Token-2022. And Mint accout will be also closed.
-  ///
-  /// ### Authority
-  /// - "position_authority" - The authority that owns the position token.
-  ///
-  /// #### Special Errors
-  /// - `ClosePositionNotEmpty` - The provided position account is not empty.
-  ///
   public static Instruction closePositionWithTokenExtensions(final AccountMeta invokedWhirlpoolProgramMeta,
                                                              final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, CLOSE_POSITION_WITH_TOKEN_EXTENSIONS_DISCRIMINATOR);
@@ -305,11 +206,6 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator COLLECT_FEES_DISCRIMINATOR = toDiscriminator(164, 152, 207, 99, 30, 186, 19, 182);
 
-  /// Collect fees accrued for this position.
-  ///
-  /// ### Authority
-  /// - `position_authority` - authority that owns the token corresponding to this desired position.
-  ///
   public static List<AccountMeta> collectFeesKeys(final PublicKey whirlpoolKey,
                                                   final PublicKey positionAuthorityKey,
                                                   final PublicKey positionKey,
@@ -318,8 +214,7 @@ public final class WhirlpoolProgram {
                                                   final PublicKey tokenVaultAKey,
                                                   final PublicKey tokenOwnerAccountBKey,
                                                   final PublicKey tokenVaultBKey,
-                                                  final PublicKey tokenProgramKey,
-                                                  final PublicKey whirlpoolProgramKey) {
+                                                  final PublicKey tokenProgramKey) {
     return List.of(
       createRead(whirlpoolKey),
       createReadOnlySigner(positionAuthorityKey),
@@ -329,16 +224,10 @@ public final class WhirlpoolProgram {
       createWrite(tokenVaultAKey),
       createWrite(tokenOwnerAccountBKey),
       createWrite(tokenVaultBKey),
-      createRead(tokenProgramKey),
-      createRead(whirlpoolProgramKey)
+      createRead(tokenProgramKey)
     );
   }
 
-  /// Collect fees accrued for this position.
-  ///
-  /// ### Authority
-  /// - `position_authority` - authority that owns the token corresponding to this desired position.
-  ///
   public static Instruction collectFees(final AccountMeta invokedWhirlpoolProgramMeta,
                                         final PublicKey whirlpoolKey,
                                         final PublicKey positionAuthorityKey,
@@ -348,8 +237,7 @@ public final class WhirlpoolProgram {
                                         final PublicKey tokenVaultAKey,
                                         final PublicKey tokenOwnerAccountBKey,
                                         final PublicKey tokenVaultBKey,
-                                        final PublicKey tokenProgramKey,
-                                        final PublicKey whirlpoolProgramKey) {
+                                        final PublicKey tokenProgramKey) {
     final var keys = collectFeesKeys(
       whirlpoolKey,
       positionAuthorityKey,
@@ -359,17 +247,11 @@ public final class WhirlpoolProgram {
       tokenVaultAKey,
       tokenOwnerAccountBKey,
       tokenVaultBKey,
-      tokenProgramKey,
-      whirlpoolProgramKey
+      tokenProgramKey
     );
     return collectFees(invokedWhirlpoolProgramMeta, keys);
   }
 
-  /// Collect fees accrued for this position.
-  ///
-  /// ### Authority
-  /// - `position_authority` - authority that owns the token corresponding to this desired position.
-  ///
   public static Instruction collectFees(final AccountMeta invokedWhirlpoolProgramMeta,
                                         final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, COLLECT_FEES_DISCRIMINATOR);
@@ -377,12 +259,6 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator COLLECT_FEES_V_2_DISCRIMINATOR = toDiscriminator(207, 117, 95, 191, 229, 180, 226, 15);
 
-  /// Collect fees accrued for this position.
-  /// This instruction works with both Token and Token-2022.
-  ///
-  /// ### Authority
-  /// - `position_authority` - authority that owns the token corresponding to this desired position.
-  ///
   public static List<AccountMeta> collectFeesV2Keys(final SolanaAccounts solanaAccounts,
                                                     final PublicKey whirlpoolKey,
                                                     final PublicKey positionAuthorityKey,
@@ -395,8 +271,7 @@ public final class WhirlpoolProgram {
                                                     final PublicKey tokenOwnerAccountBKey,
                                                     final PublicKey tokenVaultBKey,
                                                     final PublicKey tokenProgramAKey,
-                                                    final PublicKey tokenProgramBKey,
-                                                    final PublicKey whirlpoolProgramKey) {
+                                                    final PublicKey tokenProgramBKey) {
     return List.of(
       createRead(whirlpoolKey),
       createReadOnlySigner(positionAuthorityKey),
@@ -410,17 +285,10 @@ public final class WhirlpoolProgram {
       createWrite(tokenVaultBKey),
       createRead(tokenProgramAKey),
       createRead(tokenProgramBKey),
-      createRead(solanaAccounts.memoProgramV2()),
-      createRead(whirlpoolProgramKey)
+      createRead(solanaAccounts.memoProgramV2())
     );
   }
 
-  /// Collect fees accrued for this position.
-  /// This instruction works with both Token and Token-2022.
-  ///
-  /// ### Authority
-  /// - `position_authority` - authority that owns the token corresponding to this desired position.
-  ///
   public static Instruction collectFeesV2(final AccountMeta invokedWhirlpoolProgramMeta,
                                           final SolanaAccounts solanaAccounts,
                                           final PublicKey whirlpoolKey,
@@ -435,7 +303,6 @@ public final class WhirlpoolProgram {
                                           final PublicKey tokenVaultBKey,
                                           final PublicKey tokenProgramAKey,
                                           final PublicKey tokenProgramBKey,
-                                          final PublicKey whirlpoolProgramKey,
                                           final RemainingAccountsInfo remainingAccountsInfo) {
     final var keys = collectFeesV2Keys(
       solanaAccounts,
@@ -450,18 +317,11 @@ public final class WhirlpoolProgram {
       tokenOwnerAccountBKey,
       tokenVaultBKey,
       tokenProgramAKey,
-      tokenProgramBKey,
-      whirlpoolProgramKey
+      tokenProgramBKey
     );
     return collectFeesV2(invokedWhirlpoolProgramMeta, keys, remainingAccountsInfo);
   }
 
-  /// Collect fees accrued for this position.
-  /// This instruction works with both Token and Token-2022.
-  ///
-  /// ### Authority
-  /// - `position_authority` - authority that owns the token corresponding to this desired position.
-  ///
   public static Instruction collectFeesV2(final AccountMeta invokedWhirlpoolProgramMeta,
                                           final List<AccountMeta> keys,
                                           final RemainingAccountsInfo remainingAccountsInfo) {
@@ -514,11 +374,6 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator COLLECT_PROTOCOL_FEES_DISCRIMINATOR = toDiscriminator(22, 67, 23, 98, 150, 178, 70, 220);
 
-  /// Collect the protocol fees accrued in this Whirlpool
-  ///
-  /// ### Authority
-  /// - `collect_protocol_fees_authority` - assigned authority in the WhirlpoolConfig that can collect protocol fees
-  ///
   public static List<AccountMeta> collectProtocolFeesKeys(final PublicKey whirlpoolsConfigKey,
                                                           final PublicKey whirlpoolKey,
                                                           final PublicKey collectProtocolFeesAuthorityKey,
@@ -526,8 +381,7 @@ public final class WhirlpoolProgram {
                                                           final PublicKey tokenVaultBKey,
                                                           final PublicKey tokenDestinationAKey,
                                                           final PublicKey tokenDestinationBKey,
-                                                          final PublicKey tokenProgramKey,
-                                                          final PublicKey whirlpoolProgramKey) {
+                                                          final PublicKey tokenProgramKey) {
     return List.of(
       createRead(whirlpoolsConfigKey),
       createWrite(whirlpoolKey),
@@ -536,16 +390,10 @@ public final class WhirlpoolProgram {
       createWrite(tokenVaultBKey),
       createWrite(tokenDestinationAKey),
       createWrite(tokenDestinationBKey),
-      createRead(tokenProgramKey),
-      createRead(whirlpoolProgramKey)
+      createRead(tokenProgramKey)
     );
   }
 
-  /// Collect the protocol fees accrued in this Whirlpool
-  ///
-  /// ### Authority
-  /// - `collect_protocol_fees_authority` - assigned authority in the WhirlpoolConfig that can collect protocol fees
-  ///
   public static Instruction collectProtocolFees(final AccountMeta invokedWhirlpoolProgramMeta,
                                                 final PublicKey whirlpoolsConfigKey,
                                                 final PublicKey whirlpoolKey,
@@ -554,8 +402,7 @@ public final class WhirlpoolProgram {
                                                 final PublicKey tokenVaultBKey,
                                                 final PublicKey tokenDestinationAKey,
                                                 final PublicKey tokenDestinationBKey,
-                                                final PublicKey tokenProgramKey,
-                                                final PublicKey whirlpoolProgramKey) {
+                                                final PublicKey tokenProgramKey) {
     final var keys = collectProtocolFeesKeys(
       whirlpoolsConfigKey,
       whirlpoolKey,
@@ -564,17 +411,11 @@ public final class WhirlpoolProgram {
       tokenVaultBKey,
       tokenDestinationAKey,
       tokenDestinationBKey,
-      tokenProgramKey,
-      whirlpoolProgramKey
+      tokenProgramKey
     );
     return collectProtocolFees(invokedWhirlpoolProgramMeta, keys);
   }
 
-  /// Collect the protocol fees accrued in this Whirlpool
-  ///
-  /// ### Authority
-  /// - `collect_protocol_fees_authority` - assigned authority in the WhirlpoolConfig that can collect protocol fees
-  ///
   public static Instruction collectProtocolFees(final AccountMeta invokedWhirlpoolProgramMeta,
                                                 final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, COLLECT_PROTOCOL_FEES_DISCRIMINATOR);
@@ -582,12 +423,6 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator COLLECT_PROTOCOL_FEES_V_2_DISCRIMINATOR = toDiscriminator(103, 128, 222, 134, 114, 200, 22, 200);
 
-  /// Collect the protocol fees accrued in this Whirlpool
-  /// This instruction works with both Token and Token-2022.
-  ///
-  /// ### Authority
-  /// - `collect_protocol_fees_authority` - assigned authority in the WhirlpoolConfig that can collect protocol fees
-  ///
   public static List<AccountMeta> collectProtocolFeesV2Keys(final SolanaAccounts solanaAccounts,
                                                             final PublicKey whirlpoolsConfigKey,
                                                             final PublicKey whirlpoolKey,
@@ -599,8 +434,7 @@ public final class WhirlpoolProgram {
                                                             final PublicKey tokenDestinationAKey,
                                                             final PublicKey tokenDestinationBKey,
                                                             final PublicKey tokenProgramAKey,
-                                                            final PublicKey tokenProgramBKey,
-                                                            final PublicKey whirlpoolProgramKey) {
+                                                            final PublicKey tokenProgramBKey) {
     return List.of(
       createRead(whirlpoolsConfigKey),
       createWrite(whirlpoolKey),
@@ -613,17 +447,10 @@ public final class WhirlpoolProgram {
       createWrite(tokenDestinationBKey),
       createRead(tokenProgramAKey),
       createRead(tokenProgramBKey),
-      createRead(solanaAccounts.memoProgramV2()),
-      createRead(whirlpoolProgramKey)
+      createRead(solanaAccounts.memoProgramV2())
     );
   }
 
-  /// Collect the protocol fees accrued in this Whirlpool
-  /// This instruction works with both Token and Token-2022.
-  ///
-  /// ### Authority
-  /// - `collect_protocol_fees_authority` - assigned authority in the WhirlpoolConfig that can collect protocol fees
-  ///
   public static Instruction collectProtocolFeesV2(final AccountMeta invokedWhirlpoolProgramMeta,
                                                   final SolanaAccounts solanaAccounts,
                                                   final PublicKey whirlpoolsConfigKey,
@@ -637,7 +464,6 @@ public final class WhirlpoolProgram {
                                                   final PublicKey tokenDestinationBKey,
                                                   final PublicKey tokenProgramAKey,
                                                   final PublicKey tokenProgramBKey,
-                                                  final PublicKey whirlpoolProgramKey,
                                                   final RemainingAccountsInfo remainingAccountsInfo) {
     final var keys = collectProtocolFeesV2Keys(
       solanaAccounts,
@@ -651,18 +477,11 @@ public final class WhirlpoolProgram {
       tokenDestinationAKey,
       tokenDestinationBKey,
       tokenProgramAKey,
-      tokenProgramBKey,
-      whirlpoolProgramKey
+      tokenProgramBKey
     );
     return collectProtocolFeesV2(invokedWhirlpoolProgramMeta, keys, remainingAccountsInfo);
   }
 
-  /// Collect the protocol fees accrued in this Whirlpool
-  /// This instruction works with both Token and Token-2022.
-  ///
-  /// ### Authority
-  /// - `collect_protocol_fees_authority` - assigned authority in the WhirlpoolConfig that can collect protocol fees
-  ///
   public static Instruction collectProtocolFeesV2(final AccountMeta invokedWhirlpoolProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final RemainingAccountsInfo remainingAccountsInfo) {
@@ -715,19 +534,13 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator COLLECT_REWARD_DISCRIMINATOR = toDiscriminator(70, 5, 132, 87, 86, 235, 177, 34);
 
-  /// Collect rewards accrued for this position.
-  ///
-  /// ### Authority
-  /// - `position_authority` - authority that owns the token corresponding to this desired position.
-  ///
   public static List<AccountMeta> collectRewardKeys(final PublicKey whirlpoolKey,
                                                     final PublicKey positionAuthorityKey,
                                                     final PublicKey positionKey,
                                                     final PublicKey positionTokenAccountKey,
                                                     final PublicKey rewardOwnerAccountKey,
                                                     final PublicKey rewardVaultKey,
-                                                    final PublicKey tokenProgramKey,
-                                                    final PublicKey whirlpoolProgramKey) {
+                                                    final PublicKey tokenProgramKey) {
     return List.of(
       createRead(whirlpoolKey),
       createReadOnlySigner(positionAuthorityKey),
@@ -735,16 +548,10 @@ public final class WhirlpoolProgram {
       createRead(positionTokenAccountKey),
       createWrite(rewardOwnerAccountKey),
       createWrite(rewardVaultKey),
-      createRead(tokenProgramKey),
-      createRead(whirlpoolProgramKey)
+      createRead(tokenProgramKey)
     );
   }
 
-  /// Collect rewards accrued for this position.
-  ///
-  /// ### Authority
-  /// - `position_authority` - authority that owns the token corresponding to this desired position.
-  ///
   /// @param rewardIndex: u8
   public static Instruction collectReward(final AccountMeta invokedWhirlpoolProgramMeta,
                                           final PublicKey whirlpoolKey,
@@ -754,7 +561,6 @@ public final class WhirlpoolProgram {
                                           final PublicKey rewardOwnerAccountKey,
                                           final PublicKey rewardVaultKey,
                                           final PublicKey tokenProgramKey,
-                                          final PublicKey whirlpoolProgramKey,
                                           final int rewardIndex) {
     final var keys = collectRewardKeys(
       whirlpoolKey,
@@ -763,17 +569,11 @@ public final class WhirlpoolProgram {
       positionTokenAccountKey,
       rewardOwnerAccountKey,
       rewardVaultKey,
-      tokenProgramKey,
-      whirlpoolProgramKey
+      tokenProgramKey
     );
     return collectReward(invokedWhirlpoolProgramMeta, keys, rewardIndex);
   }
 
-  /// Collect rewards accrued for this position.
-  ///
-  /// ### Authority
-  /// - `position_authority` - authority that owns the token corresponding to this desired position.
-  ///
   /// @param rewardIndex: u8
   public static Instruction collectReward(final AccountMeta invokedWhirlpoolProgramMeta,
                                           final List<AccountMeta> keys,
@@ -822,12 +622,6 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator COLLECT_REWARD_V_2_DISCRIMINATOR = toDiscriminator(177, 107, 37, 180, 160, 19, 49, 209);
 
-  /// Collect rewards accrued for this position.
-  /// This instruction works with both Token and Token-2022.
-  ///
-  /// ### Authority
-  /// - `position_authority` - authority that owns the token corresponding to this desired position.
-  ///
   public static List<AccountMeta> collectRewardV2Keys(final SolanaAccounts solanaAccounts,
                                                       final PublicKey whirlpoolKey,
                                                       final PublicKey positionAuthorityKey,
@@ -836,8 +630,7 @@ public final class WhirlpoolProgram {
                                                       final PublicKey rewardOwnerAccountKey,
                                                       final PublicKey rewardMintKey,
                                                       final PublicKey rewardVaultKey,
-                                                      final PublicKey rewardTokenProgramKey,
-                                                      final PublicKey whirlpoolProgramKey) {
+                                                      final PublicKey rewardTokenProgramKey) {
     return List.of(
       createRead(whirlpoolKey),
       createReadOnlySigner(positionAuthorityKey),
@@ -847,17 +640,10 @@ public final class WhirlpoolProgram {
       createRead(rewardMintKey),
       createWrite(rewardVaultKey),
       createRead(rewardTokenProgramKey),
-      createRead(solanaAccounts.memoProgramV2()),
-      createRead(whirlpoolProgramKey)
+      createRead(solanaAccounts.memoProgramV2())
     );
   }
 
-  /// Collect rewards accrued for this position.
-  /// This instruction works with both Token and Token-2022.
-  ///
-  /// ### Authority
-  /// - `position_authority` - authority that owns the token corresponding to this desired position.
-  ///
   /// @param rewardIndex: u8
   public static Instruction collectRewardV2(final AccountMeta invokedWhirlpoolProgramMeta,
                                             final SolanaAccounts solanaAccounts,
@@ -869,7 +655,6 @@ public final class WhirlpoolProgram {
                                             final PublicKey rewardMintKey,
                                             final PublicKey rewardVaultKey,
                                             final PublicKey rewardTokenProgramKey,
-                                            final PublicKey whirlpoolProgramKey,
                                             final int rewardIndex,
                                             final RemainingAccountsInfo remainingAccountsInfo) {
     final var keys = collectRewardV2Keys(
@@ -881,18 +666,11 @@ public final class WhirlpoolProgram {
       rewardOwnerAccountKey,
       rewardMintKey,
       rewardVaultKey,
-      rewardTokenProgramKey,
-      whirlpoolProgramKey
+      rewardTokenProgramKey
     );
     return collectRewardV2(invokedWhirlpoolProgramMeta, keys, rewardIndex, remainingAccountsInfo);
   }
 
-  /// Collect rewards accrued for this position.
-  /// This instruction works with both Token and Token-2022.
-  ///
-  /// ### Authority
-  /// - `position_authority` - authority that owns the token corresponding to this desired position.
-  ///
   /// @param rewardIndex: u8
   public static Instruction collectRewardV2(final AccountMeta invokedWhirlpoolProgramMeta,
                                             final List<AccountMeta> keys,
@@ -955,21 +733,6 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator DECREASE_LIQUIDITY_DISCRIMINATOR = toDiscriminator(160, 38, 208, 111, 104, 91, 44, 1);
 
-  /// Withdraw liquidity from a position in the Whirlpool. This call also updates the position's accrued fees and rewards.
-  ///
-  /// ### Authority
-  /// - `position_authority` - authority that owns the token corresponding to this desired position.
-  ///
-  /// ### Parameters
-  /// - `liquidity_amount` - The total amount of Liquidity the user desires to withdraw.
-  /// - `token_min_a` - The minimum amount of tokenA the user is willing to withdraw.
-  /// - `token_min_b` - The minimum amount of tokenB the user is willing to withdraw.
-  ///
-  /// #### Special Errors
-  /// - `LiquidityZero` - Provided liquidity amount is zero.
-  /// - `LiquidityTooHigh` - Provided liquidity exceeds u128::max.
-  /// - `TokenMinSubceeded` - The required token to perform this operation subceeds the user defined amount.
-  ///
   public static List<AccountMeta> decreaseLiquidityKeys(final PublicKey whirlpoolKey,
                                                         final PublicKey tokenProgramKey,
                                                         final PublicKey positionAuthorityKey,
@@ -980,8 +743,7 @@ public final class WhirlpoolProgram {
                                                         final PublicKey tokenVaultAKey,
                                                         final PublicKey tokenVaultBKey,
                                                         final PublicKey tickArrayLowerKey,
-                                                        final PublicKey tickArrayUpperKey,
-                                                        final PublicKey whirlpoolProgramKey) {
+                                                        final PublicKey tickArrayUpperKey) {
     return List.of(
       createWrite(whirlpoolKey),
       createRead(tokenProgramKey),
@@ -993,26 +755,10 @@ public final class WhirlpoolProgram {
       createWrite(tokenVaultAKey),
       createWrite(tokenVaultBKey),
       createWrite(tickArrayLowerKey),
-      createWrite(tickArrayUpperKey),
-      createRead(whirlpoolProgramKey)
+      createWrite(tickArrayUpperKey)
     );
   }
 
-  /// Withdraw liquidity from a position in the Whirlpool. This call also updates the position's accrued fees and rewards.
-  ///
-  /// ### Authority
-  /// - `position_authority` - authority that owns the token corresponding to this desired position.
-  ///
-  /// ### Parameters
-  /// - `liquidity_amount` - The total amount of Liquidity the user desires to withdraw.
-  /// - `token_min_a` - The minimum amount of tokenA the user is willing to withdraw.
-  /// - `token_min_b` - The minimum amount of tokenB the user is willing to withdraw.
-  ///
-  /// #### Special Errors
-  /// - `LiquidityZero` - Provided liquidity amount is zero.
-  /// - `LiquidityTooHigh` - Provided liquidity exceeds u128::max.
-  /// - `TokenMinSubceeded` - The required token to perform this operation subceeds the user defined amount.
-  ///
   /// @param tokenMinA: u64
   /// @param tokenMinB: u64
   public static Instruction decreaseLiquidity(final AccountMeta invokedWhirlpoolProgramMeta,
@@ -1027,7 +773,6 @@ public final class WhirlpoolProgram {
                                               final PublicKey tokenVaultBKey,
                                               final PublicKey tickArrayLowerKey,
                                               final PublicKey tickArrayUpperKey,
-                                              final PublicKey whirlpoolProgramKey,
                                               final BigInteger liquidityAmount,
                                               final long tokenMinA,
                                               final long tokenMinB) {
@@ -1042,8 +787,7 @@ public final class WhirlpoolProgram {
       tokenVaultAKey,
       tokenVaultBKey,
       tickArrayLowerKey,
-      tickArrayUpperKey,
-      whirlpoolProgramKey
+      tickArrayUpperKey
     );
     return decreaseLiquidity(
       invokedWhirlpoolProgramMeta,
@@ -1054,21 +798,6 @@ public final class WhirlpoolProgram {
     );
   }
 
-  /// Withdraw liquidity from a position in the Whirlpool. This call also updates the position's accrued fees and rewards.
-  ///
-  /// ### Authority
-  /// - `position_authority` - authority that owns the token corresponding to this desired position.
-  ///
-  /// ### Parameters
-  /// - `liquidity_amount` - The total amount of Liquidity the user desires to withdraw.
-  /// - `token_min_a` - The minimum amount of tokenA the user is willing to withdraw.
-  /// - `token_min_b` - The minimum amount of tokenB the user is willing to withdraw.
-  ///
-  /// #### Special Errors
-  /// - `LiquidityZero` - Provided liquidity amount is zero.
-  /// - `LiquidityTooHigh` - Provided liquidity exceeds u128::max.
-  /// - `TokenMinSubceeded` - The required token to perform this operation subceeds the user defined amount.
-  ///
   /// @param tokenMinA: u64
   /// @param tokenMinB: u64
   public static Instruction decreaseLiquidity(final AccountMeta invokedWhirlpoolProgramMeta,
@@ -1138,22 +867,6 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator DECREASE_LIQUIDITY_V_2_DISCRIMINATOR = toDiscriminator(58, 127, 188, 62, 79, 82, 196, 96);
 
-  /// Withdraw liquidity from a position in the Whirlpool. This call also updates the position's accrued fees and rewards.
-  /// This instruction works with both Token and Token-2022.
-  ///
-  /// ### Authority
-  /// - `position_authority` - authority that owns the token corresponding to this desired position.
-  ///
-  /// ### Parameters
-  /// - `liquidity_amount` - The total amount of Liquidity the user desires to withdraw.
-  /// - `token_min_a` - The minimum amount of tokenA the user is willing to withdraw.
-  /// - `token_min_b` - The minimum amount of tokenB the user is willing to withdraw.
-  ///
-  /// #### Special Errors
-  /// - `LiquidityZero` - Provided liquidity amount is zero.
-  /// - `LiquidityTooHigh` - Provided liquidity exceeds u128::max.
-  /// - `TokenMinSubceeded` - The required token to perform this operation subceeds the user defined amount.
-  ///
   public static List<AccountMeta> decreaseLiquidityV2Keys(final SolanaAccounts solanaAccounts,
                                                           final PublicKey whirlpoolKey,
                                                           final PublicKey tokenProgramAKey,
@@ -1168,8 +881,7 @@ public final class WhirlpoolProgram {
                                                           final PublicKey tokenVaultAKey,
                                                           final PublicKey tokenVaultBKey,
                                                           final PublicKey tickArrayLowerKey,
-                                                          final PublicKey tickArrayUpperKey,
-                                                          final PublicKey whirlpoolProgramKey) {
+                                                          final PublicKey tickArrayUpperKey) {
     return List.of(
       createWrite(whirlpoolKey),
       createRead(tokenProgramAKey),
@@ -1185,27 +897,10 @@ public final class WhirlpoolProgram {
       createWrite(tokenVaultAKey),
       createWrite(tokenVaultBKey),
       createWrite(tickArrayLowerKey),
-      createWrite(tickArrayUpperKey),
-      createRead(whirlpoolProgramKey)
+      createWrite(tickArrayUpperKey)
     );
   }
 
-  /// Withdraw liquidity from a position in the Whirlpool. This call also updates the position's accrued fees and rewards.
-  /// This instruction works with both Token and Token-2022.
-  ///
-  /// ### Authority
-  /// - `position_authority` - authority that owns the token corresponding to this desired position.
-  ///
-  /// ### Parameters
-  /// - `liquidity_amount` - The total amount of Liquidity the user desires to withdraw.
-  /// - `token_min_a` - The minimum amount of tokenA the user is willing to withdraw.
-  /// - `token_min_b` - The minimum amount of tokenB the user is willing to withdraw.
-  ///
-  /// #### Special Errors
-  /// - `LiquidityZero` - Provided liquidity amount is zero.
-  /// - `LiquidityTooHigh` - Provided liquidity exceeds u128::max.
-  /// - `TokenMinSubceeded` - The required token to perform this operation subceeds the user defined amount.
-  ///
   /// @param tokenMinA: u64
   /// @param tokenMinB: u64
   public static Instruction decreaseLiquidityV2(final AccountMeta invokedWhirlpoolProgramMeta,
@@ -1224,7 +919,6 @@ public final class WhirlpoolProgram {
                                                 final PublicKey tokenVaultBKey,
                                                 final PublicKey tickArrayLowerKey,
                                                 final PublicKey tickArrayUpperKey,
-                                                final PublicKey whirlpoolProgramKey,
                                                 final BigInteger liquidityAmount,
                                                 final long tokenMinA,
                                                 final long tokenMinB,
@@ -1244,8 +938,7 @@ public final class WhirlpoolProgram {
       tokenVaultAKey,
       tokenVaultBKey,
       tickArrayLowerKey,
-      tickArrayUpperKey,
-      whirlpoolProgramKey
+      tickArrayUpperKey
     );
     return decreaseLiquidityV2(
       invokedWhirlpoolProgramMeta,
@@ -1257,22 +950,6 @@ public final class WhirlpoolProgram {
     );
   }
 
-  /// Withdraw liquidity from a position in the Whirlpool. This call also updates the position's accrued fees and rewards.
-  /// This instruction works with both Token and Token-2022.
-  ///
-  /// ### Authority
-  /// - `position_authority` - authority that owns the token corresponding to this desired position.
-  ///
-  /// ### Parameters
-  /// - `liquidity_amount` - The total amount of Liquidity the user desires to withdraw.
-  /// - `token_min_a` - The minimum amount of tokenA the user is willing to withdraw.
-  /// - `token_min_b` - The minimum amount of tokenB the user is willing to withdraw.
-  ///
-  /// #### Special Errors
-  /// - `LiquidityZero` - Provided liquidity amount is zero.
-  /// - `LiquidityTooHigh` - Provided liquidity exceeds u128::max.
-  /// - `TokenMinSubceeded` - The required token to perform this operation subceeds the user defined amount.
-  ///
   /// @param tokenMinA: u64
   /// @param tokenMinB: u64
   public static Instruction decreaseLiquidityV2(final AccountMeta invokedWhirlpoolProgramMeta,
@@ -1361,68 +1038,40 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator DELETE_POSITION_BUNDLE_DISCRIMINATOR = toDiscriminator(100, 25, 99, 2, 217, 239, 124, 173);
 
-  /// Delete a PositionBundle account. Burns the position bundle token in the owner's wallet.
-  ///
-  /// ### Authority
-  /// - `position_bundle_owner` - The owner that owns the position bundle token.
-  ///
-  /// ### Special Errors
-  /// - `PositionBundleNotDeletable` - The provided position bundle has open positions.
-  ///
   public static List<AccountMeta> deletePositionBundleKeys(final PublicKey positionBundleKey,
                                                            final PublicKey positionBundleMintKey,
                                                            final PublicKey positionBundleTokenAccountKey,
                                                            final PublicKey positionBundleOwnerKey,
                                                            final PublicKey receiverKey,
-                                                           final PublicKey tokenProgramKey,
-                                                           final PublicKey whirlpoolProgramKey) {
+                                                           final PublicKey tokenProgramKey) {
     return List.of(
       createWrite(positionBundleKey),
       createWrite(positionBundleMintKey),
       createWrite(positionBundleTokenAccountKey),
       createReadOnlySigner(positionBundleOwnerKey),
       createWrite(receiverKey),
-      createRead(tokenProgramKey),
-      createRead(whirlpoolProgramKey)
+      createRead(tokenProgramKey)
     );
   }
 
-  /// Delete a PositionBundle account. Burns the position bundle token in the owner's wallet.
-  ///
-  /// ### Authority
-  /// - `position_bundle_owner` - The owner that owns the position bundle token.
-  ///
-  /// ### Special Errors
-  /// - `PositionBundleNotDeletable` - The provided position bundle has open positions.
-  ///
   public static Instruction deletePositionBundle(final AccountMeta invokedWhirlpoolProgramMeta,
                                                  final PublicKey positionBundleKey,
                                                  final PublicKey positionBundleMintKey,
                                                  final PublicKey positionBundleTokenAccountKey,
                                                  final PublicKey positionBundleOwnerKey,
                                                  final PublicKey receiverKey,
-                                                 final PublicKey tokenProgramKey,
-                                                 final PublicKey whirlpoolProgramKey) {
+                                                 final PublicKey tokenProgramKey) {
     final var keys = deletePositionBundleKeys(
       positionBundleKey,
       positionBundleMintKey,
       positionBundleTokenAccountKey,
       positionBundleOwnerKey,
       receiverKey,
-      tokenProgramKey,
-      whirlpoolProgramKey
+      tokenProgramKey
     );
     return deletePositionBundle(invokedWhirlpoolProgramMeta, keys);
   }
 
-  /// Delete a PositionBundle account. Burns the position bundle token in the owner's wallet.
-  ///
-  /// ### Authority
-  /// - `position_bundle_owner` - The owner that owns the position bundle token.
-  ///
-  /// ### Special Errors
-  /// - `PositionBundleNotDeletable` - The provided position bundle has open positions.
-  ///
   public static Instruction deletePositionBundle(final AccountMeta invokedWhirlpoolProgramMeta,
                                                  final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, DELETE_POSITION_BUNDLE_DISCRIMINATOR);
@@ -1430,68 +1079,40 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator DELETE_TOKEN_BADGE_DISCRIMINATOR = toDiscriminator(53, 146, 68, 8, 18, 117, 17, 185);
 
-  /// Delete a TokenBadge account.
-  ///
-  /// ### Authority
-  /// - "token_badge_authority" - Set authority in the WhirlpoolConfigExtension
-  ///
-  /// ### Special Errors
-  /// - `FeatureIsNotEnabled` - If the feature flag for token badges is not enabled.
-  ///
   public static List<AccountMeta> deleteTokenBadgeKeys(final PublicKey whirlpoolsConfigKey,
                                                        final PublicKey whirlpoolsConfigExtensionKey,
                                                        final PublicKey tokenBadgeAuthorityKey,
                                                        final PublicKey tokenMintKey,
                                                        final PublicKey tokenBadgeKey,
-                                                       final PublicKey receiverKey,
-                                                       final PublicKey whirlpoolProgramKey) {
+                                                       final PublicKey receiverKey) {
     return List.of(
       createRead(whirlpoolsConfigKey),
       createRead(whirlpoolsConfigExtensionKey),
       createReadOnlySigner(tokenBadgeAuthorityKey),
       createRead(tokenMintKey),
       createWrite(tokenBadgeKey),
-      createWrite(receiverKey),
-      createRead(whirlpoolProgramKey)
+      createWrite(receiverKey)
     );
   }
 
-  /// Delete a TokenBadge account.
-  ///
-  /// ### Authority
-  /// - "token_badge_authority" - Set authority in the WhirlpoolConfigExtension
-  ///
-  /// ### Special Errors
-  /// - `FeatureIsNotEnabled` - If the feature flag for token badges is not enabled.
-  ///
   public static Instruction deleteTokenBadge(final AccountMeta invokedWhirlpoolProgramMeta,
                                              final PublicKey whirlpoolsConfigKey,
                                              final PublicKey whirlpoolsConfigExtensionKey,
                                              final PublicKey tokenBadgeAuthorityKey,
                                              final PublicKey tokenMintKey,
                                              final PublicKey tokenBadgeKey,
-                                             final PublicKey receiverKey,
-                                             final PublicKey whirlpoolProgramKey) {
+                                             final PublicKey receiverKey) {
     final var keys = deleteTokenBadgeKeys(
       whirlpoolsConfigKey,
       whirlpoolsConfigExtensionKey,
       tokenBadgeAuthorityKey,
       tokenMintKey,
       tokenBadgeKey,
-      receiverKey,
-      whirlpoolProgramKey
+      receiverKey
     );
     return deleteTokenBadge(invokedWhirlpoolProgramMeta, keys);
   }
 
-  /// Delete a TokenBadge account.
-  ///
-  /// ### Authority
-  /// - "token_badge_authority" - Set authority in the WhirlpoolConfigExtension
-  ///
-  /// ### Special Errors
-  /// - `FeatureIsNotEnabled` - If the feature flag for token badges is not enabled.
-  ///
   public static Instruction deleteTokenBadge(final AccountMeta invokedWhirlpoolProgramMeta,
                                              final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, DELETE_TOKEN_BADGE_DISCRIMINATOR);
@@ -1500,23 +1121,19 @@ public final class WhirlpoolProgram {
   public static final Discriminator IDL_INCLUDE_DISCRIMINATOR = toDiscriminator(223, 253, 121, 121, 60, 193, 129, 31);
 
   public static List<AccountMeta> idlIncludeKeys(final SolanaAccounts solanaAccounts,
-                                                 final PublicKey tickArrayKey,
-                                                 final PublicKey whirlpoolProgramKey) {
+                                                 final PublicKey tickArrayKey) {
     return List.of(
       createRead(tickArrayKey),
-      createRead(solanaAccounts.systemProgram()),
-      createRead(whirlpoolProgramKey)
+      createRead(solanaAccounts.systemProgram())
     );
   }
 
   public static Instruction idlInclude(final AccountMeta invokedWhirlpoolProgramMeta,
                                        final SolanaAccounts solanaAccounts,
-                                       final PublicKey tickArrayKey,
-                                       final PublicKey whirlpoolProgramKey) {
+                                       final PublicKey tickArrayKey) {
     final var keys = idlIncludeKeys(
       solanaAccounts,
-      tickArrayKey,
-      whirlpoolProgramKey
+      tickArrayKey
     );
     return idlInclude(invokedWhirlpoolProgramMeta, keys);
   }
@@ -1528,21 +1145,6 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator INCREASE_LIQUIDITY_DISCRIMINATOR = toDiscriminator(46, 156, 243, 118, 13, 205, 251, 178);
 
-  /// Add liquidity to a position in the Whirlpool. This call also updates the position's accrued fees and rewards.
-  ///
-  /// ### Authority
-  /// - `position_authority` - authority that owns the token corresponding to this desired position.
-  ///
-  /// ### Parameters
-  /// - `liquidity_amount` - The total amount of Liquidity the user is willing to deposit.
-  /// - `token_max_a` - The maximum amount of tokenA the user is willing to deposit.
-  /// - `token_max_b` - The maximum amount of tokenB the user is willing to deposit.
-  ///
-  /// #### Special Errors
-  /// - `LiquidityZero` - Provided liquidity amount is zero.
-  /// - `LiquidityTooHigh` - Provided liquidity exceeds u128::max.
-  /// - `TokenMaxExceeded` - The required token to perform this operation exceeds the user defined amount.
-  ///
   public static List<AccountMeta> increaseLiquidityKeys(final PublicKey whirlpoolKey,
                                                         final PublicKey tokenProgramKey,
                                                         final PublicKey positionAuthorityKey,
@@ -1553,8 +1155,7 @@ public final class WhirlpoolProgram {
                                                         final PublicKey tokenVaultAKey,
                                                         final PublicKey tokenVaultBKey,
                                                         final PublicKey tickArrayLowerKey,
-                                                        final PublicKey tickArrayUpperKey,
-                                                        final PublicKey whirlpoolProgramKey) {
+                                                        final PublicKey tickArrayUpperKey) {
     return List.of(
       createWrite(whirlpoolKey),
       createRead(tokenProgramKey),
@@ -1566,26 +1167,10 @@ public final class WhirlpoolProgram {
       createWrite(tokenVaultAKey),
       createWrite(tokenVaultBKey),
       createWrite(tickArrayLowerKey),
-      createWrite(tickArrayUpperKey),
-      createRead(whirlpoolProgramKey)
+      createWrite(tickArrayUpperKey)
     );
   }
 
-  /// Add liquidity to a position in the Whirlpool. This call also updates the position's accrued fees and rewards.
-  ///
-  /// ### Authority
-  /// - `position_authority` - authority that owns the token corresponding to this desired position.
-  ///
-  /// ### Parameters
-  /// - `liquidity_amount` - The total amount of Liquidity the user is willing to deposit.
-  /// - `token_max_a` - The maximum amount of tokenA the user is willing to deposit.
-  /// - `token_max_b` - The maximum amount of tokenB the user is willing to deposit.
-  ///
-  /// #### Special Errors
-  /// - `LiquidityZero` - Provided liquidity amount is zero.
-  /// - `LiquidityTooHigh` - Provided liquidity exceeds u128::max.
-  /// - `TokenMaxExceeded` - The required token to perform this operation exceeds the user defined amount.
-  ///
   /// @param tokenMaxA: u64
   /// @param tokenMaxB: u64
   public static Instruction increaseLiquidity(final AccountMeta invokedWhirlpoolProgramMeta,
@@ -1600,7 +1185,6 @@ public final class WhirlpoolProgram {
                                               final PublicKey tokenVaultBKey,
                                               final PublicKey tickArrayLowerKey,
                                               final PublicKey tickArrayUpperKey,
-                                              final PublicKey whirlpoolProgramKey,
                                               final BigInteger liquidityAmount,
                                               final long tokenMaxA,
                                               final long tokenMaxB) {
@@ -1615,8 +1199,7 @@ public final class WhirlpoolProgram {
       tokenVaultAKey,
       tokenVaultBKey,
       tickArrayLowerKey,
-      tickArrayUpperKey,
-      whirlpoolProgramKey
+      tickArrayUpperKey
     );
     return increaseLiquidity(
       invokedWhirlpoolProgramMeta,
@@ -1627,21 +1210,6 @@ public final class WhirlpoolProgram {
     );
   }
 
-  /// Add liquidity to a position in the Whirlpool. This call also updates the position's accrued fees and rewards.
-  ///
-  /// ### Authority
-  /// - `position_authority` - authority that owns the token corresponding to this desired position.
-  ///
-  /// ### Parameters
-  /// - `liquidity_amount` - The total amount of Liquidity the user is willing to deposit.
-  /// - `token_max_a` - The maximum amount of tokenA the user is willing to deposit.
-  /// - `token_max_b` - The maximum amount of tokenB the user is willing to deposit.
-  ///
-  /// #### Special Errors
-  /// - `LiquidityZero` - Provided liquidity amount is zero.
-  /// - `LiquidityTooHigh` - Provided liquidity exceeds u128::max.
-  /// - `TokenMaxExceeded` - The required token to perform this operation exceeds the user defined amount.
-  ///
   /// @param tokenMaxA: u64
   /// @param tokenMaxB: u64
   public static Instruction increaseLiquidity(final AccountMeta invokedWhirlpoolProgramMeta,
@@ -1711,26 +1279,6 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator INCREASE_LIQUIDITY_BY_TOKEN_AMOUNTS_V_2_DISCRIMINATOR = toDiscriminator(239, 251, 9, 124, 210, 198, 53, 43);
 
-  /// Add liquidity to a position by specifying token maxima, not liquidity.
-  /// This instruction works with both Token and Token-2022.
-  ///
-  /// NOTE: This instruction is only implemented in Pinocchio, not Anchor.
-  ///
-  /// ### Authority
-  /// - `position_authority` - authority that owns the token corresponding to this desired position.
-  ///
-  /// ### Parameters
-  /// - `token_max_a` - The maximum amount of tokenA the user is willing to deposit.
-  /// - `token_max_b` - The maximum amount of tokenB the user is willing to deposit.
-  /// - `min_sqrt_price` - The minimum sqrt price allowed.
-  /// - `max_sqrt_price` - The maximum sqrt price allowed.
-  ///
-  ///
-  /// #### Special Errors
-  /// - `LiquidityZero` - Computed liquidity amount is zero.
-  /// - `LiquidityTooHigh` - Computed liquidity exceeds u128::max.
-  /// - `TokenMaxExceeded` - The required token to perform this operation exceeds the user defined amount.
-  ///
   public static List<AccountMeta> increaseLiquidityByTokenAmountsV2Keys(final SolanaAccounts solanaAccounts,
                                                                         final PublicKey whirlpoolKey,
                                                                         final PublicKey tokenProgramAKey,
@@ -1745,8 +1293,7 @@ public final class WhirlpoolProgram {
                                                                         final PublicKey tokenVaultAKey,
                                                                         final PublicKey tokenVaultBKey,
                                                                         final PublicKey tickArrayLowerKey,
-                                                                        final PublicKey tickArrayUpperKey,
-                                                                        final PublicKey whirlpoolProgramKey) {
+                                                                        final PublicKey tickArrayUpperKey) {
     return List.of(
       createWrite(whirlpoolKey),
       createRead(tokenProgramAKey),
@@ -1762,31 +1309,10 @@ public final class WhirlpoolProgram {
       createWrite(tokenVaultAKey),
       createWrite(tokenVaultBKey),
       createWrite(tickArrayLowerKey),
-      createWrite(tickArrayUpperKey),
-      createRead(whirlpoolProgramKey)
+      createWrite(tickArrayUpperKey)
     );
   }
 
-  /// Add liquidity to a position by specifying token maxima, not liquidity.
-  /// This instruction works with both Token and Token-2022.
-  ///
-  /// NOTE: This instruction is only implemented in Pinocchio, not Anchor.
-  ///
-  /// ### Authority
-  /// - `position_authority` - authority that owns the token corresponding to this desired position.
-  ///
-  /// ### Parameters
-  /// - `token_max_a` - The maximum amount of tokenA the user is willing to deposit.
-  /// - `token_max_b` - The maximum amount of tokenB the user is willing to deposit.
-  /// - `min_sqrt_price` - The minimum sqrt price allowed.
-  /// - `max_sqrt_price` - The maximum sqrt price allowed.
-  ///
-  ///
-  /// #### Special Errors
-  /// - `LiquidityZero` - Computed liquidity amount is zero.
-  /// - `LiquidityTooHigh` - Computed liquidity exceeds u128::max.
-  /// - `TokenMaxExceeded` - The required token to perform this operation exceeds the user defined amount.
-  ///
   public static Instruction increaseLiquidityByTokenAmountsV2(final AccountMeta invokedWhirlpoolProgramMeta,
                                                               final SolanaAccounts solanaAccounts,
                                                               final PublicKey whirlpoolKey,
@@ -1803,7 +1329,6 @@ public final class WhirlpoolProgram {
                                                               final PublicKey tokenVaultBKey,
                                                               final PublicKey tickArrayLowerKey,
                                                               final PublicKey tickArrayUpperKey,
-                                                              final PublicKey whirlpoolProgramKey,
                                                               final IncreaseLiquidityMethod method,
                                                               final RemainingAccountsInfo remainingAccountsInfo) {
     final var keys = increaseLiquidityByTokenAmountsV2Keys(
@@ -1821,32 +1346,11 @@ public final class WhirlpoolProgram {
       tokenVaultAKey,
       tokenVaultBKey,
       tickArrayLowerKey,
-      tickArrayUpperKey,
-      whirlpoolProgramKey
+      tickArrayUpperKey
     );
     return increaseLiquidityByTokenAmountsV2(invokedWhirlpoolProgramMeta, keys, method, remainingAccountsInfo);
   }
 
-  /// Add liquidity to a position by specifying token maxima, not liquidity.
-  /// This instruction works with both Token and Token-2022.
-  ///
-  /// NOTE: This instruction is only implemented in Pinocchio, not Anchor.
-  ///
-  /// ### Authority
-  /// - `position_authority` - authority that owns the token corresponding to this desired position.
-  ///
-  /// ### Parameters
-  /// - `token_max_a` - The maximum amount of tokenA the user is willing to deposit.
-  /// - `token_max_b` - The maximum amount of tokenB the user is willing to deposit.
-  /// - `min_sqrt_price` - The minimum sqrt price allowed.
-  /// - `max_sqrt_price` - The maximum sqrt price allowed.
-  ///
-  ///
-  /// #### Special Errors
-  /// - `LiquidityZero` - Computed liquidity amount is zero.
-  /// - `LiquidityTooHigh` - Computed liquidity exceeds u128::max.
-  /// - `TokenMaxExceeded` - The required token to perform this operation exceeds the user defined amount.
-  ///
   public static Instruction increaseLiquidityByTokenAmountsV2(final AccountMeta invokedWhirlpoolProgramMeta,
                                                               final List<AccountMeta> keys,
                                                               final IncreaseLiquidityMethod method,
@@ -1904,22 +1408,6 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator INCREASE_LIQUIDITY_V_2_DISCRIMINATOR = toDiscriminator(133, 29, 89, 223, 69, 238, 176, 10);
 
-  /// Add liquidity to a position in the Whirlpool. This call also updates the position's accrued fees and rewards.
-  /// This instruction works with both Token and Token-2022.
-  ///
-  /// ### Authority
-  /// - `position_authority` - authority that owns the token corresponding to this desired position.
-  ///
-  /// ### Parameters
-  /// - `liquidity_amount` - The total amount of Liquidity the user is willing to deposit.
-  /// - `token_max_a` - The maximum amount of tokenA the user is willing to deposit.
-  /// - `token_max_b` - The maximum amount of tokenB the user is willing to deposit.
-  ///
-  /// #### Special Errors
-  /// - `LiquidityZero` - Provided liquidity amount is zero.
-  /// - `LiquidityTooHigh` - Provided liquidity exceeds u128::max.
-  /// - `TokenMaxExceeded` - The required token to perform this operation exceeds the user defined amount.
-  ///
   public static List<AccountMeta> increaseLiquidityV2Keys(final SolanaAccounts solanaAccounts,
                                                           final PublicKey whirlpoolKey,
                                                           final PublicKey tokenProgramAKey,
@@ -1934,8 +1422,7 @@ public final class WhirlpoolProgram {
                                                           final PublicKey tokenVaultAKey,
                                                           final PublicKey tokenVaultBKey,
                                                           final PublicKey tickArrayLowerKey,
-                                                          final PublicKey tickArrayUpperKey,
-                                                          final PublicKey whirlpoolProgramKey) {
+                                                          final PublicKey tickArrayUpperKey) {
     return List.of(
       createWrite(whirlpoolKey),
       createRead(tokenProgramAKey),
@@ -1951,27 +1438,10 @@ public final class WhirlpoolProgram {
       createWrite(tokenVaultAKey),
       createWrite(tokenVaultBKey),
       createWrite(tickArrayLowerKey),
-      createWrite(tickArrayUpperKey),
-      createRead(whirlpoolProgramKey)
+      createWrite(tickArrayUpperKey)
     );
   }
 
-  /// Add liquidity to a position in the Whirlpool. This call also updates the position's accrued fees and rewards.
-  /// This instruction works with both Token and Token-2022.
-  ///
-  /// ### Authority
-  /// - `position_authority` - authority that owns the token corresponding to this desired position.
-  ///
-  /// ### Parameters
-  /// - `liquidity_amount` - The total amount of Liquidity the user is willing to deposit.
-  /// - `token_max_a` - The maximum amount of tokenA the user is willing to deposit.
-  /// - `token_max_b` - The maximum amount of tokenB the user is willing to deposit.
-  ///
-  /// #### Special Errors
-  /// - `LiquidityZero` - Provided liquidity amount is zero.
-  /// - `LiquidityTooHigh` - Provided liquidity exceeds u128::max.
-  /// - `TokenMaxExceeded` - The required token to perform this operation exceeds the user defined amount.
-  ///
   /// @param tokenMaxA: u64
   /// @param tokenMaxB: u64
   public static Instruction increaseLiquidityV2(final AccountMeta invokedWhirlpoolProgramMeta,
@@ -1990,7 +1460,6 @@ public final class WhirlpoolProgram {
                                                 final PublicKey tokenVaultBKey,
                                                 final PublicKey tickArrayLowerKey,
                                                 final PublicKey tickArrayUpperKey,
-                                                final PublicKey whirlpoolProgramKey,
                                                 final BigInteger liquidityAmount,
                                                 final long tokenMaxA,
                                                 final long tokenMaxB,
@@ -2010,8 +1479,7 @@ public final class WhirlpoolProgram {
       tokenVaultAKey,
       tokenVaultBKey,
       tickArrayLowerKey,
-      tickArrayUpperKey,
-      whirlpoolProgramKey
+      tickArrayUpperKey
     );
     return increaseLiquidityV2(
       invokedWhirlpoolProgramMeta,
@@ -2023,22 +1491,6 @@ public final class WhirlpoolProgram {
     );
   }
 
-  /// Add liquidity to a position in the Whirlpool. This call also updates the position's accrued fees and rewards.
-  /// This instruction works with both Token and Token-2022.
-  ///
-  /// ### Authority
-  /// - `position_authority` - authority that owns the token corresponding to this desired position.
-  ///
-  /// ### Parameters
-  /// - `liquidity_amount` - The total amount of Liquidity the user is willing to deposit.
-  /// - `token_max_a` - The maximum amount of tokenA the user is willing to deposit.
-  /// - `token_max_b` - The maximum amount of tokenB the user is willing to deposit.
-  ///
-  /// #### Special Errors
-  /// - `LiquidityZero` - Provided liquidity amount is zero.
-  /// - `LiquidityTooHigh` - Provided liquidity exceeds u128::max.
-  /// - `TokenMaxExceeded` - The required token to perform this operation exceeds the user defined amount.
-  ///
   /// @param tokenMaxA: u64
   /// @param tokenMaxB: u64
   public static Instruction increaseLiquidityV2(final AccountMeta invokedWhirlpoolProgramMeta,
@@ -2127,74 +1579,20 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator INITIALIZE_ADAPTIVE_FEE_TIER_DISCRIMINATOR = toDiscriminator(77, 99, 208, 200, 141, 123, 117, 48);
 
-  /// Initializes an adaptive_fee_tier account usable by Whirlpools in a WhirlpoolConfig space.
-  ///
-  /// ### Authority
-  /// - "fee_authority" - Set authority in the WhirlpoolConfig
-  ///
-  /// ### Parameters
-  /// - `fee_tier_index` - The index of the fee-tier that this adaptive fee tier will be initialized.
-  /// - `tick_spacing` - The tick-spacing that this fee-tier suggests the default_fee_rate for.
-  /// - `initialize_pool_authority` - The authority that can initialize pools with this adaptive fee-tier.
-  /// - `delegated_fee_authority` - The authority that can set the base fee rate for pools using this adaptive fee-tier.
-  /// - `default_fee_rate` - The default fee rate that a pool will use if the pool uses this
-  /// fee tier during initialization.
-  /// - `filter_period` - Period determine high frequency trading time window. (seconds)
-  /// - `decay_period` - Period determine when the adaptive fee start decrease. (seconds)
-  /// - `reduction_factor` - Adaptive fee rate decrement rate.
-  /// - `adaptive_fee_control_factor` - Adaptive fee control factor.
-  /// - `max_volatility_accumulator` - Max volatility accumulator.
-  /// - `tick_group_size` - Tick group size to define tick group index.
-  /// - `major_swap_threshold_ticks` - Major swap threshold ticks to define major swap.
-  ///
-  /// #### Special Errors
-  /// - `InvalidTickSpacing` - If the provided tick_spacing is 0.
-  /// - `InvalidFeeTierIndex` - If the provided fee_tier_index is same to tick_spacing.
-  /// - `FeeRateMaxExceeded` - If the provided default_fee_rate exceeds MAX_FEE_RATE.
-  /// - `InvalidAdaptiveFeeConstants` - If the provided adaptive fee constants are invalid.
-  ///
   public static List<AccountMeta> initializeAdaptiveFeeTierKeys(final SolanaAccounts solanaAccounts,
                                                                 final PublicKey whirlpoolsConfigKey,
                                                                 final PublicKey adaptiveFeeTierKey,
                                                                 final PublicKey funderKey,
-                                                                final PublicKey feeAuthorityKey,
-                                                                final PublicKey whirlpoolProgramKey) {
+                                                                final PublicKey feeAuthorityKey) {
     return List.of(
       createRead(whirlpoolsConfigKey),
       createWrite(adaptiveFeeTierKey),
       createWritableSigner(funderKey),
       createReadOnlySigner(feeAuthorityKey),
-      createRead(solanaAccounts.systemProgram()),
-      createRead(whirlpoolProgramKey)
+      createRead(solanaAccounts.systemProgram())
     );
   }
 
-  /// Initializes an adaptive_fee_tier account usable by Whirlpools in a WhirlpoolConfig space.
-  ///
-  /// ### Authority
-  /// - "fee_authority" - Set authority in the WhirlpoolConfig
-  ///
-  /// ### Parameters
-  /// - `fee_tier_index` - The index of the fee-tier that this adaptive fee tier will be initialized.
-  /// - `tick_spacing` - The tick-spacing that this fee-tier suggests the default_fee_rate for.
-  /// - `initialize_pool_authority` - The authority that can initialize pools with this adaptive fee-tier.
-  /// - `delegated_fee_authority` - The authority that can set the base fee rate for pools using this adaptive fee-tier.
-  /// - `default_fee_rate` - The default fee rate that a pool will use if the pool uses this
-  /// fee tier during initialization.
-  /// - `filter_period` - Period determine high frequency trading time window. (seconds)
-  /// - `decay_period` - Period determine when the adaptive fee start decrease. (seconds)
-  /// - `reduction_factor` - Adaptive fee rate decrement rate.
-  /// - `adaptive_fee_control_factor` - Adaptive fee control factor.
-  /// - `max_volatility_accumulator` - Max volatility accumulator.
-  /// - `tick_group_size` - Tick group size to define tick group index.
-  /// - `major_swap_threshold_ticks` - Major swap threshold ticks to define major swap.
-  ///
-  /// #### Special Errors
-  /// - `InvalidTickSpacing` - If the provided tick_spacing is 0.
-  /// - `InvalidFeeTierIndex` - If the provided fee_tier_index is same to tick_spacing.
-  /// - `FeeRateMaxExceeded` - If the provided default_fee_rate exceeds MAX_FEE_RATE.
-  /// - `InvalidAdaptiveFeeConstants` - If the provided adaptive fee constants are invalid.
-  ///
   /// @param feeTierIndex: u16
   /// @param tickSpacing: u16
   /// @param defaultBaseFeeRate: u16
@@ -2211,7 +1609,6 @@ public final class WhirlpoolProgram {
                                                       final PublicKey adaptiveFeeTierKey,
                                                       final PublicKey funderKey,
                                                       final PublicKey feeAuthorityKey,
-                                                      final PublicKey whirlpoolProgramKey,
                                                       final int feeTierIndex,
                                                       final int tickSpacing,
                                                       final PublicKey initializePoolAuthority,
@@ -2229,8 +1626,7 @@ public final class WhirlpoolProgram {
       whirlpoolsConfigKey,
       adaptiveFeeTierKey,
       funderKey,
-      feeAuthorityKey,
-      whirlpoolProgramKey
+      feeAuthorityKey
     );
     return initializeAdaptiveFeeTier(
       invokedWhirlpoolProgramMeta,
@@ -2250,32 +1646,6 @@ public final class WhirlpoolProgram {
     );
   }
 
-  /// Initializes an adaptive_fee_tier account usable by Whirlpools in a WhirlpoolConfig space.
-  ///
-  /// ### Authority
-  /// - "fee_authority" - Set authority in the WhirlpoolConfig
-  ///
-  /// ### Parameters
-  /// - `fee_tier_index` - The index of the fee-tier that this adaptive fee tier will be initialized.
-  /// - `tick_spacing` - The tick-spacing that this fee-tier suggests the default_fee_rate for.
-  /// - `initialize_pool_authority` - The authority that can initialize pools with this adaptive fee-tier.
-  /// - `delegated_fee_authority` - The authority that can set the base fee rate for pools using this adaptive fee-tier.
-  /// - `default_fee_rate` - The default fee rate that a pool will use if the pool uses this
-  /// fee tier during initialization.
-  /// - `filter_period` - Period determine high frequency trading time window. (seconds)
-  /// - `decay_period` - Period determine when the adaptive fee start decrease. (seconds)
-  /// - `reduction_factor` - Adaptive fee rate decrement rate.
-  /// - `adaptive_fee_control_factor` - Adaptive fee control factor.
-  /// - `max_volatility_accumulator` - Max volatility accumulator.
-  /// - `tick_group_size` - Tick group size to define tick group index.
-  /// - `major_swap_threshold_ticks` - Major swap threshold ticks to define major swap.
-  ///
-  /// #### Special Errors
-  /// - `InvalidTickSpacing` - If the provided tick_spacing is 0.
-  /// - `InvalidFeeTierIndex` - If the provided fee_tier_index is same to tick_spacing.
-  /// - `FeeRateMaxExceeded` - If the provided default_fee_rate exceeds MAX_FEE_RATE.
-  /// - `InvalidAdaptiveFeeConstants` - If the provided adaptive fee constants are invalid.
-  ///
   /// @param feeTierIndex: u16
   /// @param tickSpacing: u16
   /// @param defaultBaseFeeRate: u16
@@ -2454,46 +1824,21 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator INITIALIZE_CONFIG_DISCRIMINATOR = toDiscriminator(208, 127, 21, 1, 194, 190, 196, 70);
 
-  /// Initializes a WhirlpoolsConfig account that hosts info & authorities
-  /// required to govern a set of Whirlpools.
-  ///
-  /// ### Authority
-  /// - "authority" - Set authority that is one of ADMINS.
-  ///
-  /// ### Parameters
-  /// - `fee_authority` - Authority authorized to initialize fee-tiers and set customs fees.
-  /// - `collect_protocol_fees_authority` - Authority authorized to collect protocol fees.
-  /// - `reward_emissions_super_authority` - Authority authorized to set reward authorities in pools.
-  ///
   public static List<AccountMeta> initializeConfigKeys(final SolanaAccounts solanaAccounts,
                                                        final PublicKey configKey,
-                                                       final PublicKey funderKey,
-                                                       final PublicKey whirlpoolProgramKey) {
+                                                       final PublicKey funderKey) {
     return List.of(
       createWritableSigner(configKey),
       createWritableSigner(funderKey),
-      createRead(solanaAccounts.systemProgram()),
-      createRead(whirlpoolProgramKey)
+      createRead(solanaAccounts.systemProgram())
     );
   }
 
-  /// Initializes a WhirlpoolsConfig account that hosts info & authorities
-  /// required to govern a set of Whirlpools.
-  ///
-  /// ### Authority
-  /// - "authority" - Set authority that is one of ADMINS.
-  ///
-  /// ### Parameters
-  /// - `fee_authority` - Authority authorized to initialize fee-tiers and set customs fees.
-  /// - `collect_protocol_fees_authority` - Authority authorized to collect protocol fees.
-  /// - `reward_emissions_super_authority` - Authority authorized to set reward authorities in pools.
-  ///
   /// @param defaultProtocolFeeRate: u16
   public static Instruction initializeConfig(final AccountMeta invokedWhirlpoolProgramMeta,
                                              final SolanaAccounts solanaAccounts,
                                              final PublicKey configKey,
                                              final PublicKey funderKey,
-                                             final PublicKey whirlpoolProgramKey,
                                              final PublicKey feeAuthority,
                                              final PublicKey collectProtocolFeesAuthority,
                                              final PublicKey rewardEmissionsSuperAuthority,
@@ -2501,8 +1846,7 @@ public final class WhirlpoolProgram {
     final var keys = initializeConfigKeys(
       solanaAccounts,
       configKey,
-      funderKey,
-      whirlpoolProgramKey
+      funderKey
     );
     return initializeConfig(
       invokedWhirlpoolProgramMeta,
@@ -2514,17 +1858,6 @@ public final class WhirlpoolProgram {
     );
   }
 
-  /// Initializes a WhirlpoolsConfig account that hosts info & authorities
-  /// required to govern a set of Whirlpools.
-  ///
-  /// ### Authority
-  /// - "authority" - Set authority that is one of ADMINS.
-  ///
-  /// ### Parameters
-  /// - `fee_authority` - Authority authorized to initialize fee-tiers and set customs fees.
-  /// - `collect_protocol_fees_authority` - Authority authorized to collect protocol fees.
-  /// - `reward_emissions_super_authority` - Authority authorized to set reward authorities in pools.
-  ///
   /// @param defaultProtocolFeeRate: u16
   public static Instruction initializeConfig(final AccountMeta invokedWhirlpoolProgramMeta,
                                              final List<AccountMeta> keys,
@@ -2605,55 +1938,36 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator INITIALIZE_CONFIG_EXTENSION_DISCRIMINATOR = toDiscriminator(55, 9, 53, 9, 114, 57, 209, 52);
 
-  /// Initializes a WhirlpoolConfigExtension account that hosts info & authorities.
-  ///
-  /// ### Authority
-  /// - "fee_authority" - Set authority in the WhirlpoolConfig
-  ///
   public static List<AccountMeta> initializeConfigExtensionKeys(final SolanaAccounts solanaAccounts,
                                                                 final PublicKey configKey,
                                                                 final PublicKey configExtensionKey,
                                                                 final PublicKey funderKey,
-                                                                final PublicKey feeAuthorityKey,
-                                                                final PublicKey whirlpoolProgramKey) {
+                                                                final PublicKey feeAuthorityKey) {
     return List.of(
       createRead(configKey),
       createWrite(configExtensionKey),
       createWritableSigner(funderKey),
       createReadOnlySigner(feeAuthorityKey),
-      createRead(solanaAccounts.systemProgram()),
-      createRead(whirlpoolProgramKey)
+      createRead(solanaAccounts.systemProgram())
     );
   }
 
-  /// Initializes a WhirlpoolConfigExtension account that hosts info & authorities.
-  ///
-  /// ### Authority
-  /// - "fee_authority" - Set authority in the WhirlpoolConfig
-  ///
   public static Instruction initializeConfigExtension(final AccountMeta invokedWhirlpoolProgramMeta,
                                                       final SolanaAccounts solanaAccounts,
                                                       final PublicKey configKey,
                                                       final PublicKey configExtensionKey,
                                                       final PublicKey funderKey,
-                                                      final PublicKey feeAuthorityKey,
-                                                      final PublicKey whirlpoolProgramKey) {
+                                                      final PublicKey feeAuthorityKey) {
     final var keys = initializeConfigExtensionKeys(
       solanaAccounts,
       configKey,
       configExtensionKey,
       funderKey,
-      feeAuthorityKey,
-      whirlpoolProgramKey
+      feeAuthorityKey
     );
     return initializeConfigExtension(invokedWhirlpoolProgramMeta, keys);
   }
 
-  /// Initializes a WhirlpoolConfigExtension account that hosts info & authorities.
-  ///
-  /// ### Authority
-  /// - "fee_authority" - Set authority in the WhirlpoolConfig
-  ///
   public static Instruction initializeConfigExtension(final AccountMeta invokedWhirlpoolProgramMeta,
                                                       final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, INITIALIZE_CONFIG_EXTENSION_DISCRIMINATOR);
@@ -2661,74 +1975,34 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator INITIALIZE_DYNAMIC_TICK_ARRAY_DISCRIMINATOR = toDiscriminator(41, 33, 165, 200, 120, 231, 142, 50);
 
-  /// Initialize a variable-length tick array for a Whirlpool.
-  ///
-  /// ### Parameters
-  /// - `start_tick_index` - The starting tick index for this tick-array.
-  /// Has to be a multiple of TickArray size & the tick spacing of this pool.
-  /// - `idempotent` - If true, the instruction will not fail if the tick array already exists.
-  /// Note: The idempotent option exits successfully if a FixedTickArray is present as well as a DynamicTickArray.
-  ///
-  /// #### Special Errors
-  /// - `InvalidStartTick` - if the provided start tick is out of bounds or is not a multiple of
-  /// TICK_ARRAY_SIZE * tick spacing.
-  ///
   public static List<AccountMeta> initializeDynamicTickArrayKeys(final SolanaAccounts solanaAccounts,
                                                                  final PublicKey whirlpoolKey,
                                                                  final PublicKey funderKey,
-                                                                 final PublicKey tickArrayKey,
-                                                                 final PublicKey whirlpoolProgramKey) {
+                                                                 final PublicKey tickArrayKey) {
     return List.of(
       createRead(whirlpoolKey),
       createWritableSigner(funderKey),
       createWrite(tickArrayKey),
-      createRead(solanaAccounts.systemProgram()),
-      createRead(whirlpoolProgramKey)
+      createRead(solanaAccounts.systemProgram())
     );
   }
 
-  /// Initialize a variable-length tick array for a Whirlpool.
-  ///
-  /// ### Parameters
-  /// - `start_tick_index` - The starting tick index for this tick-array.
-  /// Has to be a multiple of TickArray size & the tick spacing of this pool.
-  /// - `idempotent` - If true, the instruction will not fail if the tick array already exists.
-  /// Note: The idempotent option exits successfully if a FixedTickArray is present as well as a DynamicTickArray.
-  ///
-  /// #### Special Errors
-  /// - `InvalidStartTick` - if the provided start tick is out of bounds or is not a multiple of
-  /// TICK_ARRAY_SIZE * tick spacing.
-  ///
   public static Instruction initializeDynamicTickArray(final AccountMeta invokedWhirlpoolProgramMeta,
                                                        final SolanaAccounts solanaAccounts,
                                                        final PublicKey whirlpoolKey,
                                                        final PublicKey funderKey,
                                                        final PublicKey tickArrayKey,
-                                                       final PublicKey whirlpoolProgramKey,
                                                        final int startTickIndex,
                                                        final boolean idempotent) {
     final var keys = initializeDynamicTickArrayKeys(
       solanaAccounts,
       whirlpoolKey,
       funderKey,
-      tickArrayKey,
-      whirlpoolProgramKey
+      tickArrayKey
     );
     return initializeDynamicTickArray(invokedWhirlpoolProgramMeta, keys, startTickIndex, idempotent);
   }
 
-  /// Initialize a variable-length tick array for a Whirlpool.
-  ///
-  /// ### Parameters
-  /// - `start_tick_index` - The starting tick index for this tick-array.
-  /// Has to be a multiple of TickArray size & the tick spacing of this pool.
-  /// - `idempotent` - If true, the instruction will not fail if the tick array already exists.
-  /// Note: The idempotent option exits successfully if a FixedTickArray is present as well as a DynamicTickArray.
-  ///
-  /// #### Special Errors
-  /// - `InvalidStartTick` - if the provided start tick is out of bounds or is not a multiple of
-  /// TICK_ARRAY_SIZE * tick spacing.
-  ///
   public static Instruction initializeDynamicTickArray(final AccountMeta invokedWhirlpoolProgramMeta,
                                                        final List<AccountMeta> keys,
                                                        final int startTickIndex,
@@ -2783,50 +2057,20 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator INITIALIZE_FEE_TIER_DISCRIMINATOR = toDiscriminator(183, 74, 156, 160, 112, 2, 42, 30);
 
-  /// Initializes a fee_tier account usable by Whirlpools in a WhirlpoolConfig space.
-  ///
-  /// ### Authority
-  /// - "fee_authority" - Set authority in the WhirlpoolConfig
-  ///
-  /// ### Parameters
-  /// - `tick_spacing` - The tick-spacing that this fee-tier suggests the default_fee_rate for.
-  /// - `default_fee_rate` - The default fee rate that a pool will use if the pool uses this
-  /// fee tier during initialization.
-  ///
-  /// #### Special Errors
-  /// - `InvalidTickSpacing` - If the provided tick_spacing is 0.
-  /// - `FeeRateMaxExceeded` - If the provided default_fee_rate exceeds MAX_FEE_RATE.
-  ///
   public static List<AccountMeta> initializeFeeTierKeys(final SolanaAccounts solanaAccounts,
                                                         final PublicKey configKey,
                                                         final PublicKey feeTierKey,
                                                         final PublicKey funderKey,
-                                                        final PublicKey feeAuthorityKey,
-                                                        final PublicKey whirlpoolProgramKey) {
+                                                        final PublicKey feeAuthorityKey) {
     return List.of(
       createRead(configKey),
       createWrite(feeTierKey),
       createWritableSigner(funderKey),
       createReadOnlySigner(feeAuthorityKey),
-      createRead(solanaAccounts.systemProgram()),
-      createRead(whirlpoolProgramKey)
+      createRead(solanaAccounts.systemProgram())
     );
   }
 
-  /// Initializes a fee_tier account usable by Whirlpools in a WhirlpoolConfig space.
-  ///
-  /// ### Authority
-  /// - "fee_authority" - Set authority in the WhirlpoolConfig
-  ///
-  /// ### Parameters
-  /// - `tick_spacing` - The tick-spacing that this fee-tier suggests the default_fee_rate for.
-  /// - `default_fee_rate` - The default fee rate that a pool will use if the pool uses this
-  /// fee tier during initialization.
-  ///
-  /// #### Special Errors
-  /// - `InvalidTickSpacing` - If the provided tick_spacing is 0.
-  /// - `FeeRateMaxExceeded` - If the provided default_fee_rate exceeds MAX_FEE_RATE.
-  ///
   /// @param tickSpacing: u16
   /// @param defaultFeeRate: u16
   public static Instruction initializeFeeTier(final AccountMeta invokedWhirlpoolProgramMeta,
@@ -2835,7 +2079,6 @@ public final class WhirlpoolProgram {
                                               final PublicKey feeTierKey,
                                               final PublicKey funderKey,
                                               final PublicKey feeAuthorityKey,
-                                              final PublicKey whirlpoolProgramKey,
                                               final int tickSpacing,
                                               final int defaultFeeRate) {
     final var keys = initializeFeeTierKeys(
@@ -2843,26 +2086,11 @@ public final class WhirlpoolProgram {
       configKey,
       feeTierKey,
       funderKey,
-      feeAuthorityKey,
-      whirlpoolProgramKey
+      feeAuthorityKey
     );
     return initializeFeeTier(invokedWhirlpoolProgramMeta, keys, tickSpacing, defaultFeeRate);
   }
 
-  /// Initializes a fee_tier account usable by Whirlpools in a WhirlpoolConfig space.
-  ///
-  /// ### Authority
-  /// - "fee_authority" - Set authority in the WhirlpoolConfig
-  ///
-  /// ### Parameters
-  /// - `tick_spacing` - The tick-spacing that this fee-tier suggests the default_fee_rate for.
-  /// - `default_fee_rate` - The default fee rate that a pool will use if the pool uses this
-  /// fee tier during initialization.
-  ///
-  /// #### Special Errors
-  /// - `InvalidTickSpacing` - If the provided tick_spacing is 0.
-  /// - `FeeRateMaxExceeded` - If the provided default_fee_rate exceeds MAX_FEE_RATE.
-  ///
   /// @param tickSpacing: u16
   /// @param defaultFeeRate: u16
   public static Instruction initializeFeeTier(final AccountMeta invokedWhirlpoolProgramMeta,
@@ -2921,19 +2149,6 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator INITIALIZE_POOL_DISCRIMINATOR = toDiscriminator(95, 180, 10, 172, 84, 174, 232, 40);
 
-  /// Initializes a Whirlpool account.
-  /// Fee rate is set to the default values on the config and supplied fee_tier.
-  ///
-  /// ### Parameters
-  /// - `bumps` - The bump value when deriving the PDA of the Whirlpool address.
-  /// - `tick_spacing` - The desired tick spacing for this pool.
-  /// - `initial_sqrt_price` - The desired initial sqrt-price for this pool
-  ///
-  /// #### Special Errors
-  /// `InvalidTokenMintOrder` - The order of mints have to be ordered by
-  /// `SqrtPriceOutOfBounds` - provided initial_sqrt_price is not between 2^-64 to 2^64
-  ///
-  ///
   public static List<AccountMeta> initializePoolKeys(final SolanaAccounts solanaAccounts,
                                                      final PublicKey whirlpoolsConfigKey,
                                                      final PublicKey tokenMintAKey,
@@ -2943,8 +2158,7 @@ public final class WhirlpoolProgram {
                                                      final PublicKey tokenVaultAKey,
                                                      final PublicKey tokenVaultBKey,
                                                      final PublicKey feeTierKey,
-                                                     final PublicKey tokenProgramKey,
-                                                     final PublicKey whirlpoolProgramKey) {
+                                                     final PublicKey tokenProgramKey) {
     return List.of(
       createRead(whirlpoolsConfigKey),
       createRead(tokenMintAKey),
@@ -2956,24 +2170,10 @@ public final class WhirlpoolProgram {
       createRead(feeTierKey),
       createRead(tokenProgramKey),
       createRead(solanaAccounts.systemProgram()),
-      createRead(solanaAccounts.rentSysVar()),
-      createRead(whirlpoolProgramKey)
+      createRead(solanaAccounts.rentSysVar())
     );
   }
 
-  /// Initializes a Whirlpool account.
-  /// Fee rate is set to the default values on the config and supplied fee_tier.
-  ///
-  /// ### Parameters
-  /// - `bumps` - The bump value when deriving the PDA of the Whirlpool address.
-  /// - `tick_spacing` - The desired tick spacing for this pool.
-  /// - `initial_sqrt_price` - The desired initial sqrt-price for this pool
-  ///
-  /// #### Special Errors
-  /// `InvalidTokenMintOrder` - The order of mints have to be ordered by
-  /// `SqrtPriceOutOfBounds` - provided initial_sqrt_price is not between 2^-64 to 2^64
-  ///
-  ///
   /// @param tickSpacing: u16
   public static Instruction initializePool(final AccountMeta invokedWhirlpoolProgramMeta,
                                            final SolanaAccounts solanaAccounts,
@@ -2986,7 +2186,6 @@ public final class WhirlpoolProgram {
                                            final PublicKey tokenVaultBKey,
                                            final PublicKey feeTierKey,
                                            final PublicKey tokenProgramKey,
-                                           final PublicKey whirlpoolProgramKey,
                                            final WhirlpoolBumps bumps,
                                            final int tickSpacing,
                                            final BigInteger initialSqrtPrice) {
@@ -3000,8 +2199,7 @@ public final class WhirlpoolProgram {
       tokenVaultAKey,
       tokenVaultBKey,
       feeTierKey,
-      tokenProgramKey,
-      whirlpoolProgramKey
+      tokenProgramKey
     );
     return initializePool(
       invokedWhirlpoolProgramMeta,
@@ -3012,19 +2210,6 @@ public final class WhirlpoolProgram {
     );
   }
 
-  /// Initializes a Whirlpool account.
-  /// Fee rate is set to the default values on the config and supplied fee_tier.
-  ///
-  /// ### Parameters
-  /// - `bumps` - The bump value when deriving the PDA of the Whirlpool address.
-  /// - `tick_spacing` - The desired tick spacing for this pool.
-  /// - `initial_sqrt_price` - The desired initial sqrt-price for this pool
-  ///
-  /// #### Special Errors
-  /// `InvalidTokenMintOrder` - The order of mints have to be ordered by
-  /// `SqrtPriceOutOfBounds` - provided initial_sqrt_price is not between 2^-64 to 2^64
-  ///
-  ///
   /// @param tickSpacing: u16
   public static Instruction initializePool(final AccountMeta invokedWhirlpoolProgramMeta,
                                            final List<AccountMeta> keys,
@@ -3090,20 +2275,6 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator INITIALIZE_POOL_V_2_DISCRIMINATOR = toDiscriminator(207, 45, 87, 242, 27, 63, 204, 67);
 
-  /// Initializes a Whirlpool account.
-  /// This instruction works with both Token and Token-2022.
-  /// Fee rate is set to the default values on the config and supplied fee_tier.
-  ///
-  /// ### Parameters
-  /// - `bumps` - The bump value when deriving the PDA of the Whirlpool address.
-  /// - `tick_spacing` - The desired tick spacing for this pool.
-  /// - `initial_sqrt_price` - The desired initial sqrt-price for this pool
-  ///
-  /// #### Special Errors
-  /// `InvalidTokenMintOrder` - The order of mints have to be ordered by
-  /// `SqrtPriceOutOfBounds` - provided initial_sqrt_price is not between 2^-64 to 2^64
-  ///
-  ///
   public static List<AccountMeta> initializePoolV2Keys(final SolanaAccounts solanaAccounts,
                                                        final PublicKey whirlpoolsConfigKey,
                                                        final PublicKey tokenMintAKey,
@@ -3116,8 +2287,7 @@ public final class WhirlpoolProgram {
                                                        final PublicKey tokenVaultBKey,
                                                        final PublicKey feeTierKey,
                                                        final PublicKey tokenProgramAKey,
-                                                       final PublicKey tokenProgramBKey,
-                                                       final PublicKey whirlpoolProgramKey) {
+                                                       final PublicKey tokenProgramBKey) {
     return List.of(
       createRead(whirlpoolsConfigKey),
       createRead(tokenMintAKey),
@@ -3132,25 +2302,10 @@ public final class WhirlpoolProgram {
       createRead(tokenProgramAKey),
       createRead(tokenProgramBKey),
       createRead(solanaAccounts.systemProgram()),
-      createRead(solanaAccounts.rentSysVar()),
-      createRead(whirlpoolProgramKey)
+      createRead(solanaAccounts.rentSysVar())
     );
   }
 
-  /// Initializes a Whirlpool account.
-  /// This instruction works with both Token and Token-2022.
-  /// Fee rate is set to the default values on the config and supplied fee_tier.
-  ///
-  /// ### Parameters
-  /// - `bumps` - The bump value when deriving the PDA of the Whirlpool address.
-  /// - `tick_spacing` - The desired tick spacing for this pool.
-  /// - `initial_sqrt_price` - The desired initial sqrt-price for this pool
-  ///
-  /// #### Special Errors
-  /// `InvalidTokenMintOrder` - The order of mints have to be ordered by
-  /// `SqrtPriceOutOfBounds` - provided initial_sqrt_price is not between 2^-64 to 2^64
-  ///
-  ///
   /// @param tickSpacing: u16
   public static Instruction initializePoolV2(final AccountMeta invokedWhirlpoolProgramMeta,
                                              final SolanaAccounts solanaAccounts,
@@ -3166,7 +2321,6 @@ public final class WhirlpoolProgram {
                                              final PublicKey feeTierKey,
                                              final PublicKey tokenProgramAKey,
                                              final PublicKey tokenProgramBKey,
-                                             final PublicKey whirlpoolProgramKey,
                                              final int tickSpacing,
                                              final BigInteger initialSqrtPrice) {
     final var keys = initializePoolV2Keys(
@@ -3182,26 +2336,11 @@ public final class WhirlpoolProgram {
       tokenVaultBKey,
       feeTierKey,
       tokenProgramAKey,
-      tokenProgramBKey,
-      whirlpoolProgramKey
+      tokenProgramBKey
     );
     return initializePoolV2(invokedWhirlpoolProgramMeta, keys, tickSpacing, initialSqrtPrice);
   }
 
-  /// Initializes a Whirlpool account.
-  /// This instruction works with both Token and Token-2022.
-  /// Fee rate is set to the default values on the config and supplied fee_tier.
-  ///
-  /// ### Parameters
-  /// - `bumps` - The bump value when deriving the PDA of the Whirlpool address.
-  /// - `tick_spacing` - The desired tick spacing for this pool.
-  /// - `initial_sqrt_price` - The desired initial sqrt-price for this pool
-  ///
-  /// #### Special Errors
-  /// `InvalidTokenMintOrder` - The order of mints have to be ordered by
-  /// `SqrtPriceOutOfBounds` - provided initial_sqrt_price is not between 2^-64 to 2^64
-  ///
-  ///
   /// @param tickSpacing: u16
   public static Instruction initializePoolV2(final AccountMeta invokedWhirlpoolProgramMeta,
                                              final List<AccountMeta> keys,
@@ -3258,19 +2397,6 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator INITIALIZE_POOL_WITH_ADAPTIVE_FEE_DISCRIMINATOR = toDiscriminator(143, 94, 96, 76, 172, 124, 119, 199);
 
-  /// Initializes a Whirlpool account and Oracle account with adaptive fee.
-  ///
-  /// ### Parameters
-  /// - `initial_sqrt_price` - The desired initial sqrt-price for this pool
-  /// - `trade_enable_timestamp` - The timestamp when trading is enabled for this pool (within 72 hours)
-  ///
-  /// #### Special Errors
-  /// `InvalidTokenMintOrder` - The order of mints have to be ordered by
-  /// `SqrtPriceOutOfBounds` - provided initial_sqrt_price is not between 2^-64 to 2^64
-  /// `InvalidTradeEnableTimestamp` - provided trade_enable_timestamp is not within 72 hours or the adaptive fee-tier is permission-less
-  /// `UnsupportedTokenMint` - The provided token mint is not supported by the program (e.g. it has risky token extensions)
-  ///
-  ///
   public static List<AccountMeta> initializePoolWithAdaptiveFeeKeys(final SolanaAccounts solanaAccounts,
                                                                     final PublicKey whirlpoolsConfigKey,
                                                                     final PublicKey tokenMintAKey,
@@ -3285,8 +2411,7 @@ public final class WhirlpoolProgram {
                                                                     final PublicKey tokenVaultBKey,
                                                                     final PublicKey adaptiveFeeTierKey,
                                                                     final PublicKey tokenProgramAKey,
-                                                                    final PublicKey tokenProgramBKey,
-                                                                    final PublicKey whirlpoolProgramKey) {
+                                                                    final PublicKey tokenProgramBKey) {
     return List.of(
       createRead(whirlpoolsConfigKey),
       createRead(tokenMintAKey),
@@ -3303,24 +2428,10 @@ public final class WhirlpoolProgram {
       createRead(tokenProgramAKey),
       createRead(tokenProgramBKey),
       createRead(solanaAccounts.systemProgram()),
-      createRead(solanaAccounts.rentSysVar()),
-      createRead(whirlpoolProgramKey)
+      createRead(solanaAccounts.rentSysVar())
     );
   }
 
-  /// Initializes a Whirlpool account and Oracle account with adaptive fee.
-  ///
-  /// ### Parameters
-  /// - `initial_sqrt_price` - The desired initial sqrt-price for this pool
-  /// - `trade_enable_timestamp` - The timestamp when trading is enabled for this pool (within 72 hours)
-  ///
-  /// #### Special Errors
-  /// `InvalidTokenMintOrder` - The order of mints have to be ordered by
-  /// `SqrtPriceOutOfBounds` - provided initial_sqrt_price is not between 2^-64 to 2^64
-  /// `InvalidTradeEnableTimestamp` - provided trade_enable_timestamp is not within 72 hours or the adaptive fee-tier is permission-less
-  /// `UnsupportedTokenMint` - The provided token mint is not supported by the program (e.g. it has risky token extensions)
-  ///
-  ///
   /// @param tradeEnableTimestamp: Option<u64>
   public static Instruction initializePoolWithAdaptiveFee(final AccountMeta invokedWhirlpoolProgramMeta,
                                                           final SolanaAccounts solanaAccounts,
@@ -3338,7 +2449,6 @@ public final class WhirlpoolProgram {
                                                           final PublicKey adaptiveFeeTierKey,
                                                           final PublicKey tokenProgramAKey,
                                                           final PublicKey tokenProgramBKey,
-                                                          final PublicKey whirlpoolProgramKey,
                                                           final BigInteger initialSqrtPrice,
                                                           final OptionalLong tradeEnableTimestamp) {
     final var keys = initializePoolWithAdaptiveFeeKeys(
@@ -3356,25 +2466,11 @@ public final class WhirlpoolProgram {
       tokenVaultBKey,
       adaptiveFeeTierKey,
       tokenProgramAKey,
-      tokenProgramBKey,
-      whirlpoolProgramKey
+      tokenProgramBKey
     );
     return initializePoolWithAdaptiveFee(invokedWhirlpoolProgramMeta, keys, initialSqrtPrice, tradeEnableTimestamp);
   }
 
-  /// Initializes a Whirlpool account and Oracle account with adaptive fee.
-  ///
-  /// ### Parameters
-  /// - `initial_sqrt_price` - The desired initial sqrt-price for this pool
-  /// - `trade_enable_timestamp` - The timestamp when trading is enabled for this pool (within 72 hours)
-  ///
-  /// #### Special Errors
-  /// `InvalidTokenMintOrder` - The order of mints have to be ordered by
-  /// `SqrtPriceOutOfBounds` - provided initial_sqrt_price is not between 2^-64 to 2^64
-  /// `InvalidTradeEnableTimestamp` - provided trade_enable_timestamp is not within 72 hours or the adaptive fee-tier is permission-less
-  /// `UnsupportedTokenMint` - The provided token mint is not supported by the program (e.g. it has risky token extensions)
-  ///
-  ///
   /// @param tradeEnableTimestamp: Option<u64>
   public static Instruction initializePoolWithAdaptiveFee(final AccountMeta invokedWhirlpoolProgramMeta,
                                                           final List<AccountMeta> keys,
@@ -3437,17 +2533,13 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator INITIALIZE_POSITION_BUNDLE_DISCRIMINATOR = toDiscriminator(117, 45, 241, 149, 24, 18, 194, 65);
 
-  /// Initializes a PositionBundle account that bundles several positions.
-  /// A unique token will be minted to represent the position bundle in the users wallet.
-  ///
   public static List<AccountMeta> initializePositionBundleKeys(final SolanaAccounts solanaAccounts,
                                                                final PublicKey positionBundleKey,
                                                                final PublicKey positionBundleMintKey,
                                                                final PublicKey positionBundleTokenAccountKey,
                                                                final PublicKey positionBundleOwnerKey,
                                                                final PublicKey funderKey,
-                                                               final PublicKey tokenProgramKey,
-                                                               final PublicKey whirlpoolProgramKey) {
+                                                               final PublicKey tokenProgramKey) {
     return List.of(
       createWrite(positionBundleKey),
       createWritableSigner(positionBundleMintKey),
@@ -3457,14 +2549,10 @@ public final class WhirlpoolProgram {
       createRead(tokenProgramKey),
       createRead(solanaAccounts.systemProgram()),
       createRead(solanaAccounts.rentSysVar()),
-      createRead(solanaAccounts.associatedTokenAccountProgram()),
-      createRead(whirlpoolProgramKey)
+      createRead(solanaAccounts.associatedTokenAccountProgram())
     );
   }
 
-  /// Initializes a PositionBundle account that bundles several positions.
-  /// A unique token will be minted to represent the position bundle in the users wallet.
-  ///
   public static Instruction initializePositionBundle(final AccountMeta invokedWhirlpoolProgramMeta,
                                                      final SolanaAccounts solanaAccounts,
                                                      final PublicKey positionBundleKey,
@@ -3472,8 +2560,7 @@ public final class WhirlpoolProgram {
                                                      final PublicKey positionBundleTokenAccountKey,
                                                      final PublicKey positionBundleOwnerKey,
                                                      final PublicKey funderKey,
-                                                     final PublicKey tokenProgramKey,
-                                                     final PublicKey whirlpoolProgramKey) {
+                                                     final PublicKey tokenProgramKey) {
     final var keys = initializePositionBundleKeys(
       solanaAccounts,
       positionBundleKey,
@@ -3481,15 +2568,11 @@ public final class WhirlpoolProgram {
       positionBundleTokenAccountKey,
       positionBundleOwnerKey,
       funderKey,
-      tokenProgramKey,
-      whirlpoolProgramKey
+      tokenProgramKey
     );
     return initializePositionBundle(invokedWhirlpoolProgramMeta, keys);
   }
 
-  /// Initializes a PositionBundle account that bundles several positions.
-  /// A unique token will be minted to represent the position bundle in the users wallet.
-  ///
   public static Instruction initializePositionBundle(final AccountMeta invokedWhirlpoolProgramMeta,
                                                      final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, INITIALIZE_POSITION_BUNDLE_DISCRIMINATOR);
@@ -3497,11 +2580,6 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator INITIALIZE_POSITION_BUNDLE_WITH_METADATA_DISCRIMINATOR = toDiscriminator(93, 124, 16, 179, 249, 131, 115, 245);
 
-  /// Initializes a PositionBundle account that bundles several positions.
-  /// A unique token will be minted to represent the position bundle in the users wallet.
-  /// Additional Metaplex metadata is appended to identify the token.
-  ///
-  /// @param positionBundleMetadataKey https://github.com/metaplex-foundation/metaplex-program-library/blob/773a574c4b34e5b9f248a81306ec24db064e255f/token-metadata/program/src/utils/metadata.rs#L100
   public static List<AccountMeta> initializePositionBundleWithMetadataKeys(final SolanaAccounts solanaAccounts,
                                                                            final PublicKey positionBundleKey,
                                                                            final PublicKey positionBundleMintKey,
@@ -3511,8 +2589,7 @@ public final class WhirlpoolProgram {
                                                                            final PublicKey funderKey,
                                                                            final PublicKey metadataUpdateAuthKey,
                                                                            final PublicKey tokenProgramKey,
-                                                                           final PublicKey metadataProgramKey,
-                                                                           final PublicKey whirlpoolProgramKey) {
+                                                                           final PublicKey metadataProgramKey) {
     return List.of(
       createWrite(positionBundleKey),
       createWritableSigner(positionBundleMintKey),
@@ -3525,16 +2602,10 @@ public final class WhirlpoolProgram {
       createRead(solanaAccounts.systemProgram()),
       createRead(solanaAccounts.rentSysVar()),
       createRead(solanaAccounts.associatedTokenAccountProgram()),
-      createRead(metadataProgramKey),
-      createRead(whirlpoolProgramKey)
+      createRead(metadataProgramKey)
     );
   }
 
-  /// Initializes a PositionBundle account that bundles several positions.
-  /// A unique token will be minted to represent the position bundle in the users wallet.
-  /// Additional Metaplex metadata is appended to identify the token.
-  ///
-  /// @param positionBundleMetadataKey https://github.com/metaplex-foundation/metaplex-program-library/blob/773a574c4b34e5b9f248a81306ec24db064e255f/token-metadata/program/src/utils/metadata.rs#L100
   public static Instruction initializePositionBundleWithMetadata(final AccountMeta invokedWhirlpoolProgramMeta,
                                                                  final SolanaAccounts solanaAccounts,
                                                                  final PublicKey positionBundleKey,
@@ -3545,8 +2616,7 @@ public final class WhirlpoolProgram {
                                                                  final PublicKey funderKey,
                                                                  final PublicKey metadataUpdateAuthKey,
                                                                  final PublicKey tokenProgramKey,
-                                                                 final PublicKey metadataProgramKey,
-                                                                 final PublicKey whirlpoolProgramKey) {
+                                                                 final PublicKey metadataProgramKey) {
     final var keys = initializePositionBundleWithMetadataKeys(
       solanaAccounts,
       positionBundleKey,
@@ -3557,16 +2627,11 @@ public final class WhirlpoolProgram {
       funderKey,
       metadataUpdateAuthKey,
       tokenProgramKey,
-      metadataProgramKey,
-      whirlpoolProgramKey
+      metadataProgramKey
     );
     return initializePositionBundleWithMetadata(invokedWhirlpoolProgramMeta, keys);
   }
 
-  /// Initializes a PositionBundle account that bundles several positions.
-  /// A unique token will be minted to represent the position bundle in the users wallet.
-  /// Additional Metaplex metadata is appended to identify the token.
-  ///
   public static Instruction initializePositionBundleWithMetadata(final AccountMeta invokedWhirlpoolProgramMeta,
                                                                  final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, INITIALIZE_POSITION_BUNDLE_WITH_METADATA_DISCRIMINATOR);
@@ -3574,28 +2639,13 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator INITIALIZE_REWARD_DISCRIMINATOR = toDiscriminator(95, 135, 192, 196, 242, 129, 230, 68);
 
-  /// Initialize reward for a Whirlpool. A pool can only support up to a set number of rewards.
-  ///
-  /// ### Authority
-  /// - "reward_authority" - assigned authority by the reward_super_authority for the specified
-  /// reward-index in this Whirlpool
-  ///
-  /// ### Parameters
-  /// - `reward_index` - The reward index that we'd like to initialize. (0 <= index <= NUM_REWARDS)
-  ///
-  /// #### Special Errors
-  /// - `InvalidRewardIndex` - If the provided reward index doesn't match the lowest uninitialized
-  /// index in this pool, or exceeds NUM_REWARDS, or
-  /// all reward slots for this pool has been initialized.
-  ///
   public static List<AccountMeta> initializeRewardKeys(final SolanaAccounts solanaAccounts,
                                                        final PublicKey rewardAuthorityKey,
                                                        final PublicKey funderKey,
                                                        final PublicKey whirlpoolKey,
                                                        final PublicKey rewardMintKey,
                                                        final PublicKey rewardVaultKey,
-                                                       final PublicKey tokenProgramKey,
-                                                       final PublicKey whirlpoolProgramKey) {
+                                                       final PublicKey tokenProgramKey) {
     return List.of(
       createReadOnlySigner(rewardAuthorityKey),
       createWritableSigner(funderKey),
@@ -3604,25 +2654,10 @@ public final class WhirlpoolProgram {
       createWritableSigner(rewardVaultKey),
       createRead(tokenProgramKey),
       createRead(solanaAccounts.systemProgram()),
-      createRead(solanaAccounts.rentSysVar()),
-      createRead(whirlpoolProgramKey)
+      createRead(solanaAccounts.rentSysVar())
     );
   }
 
-  /// Initialize reward for a Whirlpool. A pool can only support up to a set number of rewards.
-  ///
-  /// ### Authority
-  /// - "reward_authority" - assigned authority by the reward_super_authority for the specified
-  /// reward-index in this Whirlpool
-  ///
-  /// ### Parameters
-  /// - `reward_index` - The reward index that we'd like to initialize. (0 <= index <= NUM_REWARDS)
-  ///
-  /// #### Special Errors
-  /// - `InvalidRewardIndex` - If the provided reward index doesn't match the lowest uninitialized
-  /// index in this pool, or exceeds NUM_REWARDS, or
-  /// all reward slots for this pool has been initialized.
-  ///
   /// @param rewardIndex: u8
   public static Instruction initializeReward(final AccountMeta invokedWhirlpoolProgramMeta,
                                              final SolanaAccounts solanaAccounts,
@@ -3632,7 +2667,6 @@ public final class WhirlpoolProgram {
                                              final PublicKey rewardMintKey,
                                              final PublicKey rewardVaultKey,
                                              final PublicKey tokenProgramKey,
-                                             final PublicKey whirlpoolProgramKey,
                                              final int rewardIndex) {
     final var keys = initializeRewardKeys(
       solanaAccounts,
@@ -3641,26 +2675,11 @@ public final class WhirlpoolProgram {
       whirlpoolKey,
       rewardMintKey,
       rewardVaultKey,
-      tokenProgramKey,
-      whirlpoolProgramKey
+      tokenProgramKey
     );
     return initializeReward(invokedWhirlpoolProgramMeta, keys, rewardIndex);
   }
 
-  /// Initialize reward for a Whirlpool. A pool can only support up to a set number of rewards.
-  ///
-  /// ### Authority
-  /// - "reward_authority" - assigned authority by the reward_super_authority for the specified
-  /// reward-index in this Whirlpool
-  ///
-  /// ### Parameters
-  /// - `reward_index` - The reward index that we'd like to initialize. (0 <= index <= NUM_REWARDS)
-  ///
-  /// #### Special Errors
-  /// - `InvalidRewardIndex` - If the provided reward index doesn't match the lowest uninitialized
-  /// index in this pool, or exceeds NUM_REWARDS, or
-  /// all reward slots for this pool has been initialized.
-  ///
   /// @param rewardIndex: u8
   public static Instruction initializeReward(final AccountMeta invokedWhirlpoolProgramMeta,
                                              final List<AccountMeta> keys,
@@ -3709,21 +2728,6 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator INITIALIZE_REWARD_V_2_DISCRIMINATOR = toDiscriminator(91, 1, 77, 50, 235, 229, 133, 49);
 
-  /// Initialize reward for a Whirlpool. A pool can only support up to a set number of rewards.
-  /// This instruction works with both Token and Token-2022.
-  ///
-  /// ### Authority
-  /// - "reward_authority" - assigned authority by the reward_super_authority for the specified
-  /// reward-index in this Whirlpool
-  ///
-  /// ### Parameters
-  /// - `reward_index` - The reward index that we'd like to initialize. (0 <= index <= NUM_REWARDS)
-  ///
-  /// #### Special Errors
-  /// - `InvalidRewardIndex` - If the provided reward index doesn't match the lowest uninitialized
-  /// index in this pool, or exceeds NUM_REWARDS, or
-  /// all reward slots for this pool has been initialized.
-  ///
   public static List<AccountMeta> initializeRewardV2Keys(final SolanaAccounts solanaAccounts,
                                                          final PublicKey rewardAuthorityKey,
                                                          final PublicKey funderKey,
@@ -3731,8 +2735,7 @@ public final class WhirlpoolProgram {
                                                          final PublicKey rewardMintKey,
                                                          final PublicKey rewardTokenBadgeKey,
                                                          final PublicKey rewardVaultKey,
-                                                         final PublicKey rewardTokenProgramKey,
-                                                         final PublicKey whirlpoolProgramKey) {
+                                                         final PublicKey rewardTokenProgramKey) {
     return List.of(
       createReadOnlySigner(rewardAuthorityKey),
       createWritableSigner(funderKey),
@@ -3742,26 +2745,10 @@ public final class WhirlpoolProgram {
       createWritableSigner(rewardVaultKey),
       createRead(rewardTokenProgramKey),
       createRead(solanaAccounts.systemProgram()),
-      createRead(solanaAccounts.rentSysVar()),
-      createRead(whirlpoolProgramKey)
+      createRead(solanaAccounts.rentSysVar())
     );
   }
 
-  /// Initialize reward for a Whirlpool. A pool can only support up to a set number of rewards.
-  /// This instruction works with both Token and Token-2022.
-  ///
-  /// ### Authority
-  /// - "reward_authority" - assigned authority by the reward_super_authority for the specified
-  /// reward-index in this Whirlpool
-  ///
-  /// ### Parameters
-  /// - `reward_index` - The reward index that we'd like to initialize. (0 <= index <= NUM_REWARDS)
-  ///
-  /// #### Special Errors
-  /// - `InvalidRewardIndex` - If the provided reward index doesn't match the lowest uninitialized
-  /// index in this pool, or exceeds NUM_REWARDS, or
-  /// all reward slots for this pool has been initialized.
-  ///
   /// @param rewardIndex: u8
   public static Instruction initializeRewardV2(final AccountMeta invokedWhirlpoolProgramMeta,
                                                final SolanaAccounts solanaAccounts,
@@ -3772,7 +2759,6 @@ public final class WhirlpoolProgram {
                                                final PublicKey rewardTokenBadgeKey,
                                                final PublicKey rewardVaultKey,
                                                final PublicKey rewardTokenProgramKey,
-                                               final PublicKey whirlpoolProgramKey,
                                                final int rewardIndex) {
     final var keys = initializeRewardV2Keys(
       solanaAccounts,
@@ -3782,27 +2768,11 @@ public final class WhirlpoolProgram {
       rewardMintKey,
       rewardTokenBadgeKey,
       rewardVaultKey,
-      rewardTokenProgramKey,
-      whirlpoolProgramKey
+      rewardTokenProgramKey
     );
     return initializeRewardV2(invokedWhirlpoolProgramMeta, keys, rewardIndex);
   }
 
-  /// Initialize reward for a Whirlpool. A pool can only support up to a set number of rewards.
-  /// This instruction works with both Token and Token-2022.
-  ///
-  /// ### Authority
-  /// - "reward_authority" - assigned authority by the reward_super_authority for the specified
-  /// reward-index in this Whirlpool
-  ///
-  /// ### Parameters
-  /// - `reward_index` - The reward index that we'd like to initialize. (0 <= index <= NUM_REWARDS)
-  ///
-  /// #### Special Errors
-  /// - `InvalidRewardIndex` - If the provided reward index doesn't match the lowest uninitialized
-  /// index in this pool, or exceeds NUM_REWARDS, or
-  /// all reward slots for this pool has been initialized.
-  ///
   /// @param rewardIndex: u8
   public static Instruction initializeRewardV2(final AccountMeta invokedWhirlpoolProgramMeta,
                                                final List<AccountMeta> keys,
@@ -3851,67 +2821,33 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator INITIALIZE_TICK_ARRAY_DISCRIMINATOR = toDiscriminator(11, 188, 193, 214, 141, 91, 149, 184);
 
-  /// Initializes a fixed-length tick_array account to represent a tick-range in a Whirlpool.
-  ///
-  /// ### Parameters
-  /// - `start_tick_index` - The starting tick index for this tick-array.
-  /// Has to be a multiple of TickArray size & the tick spacing of this pool.
-  ///
-  /// #### Special Errors
-  /// - `InvalidStartTick` - if the provided start tick is out of bounds or is not a multiple of
-  /// TICK_ARRAY_SIZE * tick spacing.
-  ///
   public static List<AccountMeta> initializeTickArrayKeys(final SolanaAccounts solanaAccounts,
                                                           final PublicKey whirlpoolKey,
                                                           final PublicKey funderKey,
-                                                          final PublicKey tickArrayKey,
-                                                          final PublicKey whirlpoolProgramKey) {
+                                                          final PublicKey tickArrayKey) {
     return List.of(
       createRead(whirlpoolKey),
       createWritableSigner(funderKey),
       createWrite(tickArrayKey),
-      createRead(solanaAccounts.systemProgram()),
-      createRead(whirlpoolProgramKey)
+      createRead(solanaAccounts.systemProgram())
     );
   }
 
-  /// Initializes a fixed-length tick_array account to represent a tick-range in a Whirlpool.
-  ///
-  /// ### Parameters
-  /// - `start_tick_index` - The starting tick index for this tick-array.
-  /// Has to be a multiple of TickArray size & the tick spacing of this pool.
-  ///
-  /// #### Special Errors
-  /// - `InvalidStartTick` - if the provided start tick is out of bounds or is not a multiple of
-  /// TICK_ARRAY_SIZE * tick spacing.
-  ///
   public static Instruction initializeTickArray(final AccountMeta invokedWhirlpoolProgramMeta,
                                                 final SolanaAccounts solanaAccounts,
                                                 final PublicKey whirlpoolKey,
                                                 final PublicKey funderKey,
                                                 final PublicKey tickArrayKey,
-                                                final PublicKey whirlpoolProgramKey,
                                                 final int startTickIndex) {
     final var keys = initializeTickArrayKeys(
       solanaAccounts,
       whirlpoolKey,
       funderKey,
-      tickArrayKey,
-      whirlpoolProgramKey
+      tickArrayKey
     );
     return initializeTickArray(invokedWhirlpoolProgramMeta, keys, startTickIndex);
   }
 
-  /// Initializes a fixed-length tick_array account to represent a tick-range in a Whirlpool.
-  ///
-  /// ### Parameters
-  /// - `start_tick_index` - The starting tick index for this tick-array.
-  /// Has to be a multiple of TickArray size & the tick spacing of this pool.
-  ///
-  /// #### Special Errors
-  /// - `InvalidStartTick` - if the provided start tick is out of bounds or is not a multiple of
-  /// TICK_ARRAY_SIZE * tick spacing.
-  ///
   public static Instruction initializeTickArray(final AccountMeta invokedWhirlpoolProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final int startTickIndex) {
@@ -3958,22 +2894,13 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator INITIALIZE_TOKEN_BADGE_DISCRIMINATOR = toDiscriminator(253, 77, 205, 95, 27, 224, 89, 223);
 
-  /// Initialize a TokenBadge account.
-  ///
-  /// ### Authority
-  /// - "token_badge_authority" - Set authority in the WhirlpoolConfigExtension
-  ///
-  /// ### Special Errors
-  /// - `FeatureIsNotEnabled` - If the feature flag for token badges is not enabled.
-  ///
   public static List<AccountMeta> initializeTokenBadgeKeys(final SolanaAccounts solanaAccounts,
                                                            final PublicKey whirlpoolsConfigKey,
                                                            final PublicKey whirlpoolsConfigExtensionKey,
                                                            final PublicKey tokenBadgeAuthorityKey,
                                                            final PublicKey tokenMintKey,
                                                            final PublicKey tokenBadgeKey,
-                                                           final PublicKey funderKey,
-                                                           final PublicKey whirlpoolProgramKey) {
+                                                           final PublicKey funderKey) {
     return List.of(
       createRead(whirlpoolsConfigKey),
       createRead(whirlpoolsConfigExtensionKey),
@@ -3981,19 +2908,10 @@ public final class WhirlpoolProgram {
       createRead(tokenMintKey),
       createWrite(tokenBadgeKey),
       createWritableSigner(funderKey),
-      createRead(solanaAccounts.systemProgram()),
-      createRead(whirlpoolProgramKey)
+      createRead(solanaAccounts.systemProgram())
     );
   }
 
-  /// Initialize a TokenBadge account.
-  ///
-  /// ### Authority
-  /// - "token_badge_authority" - Set authority in the WhirlpoolConfigExtension
-  ///
-  /// ### Special Errors
-  /// - `FeatureIsNotEnabled` - If the feature flag for token badges is not enabled.
-  ///
   public static Instruction initializeTokenBadge(final AccountMeta invokedWhirlpoolProgramMeta,
                                                  final SolanaAccounts solanaAccounts,
                                                  final PublicKey whirlpoolsConfigKey,
@@ -4001,8 +2919,7 @@ public final class WhirlpoolProgram {
                                                  final PublicKey tokenBadgeAuthorityKey,
                                                  final PublicKey tokenMintKey,
                                                  final PublicKey tokenBadgeKey,
-                                                 final PublicKey funderKey,
-                                                 final PublicKey whirlpoolProgramKey) {
+                                                 final PublicKey funderKey) {
     final var keys = initializeTokenBadgeKeys(
       solanaAccounts,
       whirlpoolsConfigKey,
@@ -4010,20 +2927,11 @@ public final class WhirlpoolProgram {
       tokenBadgeAuthorityKey,
       tokenMintKey,
       tokenBadgeKey,
-      funderKey,
-      whirlpoolProgramKey
+      funderKey
     );
     return initializeTokenBadge(invokedWhirlpoolProgramMeta, keys);
   }
 
-  /// Initialize a TokenBadge account.
-  ///
-  /// ### Authority
-  /// - "token_badge_authority" - Set authority in the WhirlpoolConfigExtension
-  ///
-  /// ### Special Errors
-  /// - `FeatureIsNotEnabled` - If the feature flag for token badges is not enabled.
-  ///
   public static Instruction initializeTokenBadge(final AccountMeta invokedWhirlpoolProgramMeta,
                                                  final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, INITIALIZE_TOKEN_BADGE_DISCRIMINATOR);
@@ -4031,15 +2939,6 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator LOCK_POSITION_DISCRIMINATOR = toDiscriminator(227, 62, 2, 252, 247, 10, 171, 185);
 
-  /// Lock the position to prevent any liquidity changes.
-  ///
-  /// ### Authority
-  /// - `position_authority` - The authority that owns the position token.
-  ///
-  /// #### Special Errors
-  /// - `PositionAlreadyLocked` - The provided position is already locked.
-  /// - `PositionNotLockable` - The provided position is not lockable (e.g. An empty position).
-  ///
   public static List<AccountMeta> lockPositionKeys(final SolanaAccounts solanaAccounts,
                                                    final PublicKey funderKey,
                                                    final PublicKey positionAuthorityKey,
@@ -4048,8 +2947,7 @@ public final class WhirlpoolProgram {
                                                    final PublicKey positionTokenAccountKey,
                                                    final PublicKey lockConfigKey,
                                                    final PublicKey whirlpoolKey,
-                                                   final PublicKey token2022ProgramKey,
-                                                   final PublicKey whirlpoolProgramKey) {
+                                                   final PublicKey token2022ProgramKey) {
     return List.of(
       createWritableSigner(funderKey),
       createReadOnlySigner(positionAuthorityKey),
@@ -4059,20 +2957,10 @@ public final class WhirlpoolProgram {
       createWrite(lockConfigKey),
       createRead(whirlpoolKey),
       createRead(token2022ProgramKey),
-      createRead(solanaAccounts.systemProgram()),
-      createRead(whirlpoolProgramKey)
+      createRead(solanaAccounts.systemProgram())
     );
   }
 
-  /// Lock the position to prevent any liquidity changes.
-  ///
-  /// ### Authority
-  /// - `position_authority` - The authority that owns the position token.
-  ///
-  /// #### Special Errors
-  /// - `PositionAlreadyLocked` - The provided position is already locked.
-  /// - `PositionNotLockable` - The provided position is not lockable (e.g. An empty position).
-  ///
   public static Instruction lockPosition(final AccountMeta invokedWhirlpoolProgramMeta,
                                          final SolanaAccounts solanaAccounts,
                                          final PublicKey funderKey,
@@ -4083,7 +2971,6 @@ public final class WhirlpoolProgram {
                                          final PublicKey lockConfigKey,
                                          final PublicKey whirlpoolKey,
                                          final PublicKey token2022ProgramKey,
-                                         final PublicKey whirlpoolProgramKey,
                                          final LockType lockType) {
     final var keys = lockPositionKeys(
       solanaAccounts,
@@ -4094,21 +2981,11 @@ public final class WhirlpoolProgram {
       positionTokenAccountKey,
       lockConfigKey,
       whirlpoolKey,
-      token2022ProgramKey,
-      whirlpoolProgramKey
+      token2022ProgramKey
     );
     return lockPosition(invokedWhirlpoolProgramMeta, keys, lockType);
   }
 
-  /// Lock the position to prevent any liquidity changes.
-  ///
-  /// ### Authority
-  /// - `position_authority` - The authority that owns the position token.
-  ///
-  /// #### Special Errors
-  /// - `PositionAlreadyLocked` - The provided position is already locked.
-  /// - `PositionNotLockable` - The provided position is not lockable (e.g. An empty position).
-  ///
   public static Instruction lockPosition(final AccountMeta invokedWhirlpoolProgramMeta,
                                          final List<AccountMeta> keys,
                                          final LockType lockType) {
@@ -4154,33 +3031,20 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator MIGRATE_REPURPOSE_REWARD_AUTHORITY_SPACE_DISCRIMINATOR = toDiscriminator(214, 161, 248, 79, 152, 98, 172, 231);
 
-  /// Migration instruction to repurpose the reward authority space in the Whirlpool.
-  /// TODO: This instruction should be removed once all pools have been migrated.
-  ///
-  public static List<AccountMeta> migrateRepurposeRewardAuthoritySpaceKeys(final PublicKey whirlpoolKey,
-                                                                           final PublicKey whirlpoolProgramKey) {
+  public static List<AccountMeta> migrateRepurposeRewardAuthoritySpaceKeys(final PublicKey whirlpoolKey) {
     return List.of(
-      createWrite(whirlpoolKey),
-      createRead(whirlpoolProgramKey)
+      createWrite(whirlpoolKey)
     );
   }
 
-  /// Migration instruction to repurpose the reward authority space in the Whirlpool.
-  /// TODO: This instruction should be removed once all pools have been migrated.
-  ///
   public static Instruction migrateRepurposeRewardAuthoritySpace(final AccountMeta invokedWhirlpoolProgramMeta,
-                                                                 final PublicKey whirlpoolKey,
-                                                                 final PublicKey whirlpoolProgramKey) {
+                                                                 final PublicKey whirlpoolKey) {
     final var keys = migrateRepurposeRewardAuthoritySpaceKeys(
-      whirlpoolKey,
-      whirlpoolProgramKey
+      whirlpoolKey
     );
     return migrateRepurposeRewardAuthoritySpace(invokedWhirlpoolProgramMeta, keys);
   }
 
-  /// Migration instruction to repurpose the reward authority space in the Whirlpool.
-  /// TODO: This instruction should be removed once all pools have been migrated.
-  ///
   public static Instruction migrateRepurposeRewardAuthoritySpace(final AccountMeta invokedWhirlpoolProgramMeta,
                                                                  final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, MIGRATE_REPURPOSE_REWARD_AUTHORITY_SPACE_DISCRIMINATOR);
@@ -4188,31 +3052,13 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator OPEN_BUNDLED_POSITION_DISCRIMINATOR = toDiscriminator(169, 113, 126, 171, 213, 172, 212, 49);
 
-  /// Open a bundled position in a Whirlpool. No new tokens are issued
-  /// because the owner of the position bundle becomes the owner of the position.
-  /// The position will start off with 0 liquidity.
-  ///
-  /// ### Authority
-  /// - `position_bundle_authority` - authority that owns the token corresponding to this desired position bundle.
-  ///
-  /// ### Parameters
-  /// - `bundle_index` - The bundle index that we'd like to open.
-  /// - `tick_lower_index` - The tick specifying the lower end of the position range.
-  /// - `tick_upper_index` - The tick specifying the upper end of the position range.
-  ///
-  /// #### Special Errors
-  /// - `InvalidBundleIndex` - If the provided bundle index is out of bounds.
-  /// - `InvalidTickIndex` - If a provided tick is out of bounds, out of order or not a multiple of
-  /// the tick-spacing in this pool.
-  ///
   public static List<AccountMeta> openBundledPositionKeys(final SolanaAccounts solanaAccounts,
                                                           final PublicKey bundledPositionKey,
                                                           final PublicKey positionBundleKey,
                                                           final PublicKey positionBundleTokenAccountKey,
                                                           final PublicKey positionBundleAuthorityKey,
                                                           final PublicKey whirlpoolKey,
-                                                          final PublicKey funderKey,
-                                                          final PublicKey whirlpoolProgramKey) {
+                                                          final PublicKey funderKey) {
     return List.of(
       createWrite(bundledPositionKey),
       createWrite(positionBundleKey),
@@ -4221,28 +3067,10 @@ public final class WhirlpoolProgram {
       createRead(whirlpoolKey),
       createWritableSigner(funderKey),
       createRead(solanaAccounts.systemProgram()),
-      createRead(solanaAccounts.rentSysVar()),
-      createRead(whirlpoolProgramKey)
+      createRead(solanaAccounts.rentSysVar())
     );
   }
 
-  /// Open a bundled position in a Whirlpool. No new tokens are issued
-  /// because the owner of the position bundle becomes the owner of the position.
-  /// The position will start off with 0 liquidity.
-  ///
-  /// ### Authority
-  /// - `position_bundle_authority` - authority that owns the token corresponding to this desired position bundle.
-  ///
-  /// ### Parameters
-  /// - `bundle_index` - The bundle index that we'd like to open.
-  /// - `tick_lower_index` - The tick specifying the lower end of the position range.
-  /// - `tick_upper_index` - The tick specifying the upper end of the position range.
-  ///
-  /// #### Special Errors
-  /// - `InvalidBundleIndex` - If the provided bundle index is out of bounds.
-  /// - `InvalidTickIndex` - If a provided tick is out of bounds, out of order or not a multiple of
-  /// the tick-spacing in this pool.
-  ///
   /// @param bundleIndex: u16
   public static Instruction openBundledPosition(final AccountMeta invokedWhirlpoolProgramMeta,
                                                 final SolanaAccounts solanaAccounts,
@@ -4252,7 +3080,6 @@ public final class WhirlpoolProgram {
                                                 final PublicKey positionBundleAuthorityKey,
                                                 final PublicKey whirlpoolKey,
                                                 final PublicKey funderKey,
-                                                final PublicKey whirlpoolProgramKey,
                                                 final int bundleIndex,
                                                 final int tickLowerIndex,
                                                 final int tickUpperIndex) {
@@ -4263,8 +3090,7 @@ public final class WhirlpoolProgram {
       positionBundleTokenAccountKey,
       positionBundleAuthorityKey,
       whirlpoolKey,
-      funderKey,
-      whirlpoolProgramKey
+      funderKey
     );
     return openBundledPosition(
       invokedWhirlpoolProgramMeta,
@@ -4275,23 +3101,6 @@ public final class WhirlpoolProgram {
     );
   }
 
-  /// Open a bundled position in a Whirlpool. No new tokens are issued
-  /// because the owner of the position bundle becomes the owner of the position.
-  /// The position will start off with 0 liquidity.
-  ///
-  /// ### Authority
-  /// - `position_bundle_authority` - authority that owns the token corresponding to this desired position bundle.
-  ///
-  /// ### Parameters
-  /// - `bundle_index` - The bundle index that we'd like to open.
-  /// - `tick_lower_index` - The tick specifying the lower end of the position range.
-  /// - `tick_upper_index` - The tick specifying the upper end of the position range.
-  ///
-  /// #### Special Errors
-  /// - `InvalidBundleIndex` - If the provided bundle index is out of bounds.
-  /// - `InvalidTickIndex` - If a provided tick is out of bounds, out of order or not a multiple of
-  /// the tick-spacing in this pool.
-  ///
   /// @param bundleIndex: u16
   public static Instruction openBundledPosition(final AccountMeta invokedWhirlpoolProgramMeta,
                                                 final List<AccountMeta> keys,
@@ -4359,17 +3168,6 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator OPEN_POSITION_DISCRIMINATOR = toDiscriminator(135, 128, 47, 77, 15, 152, 240, 49);
 
-  /// Open a position in a Whirlpool. A unique token will be minted to represent the position
-  /// in the users wallet. The position will start off with 0 liquidity.
-  ///
-  /// ### Parameters
-  /// - `tick_lower_index` - The tick specifying the lower end of the position range.
-  /// - `tick_upper_index` - The tick specifying the upper end of the position range.
-  ///
-  /// #### Special Errors
-  /// - `InvalidTickIndex` - If a provided tick is out of bounds, out of order or not a multiple of
-  /// the tick-spacing in this pool.
-  ///
   public static List<AccountMeta> openPositionKeys(final SolanaAccounts solanaAccounts,
                                                    final PublicKey funderKey,
                                                    final PublicKey ownerKey,
@@ -4377,8 +3175,7 @@ public final class WhirlpoolProgram {
                                                    final PublicKey positionMintKey,
                                                    final PublicKey positionTokenAccountKey,
                                                    final PublicKey whirlpoolKey,
-                                                   final PublicKey tokenProgramKey,
-                                                   final PublicKey whirlpoolProgramKey) {
+                                                   final PublicKey tokenProgramKey) {
     return List.of(
       createWritableSigner(funderKey),
       createRead(ownerKey),
@@ -4389,22 +3186,10 @@ public final class WhirlpoolProgram {
       createRead(tokenProgramKey),
       createRead(solanaAccounts.systemProgram()),
       createRead(solanaAccounts.rentSysVar()),
-      createRead(solanaAccounts.associatedTokenAccountProgram()),
-      createRead(whirlpoolProgramKey)
+      createRead(solanaAccounts.associatedTokenAccountProgram())
     );
   }
 
-  /// Open a position in a Whirlpool. A unique token will be minted to represent the position
-  /// in the users wallet. The position will start off with 0 liquidity.
-  ///
-  /// ### Parameters
-  /// - `tick_lower_index` - The tick specifying the lower end of the position range.
-  /// - `tick_upper_index` - The tick specifying the upper end of the position range.
-  ///
-  /// #### Special Errors
-  /// - `InvalidTickIndex` - If a provided tick is out of bounds, out of order or not a multiple of
-  /// the tick-spacing in this pool.
-  ///
   public static Instruction openPosition(final AccountMeta invokedWhirlpoolProgramMeta,
                                          final SolanaAccounts solanaAccounts,
                                          final PublicKey funderKey,
@@ -4414,7 +3199,6 @@ public final class WhirlpoolProgram {
                                          final PublicKey positionTokenAccountKey,
                                          final PublicKey whirlpoolKey,
                                          final PublicKey tokenProgramKey,
-                                         final PublicKey whirlpoolProgramKey,
                                          final OpenPositionBumps bumps,
                                          final int tickLowerIndex,
                                          final int tickUpperIndex) {
@@ -4426,8 +3210,7 @@ public final class WhirlpoolProgram {
       positionMintKey,
       positionTokenAccountKey,
       whirlpoolKey,
-      tokenProgramKey,
-      whirlpoolProgramKey
+      tokenProgramKey
     );
     return openPosition(
       invokedWhirlpoolProgramMeta,
@@ -4438,17 +3221,6 @@ public final class WhirlpoolProgram {
     );
   }
 
-  /// Open a position in a Whirlpool. A unique token will be minted to represent the position
-  /// in the users wallet. The position will start off with 0 liquidity.
-  ///
-  /// ### Parameters
-  /// - `tick_lower_index` - The tick specifying the lower end of the position range.
-  /// - `tick_upper_index` - The tick specifying the upper end of the position range.
-  ///
-  /// #### Special Errors
-  /// - `InvalidTickIndex` - If a provided tick is out of bounds, out of order or not a multiple of
-  /// the tick-spacing in this pool.
-  ///
   public static Instruction openPosition(final AccountMeta invokedWhirlpoolProgramMeta,
                                          final List<AccountMeta> keys,
                                          final OpenPositionBumps bumps,
@@ -4512,19 +3284,6 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator OPEN_POSITION_WITH_METADATA_DISCRIMINATOR = toDiscriminator(242, 29, 134, 48, 58, 110, 14, 60);
 
-  /// Open a position in a Whirlpool. A unique token will be minted to represent the position
-  /// in the users wallet. Additional Metaplex metadata is appended to identify the token.
-  /// The position will start off with 0 liquidity.
-  ///
-  /// ### Parameters
-  /// - `tick_lower_index` - The tick specifying the lower end of the position range.
-  /// - `tick_upper_index` - The tick specifying the upper end of the position range.
-  ///
-  /// #### Special Errors
-  /// - `InvalidTickIndex` - If a provided tick is out of bounds, out of order or not a multiple of
-  /// the tick-spacing in this pool.
-  ///
-  /// @param positionMetadataAccountKey https://github.com/metaplex-foundation/mpl-token-metadata/blob/master/programs/token-metadata/program/src/utils/metadata.rs#L78
   public static List<AccountMeta> openPositionWithMetadataKeys(final SolanaAccounts solanaAccounts,
                                                                final PublicKey funderKey,
                                                                final PublicKey ownerKey,
@@ -4535,8 +3294,7 @@ public final class WhirlpoolProgram {
                                                                final PublicKey whirlpoolKey,
                                                                final PublicKey tokenProgramKey,
                                                                final PublicKey metadataProgramKey,
-                                                               final PublicKey metadataUpdateAuthKey,
-                                                               final PublicKey whirlpoolProgramKey) {
+                                                               final PublicKey metadataUpdateAuthKey) {
     return List.of(
       createWritableSigner(funderKey),
       createRead(ownerKey),
@@ -4550,24 +3308,10 @@ public final class WhirlpoolProgram {
       createRead(solanaAccounts.rentSysVar()),
       createRead(solanaAccounts.associatedTokenAccountProgram()),
       createRead(metadataProgramKey),
-      createRead(metadataUpdateAuthKey),
-      createRead(whirlpoolProgramKey)
+      createRead(metadataUpdateAuthKey)
     );
   }
 
-  /// Open a position in a Whirlpool. A unique token will be minted to represent the position
-  /// in the users wallet. Additional Metaplex metadata is appended to identify the token.
-  /// The position will start off with 0 liquidity.
-  ///
-  /// ### Parameters
-  /// - `tick_lower_index` - The tick specifying the lower end of the position range.
-  /// - `tick_upper_index` - The tick specifying the upper end of the position range.
-  ///
-  /// #### Special Errors
-  /// - `InvalidTickIndex` - If a provided tick is out of bounds, out of order or not a multiple of
-  /// the tick-spacing in this pool.
-  ///
-  /// @param positionMetadataAccountKey https://github.com/metaplex-foundation/mpl-token-metadata/blob/master/programs/token-metadata/program/src/utils/metadata.rs#L78
   public static Instruction openPositionWithMetadata(final AccountMeta invokedWhirlpoolProgramMeta,
                                                      final SolanaAccounts solanaAccounts,
                                                      final PublicKey funderKey,
@@ -4580,7 +3324,6 @@ public final class WhirlpoolProgram {
                                                      final PublicKey tokenProgramKey,
                                                      final PublicKey metadataProgramKey,
                                                      final PublicKey metadataUpdateAuthKey,
-                                                     final PublicKey whirlpoolProgramKey,
                                                      final OpenPositionWithMetadataBumps bumps,
                                                      final int tickLowerIndex,
                                                      final int tickUpperIndex) {
@@ -4595,8 +3338,7 @@ public final class WhirlpoolProgram {
       whirlpoolKey,
       tokenProgramKey,
       metadataProgramKey,
-      metadataUpdateAuthKey,
-      whirlpoolProgramKey
+      metadataUpdateAuthKey
     );
     return openPositionWithMetadata(
       invokedWhirlpoolProgramMeta,
@@ -4607,18 +3349,6 @@ public final class WhirlpoolProgram {
     );
   }
 
-  /// Open a position in a Whirlpool. A unique token will be minted to represent the position
-  /// in the users wallet. Additional Metaplex metadata is appended to identify the token.
-  /// The position will start off with 0 liquidity.
-  ///
-  /// ### Parameters
-  /// - `tick_lower_index` - The tick specifying the lower end of the position range.
-  /// - `tick_upper_index` - The tick specifying the upper end of the position range.
-  ///
-  /// #### Special Errors
-  /// - `InvalidTickIndex` - If a provided tick is out of bounds, out of order or not a multiple of
-  /// the tick-spacing in this pool.
-  ///
   public static Instruction openPositionWithMetadata(final AccountMeta invokedWhirlpoolProgramMeta,
                                                      final List<AccountMeta> keys,
                                                      final OpenPositionWithMetadataBumps bumps,
@@ -4682,20 +3412,6 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator OPEN_POSITION_WITH_TOKEN_EXTENSIONS_DISCRIMINATOR = toDiscriminator(212, 47, 95, 92, 114, 102, 131, 250);
 
-  /// Open a position in a Whirlpool. A unique token will be minted to represent the position
-  /// in the users wallet. Additional TokenMetadata extension is initialized to identify the token.
-  /// Mint and TokenAccount are based on Token-2022.
-  /// The position will start off with 0 liquidity.
-  ///
-  /// ### Parameters
-  /// - `tick_lower_index` - The tick specifying the lower end of the position range.
-  /// - `tick_upper_index` - The tick specifying the upper end of the position range.
-  /// - `with_token_metadata_extension` - If true, the token metadata extension will be initialized.
-  ///
-  /// #### Special Errors
-  /// - `InvalidTickIndex` - If a provided tick is out of bounds, out of order or not a multiple of
-  /// the tick-spacing in this pool.
-  ///
   public static List<AccountMeta> openPositionWithTokenExtensionsKeys(final SolanaAccounts solanaAccounts,
                                                                       final PublicKey funderKey,
                                                                       final PublicKey ownerKey,
@@ -4704,8 +3420,7 @@ public final class WhirlpoolProgram {
                                                                       final PublicKey positionTokenAccountKey,
                                                                       final PublicKey whirlpoolKey,
                                                                       final PublicKey token2022ProgramKey,
-                                                                      final PublicKey metadataUpdateAuthKey,
-                                                                      final PublicKey whirlpoolProgramKey) {
+                                                                      final PublicKey metadataUpdateAuthKey) {
     return List.of(
       createWritableSigner(funderKey),
       createRead(ownerKey),
@@ -4716,25 +3431,10 @@ public final class WhirlpoolProgram {
       createRead(token2022ProgramKey),
       createRead(solanaAccounts.systemProgram()),
       createRead(solanaAccounts.associatedTokenAccountProgram()),
-      createRead(metadataUpdateAuthKey),
-      createRead(whirlpoolProgramKey)
+      createRead(metadataUpdateAuthKey)
     );
   }
 
-  /// Open a position in a Whirlpool. A unique token will be minted to represent the position
-  /// in the users wallet. Additional TokenMetadata extension is initialized to identify the token.
-  /// Mint and TokenAccount are based on Token-2022.
-  /// The position will start off with 0 liquidity.
-  ///
-  /// ### Parameters
-  /// - `tick_lower_index` - The tick specifying the lower end of the position range.
-  /// - `tick_upper_index` - The tick specifying the upper end of the position range.
-  /// - `with_token_metadata_extension` - If true, the token metadata extension will be initialized.
-  ///
-  /// #### Special Errors
-  /// - `InvalidTickIndex` - If a provided tick is out of bounds, out of order or not a multiple of
-  /// the tick-spacing in this pool.
-  ///
   public static Instruction openPositionWithTokenExtensions(final AccountMeta invokedWhirlpoolProgramMeta,
                                                             final SolanaAccounts solanaAccounts,
                                                             final PublicKey funderKey,
@@ -4745,7 +3445,6 @@ public final class WhirlpoolProgram {
                                                             final PublicKey whirlpoolKey,
                                                             final PublicKey token2022ProgramKey,
                                                             final PublicKey metadataUpdateAuthKey,
-                                                            final PublicKey whirlpoolProgramKey,
                                                             final int tickLowerIndex,
                                                             final int tickUpperIndex,
                                                             final boolean withTokenMetadataExtension) {
@@ -4758,8 +3457,7 @@ public final class WhirlpoolProgram {
       positionTokenAccountKey,
       whirlpoolKey,
       token2022ProgramKey,
-      metadataUpdateAuthKey,
-      whirlpoolProgramKey
+      metadataUpdateAuthKey
     );
     return openPositionWithTokenExtensions(
       invokedWhirlpoolProgramMeta,
@@ -4770,20 +3468,6 @@ public final class WhirlpoolProgram {
     );
   }
 
-  /// Open a position in a Whirlpool. A unique token will be minted to represent the position
-  /// in the users wallet. Additional TokenMetadata extension is initialized to identify the token.
-  /// Mint and TokenAccount are based on Token-2022.
-  /// The position will start off with 0 liquidity.
-  ///
-  /// ### Parameters
-  /// - `tick_lower_index` - The tick specifying the lower end of the position range.
-  /// - `tick_upper_index` - The tick specifying the upper end of the position range.
-  /// - `with_token_metadata_extension` - If true, the token metadata extension will be initialized.
-  ///
-  /// #### Special Errors
-  /// - `InvalidTickIndex` - If a provided tick is out of bounds, out of order or not a multiple of
-  /// the tick-spacing in this pool.
-  ///
   public static Instruction openPositionWithTokenExtensions(final AccountMeta invokedWhirlpoolProgramMeta,
                                                             final List<AccountMeta> keys,
                                                             final int tickLowerIndex,
@@ -4849,35 +3533,6 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator REPOSITION_LIQUIDITY_V_2_DISCRIMINATOR = toDiscriminator(191, 169, 224, 11, 131, 19, 158, 253);
 
-  /// An atomic instruction that repositions liquidity for a position through the following steps:
-  /// - Withdraws liquidity from the current position range
-  /// - Resets the position to a new tick range
-  /// - Adds liquidity to the new position range
-  /// - Restores fees and rewards
-  ///
-  /// This instruction works with both Token and Token-2022.
-  ///
-  /// ### Authority
-  /// - `position_authority` - authority that owns the token corresponding to this desired position.
-  ///
-  /// ### Parameters
-  /// - `new_tick_lower_index` - The new tick index for the lower end of the position range.
-  /// - `new_tick_upper_index` - The new tick index for the upper end of the position range.
-  /// - `new_liquidity_amount` - The total amount of Liquidity the user is willing to deposit.
-  /// - `existing_range_token_min_a` - The minimum amount of tokenA the user is willing to withdraw from the existing range.
-  /// - `existing_range_token_min_b` - The minimum amount of tokenB the user is willing to withdraw from the existing range.
-  /// - `new_range_token_max_a` - The maximum amount of tokenA the user is willing to deposit into the new range.
-  /// - `new_range_token_max_b` - The maximum amount of tokenB the user is willing to deposit into the new range.
-  ///
-  /// #### Special Errors
-  /// - `LiquidityZero` - Provided liquidity amount is zero.
-  /// - `LiquidityTooHigh` - Provided liquidity exceeds u128::max.
-  /// - `TokenMaxExceeded` - The required token to perform this operation exceeds the user defined amount.
-  /// - `TokenMinSubceeded` - The required token to perform this operation subceeds the user defined amount.
-  /// - `InvalidTickIndex` - If a provided tick is out of bounds, out of order or not a multiple of
-  /// the tick-spacing in this pool.
-  /// - `SameTickRangeNotAllowed` - The provided tick range is the same as the current tick range.
-  ///
   public static List<AccountMeta> repositionLiquidityV2Keys(final SolanaAccounts solanaAccounts,
                                                             final PublicKey whirlpoolKey,
                                                             final PublicKey tokenProgramAKey,
@@ -4895,8 +3550,7 @@ public final class WhirlpoolProgram {
                                                             final PublicKey existingTickArrayLowerKey,
                                                             final PublicKey existingTickArrayUpperKey,
                                                             final PublicKey newTickArrayLowerKey,
-                                                            final PublicKey newTickArrayUpperKey,
-                                                            final PublicKey whirlpoolProgramKey) {
+                                                            final PublicKey newTickArrayUpperKey) {
     return List.of(
       createWrite(whirlpoolKey),
       createRead(tokenProgramAKey),
@@ -4916,40 +3570,10 @@ public final class WhirlpoolProgram {
       createWrite(existingTickArrayUpperKey),
       createWrite(newTickArrayLowerKey),
       createWrite(newTickArrayUpperKey),
-      createRead(solanaAccounts.systemProgram()),
-      createRead(whirlpoolProgramKey)
+      createRead(solanaAccounts.systemProgram())
     );
   }
 
-  /// An atomic instruction that repositions liquidity for a position through the following steps:
-  /// - Withdraws liquidity from the current position range
-  /// - Resets the position to a new tick range
-  /// - Adds liquidity to the new position range
-  /// - Restores fees and rewards
-  ///
-  /// This instruction works with both Token and Token-2022.
-  ///
-  /// ### Authority
-  /// - `position_authority` - authority that owns the token corresponding to this desired position.
-  ///
-  /// ### Parameters
-  /// - `new_tick_lower_index` - The new tick index for the lower end of the position range.
-  /// - `new_tick_upper_index` - The new tick index for the upper end of the position range.
-  /// - `new_liquidity_amount` - The total amount of Liquidity the user is willing to deposit.
-  /// - `existing_range_token_min_a` - The minimum amount of tokenA the user is willing to withdraw from the existing range.
-  /// - `existing_range_token_min_b` - The minimum amount of tokenB the user is willing to withdraw from the existing range.
-  /// - `new_range_token_max_a` - The maximum amount of tokenA the user is willing to deposit into the new range.
-  /// - `new_range_token_max_b` - The maximum amount of tokenB the user is willing to deposit into the new range.
-  ///
-  /// #### Special Errors
-  /// - `LiquidityZero` - Provided liquidity amount is zero.
-  /// - `LiquidityTooHigh` - Provided liquidity exceeds u128::max.
-  /// - `TokenMaxExceeded` - The required token to perform this operation exceeds the user defined amount.
-  /// - `TokenMinSubceeded` - The required token to perform this operation subceeds the user defined amount.
-  /// - `InvalidTickIndex` - If a provided tick is out of bounds, out of order or not a multiple of
-  /// the tick-spacing in this pool.
-  /// - `SameTickRangeNotAllowed` - The provided tick range is the same as the current tick range.
-  ///
   public static Instruction repositionLiquidityV2(final AccountMeta invokedWhirlpoolProgramMeta,
                                                   final SolanaAccounts solanaAccounts,
                                                   final PublicKey whirlpoolKey,
@@ -4969,7 +3593,6 @@ public final class WhirlpoolProgram {
                                                   final PublicKey existingTickArrayUpperKey,
                                                   final PublicKey newTickArrayLowerKey,
                                                   final PublicKey newTickArrayUpperKey,
-                                                  final PublicKey whirlpoolProgramKey,
                                                   final int newTickLowerIndex,
                                                   final int newTickUpperIndex,
                                                   final RepositionLiquidityMethod method,
@@ -4992,8 +3615,7 @@ public final class WhirlpoolProgram {
       existingTickArrayLowerKey,
       existingTickArrayUpperKey,
       newTickArrayLowerKey,
-      newTickArrayUpperKey,
-      whirlpoolProgramKey
+      newTickArrayUpperKey
     );
     return repositionLiquidityV2(
       invokedWhirlpoolProgramMeta,
@@ -5005,35 +3627,6 @@ public final class WhirlpoolProgram {
     );
   }
 
-  /// An atomic instruction that repositions liquidity for a position through the following steps:
-  /// - Withdraws liquidity from the current position range
-  /// - Resets the position to a new tick range
-  /// - Adds liquidity to the new position range
-  /// - Restores fees and rewards
-  ///
-  /// This instruction works with both Token and Token-2022.
-  ///
-  /// ### Authority
-  /// - `position_authority` - authority that owns the token corresponding to this desired position.
-  ///
-  /// ### Parameters
-  /// - `new_tick_lower_index` - The new tick index for the lower end of the position range.
-  /// - `new_tick_upper_index` - The new tick index for the upper end of the position range.
-  /// - `new_liquidity_amount` - The total amount of Liquidity the user is willing to deposit.
-  /// - `existing_range_token_min_a` - The minimum amount of tokenA the user is willing to withdraw from the existing range.
-  /// - `existing_range_token_min_b` - The minimum amount of tokenB the user is willing to withdraw from the existing range.
-  /// - `new_range_token_max_a` - The maximum amount of tokenA the user is willing to deposit into the new range.
-  /// - `new_range_token_max_b` - The maximum amount of tokenB the user is willing to deposit into the new range.
-  ///
-  /// #### Special Errors
-  /// - `LiquidityZero` - Provided liquidity amount is zero.
-  /// - `LiquidityTooHigh` - Provided liquidity exceeds u128::max.
-  /// - `TokenMaxExceeded` - The required token to perform this operation exceeds the user defined amount.
-  /// - `TokenMinSubceeded` - The required token to perform this operation subceeds the user defined amount.
-  /// - `InvalidTickIndex` - If a provided tick is out of bounds, out of order or not a multiple of
-  /// the tick-spacing in this pool.
-  /// - `SameTickRangeNotAllowed` - The provided tick range is the same as the current tick range.
-  ///
   public static Instruction repositionLiquidityV2(final AccountMeta invokedWhirlpoolProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final int newTickLowerIndex,
@@ -5115,54 +3708,22 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator RESET_POSITION_RANGE_DISCRIMINATOR = toDiscriminator(164, 123, 180, 141, 194, 100, 160, 175);
 
-  /// Reset the position range to a new range.
-  ///
-  /// ### Authority
-  /// - `position_authority` - The authority that owns the position token.
-  ///
-  /// ### Parameters
-  /// - `new_tick_lower_index` - The new tick specifying the lower end of the position range.
-  /// - `new_tick_upper_index` - The new tick specifying the upper end of the position range.
-  ///
-  /// #### Special Errors
-  /// - `InvalidTickIndex` - If a provided tick is out of bounds, out of order or not a multiple of
-  /// the tick-spacing in this pool.
-  /// - `ClosePositionNotEmpty` - The provided position account is not empty.
-  /// - `SameTickRangeNotAllowed` - The provided tick range is the same as the current tick range.
-  ///
   public static List<AccountMeta> resetPositionRangeKeys(final SolanaAccounts solanaAccounts,
                                                          final PublicKey funderKey,
                                                          final PublicKey positionAuthorityKey,
                                                          final PublicKey whirlpoolKey,
                                                          final PublicKey positionKey,
-                                                         final PublicKey positionTokenAccountKey,
-                                                         final PublicKey whirlpoolProgramKey) {
+                                                         final PublicKey positionTokenAccountKey) {
     return List.of(
       createWritableSigner(funderKey),
       createReadOnlySigner(positionAuthorityKey),
       createRead(whirlpoolKey),
       createWrite(positionKey),
       createRead(positionTokenAccountKey),
-      createRead(solanaAccounts.systemProgram()),
-      createRead(whirlpoolProgramKey)
+      createRead(solanaAccounts.systemProgram())
     );
   }
 
-  /// Reset the position range to a new range.
-  ///
-  /// ### Authority
-  /// - `position_authority` - The authority that owns the position token.
-  ///
-  /// ### Parameters
-  /// - `new_tick_lower_index` - The new tick specifying the lower end of the position range.
-  /// - `new_tick_upper_index` - The new tick specifying the upper end of the position range.
-  ///
-  /// #### Special Errors
-  /// - `InvalidTickIndex` - If a provided tick is out of bounds, out of order or not a multiple of
-  /// the tick-spacing in this pool.
-  /// - `ClosePositionNotEmpty` - The provided position account is not empty.
-  /// - `SameTickRangeNotAllowed` - The provided tick range is the same as the current tick range.
-  ///
   public static Instruction resetPositionRange(final AccountMeta invokedWhirlpoolProgramMeta,
                                                final SolanaAccounts solanaAccounts,
                                                final PublicKey funderKey,
@@ -5170,7 +3731,6 @@ public final class WhirlpoolProgram {
                                                final PublicKey whirlpoolKey,
                                                final PublicKey positionKey,
                                                final PublicKey positionTokenAccountKey,
-                                               final PublicKey whirlpoolProgramKey,
                                                final int newTickLowerIndex,
                                                final int newTickUpperIndex) {
     final var keys = resetPositionRangeKeys(
@@ -5179,27 +3739,11 @@ public final class WhirlpoolProgram {
       positionAuthorityKey,
       whirlpoolKey,
       positionKey,
-      positionTokenAccountKey,
-      whirlpoolProgramKey
+      positionTokenAccountKey
     );
     return resetPositionRange(invokedWhirlpoolProgramMeta, keys, newTickLowerIndex, newTickUpperIndex);
   }
 
-  /// Reset the position range to a new range.
-  ///
-  /// ### Authority
-  /// - `position_authority` - The authority that owns the position token.
-  ///
-  /// ### Parameters
-  /// - `new_tick_lower_index` - The new tick specifying the lower end of the position range.
-  /// - `new_tick_upper_index` - The new tick specifying the upper end of the position range.
-  ///
-  /// #### Special Errors
-  /// - `InvalidTickIndex` - If a provided tick is out of bounds, out of order or not a multiple of
-  /// the tick-spacing in this pool.
-  /// - `ClosePositionNotEmpty` - The provided position account is not empty.
-  /// - `SameTickRangeNotAllowed` - The provided tick range is the same as the current tick range.
-  ///
   public static Instruction resetPositionRange(final AccountMeta invokedWhirlpoolProgramMeta,
                                                final List<AccountMeta> keys,
                                                final int newTickLowerIndex,
@@ -5254,62 +3798,18 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator SET_ADAPTIVE_FEE_CONSTANTS_DISCRIMINATOR = toDiscriminator(133, 158, 212, 189, 237, 12, 73, 39);
 
-  /// Sets specific adaptive fee constants for a pool. Only the provided constants will be updated,
-  /// others remain unchanged. Caller should avoid invoking this instruction when a pool's adaptive
-  /// fee is high to prevent LP revenue loss
-  ///
-  /// ### Authority
-  /// - `fee_authority` - Set authority in the WhirlpoolsConfig
-  ///
-  /// ### Parameters
-  /// All parameters are optional. Only provided values will be updated.
-  /// - `filter_period` - Period determine high frequency trading time window. (seconds)
-  /// - `decay_period` - Period determine when the adaptive fee start decrease. (seconds)
-  /// - `reduction_factor` - Adaptive fee rate decrement rate.
-  /// - `adaptive_fee_control_factor` - Adaptive fee control factor.
-  /// - `max_volatility_accumulator` - Max volatility accumulator.
-  /// - `tick_group_size` - Tick group size to define tick group index.
-  /// - `major_swap_threshold_ticks` - Major swap threshold ticks to define major swap.
-  ///
-  /// #### Special Errors
-  /// - `InvalidAdaptiveFeeConstants` - If the resulting constants are invalid for the pool's tick_spacing.
-  /// - `AdaptiveFeeConstantsUnchanged` - If the provided adaptive fee constants are unchanged from the existing constants.
-  ///
   public static List<AccountMeta> setAdaptiveFeeConstantsKeys(final PublicKey whirlpoolKey,
                                                               final PublicKey whirlpoolsConfigKey,
                                                               final PublicKey oracleKey,
-                                                              final PublicKey feeAuthorityKey,
-                                                              final PublicKey whirlpoolProgramKey) {
+                                                              final PublicKey feeAuthorityKey) {
     return List.of(
       createRead(whirlpoolKey),
       createRead(whirlpoolsConfigKey),
       createWrite(oracleKey),
-      createReadOnlySigner(feeAuthorityKey),
-      createRead(whirlpoolProgramKey)
+      createReadOnlySigner(feeAuthorityKey)
     );
   }
 
-  /// Sets specific adaptive fee constants for a pool. Only the provided constants will be updated,
-  /// others remain unchanged. Caller should avoid invoking this instruction when a pool's adaptive
-  /// fee is high to prevent LP revenue loss
-  ///
-  /// ### Authority
-  /// - `fee_authority` - Set authority in the WhirlpoolsConfig
-  ///
-  /// ### Parameters
-  /// All parameters are optional. Only provided values will be updated.
-  /// - `filter_period` - Period determine high frequency trading time window. (seconds)
-  /// - `decay_period` - Period determine when the adaptive fee start decrease. (seconds)
-  /// - `reduction_factor` - Adaptive fee rate decrement rate.
-  /// - `adaptive_fee_control_factor` - Adaptive fee control factor.
-  /// - `max_volatility_accumulator` - Max volatility accumulator.
-  /// - `tick_group_size` - Tick group size to define tick group index.
-  /// - `major_swap_threshold_ticks` - Major swap threshold ticks to define major swap.
-  ///
-  /// #### Special Errors
-  /// - `InvalidAdaptiveFeeConstants` - If the resulting constants are invalid for the pool's tick_spacing.
-  /// - `AdaptiveFeeConstantsUnchanged` - If the provided adaptive fee constants are unchanged from the existing constants.
-  ///
   /// @param filterPeriod: Option<u16>
   /// @param decayPeriod: Option<u16>
   /// @param reductionFactor: Option<u16>
@@ -5322,7 +3822,6 @@ public final class WhirlpoolProgram {
                                                     final PublicKey whirlpoolsConfigKey,
                                                     final PublicKey oracleKey,
                                                     final PublicKey feeAuthorityKey,
-                                                    final PublicKey whirlpoolProgramKey,
                                                     final OptionalInt filterPeriod,
                                                     final OptionalInt decayPeriod,
                                                     final OptionalInt reductionFactor,
@@ -5334,8 +3833,7 @@ public final class WhirlpoolProgram {
       whirlpoolKey,
       whirlpoolsConfigKey,
       oracleKey,
-      feeAuthorityKey,
-      whirlpoolProgramKey
+      feeAuthorityKey
     );
     return setAdaptiveFeeConstants(
       invokedWhirlpoolProgramMeta,
@@ -5350,27 +3848,6 @@ public final class WhirlpoolProgram {
     );
   }
 
-  /// Sets specific adaptive fee constants for a pool. Only the provided constants will be updated,
-  /// others remain unchanged. Caller should avoid invoking this instruction when a pool's adaptive
-  /// fee is high to prevent LP revenue loss
-  ///
-  /// ### Authority
-  /// - `fee_authority` - Set authority in the WhirlpoolsConfig
-  ///
-  /// ### Parameters
-  /// All parameters are optional. Only provided values will be updated.
-  /// - `filter_period` - Period determine high frequency trading time window. (seconds)
-  /// - `decay_period` - Period determine when the adaptive fee start decrease. (seconds)
-  /// - `reduction_factor` - Adaptive fee rate decrement rate.
-  /// - `adaptive_fee_control_factor` - Adaptive fee control factor.
-  /// - `max_volatility_accumulator` - Max volatility accumulator.
-  /// - `tick_group_size` - Tick group size to define tick group index.
-  /// - `major_swap_threshold_ticks` - Major swap threshold ticks to define major swap.
-  ///
-  /// #### Special Errors
-  /// - `InvalidAdaptiveFeeConstants` - If the resulting constants are invalid for the pool's tick_spacing.
-  /// - `AdaptiveFeeConstantsUnchanged` - If the provided adaptive fee constants are unchanged from the existing constants.
-  ///
   /// @param filterPeriod: Option<u16>
   /// @param decayPeriod: Option<u16>
   /// @param reductionFactor: Option<u16>
@@ -5535,50 +4012,28 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator SET_COLLECT_PROTOCOL_FEES_AUTHORITY_DISCRIMINATOR = toDiscriminator(34, 150, 93, 244, 139, 225, 233, 67);
 
-  /// Sets the fee authority to collect protocol fees for a WhirlpoolConfig.
-  /// Only the current collect protocol fee authority has permission to invoke this instruction.
-  ///
-  /// ### Authority
-  /// - "fee_authority" - Set authority that can collect protocol fees in the WhirlpoolConfig
-  ///
   public static List<AccountMeta> setCollectProtocolFeesAuthorityKeys(final PublicKey whirlpoolsConfigKey,
                                                                       final PublicKey collectProtocolFeesAuthorityKey,
-                                                                      final PublicKey newCollectProtocolFeesAuthorityKey,
-                                                                      final PublicKey whirlpoolProgramKey) {
+                                                                      final PublicKey newCollectProtocolFeesAuthorityKey) {
     return List.of(
       createWrite(whirlpoolsConfigKey),
       createReadOnlySigner(collectProtocolFeesAuthorityKey),
-      createRead(newCollectProtocolFeesAuthorityKey),
-      createRead(whirlpoolProgramKey)
+      createRead(newCollectProtocolFeesAuthorityKey)
     );
   }
 
-  /// Sets the fee authority to collect protocol fees for a WhirlpoolConfig.
-  /// Only the current collect protocol fee authority has permission to invoke this instruction.
-  ///
-  /// ### Authority
-  /// - "fee_authority" - Set authority that can collect protocol fees in the WhirlpoolConfig
-  ///
   public static Instruction setCollectProtocolFeesAuthority(final AccountMeta invokedWhirlpoolProgramMeta,
                                                             final PublicKey whirlpoolsConfigKey,
                                                             final PublicKey collectProtocolFeesAuthorityKey,
-                                                            final PublicKey newCollectProtocolFeesAuthorityKey,
-                                                            final PublicKey whirlpoolProgramKey) {
+                                                            final PublicKey newCollectProtocolFeesAuthorityKey) {
     final var keys = setCollectProtocolFeesAuthorityKeys(
       whirlpoolsConfigKey,
       collectProtocolFeesAuthorityKey,
-      newCollectProtocolFeesAuthorityKey,
-      whirlpoolProgramKey
+      newCollectProtocolFeesAuthorityKey
     );
     return setCollectProtocolFeesAuthority(invokedWhirlpoolProgramMeta, keys);
   }
 
-  /// Sets the fee authority to collect protocol fees for a WhirlpoolConfig.
-  /// Only the current collect protocol fee authority has permission to invoke this instruction.
-  ///
-  /// ### Authority
-  /// - "fee_authority" - Set authority that can collect protocol fees in the WhirlpoolConfig
-  ///
   public static Instruction setCollectProtocolFeesAuthority(final AccountMeta invokedWhirlpoolProgramMeta,
                                                             final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, SET_COLLECT_PROTOCOL_FEES_AUTHORITY_DISCRIMINATOR);
@@ -5586,54 +4041,32 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator SET_CONFIG_EXTENSION_AUTHORITY_DISCRIMINATOR = toDiscriminator(44, 94, 241, 116, 24, 188, 60, 143);
 
-  /// Sets the config extension authority for a WhirlpoolsConfigExtension.
-  /// Only the current config extension authority has permission to invoke this instruction.
-  ///
-  /// ### Authority
-  /// - "config_extension_authority" - Set authority in the WhirlpoolConfigExtension
-  ///
   public static List<AccountMeta> setConfigExtensionAuthorityKeys(final PublicKey whirlpoolsConfigKey,
                                                                   final PublicKey whirlpoolsConfigExtensionKey,
                                                                   final PublicKey configExtensionAuthorityKey,
-                                                                  final PublicKey newConfigExtensionAuthorityKey,
-                                                                  final PublicKey whirlpoolProgramKey) {
+                                                                  final PublicKey newConfigExtensionAuthorityKey) {
     return List.of(
       createRead(whirlpoolsConfigKey),
       createWrite(whirlpoolsConfigExtensionKey),
       createReadOnlySigner(configExtensionAuthorityKey),
-      createRead(newConfigExtensionAuthorityKey),
-      createRead(whirlpoolProgramKey)
+      createRead(newConfigExtensionAuthorityKey)
     );
   }
 
-  /// Sets the config extension authority for a WhirlpoolsConfigExtension.
-  /// Only the current config extension authority has permission to invoke this instruction.
-  ///
-  /// ### Authority
-  /// - "config_extension_authority" - Set authority in the WhirlpoolConfigExtension
-  ///
   public static Instruction setConfigExtensionAuthority(final AccountMeta invokedWhirlpoolProgramMeta,
                                                         final PublicKey whirlpoolsConfigKey,
                                                         final PublicKey whirlpoolsConfigExtensionKey,
                                                         final PublicKey configExtensionAuthorityKey,
-                                                        final PublicKey newConfigExtensionAuthorityKey,
-                                                        final PublicKey whirlpoolProgramKey) {
+                                                        final PublicKey newConfigExtensionAuthorityKey) {
     final var keys = setConfigExtensionAuthorityKeys(
       whirlpoolsConfigKey,
       whirlpoolsConfigExtensionKey,
       configExtensionAuthorityKey,
-      newConfigExtensionAuthorityKey,
-      whirlpoolProgramKey
+      newConfigExtensionAuthorityKey
     );
     return setConfigExtensionAuthority(invokedWhirlpoolProgramMeta, keys);
   }
 
-  /// Sets the config extension authority for a WhirlpoolsConfigExtension.
-  /// Only the current config extension authority has permission to invoke this instruction.
-  ///
-  /// ### Authority
-  /// - "config_extension_authority" - Set authority in the WhirlpoolConfigExtension
-  ///
   public static Instruction setConfigExtensionAuthority(final AccountMeta invokedWhirlpoolProgramMeta,
                                                         final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, SET_CONFIG_EXTENSION_AUTHORITY_DISCRIMINATOR);
@@ -5641,53 +4074,25 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator SET_CONFIG_FEATURE_FLAG_DISCRIMINATOR = toDiscriminator(71, 173, 228, 18, 67, 247, 210, 57);
 
-  /// Sets the feature flag for a WhirlpoolConfig.
-  ///
-  /// ### Authority
-  /// - "authority" - Set authority that is one of ADMINS.
-  ///
-  /// ### Parameters
-  /// - `feature_flag` - The feature flag that the WhirlpoolConfig will use.
-  ///
   public static List<AccountMeta> setConfigFeatureFlagKeys(final PublicKey whirlpoolsConfigKey,
-                                                           final PublicKey authorityKey,
-                                                           final PublicKey whirlpoolProgramKey) {
+                                                           final PublicKey authorityKey) {
     return List.of(
       createWrite(whirlpoolsConfigKey),
-      createReadOnlySigner(authorityKey),
-      createRead(whirlpoolProgramKey)
+      createReadOnlySigner(authorityKey)
     );
   }
 
-  /// Sets the feature flag for a WhirlpoolConfig.
-  ///
-  /// ### Authority
-  /// - "authority" - Set authority that is one of ADMINS.
-  ///
-  /// ### Parameters
-  /// - `feature_flag` - The feature flag that the WhirlpoolConfig will use.
-  ///
   public static Instruction setConfigFeatureFlag(final AccountMeta invokedWhirlpoolProgramMeta,
                                                  final PublicKey whirlpoolsConfigKey,
                                                  final PublicKey authorityKey,
-                                                 final PublicKey whirlpoolProgramKey,
                                                  final ConfigFeatureFlag featureFlag) {
     final var keys = setConfigFeatureFlagKeys(
       whirlpoolsConfigKey,
-      authorityKey,
-      whirlpoolProgramKey
+      authorityKey
     );
     return setConfigFeatureFlag(invokedWhirlpoolProgramMeta, keys, featureFlag);
   }
 
-  /// Sets the feature flag for a WhirlpoolConfig.
-  ///
-  /// ### Authority
-  /// - "authority" - Set authority that is one of ADMINS.
-  ///
-  /// ### Parameters
-  /// - `feature_flag` - The feature flag that the WhirlpoolConfig will use.
-  ///
   public static Instruction setConfigFeatureFlag(final AccountMeta invokedWhirlpoolProgramMeta,
                                                  final List<AccountMeta> keys,
                                                  final ConfigFeatureFlag featureFlag) {
@@ -5731,73 +4136,30 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator SET_DEFAULT_BASE_FEE_RATE_DISCRIMINATOR = toDiscriminator(229, 66, 84, 251, 164, 134, 183, 7);
 
-  /// Set the default_base_fee_rate for an AdaptiveFeeTier
-  /// Only the current fee authority in WhirlpoolsConfig has permission to invoke this instruction.
-  ///
-  /// ### Authority
-  /// - "fee_authority" - Set authority in the WhirlpoolConfig
-  ///
-  /// ### Parameters
-  /// - `default_base_fee_rate` - The default base fee rate that a pool will use if the pool uses this
-  /// adaptive fee-tier during initialization.
-  ///
-  /// #### Special Errors
-  /// - `FeeRateMaxExceeded` - If the provided default_fee_rate exceeds MAX_FEE_RATE.
-  ///
   public static List<AccountMeta> setDefaultBaseFeeRateKeys(final PublicKey whirlpoolsConfigKey,
                                                             final PublicKey adaptiveFeeTierKey,
-                                                            final PublicKey feeAuthorityKey,
-                                                            final PublicKey whirlpoolProgramKey) {
+                                                            final PublicKey feeAuthorityKey) {
     return List.of(
       createRead(whirlpoolsConfigKey),
       createWrite(adaptiveFeeTierKey),
-      createReadOnlySigner(feeAuthorityKey),
-      createRead(whirlpoolProgramKey)
+      createReadOnlySigner(feeAuthorityKey)
     );
   }
 
-  /// Set the default_base_fee_rate for an AdaptiveFeeTier
-  /// Only the current fee authority in WhirlpoolsConfig has permission to invoke this instruction.
-  ///
-  /// ### Authority
-  /// - "fee_authority" - Set authority in the WhirlpoolConfig
-  ///
-  /// ### Parameters
-  /// - `default_base_fee_rate` - The default base fee rate that a pool will use if the pool uses this
-  /// adaptive fee-tier during initialization.
-  ///
-  /// #### Special Errors
-  /// - `FeeRateMaxExceeded` - If the provided default_fee_rate exceeds MAX_FEE_RATE.
-  ///
   /// @param defaultBaseFeeRate: u16
   public static Instruction setDefaultBaseFeeRate(final AccountMeta invokedWhirlpoolProgramMeta,
                                                   final PublicKey whirlpoolsConfigKey,
                                                   final PublicKey adaptiveFeeTierKey,
                                                   final PublicKey feeAuthorityKey,
-                                                  final PublicKey whirlpoolProgramKey,
                                                   final int defaultBaseFeeRate) {
     final var keys = setDefaultBaseFeeRateKeys(
       whirlpoolsConfigKey,
       adaptiveFeeTierKey,
-      feeAuthorityKey,
-      whirlpoolProgramKey
+      feeAuthorityKey
     );
     return setDefaultBaseFeeRate(invokedWhirlpoolProgramMeta, keys, defaultBaseFeeRate);
   }
 
-  /// Set the default_base_fee_rate for an AdaptiveFeeTier
-  /// Only the current fee authority in WhirlpoolsConfig has permission to invoke this instruction.
-  ///
-  /// ### Authority
-  /// - "fee_authority" - Set authority in the WhirlpoolConfig
-  ///
-  /// ### Parameters
-  /// - `default_base_fee_rate` - The default base fee rate that a pool will use if the pool uses this
-  /// adaptive fee-tier during initialization.
-  ///
-  /// #### Special Errors
-  /// - `FeeRateMaxExceeded` - If the provided default_fee_rate exceeds MAX_FEE_RATE.
-  ///
   /// @param defaultBaseFeeRate: u16
   public static Instruction setDefaultBaseFeeRate(final AccountMeta invokedWhirlpoolProgramMeta,
                                                   final List<AccountMeta> keys,
@@ -5846,73 +4208,30 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator SET_DEFAULT_FEE_RATE_DISCRIMINATOR = toDiscriminator(118, 215, 214, 157, 182, 229, 208, 228);
 
-  /// Set the default_fee_rate for a FeeTier
-  /// Only the current fee authority has permission to invoke this instruction.
-  ///
-  /// ### Authority
-  /// - "fee_authority" - Set authority in the WhirlpoolConfig
-  ///
-  /// ### Parameters
-  /// - `default_fee_rate` - The default fee rate that a pool will use if the pool uses this
-  /// fee tier during initialization.
-  ///
-  /// #### Special Errors
-  /// - `FeeRateMaxExceeded` - If the provided default_fee_rate exceeds MAX_FEE_RATE.
-  ///
   public static List<AccountMeta> setDefaultFeeRateKeys(final PublicKey whirlpoolsConfigKey,
                                                         final PublicKey feeTierKey,
-                                                        final PublicKey feeAuthorityKey,
-                                                        final PublicKey whirlpoolProgramKey) {
+                                                        final PublicKey feeAuthorityKey) {
     return List.of(
       createRead(whirlpoolsConfigKey),
       createWrite(feeTierKey),
-      createReadOnlySigner(feeAuthorityKey),
-      createRead(whirlpoolProgramKey)
+      createReadOnlySigner(feeAuthorityKey)
     );
   }
 
-  /// Set the default_fee_rate for a FeeTier
-  /// Only the current fee authority has permission to invoke this instruction.
-  ///
-  /// ### Authority
-  /// - "fee_authority" - Set authority in the WhirlpoolConfig
-  ///
-  /// ### Parameters
-  /// - `default_fee_rate` - The default fee rate that a pool will use if the pool uses this
-  /// fee tier during initialization.
-  ///
-  /// #### Special Errors
-  /// - `FeeRateMaxExceeded` - If the provided default_fee_rate exceeds MAX_FEE_RATE.
-  ///
   /// @param defaultFeeRate: u16
   public static Instruction setDefaultFeeRate(final AccountMeta invokedWhirlpoolProgramMeta,
                                               final PublicKey whirlpoolsConfigKey,
                                               final PublicKey feeTierKey,
                                               final PublicKey feeAuthorityKey,
-                                              final PublicKey whirlpoolProgramKey,
                                               final int defaultFeeRate) {
     final var keys = setDefaultFeeRateKeys(
       whirlpoolsConfigKey,
       feeTierKey,
-      feeAuthorityKey,
-      whirlpoolProgramKey
+      feeAuthorityKey
     );
     return setDefaultFeeRate(invokedWhirlpoolProgramMeta, keys, defaultFeeRate);
   }
 
-  /// Set the default_fee_rate for a FeeTier
-  /// Only the current fee authority has permission to invoke this instruction.
-  ///
-  /// ### Authority
-  /// - "fee_authority" - Set authority in the WhirlpoolConfig
-  ///
-  /// ### Parameters
-  /// - `default_fee_rate` - The default fee rate that a pool will use if the pool uses this
-  /// fee tier during initialization.
-  ///
-  /// #### Special Errors
-  /// - `FeeRateMaxExceeded` - If the provided default_fee_rate exceeds MAX_FEE_RATE.
-  ///
   /// @param defaultFeeRate: u16
   public static Instruction setDefaultFeeRate(final AccountMeta invokedWhirlpoolProgramMeta,
                                               final List<AccountMeta> keys,
@@ -5961,69 +4280,26 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator SET_DEFAULT_PROTOCOL_FEE_RATE_DISCRIMINATOR = toDiscriminator(107, 205, 249, 226, 151, 35, 86, 0);
 
-  /// Sets the default protocol fee rate for a WhirlpoolConfig
-  /// Protocol fee rate is represented as a basis point.
-  /// Only the current fee authority has permission to invoke this instruction.
-  ///
-  /// ### Authority
-  /// - "fee_authority" - Set authority that can modify pool fees in the WhirlpoolConfig
-  ///
-  /// ### Parameters
-  /// - `default_protocol_fee_rate` - Rate that is referenced during the initialization of a Whirlpool using this config.
-  ///
-  /// #### Special Errors
-  /// - `ProtocolFeeRateMaxExceeded` - If the provided default_protocol_fee_rate exceeds MAX_PROTOCOL_FEE_RATE.
-  ///
   public static List<AccountMeta> setDefaultProtocolFeeRateKeys(final PublicKey whirlpoolsConfigKey,
-                                                                final PublicKey feeAuthorityKey,
-                                                                final PublicKey whirlpoolProgramKey) {
+                                                                final PublicKey feeAuthorityKey) {
     return List.of(
       createWrite(whirlpoolsConfigKey),
-      createReadOnlySigner(feeAuthorityKey),
-      createRead(whirlpoolProgramKey)
+      createReadOnlySigner(feeAuthorityKey)
     );
   }
 
-  /// Sets the default protocol fee rate for a WhirlpoolConfig
-  /// Protocol fee rate is represented as a basis point.
-  /// Only the current fee authority has permission to invoke this instruction.
-  ///
-  /// ### Authority
-  /// - "fee_authority" - Set authority that can modify pool fees in the WhirlpoolConfig
-  ///
-  /// ### Parameters
-  /// - `default_protocol_fee_rate` - Rate that is referenced during the initialization of a Whirlpool using this config.
-  ///
-  /// #### Special Errors
-  /// - `ProtocolFeeRateMaxExceeded` - If the provided default_protocol_fee_rate exceeds MAX_PROTOCOL_FEE_RATE.
-  ///
   /// @param defaultProtocolFeeRate: u16
   public static Instruction setDefaultProtocolFeeRate(final AccountMeta invokedWhirlpoolProgramMeta,
                                                       final PublicKey whirlpoolsConfigKey,
                                                       final PublicKey feeAuthorityKey,
-                                                      final PublicKey whirlpoolProgramKey,
                                                       final int defaultProtocolFeeRate) {
     final var keys = setDefaultProtocolFeeRateKeys(
       whirlpoolsConfigKey,
-      feeAuthorityKey,
-      whirlpoolProgramKey
+      feeAuthorityKey
     );
     return setDefaultProtocolFeeRate(invokedWhirlpoolProgramMeta, keys, defaultProtocolFeeRate);
   }
 
-  /// Sets the default protocol fee rate for a WhirlpoolConfig
-  /// Protocol fee rate is represented as a basis point.
-  /// Only the current fee authority has permission to invoke this instruction.
-  ///
-  /// ### Authority
-  /// - "fee_authority" - Set authority that can modify pool fees in the WhirlpoolConfig
-  ///
-  /// ### Parameters
-  /// - `default_protocol_fee_rate` - Rate that is referenced during the initialization of a Whirlpool using this config.
-  ///
-  /// #### Special Errors
-  /// - `ProtocolFeeRateMaxExceeded` - If the provided default_protocol_fee_rate exceeds MAX_PROTOCOL_FEE_RATE.
-  ///
   /// @param defaultProtocolFeeRate: u16
   public static Instruction setDefaultProtocolFeeRate(final AccountMeta invokedWhirlpoolProgramMeta,
                                                       final List<AccountMeta> keys,
@@ -6072,57 +4348,32 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator SET_DELEGATED_FEE_AUTHORITY_DISCRIMINATOR = toDiscriminator(193, 234, 231, 147, 138, 57, 3, 122);
 
-  /// Sets the delegated fee authority for an AdaptiveFeeTier.
-  /// The delegated fee authority can set the fee rate for individual pools initialized with the adaptive fee-tier.
-  /// Only the current fee authority in WhirlpoolsConfig has permission to invoke this instruction.
-  ///
-  /// ### Authority
-  /// - "fee_authority" - Set authority in the WhirlpoolConfig
-  ///
   public static List<AccountMeta> setDelegatedFeeAuthorityKeys(final PublicKey whirlpoolsConfigKey,
                                                                final PublicKey adaptiveFeeTierKey,
                                                                final PublicKey feeAuthorityKey,
-                                                               final PublicKey newDelegatedFeeAuthorityKey,
-                                                               final PublicKey whirlpoolProgramKey) {
+                                                               final PublicKey newDelegatedFeeAuthorityKey) {
     return List.of(
       createRead(whirlpoolsConfigKey),
       createWrite(adaptiveFeeTierKey),
       createReadOnlySigner(feeAuthorityKey),
-      createRead(newDelegatedFeeAuthorityKey),
-      createRead(whirlpoolProgramKey)
+      createRead(newDelegatedFeeAuthorityKey)
     );
   }
 
-  /// Sets the delegated fee authority for an AdaptiveFeeTier.
-  /// The delegated fee authority can set the fee rate for individual pools initialized with the adaptive fee-tier.
-  /// Only the current fee authority in WhirlpoolsConfig has permission to invoke this instruction.
-  ///
-  /// ### Authority
-  /// - "fee_authority" - Set authority in the WhirlpoolConfig
-  ///
   public static Instruction setDelegatedFeeAuthority(final AccountMeta invokedWhirlpoolProgramMeta,
                                                      final PublicKey whirlpoolsConfigKey,
                                                      final PublicKey adaptiveFeeTierKey,
                                                      final PublicKey feeAuthorityKey,
-                                                     final PublicKey newDelegatedFeeAuthorityKey,
-                                                     final PublicKey whirlpoolProgramKey) {
+                                                     final PublicKey newDelegatedFeeAuthorityKey) {
     final var keys = setDelegatedFeeAuthorityKeys(
       whirlpoolsConfigKey,
       adaptiveFeeTierKey,
       feeAuthorityKey,
-      newDelegatedFeeAuthorityKey,
-      whirlpoolProgramKey
+      newDelegatedFeeAuthorityKey
     );
     return setDelegatedFeeAuthority(invokedWhirlpoolProgramMeta, keys);
   }
 
-  /// Sets the delegated fee authority for an AdaptiveFeeTier.
-  /// The delegated fee authority can set the fee rate for individual pools initialized with the adaptive fee-tier.
-  /// Only the current fee authority in WhirlpoolsConfig has permission to invoke this instruction.
-  ///
-  /// ### Authority
-  /// - "fee_authority" - Set authority in the WhirlpoolConfig
-  ///
   public static Instruction setDelegatedFeeAuthority(final AccountMeta invokedWhirlpoolProgramMeta,
                                                      final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, SET_DELEGATED_FEE_AUTHORITY_DISCRIMINATOR);
@@ -6130,56 +4381,28 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator SET_FEE_AUTHORITY_DISCRIMINATOR = toDiscriminator(31, 1, 50, 87, 237, 101, 97, 132);
 
-  /// Sets the fee authority for a WhirlpoolConfig.
-  /// The fee authority can set the fee & protocol fee rate for individual pools or
-  /// set the default fee rate for newly minted pools.
-  /// Only the current fee authority has permission to invoke this instruction.
-  ///
-  /// ### Authority
-  /// - "fee_authority" - Set authority that can modify pool fees in the WhirlpoolConfig
-  ///
   public static List<AccountMeta> setFeeAuthorityKeys(final PublicKey whirlpoolsConfigKey,
                                                       final PublicKey feeAuthorityKey,
-                                                      final PublicKey newFeeAuthorityKey,
-                                                      final PublicKey whirlpoolProgramKey) {
+                                                      final PublicKey newFeeAuthorityKey) {
     return List.of(
       createWrite(whirlpoolsConfigKey),
       createReadOnlySigner(feeAuthorityKey),
-      createRead(newFeeAuthorityKey),
-      createRead(whirlpoolProgramKey)
+      createRead(newFeeAuthorityKey)
     );
   }
 
-  /// Sets the fee authority for a WhirlpoolConfig.
-  /// The fee authority can set the fee & protocol fee rate for individual pools or
-  /// set the default fee rate for newly minted pools.
-  /// Only the current fee authority has permission to invoke this instruction.
-  ///
-  /// ### Authority
-  /// - "fee_authority" - Set authority that can modify pool fees in the WhirlpoolConfig
-  ///
   public static Instruction setFeeAuthority(final AccountMeta invokedWhirlpoolProgramMeta,
                                             final PublicKey whirlpoolsConfigKey,
                                             final PublicKey feeAuthorityKey,
-                                            final PublicKey newFeeAuthorityKey,
-                                            final PublicKey whirlpoolProgramKey) {
+                                            final PublicKey newFeeAuthorityKey) {
     final var keys = setFeeAuthorityKeys(
       whirlpoolsConfigKey,
       feeAuthorityKey,
-      newFeeAuthorityKey,
-      whirlpoolProgramKey
+      newFeeAuthorityKey
     );
     return setFeeAuthority(invokedWhirlpoolProgramMeta, keys);
   }
 
-  /// Sets the fee authority for a WhirlpoolConfig.
-  /// The fee authority can set the fee & protocol fee rate for individual pools or
-  /// set the default fee rate for newly minted pools.
-  /// Only the current fee authority has permission to invoke this instruction.
-  ///
-  /// ### Authority
-  /// - "fee_authority" - Set authority that can modify pool fees in the WhirlpoolConfig
-  ///
   public static Instruction setFeeAuthority(final AccountMeta invokedWhirlpoolProgramMeta,
                                             final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, SET_FEE_AUTHORITY_DISCRIMINATOR);
@@ -6187,73 +4410,30 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator SET_FEE_RATE_DISCRIMINATOR = toDiscriminator(53, 243, 137, 65, 8, 140, 158, 6);
 
-  /// Sets the fee rate for a Whirlpool.
-  /// Fee rate is represented as hundredths of a basis point.
-  /// Only the current fee authority has permission to invoke this instruction.
-  ///
-  /// ### Authority
-  /// - "fee_authority" - Set authority that can modify pool fees in the WhirlpoolConfig
-  ///
-  /// ### Parameters
-  /// - `fee_rate` - The rate that the pool will use to calculate fees going onwards.
-  ///
-  /// #### Special Errors
-  /// - `FeeRateMaxExceeded` - If the provided fee_rate exceeds MAX_FEE_RATE.
-  ///
   public static List<AccountMeta> setFeeRateKeys(final PublicKey whirlpoolsConfigKey,
                                                  final PublicKey whirlpoolKey,
-                                                 final PublicKey feeAuthorityKey,
-                                                 final PublicKey whirlpoolProgramKey) {
+                                                 final PublicKey feeAuthorityKey) {
     return List.of(
       createRead(whirlpoolsConfigKey),
       createWrite(whirlpoolKey),
-      createReadOnlySigner(feeAuthorityKey),
-      createRead(whirlpoolProgramKey)
+      createReadOnlySigner(feeAuthorityKey)
     );
   }
 
-  /// Sets the fee rate for a Whirlpool.
-  /// Fee rate is represented as hundredths of a basis point.
-  /// Only the current fee authority has permission to invoke this instruction.
-  ///
-  /// ### Authority
-  /// - "fee_authority" - Set authority that can modify pool fees in the WhirlpoolConfig
-  ///
-  /// ### Parameters
-  /// - `fee_rate` - The rate that the pool will use to calculate fees going onwards.
-  ///
-  /// #### Special Errors
-  /// - `FeeRateMaxExceeded` - If the provided fee_rate exceeds MAX_FEE_RATE.
-  ///
   /// @param feeRate: u16
   public static Instruction setFeeRate(final AccountMeta invokedWhirlpoolProgramMeta,
                                        final PublicKey whirlpoolsConfigKey,
                                        final PublicKey whirlpoolKey,
                                        final PublicKey feeAuthorityKey,
-                                       final PublicKey whirlpoolProgramKey,
                                        final int feeRate) {
     final var keys = setFeeRateKeys(
       whirlpoolsConfigKey,
       whirlpoolKey,
-      feeAuthorityKey,
-      whirlpoolProgramKey
+      feeAuthorityKey
     );
     return setFeeRate(invokedWhirlpoolProgramMeta, keys, feeRate);
   }
 
-  /// Sets the fee rate for a Whirlpool.
-  /// Fee rate is represented as hundredths of a basis point.
-  /// Only the current fee authority has permission to invoke this instruction.
-  ///
-  /// ### Authority
-  /// - "fee_authority" - Set authority that can modify pool fees in the WhirlpoolConfig
-  ///
-  /// ### Parameters
-  /// - `fee_rate` - The rate that the pool will use to calculate fees going onwards.
-  ///
-  /// #### Special Errors
-  /// - `FeeRateMaxExceeded` - If the provided fee_rate exceeds MAX_FEE_RATE.
-  ///
   /// @param feeRate: u16
   public static Instruction setFeeRate(final AccountMeta invokedWhirlpoolProgramMeta,
                                        final List<AccountMeta> keys,
@@ -6302,70 +4482,30 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator SET_FEE_RATE_BY_DELEGATED_FEE_AUTHORITY_DISCRIMINATOR = toDiscriminator(121, 121, 54, 114, 131, 230, 162, 104);
 
-  /// Sets the fee rate for a Whirlpool by the delegated fee authority in AdaptiveFeeTier.
-  /// Fee rate is represented as hundredths of a basis point.
-  ///
-  /// ### Authority
-  /// - "delegated_fee_authority" - Set authority that can modify pool fees in the AdaptiveFeeTier
-  ///
-  /// ### Parameters
-  /// - `fee_rate` - The rate that the pool will use to calculate fees going onwards.
-  ///
-  /// #### Special Errors
-  /// - `FeeRateMaxExceeded` - If the provided fee_rate exceeds MAX_FEE_RATE.
-  ///
   public static List<AccountMeta> setFeeRateByDelegatedFeeAuthorityKeys(final PublicKey whirlpoolKey,
                                                                         final PublicKey adaptiveFeeTierKey,
-                                                                        final PublicKey delegatedFeeAuthorityKey,
-                                                                        final PublicKey whirlpoolProgramKey) {
+                                                                        final PublicKey delegatedFeeAuthorityKey) {
     return List.of(
       createWrite(whirlpoolKey),
       createRead(adaptiveFeeTierKey),
-      createReadOnlySigner(delegatedFeeAuthorityKey),
-      createRead(whirlpoolProgramKey)
+      createReadOnlySigner(delegatedFeeAuthorityKey)
     );
   }
 
-  /// Sets the fee rate for a Whirlpool by the delegated fee authority in AdaptiveFeeTier.
-  /// Fee rate is represented as hundredths of a basis point.
-  ///
-  /// ### Authority
-  /// - "delegated_fee_authority" - Set authority that can modify pool fees in the AdaptiveFeeTier
-  ///
-  /// ### Parameters
-  /// - `fee_rate` - The rate that the pool will use to calculate fees going onwards.
-  ///
-  /// #### Special Errors
-  /// - `FeeRateMaxExceeded` - If the provided fee_rate exceeds MAX_FEE_RATE.
-  ///
   /// @param feeRate: u16
   public static Instruction setFeeRateByDelegatedFeeAuthority(final AccountMeta invokedWhirlpoolProgramMeta,
                                                               final PublicKey whirlpoolKey,
                                                               final PublicKey adaptiveFeeTierKey,
                                                               final PublicKey delegatedFeeAuthorityKey,
-                                                              final PublicKey whirlpoolProgramKey,
                                                               final int feeRate) {
     final var keys = setFeeRateByDelegatedFeeAuthorityKeys(
       whirlpoolKey,
       adaptiveFeeTierKey,
-      delegatedFeeAuthorityKey,
-      whirlpoolProgramKey
+      delegatedFeeAuthorityKey
     );
     return setFeeRateByDelegatedFeeAuthority(invokedWhirlpoolProgramMeta, keys, feeRate);
   }
 
-  /// Sets the fee rate for a Whirlpool by the delegated fee authority in AdaptiveFeeTier.
-  /// Fee rate is represented as hundredths of a basis point.
-  ///
-  /// ### Authority
-  /// - "delegated_fee_authority" - Set authority that can modify pool fees in the AdaptiveFeeTier
-  ///
-  /// ### Parameters
-  /// - `fee_rate` - The rate that the pool will use to calculate fees going onwards.
-  ///
-  /// #### Special Errors
-  /// - `FeeRateMaxExceeded` - If the provided fee_rate exceeds MAX_FEE_RATE.
-  ///
   /// @param feeRate: u16
   public static Instruction setFeeRateByDelegatedFeeAuthority(final AccountMeta invokedWhirlpoolProgramMeta,
                                                               final List<AccountMeta> keys,
@@ -6414,57 +4554,32 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator SET_INITIALIZE_POOL_AUTHORITY_DISCRIMINATOR = toDiscriminator(125, 43, 127, 235, 149, 26, 106, 236);
 
-  /// Sets the initialize pool authority for an AdaptiveFeeTier.
-  /// Only the initialize pool authority can initialize pools with the adaptive fee-tier.
-  /// Only the current fee authority in WhirlpoolsConfig has permission to invoke this instruction.
-  ///
-  /// ### Authority
-  /// - "fee_authority" - Set authority in the WhirlpoolConfig
-  ///
   public static List<AccountMeta> setInitializePoolAuthorityKeys(final PublicKey whirlpoolsConfigKey,
                                                                  final PublicKey adaptiveFeeTierKey,
                                                                  final PublicKey feeAuthorityKey,
-                                                                 final PublicKey newInitializePoolAuthorityKey,
-                                                                 final PublicKey whirlpoolProgramKey) {
+                                                                 final PublicKey newInitializePoolAuthorityKey) {
     return List.of(
       createRead(whirlpoolsConfigKey),
       createWrite(adaptiveFeeTierKey),
       createReadOnlySigner(feeAuthorityKey),
-      createRead(newInitializePoolAuthorityKey),
-      createRead(whirlpoolProgramKey)
+      createRead(newInitializePoolAuthorityKey)
     );
   }
 
-  /// Sets the initialize pool authority for an AdaptiveFeeTier.
-  /// Only the initialize pool authority can initialize pools with the adaptive fee-tier.
-  /// Only the current fee authority in WhirlpoolsConfig has permission to invoke this instruction.
-  ///
-  /// ### Authority
-  /// - "fee_authority" - Set authority in the WhirlpoolConfig
-  ///
   public static Instruction setInitializePoolAuthority(final AccountMeta invokedWhirlpoolProgramMeta,
                                                        final PublicKey whirlpoolsConfigKey,
                                                        final PublicKey adaptiveFeeTierKey,
                                                        final PublicKey feeAuthorityKey,
-                                                       final PublicKey newInitializePoolAuthorityKey,
-                                                       final PublicKey whirlpoolProgramKey) {
+                                                       final PublicKey newInitializePoolAuthorityKey) {
     final var keys = setInitializePoolAuthorityKeys(
       whirlpoolsConfigKey,
       adaptiveFeeTierKey,
       feeAuthorityKey,
-      newInitializePoolAuthorityKey,
-      whirlpoolProgramKey
+      newInitializePoolAuthorityKey
     );
     return setInitializePoolAuthority(invokedWhirlpoolProgramMeta, keys);
   }
 
-  /// Sets the initialize pool authority for an AdaptiveFeeTier.
-  /// Only the initialize pool authority can initialize pools with the adaptive fee-tier.
-  /// Only the current fee authority in WhirlpoolsConfig has permission to invoke this instruction.
-  ///
-  /// ### Authority
-  /// - "fee_authority" - Set authority in the WhirlpoolConfig
-  ///
   public static Instruction setInitializePoolAuthority(final AccountMeta invokedWhirlpoolProgramMeta,
                                                        final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, SET_INITIALIZE_POOL_AUTHORITY_DISCRIMINATOR);
@@ -6472,48 +4587,16 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator SET_PRESET_ADAPTIVE_FEE_CONSTANTS_DISCRIMINATOR = toDiscriminator(132, 185, 66, 148, 83, 88, 134, 198);
 
-  /// Sets the adaptive fee constants for an AdaptiveFeeTier.
-  /// Only the current fee authority in WhirlpoolsConfig has permission to invoke this instruction.
-  ///
-  /// ### Authority
-  /// - "fee_authority" - Set authority in the WhirlpoolConfig
-  ///
-  /// ### Parameters
-  /// - `filter_period` - Period determine high frequency trading time window. (seconds)
-  /// - `decay_period` - Period determine when the adaptive fee start decrease. (seconds)
-  /// - `reduction_factor` - Adaptive fee rate decrement rate.
-  /// - `adaptive_fee_control_factor` - Adaptive fee control factor.
-  /// - `max_volatility_accumulator` - Max volatility accumulator.
-  /// - `tick_group_size` - Tick group size to define tick group index.
-  /// - `major_swap_threshold_ticks` - Major swap threshold ticks to define major swap.
-  ///
   public static List<AccountMeta> setPresetAdaptiveFeeConstantsKeys(final PublicKey whirlpoolsConfigKey,
                                                                     final PublicKey adaptiveFeeTierKey,
-                                                                    final PublicKey feeAuthorityKey,
-                                                                    final PublicKey whirlpoolProgramKey) {
+                                                                    final PublicKey feeAuthorityKey) {
     return List.of(
       createRead(whirlpoolsConfigKey),
       createWrite(adaptiveFeeTierKey),
-      createReadOnlySigner(feeAuthorityKey),
-      createRead(whirlpoolProgramKey)
+      createReadOnlySigner(feeAuthorityKey)
     );
   }
 
-  /// Sets the adaptive fee constants for an AdaptiveFeeTier.
-  /// Only the current fee authority in WhirlpoolsConfig has permission to invoke this instruction.
-  ///
-  /// ### Authority
-  /// - "fee_authority" - Set authority in the WhirlpoolConfig
-  ///
-  /// ### Parameters
-  /// - `filter_period` - Period determine high frequency trading time window. (seconds)
-  /// - `decay_period` - Period determine when the adaptive fee start decrease. (seconds)
-  /// - `reduction_factor` - Adaptive fee rate decrement rate.
-  /// - `adaptive_fee_control_factor` - Adaptive fee control factor.
-  /// - `max_volatility_accumulator` - Max volatility accumulator.
-  /// - `tick_group_size` - Tick group size to define tick group index.
-  /// - `major_swap_threshold_ticks` - Major swap threshold ticks to define major swap.
-  ///
   /// @param filterPeriod: u16
   /// @param decayPeriod: u16
   /// @param reductionFactor: u16
@@ -6525,7 +4608,6 @@ public final class WhirlpoolProgram {
                                                           final PublicKey whirlpoolsConfigKey,
                                                           final PublicKey adaptiveFeeTierKey,
                                                           final PublicKey feeAuthorityKey,
-                                                          final PublicKey whirlpoolProgramKey,
                                                           final int filterPeriod,
                                                           final int decayPeriod,
                                                           final int reductionFactor,
@@ -6536,8 +4618,7 @@ public final class WhirlpoolProgram {
     final var keys = setPresetAdaptiveFeeConstantsKeys(
       whirlpoolsConfigKey,
       adaptiveFeeTierKey,
-      feeAuthorityKey,
-      whirlpoolProgramKey
+      feeAuthorityKey
     );
     return setPresetAdaptiveFeeConstants(
       invokedWhirlpoolProgramMeta,
@@ -6552,21 +4633,6 @@ public final class WhirlpoolProgram {
     );
   }
 
-  /// Sets the adaptive fee constants for an AdaptiveFeeTier.
-  /// Only the current fee authority in WhirlpoolsConfig has permission to invoke this instruction.
-  ///
-  /// ### Authority
-  /// - "fee_authority" - Set authority in the WhirlpoolConfig
-  ///
-  /// ### Parameters
-  /// - `filter_period` - Period determine high frequency trading time window. (seconds)
-  /// - `decay_period` - Period determine when the adaptive fee start decrease. (seconds)
-  /// - `reduction_factor` - Adaptive fee rate decrement rate.
-  /// - `adaptive_fee_control_factor` - Adaptive fee control factor.
-  /// - `max_volatility_accumulator` - Max volatility accumulator.
-  /// - `tick_group_size` - Tick group size to define tick group index.
-  /// - `major_swap_threshold_ticks` - Major swap threshold ticks to define major swap.
-  ///
   /// @param filterPeriod: u16
   /// @param decayPeriod: u16
   /// @param reductionFactor: u16
@@ -6689,73 +4755,30 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator SET_PROTOCOL_FEE_RATE_DISCRIMINATOR = toDiscriminator(95, 7, 4, 50, 154, 79, 156, 131);
 
-  /// Sets the protocol fee rate for a Whirlpool.
-  /// Protocol fee rate is represented as a basis point.
-  /// Only the current fee authority has permission to invoke this instruction.
-  ///
-  /// ### Authority
-  /// - "fee_authority" - Set authority that can modify pool fees in the WhirlpoolConfig
-  ///
-  /// ### Parameters
-  /// - `protocol_fee_rate` - The rate that the pool will use to calculate protocol fees going onwards.
-  ///
-  /// #### Special Errors
-  /// - `ProtocolFeeRateMaxExceeded` - If the provided default_protocol_fee_rate exceeds MAX_PROTOCOL_FEE_RATE.
-  ///
   public static List<AccountMeta> setProtocolFeeRateKeys(final PublicKey whirlpoolsConfigKey,
                                                          final PublicKey whirlpoolKey,
-                                                         final PublicKey feeAuthorityKey,
-                                                         final PublicKey whirlpoolProgramKey) {
+                                                         final PublicKey feeAuthorityKey) {
     return List.of(
       createRead(whirlpoolsConfigKey),
       createWrite(whirlpoolKey),
-      createReadOnlySigner(feeAuthorityKey),
-      createRead(whirlpoolProgramKey)
+      createReadOnlySigner(feeAuthorityKey)
     );
   }
 
-  /// Sets the protocol fee rate for a Whirlpool.
-  /// Protocol fee rate is represented as a basis point.
-  /// Only the current fee authority has permission to invoke this instruction.
-  ///
-  /// ### Authority
-  /// - "fee_authority" - Set authority that can modify pool fees in the WhirlpoolConfig
-  ///
-  /// ### Parameters
-  /// - `protocol_fee_rate` - The rate that the pool will use to calculate protocol fees going onwards.
-  ///
-  /// #### Special Errors
-  /// - `ProtocolFeeRateMaxExceeded` - If the provided default_protocol_fee_rate exceeds MAX_PROTOCOL_FEE_RATE.
-  ///
   /// @param protocolFeeRate: u16
   public static Instruction setProtocolFeeRate(final AccountMeta invokedWhirlpoolProgramMeta,
                                                final PublicKey whirlpoolsConfigKey,
                                                final PublicKey whirlpoolKey,
                                                final PublicKey feeAuthorityKey,
-                                               final PublicKey whirlpoolProgramKey,
                                                final int protocolFeeRate) {
     final var keys = setProtocolFeeRateKeys(
       whirlpoolsConfigKey,
       whirlpoolKey,
-      feeAuthorityKey,
-      whirlpoolProgramKey
+      feeAuthorityKey
     );
     return setProtocolFeeRate(invokedWhirlpoolProgramMeta, keys, protocolFeeRate);
   }
 
-  /// Sets the protocol fee rate for a Whirlpool.
-  /// Protocol fee rate is represented as a basis point.
-  /// Only the current fee authority has permission to invoke this instruction.
-  ///
-  /// ### Authority
-  /// - "fee_authority" - Set authority that can modify pool fees in the WhirlpoolConfig
-  ///
-  /// ### Parameters
-  /// - `protocol_fee_rate` - The rate that the pool will use to calculate protocol fees going onwards.
-  ///
-  /// #### Special Errors
-  /// - `ProtocolFeeRateMaxExceeded` - If the provided default_protocol_fee_rate exceeds MAX_PROTOCOL_FEE_RATE.
-  ///
   /// @param protocolFeeRate: u16
   public static Instruction setProtocolFeeRate(final AccountMeta invokedWhirlpoolProgramMeta,
                                                final List<AccountMeta> keys,
@@ -6804,67 +4827,30 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator SET_REWARD_AUTHORITY_DISCRIMINATOR = toDiscriminator(34, 39, 183, 252, 83, 28, 85, 127);
 
-  /// Set the whirlpool reward authority at the provided `reward_index`.
-  /// Only the current reward authority for this reward index has permission to invoke this instruction.
-  ///
-  /// ### Authority
-  /// - "reward_authority" - Set authority that can control reward emission for this particular reward.
-  ///
-  /// #### Special Errors
-  /// - `InvalidRewardIndex` - If the provided reward index doesn't match the lowest uninitialized
-  /// index in this pool, or exceeds NUM_REWARDS, or
-  /// all reward slots for this pool has been initialized.
-  ///
   public static List<AccountMeta> setRewardAuthorityKeys(final PublicKey whirlpoolKey,
                                                          final PublicKey rewardAuthorityKey,
-                                                         final PublicKey newRewardAuthorityKey,
-                                                         final PublicKey whirlpoolProgramKey) {
+                                                         final PublicKey newRewardAuthorityKey) {
     return List.of(
       createWrite(whirlpoolKey),
       createReadOnlySigner(rewardAuthorityKey),
-      createRead(newRewardAuthorityKey),
-      createRead(whirlpoolProgramKey)
+      createRead(newRewardAuthorityKey)
     );
   }
 
-  /// Set the whirlpool reward authority at the provided `reward_index`.
-  /// Only the current reward authority for this reward index has permission to invoke this instruction.
-  ///
-  /// ### Authority
-  /// - "reward_authority" - Set authority that can control reward emission for this particular reward.
-  ///
-  /// #### Special Errors
-  /// - `InvalidRewardIndex` - If the provided reward index doesn't match the lowest uninitialized
-  /// index in this pool, or exceeds NUM_REWARDS, or
-  /// all reward slots for this pool has been initialized.
-  ///
   /// @param rewardIndex: u8
   public static Instruction setRewardAuthority(final AccountMeta invokedWhirlpoolProgramMeta,
                                                final PublicKey whirlpoolKey,
                                                final PublicKey rewardAuthorityKey,
                                                final PublicKey newRewardAuthorityKey,
-                                               final PublicKey whirlpoolProgramKey,
                                                final int rewardIndex) {
     final var keys = setRewardAuthorityKeys(
       whirlpoolKey,
       rewardAuthorityKey,
-      newRewardAuthorityKey,
-      whirlpoolProgramKey
+      newRewardAuthorityKey
     );
     return setRewardAuthority(invokedWhirlpoolProgramMeta, keys, rewardIndex);
   }
 
-  /// Set the whirlpool reward authority at the provided `reward_index`.
-  /// Only the current reward authority for this reward index has permission to invoke this instruction.
-  ///
-  /// ### Authority
-  /// - "reward_authority" - Set authority that can control reward emission for this particular reward.
-  ///
-  /// #### Special Errors
-  /// - `InvalidRewardIndex` - If the provided reward index doesn't match the lowest uninitialized
-  /// index in this pool, or exceeds NUM_REWARDS, or
-  /// all reward slots for this pool has been initialized.
-  ///
   /// @param rewardIndex: u8
   public static Instruction setRewardAuthority(final AccountMeta invokedWhirlpoolProgramMeta,
                                                final List<AccountMeta> keys,
@@ -6913,71 +4899,34 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator SET_REWARD_AUTHORITY_BY_SUPER_AUTHORITY_DISCRIMINATOR = toDiscriminator(240, 154, 201, 198, 148, 93, 56, 25);
 
-  /// Set the whirlpool reward authority at the provided `reward_index`.
-  /// Only the current reward super authority has permission to invoke this instruction.
-  ///
-  /// ### Authority
-  /// - "reward_authority" - Set authority that can control reward emission for this particular reward.
-  ///
-  /// #### Special Errors
-  /// - `InvalidRewardIndex` - If the provided reward index doesn't match the lowest uninitialized
-  /// index in this pool, or exceeds NUM_REWARDS, or
-  /// all reward slots for this pool has been initialized.
-  ///
   public static List<AccountMeta> setRewardAuthorityBySuperAuthorityKeys(final PublicKey whirlpoolsConfigKey,
                                                                          final PublicKey whirlpoolKey,
                                                                          final PublicKey rewardEmissionsSuperAuthorityKey,
-                                                                         final PublicKey newRewardAuthorityKey,
-                                                                         final PublicKey whirlpoolProgramKey) {
+                                                                         final PublicKey newRewardAuthorityKey) {
     return List.of(
       createRead(whirlpoolsConfigKey),
       createWrite(whirlpoolKey),
       createReadOnlySigner(rewardEmissionsSuperAuthorityKey),
-      createRead(newRewardAuthorityKey),
-      createRead(whirlpoolProgramKey)
+      createRead(newRewardAuthorityKey)
     );
   }
 
-  /// Set the whirlpool reward authority at the provided `reward_index`.
-  /// Only the current reward super authority has permission to invoke this instruction.
-  ///
-  /// ### Authority
-  /// - "reward_authority" - Set authority that can control reward emission for this particular reward.
-  ///
-  /// #### Special Errors
-  /// - `InvalidRewardIndex` - If the provided reward index doesn't match the lowest uninitialized
-  /// index in this pool, or exceeds NUM_REWARDS, or
-  /// all reward slots for this pool has been initialized.
-  ///
   /// @param rewardIndex: u8
   public static Instruction setRewardAuthorityBySuperAuthority(final AccountMeta invokedWhirlpoolProgramMeta,
                                                                final PublicKey whirlpoolsConfigKey,
                                                                final PublicKey whirlpoolKey,
                                                                final PublicKey rewardEmissionsSuperAuthorityKey,
                                                                final PublicKey newRewardAuthorityKey,
-                                                               final PublicKey whirlpoolProgramKey,
                                                                final int rewardIndex) {
     final var keys = setRewardAuthorityBySuperAuthorityKeys(
       whirlpoolsConfigKey,
       whirlpoolKey,
       rewardEmissionsSuperAuthorityKey,
-      newRewardAuthorityKey,
-      whirlpoolProgramKey
+      newRewardAuthorityKey
     );
     return setRewardAuthorityBySuperAuthority(invokedWhirlpoolProgramMeta, keys, rewardIndex);
   }
 
-  /// Set the whirlpool reward authority at the provided `reward_index`.
-  /// Only the current reward super authority has permission to invoke this instruction.
-  ///
-  /// ### Authority
-  /// - "reward_authority" - Set authority that can control reward emission for this particular reward.
-  ///
-  /// #### Special Errors
-  /// - `InvalidRewardIndex` - If the provided reward index doesn't match the lowest uninitialized
-  /// index in this pool, or exceeds NUM_REWARDS, or
-  /// all reward slots for this pool has been initialized.
-  ///
   /// @param rewardIndex: u8
   public static Instruction setRewardAuthorityBySuperAuthority(final AccountMeta invokedWhirlpoolProgramMeta,
                                                                final List<AccountMeta> keys,
@@ -7026,89 +4975,31 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator SET_REWARD_EMISSIONS_DISCRIMINATOR = toDiscriminator(13, 197, 86, 168, 109, 176, 27, 244);
 
-  /// Set the reward emissions for a reward in a Whirlpool.
-  ///
-  /// ### Authority
-  /// - "reward_authority" - assigned authority by the reward_super_authority for the specified
-  /// reward-index in this Whirlpool
-  ///
-  /// ### Parameters
-  /// - `reward_index` - The reward index (0 <= index <= NUM_REWARDS) that we'd like to modify.
-  /// - `emissions_per_second_x64` - The amount of rewards emitted in this pool.
-  ///
-  /// #### Special Errors
-  /// - `RewardVaultAmountInsufficient` - The amount of rewards in the reward vault cannot emit
-  /// more than a day of desired emissions.
-  /// - `InvalidTimestamp` - Provided timestamp is not in order with the previous timestamp.
-  /// - `InvalidRewardIndex` - If the provided reward index doesn't match the lowest uninitialized
-  /// index in this pool, or exceeds NUM_REWARDS, or
-  /// all reward slots for this pool has been initialized.
-  ///
   public static List<AccountMeta> setRewardEmissionsKeys(final PublicKey whirlpoolKey,
                                                          final PublicKey rewardAuthorityKey,
-                                                         final PublicKey rewardVaultKey,
-                                                         final PublicKey whirlpoolProgramKey) {
+                                                         final PublicKey rewardVaultKey) {
     return List.of(
       createWrite(whirlpoolKey),
       createReadOnlySigner(rewardAuthorityKey),
-      createRead(rewardVaultKey),
-      createRead(whirlpoolProgramKey)
+      createRead(rewardVaultKey)
     );
   }
 
-  /// Set the reward emissions for a reward in a Whirlpool.
-  ///
-  /// ### Authority
-  /// - "reward_authority" - assigned authority by the reward_super_authority for the specified
-  /// reward-index in this Whirlpool
-  ///
-  /// ### Parameters
-  /// - `reward_index` - The reward index (0 <= index <= NUM_REWARDS) that we'd like to modify.
-  /// - `emissions_per_second_x64` - The amount of rewards emitted in this pool.
-  ///
-  /// #### Special Errors
-  /// - `RewardVaultAmountInsufficient` - The amount of rewards in the reward vault cannot emit
-  /// more than a day of desired emissions.
-  /// - `InvalidTimestamp` - Provided timestamp is not in order with the previous timestamp.
-  /// - `InvalidRewardIndex` - If the provided reward index doesn't match the lowest uninitialized
-  /// index in this pool, or exceeds NUM_REWARDS, or
-  /// all reward slots for this pool has been initialized.
-  ///
   /// @param rewardIndex: u8
   public static Instruction setRewardEmissions(final AccountMeta invokedWhirlpoolProgramMeta,
                                                final PublicKey whirlpoolKey,
                                                final PublicKey rewardAuthorityKey,
                                                final PublicKey rewardVaultKey,
-                                               final PublicKey whirlpoolProgramKey,
                                                final int rewardIndex,
                                                final BigInteger emissionsPerSecondX64) {
     final var keys = setRewardEmissionsKeys(
       whirlpoolKey,
       rewardAuthorityKey,
-      rewardVaultKey,
-      whirlpoolProgramKey
+      rewardVaultKey
     );
     return setRewardEmissions(invokedWhirlpoolProgramMeta, keys, rewardIndex, emissionsPerSecondX64);
   }
 
-  /// Set the reward emissions for a reward in a Whirlpool.
-  ///
-  /// ### Authority
-  /// - "reward_authority" - assigned authority by the reward_super_authority for the specified
-  /// reward-index in this Whirlpool
-  ///
-  /// ### Parameters
-  /// - `reward_index` - The reward index (0 <= index <= NUM_REWARDS) that we'd like to modify.
-  /// - `emissions_per_second_x64` - The amount of rewards emitted in this pool.
-  ///
-  /// #### Special Errors
-  /// - `RewardVaultAmountInsufficient` - The amount of rewards in the reward vault cannot emit
-  /// more than a day of desired emissions.
-  /// - `InvalidTimestamp` - Provided timestamp is not in order with the previous timestamp.
-  /// - `InvalidRewardIndex` - If the provided reward index doesn't match the lowest uninitialized
-  /// index in this pool, or exceeds NUM_REWARDS, or
-  /// all reward slots for this pool has been initialized.
-  ///
   /// @param rewardIndex: u8
   public static Instruction setRewardEmissions(final AccountMeta invokedWhirlpoolProgramMeta,
                                                final List<AccountMeta> keys,
@@ -7165,53 +5056,28 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator SET_REWARD_EMISSIONS_SUPER_AUTHORITY_DISCRIMINATOR = toDiscriminator(207, 5, 200, 209, 122, 56, 82, 183);
 
-  /// Set the whirlpool reward super authority for a WhirlpoolConfig
-  /// Only the current reward super authority has permission to invoke this instruction.
-  /// This instruction will not change the authority on any `WhirlpoolRewardInfo` whirlpool rewards.
-  ///
-  /// ### Authority
-  /// - "reward_emissions_super_authority" - Set authority that can control reward authorities for all pools in this config space.
-  ///
   public static List<AccountMeta> setRewardEmissionsSuperAuthorityKeys(final PublicKey whirlpoolsConfigKey,
                                                                        final PublicKey rewardEmissionsSuperAuthorityKey,
-                                                                       final PublicKey newRewardEmissionsSuperAuthorityKey,
-                                                                       final PublicKey whirlpoolProgramKey) {
+                                                                       final PublicKey newRewardEmissionsSuperAuthorityKey) {
     return List.of(
       createWrite(whirlpoolsConfigKey),
       createReadOnlySigner(rewardEmissionsSuperAuthorityKey),
-      createRead(newRewardEmissionsSuperAuthorityKey),
-      createRead(whirlpoolProgramKey)
+      createRead(newRewardEmissionsSuperAuthorityKey)
     );
   }
 
-  /// Set the whirlpool reward super authority for a WhirlpoolConfig
-  /// Only the current reward super authority has permission to invoke this instruction.
-  /// This instruction will not change the authority on any `WhirlpoolRewardInfo` whirlpool rewards.
-  ///
-  /// ### Authority
-  /// - "reward_emissions_super_authority" - Set authority that can control reward authorities for all pools in this config space.
-  ///
   public static Instruction setRewardEmissionsSuperAuthority(final AccountMeta invokedWhirlpoolProgramMeta,
                                                              final PublicKey whirlpoolsConfigKey,
                                                              final PublicKey rewardEmissionsSuperAuthorityKey,
-                                                             final PublicKey newRewardEmissionsSuperAuthorityKey,
-                                                             final PublicKey whirlpoolProgramKey) {
+                                                             final PublicKey newRewardEmissionsSuperAuthorityKey) {
     final var keys = setRewardEmissionsSuperAuthorityKeys(
       whirlpoolsConfigKey,
       rewardEmissionsSuperAuthorityKey,
-      newRewardEmissionsSuperAuthorityKey,
-      whirlpoolProgramKey
+      newRewardEmissionsSuperAuthorityKey
     );
     return setRewardEmissionsSuperAuthority(invokedWhirlpoolProgramMeta, keys);
   }
 
-  /// Set the whirlpool reward super authority for a WhirlpoolConfig
-  /// Only the current reward super authority has permission to invoke this instruction.
-  /// This instruction will not change the authority on any `WhirlpoolRewardInfo` whirlpool rewards.
-  ///
-  /// ### Authority
-  /// - "reward_emissions_super_authority" - Set authority that can control reward authorities for all pools in this config space.
-  ///
   public static Instruction setRewardEmissionsSuperAuthority(final AccountMeta invokedWhirlpoolProgramMeta,
                                                              final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, SET_REWARD_EMISSIONS_SUPER_AUTHORITY_DISCRIMINATOR);
@@ -7219,92 +5085,31 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator SET_REWARD_EMISSIONS_V_2_DISCRIMINATOR = toDiscriminator(114, 228, 72, 32, 193, 48, 160, 102);
 
-  /// Set the reward emissions for a reward in a Whirlpool.
-  /// This instruction works with both Token and Token-2022.
-  ///
-  /// ### Authority
-  /// - "reward_authority" - assigned authority by the reward_super_authority for the specified
-  /// reward-index in this Whirlpool
-  ///
-  /// ### Parameters
-  /// - `reward_index` - The reward index (0 <= index <= NUM_REWARDS) that we'd like to modify.
-  /// - `emissions_per_second_x64` - The amount of rewards emitted in this pool.
-  ///
-  /// #### Special Errors
-  /// - `RewardVaultAmountInsufficient` - The amount of rewards in the reward vault cannot emit
-  /// more than a day of desired emissions.
-  /// - `InvalidTimestamp` - Provided timestamp is not in order with the previous timestamp.
-  /// - `InvalidRewardIndex` - If the provided reward index doesn't match the lowest uninitialized
-  /// index in this pool, or exceeds NUM_REWARDS, or
-  /// all reward slots for this pool has been initialized.
-  ///
   public static List<AccountMeta> setRewardEmissionsV2Keys(final PublicKey whirlpoolKey,
                                                            final PublicKey rewardAuthorityKey,
-                                                           final PublicKey rewardVaultKey,
-                                                           final PublicKey whirlpoolProgramKey) {
+                                                           final PublicKey rewardVaultKey) {
     return List.of(
       createWrite(whirlpoolKey),
       createReadOnlySigner(rewardAuthorityKey),
-      createRead(rewardVaultKey),
-      createRead(whirlpoolProgramKey)
+      createRead(rewardVaultKey)
     );
   }
 
-  /// Set the reward emissions for a reward in a Whirlpool.
-  /// This instruction works with both Token and Token-2022.
-  ///
-  /// ### Authority
-  /// - "reward_authority" - assigned authority by the reward_super_authority for the specified
-  /// reward-index in this Whirlpool
-  ///
-  /// ### Parameters
-  /// - `reward_index` - The reward index (0 <= index <= NUM_REWARDS) that we'd like to modify.
-  /// - `emissions_per_second_x64` - The amount of rewards emitted in this pool.
-  ///
-  /// #### Special Errors
-  /// - `RewardVaultAmountInsufficient` - The amount of rewards in the reward vault cannot emit
-  /// more than a day of desired emissions.
-  /// - `InvalidTimestamp` - Provided timestamp is not in order with the previous timestamp.
-  /// - `InvalidRewardIndex` - If the provided reward index doesn't match the lowest uninitialized
-  /// index in this pool, or exceeds NUM_REWARDS, or
-  /// all reward slots for this pool has been initialized.
-  ///
   /// @param rewardIndex: u8
   public static Instruction setRewardEmissionsV2(final AccountMeta invokedWhirlpoolProgramMeta,
                                                  final PublicKey whirlpoolKey,
                                                  final PublicKey rewardAuthorityKey,
                                                  final PublicKey rewardVaultKey,
-                                                 final PublicKey whirlpoolProgramKey,
                                                  final int rewardIndex,
                                                  final BigInteger emissionsPerSecondX64) {
     final var keys = setRewardEmissionsV2Keys(
       whirlpoolKey,
       rewardAuthorityKey,
-      rewardVaultKey,
-      whirlpoolProgramKey
+      rewardVaultKey
     );
     return setRewardEmissionsV2(invokedWhirlpoolProgramMeta, keys, rewardIndex, emissionsPerSecondX64);
   }
 
-  /// Set the reward emissions for a reward in a Whirlpool.
-  /// This instruction works with both Token and Token-2022.
-  ///
-  /// ### Authority
-  /// - "reward_authority" - assigned authority by the reward_super_authority for the specified
-  /// reward-index in this Whirlpool
-  ///
-  /// ### Parameters
-  /// - `reward_index` - The reward index (0 <= index <= NUM_REWARDS) that we'd like to modify.
-  /// - `emissions_per_second_x64` - The amount of rewards emitted in this pool.
-  ///
-  /// #### Special Errors
-  /// - `RewardVaultAmountInsufficient` - The amount of rewards in the reward vault cannot emit
-  /// more than a day of desired emissions.
-  /// - `InvalidTimestamp` - Provided timestamp is not in order with the previous timestamp.
-  /// - `InvalidRewardIndex` - If the provided reward index doesn't match the lowest uninitialized
-  /// index in this pool, or exceeds NUM_REWARDS, or
-  /// all reward slots for this pool has been initialized.
-  ///
   /// @param rewardIndex: u8
   public static Instruction setRewardEmissionsV2(final AccountMeta invokedWhirlpoolProgramMeta,
                                                  final List<AccountMeta> keys,
@@ -7361,74 +5166,37 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator SET_TOKEN_BADGE_ATTRIBUTE_DISCRIMINATOR = toDiscriminator(224, 88, 65, 33, 138, 147, 246, 137);
 
-  /// Set an attribute on a TokenBadge account.
-  ///
-  /// ### Authority
-  /// - "token_badge_authority" - Set authority in the WhirlpoolConfigExtension
-  ///
-  /// ### Parameters
-  /// - `attribute` - The attribute to set on the TokenBadge account.
-  ///
-  /// #### Special Errors
-  /// - `FeatureIsNotEnabled` - If the feature flag for token badges is not enabled.
-  ///
   public static List<AccountMeta> setTokenBadgeAttributeKeys(final PublicKey whirlpoolsConfigKey,
                                                              final PublicKey whirlpoolsConfigExtensionKey,
                                                              final PublicKey tokenBadgeAuthorityKey,
                                                              final PublicKey tokenMintKey,
-                                                             final PublicKey tokenBadgeKey,
-                                                             final PublicKey whirlpoolProgramKey) {
+                                                             final PublicKey tokenBadgeKey) {
     return List.of(
       createRead(whirlpoolsConfigKey),
       createRead(whirlpoolsConfigExtensionKey),
       createReadOnlySigner(tokenBadgeAuthorityKey),
       createRead(tokenMintKey),
-      createWrite(tokenBadgeKey),
-      createRead(whirlpoolProgramKey)
+      createWrite(tokenBadgeKey)
     );
   }
 
-  /// Set an attribute on a TokenBadge account.
-  ///
-  /// ### Authority
-  /// - "token_badge_authority" - Set authority in the WhirlpoolConfigExtension
-  ///
-  /// ### Parameters
-  /// - `attribute` - The attribute to set on the TokenBadge account.
-  ///
-  /// #### Special Errors
-  /// - `FeatureIsNotEnabled` - If the feature flag for token badges is not enabled.
-  ///
   public static Instruction setTokenBadgeAttribute(final AccountMeta invokedWhirlpoolProgramMeta,
                                                    final PublicKey whirlpoolsConfigKey,
                                                    final PublicKey whirlpoolsConfigExtensionKey,
                                                    final PublicKey tokenBadgeAuthorityKey,
                                                    final PublicKey tokenMintKey,
                                                    final PublicKey tokenBadgeKey,
-                                                   final PublicKey whirlpoolProgramKey,
                                                    final TokenBadgeAttribute attribute) {
     final var keys = setTokenBadgeAttributeKeys(
       whirlpoolsConfigKey,
       whirlpoolsConfigExtensionKey,
       tokenBadgeAuthorityKey,
       tokenMintKey,
-      tokenBadgeKey,
-      whirlpoolProgramKey
+      tokenBadgeKey
     );
     return setTokenBadgeAttribute(invokedWhirlpoolProgramMeta, keys, attribute);
   }
 
-  /// Set an attribute on a TokenBadge account.
-  ///
-  /// ### Authority
-  /// - "token_badge_authority" - Set authority in the WhirlpoolConfigExtension
-  ///
-  /// ### Parameters
-  /// - `attribute` - The attribute to set on the TokenBadge account.
-  ///
-  /// #### Special Errors
-  /// - `FeatureIsNotEnabled` - If the feature flag for token badges is not enabled.
-  ///
   public static Instruction setTokenBadgeAttribute(final AccountMeta invokedWhirlpoolProgramMeta,
                                                    final List<AccountMeta> keys,
                                                    final TokenBadgeAttribute attribute) {
@@ -7472,54 +5240,32 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator SET_TOKEN_BADGE_AUTHORITY_DISCRIMINATOR = toDiscriminator(207, 202, 4, 32, 205, 79, 13, 178);
 
-  /// Sets the token badge authority for a WhirlpoolsConfigExtension.
-  /// Only the config extension authority has permission to invoke this instruction.
-  ///
-  /// ### Authority
-  /// - "config_extension_authority" - Set authority in the WhirlpoolConfigExtension
-  ///
   public static List<AccountMeta> setTokenBadgeAuthorityKeys(final PublicKey whirlpoolsConfigKey,
                                                              final PublicKey whirlpoolsConfigExtensionKey,
                                                              final PublicKey configExtensionAuthorityKey,
-                                                             final PublicKey newTokenBadgeAuthorityKey,
-                                                             final PublicKey whirlpoolProgramKey) {
+                                                             final PublicKey newTokenBadgeAuthorityKey) {
     return List.of(
       createRead(whirlpoolsConfigKey),
       createWrite(whirlpoolsConfigExtensionKey),
       createReadOnlySigner(configExtensionAuthorityKey),
-      createRead(newTokenBadgeAuthorityKey),
-      createRead(whirlpoolProgramKey)
+      createRead(newTokenBadgeAuthorityKey)
     );
   }
 
-  /// Sets the token badge authority for a WhirlpoolsConfigExtension.
-  /// Only the config extension authority has permission to invoke this instruction.
-  ///
-  /// ### Authority
-  /// - "config_extension_authority" - Set authority in the WhirlpoolConfigExtension
-  ///
   public static Instruction setTokenBadgeAuthority(final AccountMeta invokedWhirlpoolProgramMeta,
                                                    final PublicKey whirlpoolsConfigKey,
                                                    final PublicKey whirlpoolsConfigExtensionKey,
                                                    final PublicKey configExtensionAuthorityKey,
-                                                   final PublicKey newTokenBadgeAuthorityKey,
-                                                   final PublicKey whirlpoolProgramKey) {
+                                                   final PublicKey newTokenBadgeAuthorityKey) {
     final var keys = setTokenBadgeAuthorityKeys(
       whirlpoolsConfigKey,
       whirlpoolsConfigExtensionKey,
       configExtensionAuthorityKey,
-      newTokenBadgeAuthorityKey,
-      whirlpoolProgramKey
+      newTokenBadgeAuthorityKey
     );
     return setTokenBadgeAuthority(invokedWhirlpoolProgramMeta, keys);
   }
 
-  /// Sets the token badge authority for a WhirlpoolsConfigExtension.
-  /// Only the config extension authority has permission to invoke this instruction.
-  ///
-  /// ### Authority
-  /// - "config_extension_authority" - Set authority in the WhirlpoolConfigExtension
-  ///
   public static Instruction setTokenBadgeAuthority(final AccountMeta invokedWhirlpoolProgramMeta,
                                                    final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, SET_TOKEN_BADGE_AUTHORITY_DISCRIMINATOR);
@@ -7527,28 +5273,6 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator SWAP_DISCRIMINATOR = toDiscriminator(248, 198, 158, 145, 225, 117, 135, 200);
 
-  /// Perform a swap in this Whirlpool
-  ///
-  /// ### Authority
-  /// - "token_authority" - The authority to withdraw tokens from the input token account.
-  ///
-  /// ### Parameters
-  /// - `amount` - The amount of input or output token to swap from (depending on amount_specified_is_input).
-  /// - `other_amount_threshold` - The maximum/minimum of input/output token to swap into (depending on amount_specified_is_input).
-  /// - `sqrt_price_limit` - The maximum/minimum price the swap will swap to.
-  /// - `amount_specified_is_input` - Specifies the token the parameter `amount`represents. If true, the amount represents the input token of the swap.
-  /// - `a_to_b` - The direction of the swap. True if swapping from A to B. False if swapping from B to A.
-  ///
-  /// #### Special Errors
-  /// - `ZeroTradableAmount` - User provided parameter `amount` is 0.
-  /// - `InvalidSqrtPriceLimitDirection` - User provided parameter `sqrt_price_limit` does not match the direction of the trade.
-  /// - `SqrtPriceOutOfBounds` - User provided parameter `sqrt_price_limit` is over Whirlppool's max/min bounds for sqrt-price.
-  /// - `InvalidTickArraySequence` - User provided tick-arrays are not in sequential order required to proceed in this trade direction.
-  /// - `TickArraySequenceInvalidIndex` - The swap loop attempted to access an invalid array index during the query of the next initialized tick.
-  /// - `TickArrayIndexOutofBounds` - The swap loop attempted to access an invalid array index during tick crossing.
-  /// - `LiquidityOverflow` - Liquidity value overflowed 128bits during tick crossing.
-  /// - `InvalidTickSpacing` - The swap pool was initialized with tick-spacing of 0.
-  ///
   public static List<AccountMeta> swapKeys(final PublicKey tokenProgramKey,
                                            final PublicKey tokenAuthorityKey,
                                            final PublicKey whirlpoolKey,
@@ -7559,8 +5283,7 @@ public final class WhirlpoolProgram {
                                            final PublicKey tickArray0Key,
                                            final PublicKey tickArray1Key,
                                            final PublicKey tickArray2Key,
-                                           final PublicKey oracleKey,
-                                           final PublicKey whirlpoolProgramKey) {
+                                           final PublicKey oracleKey) {
     return List.of(
       createRead(tokenProgramKey),
       createReadOnlySigner(tokenAuthorityKey),
@@ -7572,33 +5295,10 @@ public final class WhirlpoolProgram {
       createWrite(tickArray0Key),
       createWrite(tickArray1Key),
       createWrite(tickArray2Key),
-      createRead(oracleKey),
-      createRead(whirlpoolProgramKey)
+      createRead(oracleKey)
     );
   }
 
-  /// Perform a swap in this Whirlpool
-  ///
-  /// ### Authority
-  /// - "token_authority" - The authority to withdraw tokens from the input token account.
-  ///
-  /// ### Parameters
-  /// - `amount` - The amount of input or output token to swap from (depending on amount_specified_is_input).
-  /// - `other_amount_threshold` - The maximum/minimum of input/output token to swap into (depending on amount_specified_is_input).
-  /// - `sqrt_price_limit` - The maximum/minimum price the swap will swap to.
-  /// - `amount_specified_is_input` - Specifies the token the parameter `amount`represents. If true, the amount represents the input token of the swap.
-  /// - `a_to_b` - The direction of the swap. True if swapping from A to B. False if swapping from B to A.
-  ///
-  /// #### Special Errors
-  /// - `ZeroTradableAmount` - User provided parameter `amount` is 0.
-  /// - `InvalidSqrtPriceLimitDirection` - User provided parameter `sqrt_price_limit` does not match the direction of the trade.
-  /// - `SqrtPriceOutOfBounds` - User provided parameter `sqrt_price_limit` is over Whirlppool's max/min bounds for sqrt-price.
-  /// - `InvalidTickArraySequence` - User provided tick-arrays are not in sequential order required to proceed in this trade direction.
-  /// - `TickArraySequenceInvalidIndex` - The swap loop attempted to access an invalid array index during the query of the next initialized tick.
-  /// - `TickArrayIndexOutofBounds` - The swap loop attempted to access an invalid array index during tick crossing.
-  /// - `LiquidityOverflow` - Liquidity value overflowed 128bits during tick crossing.
-  /// - `InvalidTickSpacing` - The swap pool was initialized with tick-spacing of 0.
-  ///
   /// @param amount: u64
   /// @param otherAmountThreshold: u64
   public static Instruction swap(final AccountMeta invokedWhirlpoolProgramMeta,
@@ -7613,7 +5313,6 @@ public final class WhirlpoolProgram {
                                  final PublicKey tickArray1Key,
                                  final PublicKey tickArray2Key,
                                  final PublicKey oracleKey,
-                                 final PublicKey whirlpoolProgramKey,
                                  final long amount,
                                  final long otherAmountThreshold,
                                  final BigInteger sqrtPriceLimit,
@@ -7630,8 +5329,7 @@ public final class WhirlpoolProgram {
       tickArray0Key,
       tickArray1Key,
       tickArray2Key,
-      oracleKey,
-      whirlpoolProgramKey
+      oracleKey
     );
     return swap(
       invokedWhirlpoolProgramMeta,
@@ -7644,28 +5342,6 @@ public final class WhirlpoolProgram {
     );
   }
 
-  /// Perform a swap in this Whirlpool
-  ///
-  /// ### Authority
-  /// - "token_authority" - The authority to withdraw tokens from the input token account.
-  ///
-  /// ### Parameters
-  /// - `amount` - The amount of input or output token to swap from (depending on amount_specified_is_input).
-  /// - `other_amount_threshold` - The maximum/minimum of input/output token to swap into (depending on amount_specified_is_input).
-  /// - `sqrt_price_limit` - The maximum/minimum price the swap will swap to.
-  /// - `amount_specified_is_input` - Specifies the token the parameter `amount`represents. If true, the amount represents the input token of the swap.
-  /// - `a_to_b` - The direction of the swap. True if swapping from A to B. False if swapping from B to A.
-  ///
-  /// #### Special Errors
-  /// - `ZeroTradableAmount` - User provided parameter `amount` is 0.
-  /// - `InvalidSqrtPriceLimitDirection` - User provided parameter `sqrt_price_limit` does not match the direction of the trade.
-  /// - `SqrtPriceOutOfBounds` - User provided parameter `sqrt_price_limit` is over Whirlppool's max/min bounds for sqrt-price.
-  /// - `InvalidTickArraySequence` - User provided tick-arrays are not in sequential order required to proceed in this trade direction.
-  /// - `TickArraySequenceInvalidIndex` - The swap loop attempted to access an invalid array index during the query of the next initialized tick.
-  /// - `TickArrayIndexOutofBounds` - The swap loop attempted to access an invalid array index during tick crossing.
-  /// - `LiquidityOverflow` - Liquidity value overflowed 128bits during tick crossing.
-  /// - `InvalidTickSpacing` - The swap pool was initialized with tick-spacing of 0.
-  ///
   /// @param amount: u64
   /// @param otherAmountThreshold: u64
   public static Instruction swap(final AccountMeta invokedWhirlpoolProgramMeta,
@@ -7758,29 +5434,6 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator SWAP_V_2_DISCRIMINATOR = toDiscriminator(43, 4, 237, 11, 26, 201, 30, 98);
 
-  /// Perform a swap in this Whirlpool
-  /// This instruction works with both Token and Token-2022.
-  ///
-  /// ### Authority
-  /// - "token_authority" - The authority to withdraw tokens from the input token account.
-  ///
-  /// ### Parameters
-  /// - `amount` - The amount of input or output token to swap from (depending on amount_specified_is_input).
-  /// - `other_amount_threshold` - The maximum/minimum of input/output token to swap into (depending on amount_specified_is_input).
-  /// - `sqrt_price_limit` - The maximum/minimum price the swap will swap to.
-  /// - `amount_specified_is_input` - Specifies the token the parameter `amount`represents. If true, the amount represents the input token of the swap.
-  /// - `a_to_b` - The direction of the swap. True if swapping from A to B. False if swapping from B to A.
-  ///
-  /// #### Special Errors
-  /// - `ZeroTradableAmount` - User provided parameter `amount` is 0.
-  /// - `InvalidSqrtPriceLimitDirection` - User provided parameter `sqrt_price_limit` does not match the direction of the trade.
-  /// - `SqrtPriceOutOfBounds` - User provided parameter `sqrt_price_limit` is over Whirlppool's max/min bounds for sqrt-price.
-  /// - `InvalidTickArraySequence` - User provided tick-arrays are not in sequential order required to proceed in this trade direction.
-  /// - `TickArraySequenceInvalidIndex` - The swap loop attempted to access an invalid array index during the query of the next initialized tick.
-  /// - `TickArrayIndexOutofBounds` - The swap loop attempted to access an invalid array index during tick crossing.
-  /// - `LiquidityOverflow` - Liquidity value overflowed 128bits during tick crossing.
-  /// - `InvalidTickSpacing` - The swap pool was initialized with tick-spacing of 0.
-  ///
   public static List<AccountMeta> swapV2Keys(final SolanaAccounts solanaAccounts,
                                              final PublicKey tokenProgramAKey,
                                              final PublicKey tokenProgramBKey,
@@ -7795,8 +5448,7 @@ public final class WhirlpoolProgram {
                                              final PublicKey tickArray0Key,
                                              final PublicKey tickArray1Key,
                                              final PublicKey tickArray2Key,
-                                             final PublicKey oracleKey,
-                                             final PublicKey whirlpoolProgramKey) {
+                                             final PublicKey oracleKey) {
     return List.of(
       createRead(tokenProgramAKey),
       createRead(tokenProgramBKey),
@@ -7812,34 +5464,10 @@ public final class WhirlpoolProgram {
       createWrite(tickArray0Key),
       createWrite(tickArray1Key),
       createWrite(tickArray2Key),
-      createWrite(oracleKey),
-      createRead(whirlpoolProgramKey)
+      createWrite(oracleKey)
     );
   }
 
-  /// Perform a swap in this Whirlpool
-  /// This instruction works with both Token and Token-2022.
-  ///
-  /// ### Authority
-  /// - "token_authority" - The authority to withdraw tokens from the input token account.
-  ///
-  /// ### Parameters
-  /// - `amount` - The amount of input or output token to swap from (depending on amount_specified_is_input).
-  /// - `other_amount_threshold` - The maximum/minimum of input/output token to swap into (depending on amount_specified_is_input).
-  /// - `sqrt_price_limit` - The maximum/minimum price the swap will swap to.
-  /// - `amount_specified_is_input` - Specifies the token the parameter `amount`represents. If true, the amount represents the input token of the swap.
-  /// - `a_to_b` - The direction of the swap. True if swapping from A to B. False if swapping from B to A.
-  ///
-  /// #### Special Errors
-  /// - `ZeroTradableAmount` - User provided parameter `amount` is 0.
-  /// - `InvalidSqrtPriceLimitDirection` - User provided parameter `sqrt_price_limit` does not match the direction of the trade.
-  /// - `SqrtPriceOutOfBounds` - User provided parameter `sqrt_price_limit` is over Whirlppool's max/min bounds for sqrt-price.
-  /// - `InvalidTickArraySequence` - User provided tick-arrays are not in sequential order required to proceed in this trade direction.
-  /// - `TickArraySequenceInvalidIndex` - The swap loop attempted to access an invalid array index during the query of the next initialized tick.
-  /// - `TickArrayIndexOutofBounds` - The swap loop attempted to access an invalid array index during tick crossing.
-  /// - `LiquidityOverflow` - Liquidity value overflowed 128bits during tick crossing.
-  /// - `InvalidTickSpacing` - The swap pool was initialized with tick-spacing of 0.
-  ///
   /// @param amount: u64
   /// @param otherAmountThreshold: u64
   public static Instruction swapV2(final AccountMeta invokedWhirlpoolProgramMeta,
@@ -7858,7 +5486,6 @@ public final class WhirlpoolProgram {
                                    final PublicKey tickArray1Key,
                                    final PublicKey tickArray2Key,
                                    final PublicKey oracleKey,
-                                   final PublicKey whirlpoolProgramKey,
                                    final long amount,
                                    final long otherAmountThreshold,
                                    final BigInteger sqrtPriceLimit,
@@ -7880,8 +5507,7 @@ public final class WhirlpoolProgram {
       tickArray0Key,
       tickArray1Key,
       tickArray2Key,
-      oracleKey,
-      whirlpoolProgramKey
+      oracleKey
     );
     return swapV2(
       invokedWhirlpoolProgramMeta,
@@ -7895,29 +5521,6 @@ public final class WhirlpoolProgram {
     );
   }
 
-  /// Perform a swap in this Whirlpool
-  /// This instruction works with both Token and Token-2022.
-  ///
-  /// ### Authority
-  /// - "token_authority" - The authority to withdraw tokens from the input token account.
-  ///
-  /// ### Parameters
-  /// - `amount` - The amount of input or output token to swap from (depending on amount_specified_is_input).
-  /// - `other_amount_threshold` - The maximum/minimum of input/output token to swap into (depending on amount_specified_is_input).
-  /// - `sqrt_price_limit` - The maximum/minimum price the swap will swap to.
-  /// - `amount_specified_is_input` - Specifies the token the parameter `amount`represents. If true, the amount represents the input token of the swap.
-  /// - `a_to_b` - The direction of the swap. True if swapping from A to B. False if swapping from B to A.
-  ///
-  /// #### Special Errors
-  /// - `ZeroTradableAmount` - User provided parameter `amount` is 0.
-  /// - `InvalidSqrtPriceLimitDirection` - User provided parameter `sqrt_price_limit` does not match the direction of the trade.
-  /// - `SqrtPriceOutOfBounds` - User provided parameter `sqrt_price_limit` is over Whirlppool's max/min bounds for sqrt-price.
-  /// - `InvalidTickArraySequence` - User provided tick-arrays are not in sequential order required to proceed in this trade direction.
-  /// - `TickArraySequenceInvalidIndex` - The swap loop attempted to access an invalid array index during the query of the next initialized tick.
-  /// - `TickArrayIndexOutofBounds` - The swap loop attempted to access an invalid array index during tick crossing.
-  /// - `LiquidityOverflow` - Liquidity value overflowed 128bits during tick crossing.
-  /// - `InvalidTickSpacing` - The swap pool was initialized with tick-spacing of 0.
-  ///
   /// @param amount: u64
   /// @param otherAmountThreshold: u64
   public static Instruction swapV2(final AccountMeta invokedWhirlpoolProgramMeta,
@@ -8031,11 +5634,6 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator TRANSFER_LOCKED_POSITION_DISCRIMINATOR = toDiscriminator(179, 121, 229, 46, 67, 138, 194, 138);
 
-  /// Transfer a locked position to a different token account.
-  ///
-  /// ### Authority
-  /// - `position_authority` - The authority that owns the position token.
-  ///
   public static List<AccountMeta> transferLockedPositionKeys(final PublicKey positionAuthorityKey,
                                                              final PublicKey receiverKey,
                                                              final PublicKey positionKey,
@@ -8043,8 +5641,7 @@ public final class WhirlpoolProgram {
                                                              final PublicKey positionTokenAccountKey,
                                                              final PublicKey destinationTokenAccountKey,
                                                              final PublicKey lockConfigKey,
-                                                             final PublicKey token2022ProgramKey,
-                                                             final PublicKey whirlpoolProgramKey) {
+                                                             final PublicKey token2022ProgramKey) {
     return List.of(
       createReadOnlySigner(positionAuthorityKey),
       createWrite(receiverKey),
@@ -8053,16 +5650,10 @@ public final class WhirlpoolProgram {
       createWrite(positionTokenAccountKey),
       createWrite(destinationTokenAccountKey),
       createWrite(lockConfigKey),
-      createRead(token2022ProgramKey),
-      createRead(whirlpoolProgramKey)
+      createRead(token2022ProgramKey)
     );
   }
 
-  /// Transfer a locked position to a different token account.
-  ///
-  /// ### Authority
-  /// - `position_authority` - The authority that owns the position token.
-  ///
   public static Instruction transferLockedPosition(final AccountMeta invokedWhirlpoolProgramMeta,
                                                    final PublicKey positionAuthorityKey,
                                                    final PublicKey receiverKey,
@@ -8071,8 +5662,7 @@ public final class WhirlpoolProgram {
                                                    final PublicKey positionTokenAccountKey,
                                                    final PublicKey destinationTokenAccountKey,
                                                    final PublicKey lockConfigKey,
-                                                   final PublicKey token2022ProgramKey,
-                                                   final PublicKey whirlpoolProgramKey) {
+                                                   final PublicKey token2022ProgramKey) {
     final var keys = transferLockedPositionKeys(
       positionAuthorityKey,
       receiverKey,
@@ -8081,17 +5671,11 @@ public final class WhirlpoolProgram {
       positionTokenAccountKey,
       destinationTokenAccountKey,
       lockConfigKey,
-      token2022ProgramKey,
-      whirlpoolProgramKey
+      token2022ProgramKey
     );
     return transferLockedPosition(invokedWhirlpoolProgramMeta, keys);
   }
 
-  /// Transfer a locked position to a different token account.
-  ///
-  /// ### Authority
-  /// - `position_authority` - The authority that owns the position token.
-  ///
   public static Instruction transferLockedPosition(final AccountMeta invokedWhirlpoolProgramMeta,
                                                    final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, TRANSFER_LOCKED_POSITION_DISCRIMINATOR);
@@ -8099,32 +5683,6 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator TWO_HOP_SWAP_DISCRIMINATOR = toDiscriminator(195, 96, 237, 108, 68, 162, 219, 230);
 
-  /// Perform a two-hop swap in this Whirlpool
-  ///
-  /// ### Authority
-  /// - "token_authority" - The authority to withdraw tokens from the input token account.
-  ///
-  /// ### Parameters
-  /// - `amount` - The amount of input or output token to swap from (depending on amount_specified_is_input).
-  /// - `other_amount_threshold` - The maximum/minimum of input/output token to swap into (depending on amount_specified_is_input).
-  /// - `amount_specified_is_input` - Specifies the token the parameter `amount`represents. If true, the amount represents the input token of the swap.
-  /// - `a_to_b_one` - The direction of the swap of hop one. True if swapping from A to B. False if swapping from B to A.
-  /// - `a_to_b_two` - The direction of the swap of hop two. True if swapping from A to B. False if swapping from B to A.
-  /// - `sqrt_price_limit_one` - The maximum/minimum price the swap will swap to in the first hop.
-  /// - `sqrt_price_limit_two` - The maximum/minimum price the swap will swap to in the second hop.
-  ///
-  /// #### Special Errors
-  /// - `ZeroTradableAmount` - User provided parameter `amount` is 0.
-  /// - `InvalidSqrtPriceLimitDirection` - User provided parameter `sqrt_price_limit` does not match the direction of the trade.
-  /// - `SqrtPriceOutOfBounds` - User provided parameter `sqrt_price_limit` is over Whirlppool's max/min bounds for sqrt-price.
-  /// - `InvalidTickArraySequence` - User provided tick-arrays are not in sequential order required to proceed in this trade direction.
-  /// - `TickArraySequenceInvalidIndex` - The swap loop attempted to access an invalid array index during the query of the next initialized tick.
-  /// - `TickArrayIndexOutofBounds` - The swap loop attempted to access an invalid array index during tick crossing.
-  /// - `LiquidityOverflow` - Liquidity value overflowed 128bits during tick crossing.
-  /// - `InvalidTickSpacing` - The swap pool was initialized with tick-spacing of 0.
-  /// - `InvalidIntermediaryMint` - Error if the intermediary mint between hop one and two do not equal.
-  /// - `DuplicateTwoHopPool` - Error if whirlpool one & two are the same pool.
-  ///
   public static List<AccountMeta> twoHopSwapKeys(final PublicKey tokenProgramKey,
                                                  final PublicKey tokenAuthorityKey,
                                                  final PublicKey whirlpoolOneKey,
@@ -8144,8 +5702,7 @@ public final class WhirlpoolProgram {
                                                  final PublicKey tickArrayTwo1Key,
                                                  final PublicKey tickArrayTwo2Key,
                                                  final PublicKey oracleOneKey,
-                                                 final PublicKey oracleTwoKey,
-                                                 final PublicKey whirlpoolProgramKey) {
+                                                 final PublicKey oracleTwoKey) {
     return List.of(
       createRead(tokenProgramKey),
       createReadOnlySigner(tokenAuthorityKey),
@@ -8166,37 +5723,10 @@ public final class WhirlpoolProgram {
       createWrite(tickArrayTwo1Key),
       createWrite(tickArrayTwo2Key),
       createRead(oracleOneKey),
-      createRead(oracleTwoKey),
-      createRead(whirlpoolProgramKey)
+      createRead(oracleTwoKey)
     );
   }
 
-  /// Perform a two-hop swap in this Whirlpool
-  ///
-  /// ### Authority
-  /// - "token_authority" - The authority to withdraw tokens from the input token account.
-  ///
-  /// ### Parameters
-  /// - `amount` - The amount of input or output token to swap from (depending on amount_specified_is_input).
-  /// - `other_amount_threshold` - The maximum/minimum of input/output token to swap into (depending on amount_specified_is_input).
-  /// - `amount_specified_is_input` - Specifies the token the parameter `amount`represents. If true, the amount represents the input token of the swap.
-  /// - `a_to_b_one` - The direction of the swap of hop one. True if swapping from A to B. False if swapping from B to A.
-  /// - `a_to_b_two` - The direction of the swap of hop two. True if swapping from A to B. False if swapping from B to A.
-  /// - `sqrt_price_limit_one` - The maximum/minimum price the swap will swap to in the first hop.
-  /// - `sqrt_price_limit_two` - The maximum/minimum price the swap will swap to in the second hop.
-  ///
-  /// #### Special Errors
-  /// - `ZeroTradableAmount` - User provided parameter `amount` is 0.
-  /// - `InvalidSqrtPriceLimitDirection` - User provided parameter `sqrt_price_limit` does not match the direction of the trade.
-  /// - `SqrtPriceOutOfBounds` - User provided parameter `sqrt_price_limit` is over Whirlppool's max/min bounds for sqrt-price.
-  /// - `InvalidTickArraySequence` - User provided tick-arrays are not in sequential order required to proceed in this trade direction.
-  /// - `TickArraySequenceInvalidIndex` - The swap loop attempted to access an invalid array index during the query of the next initialized tick.
-  /// - `TickArrayIndexOutofBounds` - The swap loop attempted to access an invalid array index during tick crossing.
-  /// - `LiquidityOverflow` - Liquidity value overflowed 128bits during tick crossing.
-  /// - `InvalidTickSpacing` - The swap pool was initialized with tick-spacing of 0.
-  /// - `InvalidIntermediaryMint` - Error if the intermediary mint between hop one and two do not equal.
-  /// - `DuplicateTwoHopPool` - Error if whirlpool one & two are the same pool.
-  ///
   /// @param amount: u64
   /// @param otherAmountThreshold: u64
   public static Instruction twoHopSwap(final AccountMeta invokedWhirlpoolProgramMeta,
@@ -8220,7 +5750,6 @@ public final class WhirlpoolProgram {
                                        final PublicKey tickArrayTwo2Key,
                                        final PublicKey oracleOneKey,
                                        final PublicKey oracleTwoKey,
-                                       final PublicKey whirlpoolProgramKey,
                                        final long amount,
                                        final long otherAmountThreshold,
                                        final boolean amountSpecifiedIsInput,
@@ -8248,8 +5777,7 @@ public final class WhirlpoolProgram {
       tickArrayTwo1Key,
       tickArrayTwo2Key,
       oracleOneKey,
-      oracleTwoKey,
-      whirlpoolProgramKey
+      oracleTwoKey
     );
     return twoHopSwap(
       invokedWhirlpoolProgramMeta,
@@ -8264,32 +5792,6 @@ public final class WhirlpoolProgram {
     );
   }
 
-  /// Perform a two-hop swap in this Whirlpool
-  ///
-  /// ### Authority
-  /// - "token_authority" - The authority to withdraw tokens from the input token account.
-  ///
-  /// ### Parameters
-  /// - `amount` - The amount of input or output token to swap from (depending on amount_specified_is_input).
-  /// - `other_amount_threshold` - The maximum/minimum of input/output token to swap into (depending on amount_specified_is_input).
-  /// - `amount_specified_is_input` - Specifies the token the parameter `amount`represents. If true, the amount represents the input token of the swap.
-  /// - `a_to_b_one` - The direction of the swap of hop one. True if swapping from A to B. False if swapping from B to A.
-  /// - `a_to_b_two` - The direction of the swap of hop two. True if swapping from A to B. False if swapping from B to A.
-  /// - `sqrt_price_limit_one` - The maximum/minimum price the swap will swap to in the first hop.
-  /// - `sqrt_price_limit_two` - The maximum/minimum price the swap will swap to in the second hop.
-  ///
-  /// #### Special Errors
-  /// - `ZeroTradableAmount` - User provided parameter `amount` is 0.
-  /// - `InvalidSqrtPriceLimitDirection` - User provided parameter `sqrt_price_limit` does not match the direction of the trade.
-  /// - `SqrtPriceOutOfBounds` - User provided parameter `sqrt_price_limit` is over Whirlppool's max/min bounds for sqrt-price.
-  /// - `InvalidTickArraySequence` - User provided tick-arrays are not in sequential order required to proceed in this trade direction.
-  /// - `TickArraySequenceInvalidIndex` - The swap loop attempted to access an invalid array index during the query of the next initialized tick.
-  /// - `TickArrayIndexOutofBounds` - The swap loop attempted to access an invalid array index during tick crossing.
-  /// - `LiquidityOverflow` - Liquidity value overflowed 128bits during tick crossing.
-  /// - `InvalidTickSpacing` - The swap pool was initialized with tick-spacing of 0.
-  /// - `InvalidIntermediaryMint` - Error if the intermediary mint between hop one and two do not equal.
-  /// - `DuplicateTwoHopPool` - Error if whirlpool one & two are the same pool.
-  ///
   /// @param amount: u64
   /// @param otherAmountThreshold: u64
   public static Instruction twoHopSwap(final AccountMeta invokedWhirlpoolProgramMeta,
@@ -8402,33 +5904,6 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator TWO_HOP_SWAP_V_2_DISCRIMINATOR = toDiscriminator(186, 143, 209, 29, 254, 2, 194, 117);
 
-  /// Perform a two-hop swap in this Whirlpool
-  /// This instruction works with both Token and Token-2022.
-  ///
-  /// ### Authority
-  /// - "token_authority" - The authority to withdraw tokens from the input token account.
-  ///
-  /// ### Parameters
-  /// - `amount` - The amount of input or output token to swap from (depending on amount_specified_is_input).
-  /// - `other_amount_threshold` - The maximum/minimum of input/output token to swap into (depending on amount_specified_is_input).
-  /// - `amount_specified_is_input` - Specifies the token the parameter `amount`represents. If true, the amount represents the input token of the swap.
-  /// - `a_to_b_one` - The direction of the swap of hop one. True if swapping from A to B. False if swapping from B to A.
-  /// - `a_to_b_two` - The direction of the swap of hop two. True if swapping from A to B. False if swapping from B to A.
-  /// - `sqrt_price_limit_one` - The maximum/minimum price the swap will swap to in the first hop.
-  /// - `sqrt_price_limit_two` - The maximum/minimum price the swap will swap to in the second hop.
-  ///
-  /// #### Special Errors
-  /// - `ZeroTradableAmount` - User provided parameter `amount` is 0.
-  /// - `InvalidSqrtPriceLimitDirection` - User provided parameter `sqrt_price_limit` does not match the direction of the trade.
-  /// - `SqrtPriceOutOfBounds` - User provided parameter `sqrt_price_limit` is over Whirlppool's max/min bounds for sqrt-price.
-  /// - `InvalidTickArraySequence` - User provided tick-arrays are not in sequential order required to proceed in this trade direction.
-  /// - `TickArraySequenceInvalidIndex` - The swap loop attempted to access an invalid array index during the query of the next initialized tick.
-  /// - `TickArrayIndexOutofBounds` - The swap loop attempted to access an invalid array index during tick crossing.
-  /// - `LiquidityOverflow` - Liquidity value overflowed 128bits during tick crossing.
-  /// - `InvalidTickSpacing` - The swap pool was initialized with tick-spacing of 0.
-  /// - `InvalidIntermediaryMint` - Error if the intermediary mint between hop one and two do not equal.
-  /// - `DuplicateTwoHopPool` - Error if whirlpool one & two are the same pool.
-  ///
   public static List<AccountMeta> twoHopSwapV2Keys(final SolanaAccounts solanaAccounts,
                                                    final PublicKey whirlpoolOneKey,
                                                    final PublicKey whirlpoolTwoKey,
@@ -8452,8 +5927,7 @@ public final class WhirlpoolProgram {
                                                    final PublicKey tickArrayTwo1Key,
                                                    final PublicKey tickArrayTwo2Key,
                                                    final PublicKey oracleOneKey,
-                                                   final PublicKey oracleTwoKey,
-                                                   final PublicKey whirlpoolProgramKey) {
+                                                   final PublicKey oracleTwoKey) {
     return List.of(
       createWrite(whirlpoolOneKey),
       createWrite(whirlpoolTwoKey),
@@ -8478,38 +5952,10 @@ public final class WhirlpoolProgram {
       createWrite(tickArrayTwo2Key),
       createWrite(oracleOneKey),
       createWrite(oracleTwoKey),
-      createRead(solanaAccounts.memoProgramV2()),
-      createRead(whirlpoolProgramKey)
+      createRead(solanaAccounts.memoProgramV2())
     );
   }
 
-  /// Perform a two-hop swap in this Whirlpool
-  /// This instruction works with both Token and Token-2022.
-  ///
-  /// ### Authority
-  /// - "token_authority" - The authority to withdraw tokens from the input token account.
-  ///
-  /// ### Parameters
-  /// - `amount` - The amount of input or output token to swap from (depending on amount_specified_is_input).
-  /// - `other_amount_threshold` - The maximum/minimum of input/output token to swap into (depending on amount_specified_is_input).
-  /// - `amount_specified_is_input` - Specifies the token the parameter `amount`represents. If true, the amount represents the input token of the swap.
-  /// - `a_to_b_one` - The direction of the swap of hop one. True if swapping from A to B. False if swapping from B to A.
-  /// - `a_to_b_two` - The direction of the swap of hop two. True if swapping from A to B. False if swapping from B to A.
-  /// - `sqrt_price_limit_one` - The maximum/minimum price the swap will swap to in the first hop.
-  /// - `sqrt_price_limit_two` - The maximum/minimum price the swap will swap to in the second hop.
-  ///
-  /// #### Special Errors
-  /// - `ZeroTradableAmount` - User provided parameter `amount` is 0.
-  /// - `InvalidSqrtPriceLimitDirection` - User provided parameter `sqrt_price_limit` does not match the direction of the trade.
-  /// - `SqrtPriceOutOfBounds` - User provided parameter `sqrt_price_limit` is over Whirlppool's max/min bounds for sqrt-price.
-  /// - `InvalidTickArraySequence` - User provided tick-arrays are not in sequential order required to proceed in this trade direction.
-  /// - `TickArraySequenceInvalidIndex` - The swap loop attempted to access an invalid array index during the query of the next initialized tick.
-  /// - `TickArrayIndexOutofBounds` - The swap loop attempted to access an invalid array index during tick crossing.
-  /// - `LiquidityOverflow` - Liquidity value overflowed 128bits during tick crossing.
-  /// - `InvalidTickSpacing` - The swap pool was initialized with tick-spacing of 0.
-  /// - `InvalidIntermediaryMint` - Error if the intermediary mint between hop one and two do not equal.
-  /// - `DuplicateTwoHopPool` - Error if whirlpool one & two are the same pool.
-  ///
   /// @param amount: u64
   /// @param otherAmountThreshold: u64
   public static Instruction twoHopSwapV2(final AccountMeta invokedWhirlpoolProgramMeta,
@@ -8537,7 +5983,6 @@ public final class WhirlpoolProgram {
                                          final PublicKey tickArrayTwo2Key,
                                          final PublicKey oracleOneKey,
                                          final PublicKey oracleTwoKey,
-                                         final PublicKey whirlpoolProgramKey,
                                          final long amount,
                                          final long otherAmountThreshold,
                                          final boolean amountSpecifiedIsInput,
@@ -8570,8 +6015,7 @@ public final class WhirlpoolProgram {
       tickArrayTwo1Key,
       tickArrayTwo2Key,
       oracleOneKey,
-      oracleTwoKey,
-      whirlpoolProgramKey
+      oracleTwoKey
     );
     return twoHopSwapV2(
       invokedWhirlpoolProgramMeta,
@@ -8587,33 +6031,6 @@ public final class WhirlpoolProgram {
     );
   }
 
-  /// Perform a two-hop swap in this Whirlpool
-  /// This instruction works with both Token and Token-2022.
-  ///
-  /// ### Authority
-  /// - "token_authority" - The authority to withdraw tokens from the input token account.
-  ///
-  /// ### Parameters
-  /// - `amount` - The amount of input or output token to swap from (depending on amount_specified_is_input).
-  /// - `other_amount_threshold` - The maximum/minimum of input/output token to swap into (depending on amount_specified_is_input).
-  /// - `amount_specified_is_input` - Specifies the token the parameter `amount`represents. If true, the amount represents the input token of the swap.
-  /// - `a_to_b_one` - The direction of the swap of hop one. True if swapping from A to B. False if swapping from B to A.
-  /// - `a_to_b_two` - The direction of the swap of hop two. True if swapping from A to B. False if swapping from B to A.
-  /// - `sqrt_price_limit_one` - The maximum/minimum price the swap will swap to in the first hop.
-  /// - `sqrt_price_limit_two` - The maximum/minimum price the swap will swap to in the second hop.
-  ///
-  /// #### Special Errors
-  /// - `ZeroTradableAmount` - User provided parameter `amount` is 0.
-  /// - `InvalidSqrtPriceLimitDirection` - User provided parameter `sqrt_price_limit` does not match the direction of the trade.
-  /// - `SqrtPriceOutOfBounds` - User provided parameter `sqrt_price_limit` is over Whirlppool's max/min bounds for sqrt-price.
-  /// - `InvalidTickArraySequence` - User provided tick-arrays are not in sequential order required to proceed in this trade direction.
-  /// - `TickArraySequenceInvalidIndex` - The swap loop attempted to access an invalid array index during the query of the next initialized tick.
-  /// - `TickArrayIndexOutofBounds` - The swap loop attempted to access an invalid array index during tick crossing.
-  /// - `LiquidityOverflow` - Liquidity value overflowed 128bits during tick crossing.
-  /// - `InvalidTickSpacing` - The swap pool was initialized with tick-spacing of 0.
-  /// - `InvalidIntermediaryMint` - Error if the intermediary mint between hop one and two do not equal.
-  /// - `DuplicateTwoHopPool` - Error if whirlpool one & two are the same pool.
-  ///
   /// @param amount: u64
   /// @param otherAmountThreshold: u64
   public static Instruction twoHopSwapV2(final AccountMeta invokedWhirlpoolProgramMeta,
@@ -8749,54 +6166,32 @@ public final class WhirlpoolProgram {
 
   public static final Discriminator UPDATE_FEES_AND_REWARDS_DISCRIMINATOR = toDiscriminator(154, 230, 250, 13, 236, 209, 75, 223);
 
-  /// Update the accrued fees and rewards for a position.
-  ///
-  /// #### Special Errors
-  /// - `TickNotFound` - Provided tick array account does not contain the tick for this position.
-  /// - `LiquidityZero` - Position has zero liquidity and therefore already has the most updated fees and reward values.
-  ///
   public static List<AccountMeta> updateFeesAndRewardsKeys(final PublicKey whirlpoolKey,
                                                            final PublicKey positionKey,
                                                            final PublicKey tickArrayLowerKey,
-                                                           final PublicKey tickArrayUpperKey,
-                                                           final PublicKey whirlpoolProgramKey) {
+                                                           final PublicKey tickArrayUpperKey) {
     return List.of(
       createWrite(whirlpoolKey),
       createWrite(positionKey),
       createRead(tickArrayLowerKey),
-      createRead(tickArrayUpperKey),
-      createRead(whirlpoolProgramKey)
+      createRead(tickArrayUpperKey)
     );
   }
 
-  /// Update the accrued fees and rewards for a position.
-  ///
-  /// #### Special Errors
-  /// - `TickNotFound` - Provided tick array account does not contain the tick for this position.
-  /// - `LiquidityZero` - Position has zero liquidity and therefore already has the most updated fees and reward values.
-  ///
   public static Instruction updateFeesAndRewards(final AccountMeta invokedWhirlpoolProgramMeta,
                                                  final PublicKey whirlpoolKey,
                                                  final PublicKey positionKey,
                                                  final PublicKey tickArrayLowerKey,
-                                                 final PublicKey tickArrayUpperKey,
-                                                 final PublicKey whirlpoolProgramKey) {
+                                                 final PublicKey tickArrayUpperKey) {
     final var keys = updateFeesAndRewardsKeys(
       whirlpoolKey,
       positionKey,
       tickArrayLowerKey,
-      tickArrayUpperKey,
-      whirlpoolProgramKey
+      tickArrayUpperKey
     );
     return updateFeesAndRewards(invokedWhirlpoolProgramMeta, keys);
   }
 
-  /// Update the accrued fees and rewards for a position.
-  ///
-  /// #### Special Errors
-  /// - `TickNotFound` - Provided tick array account does not contain the tick for this position.
-  /// - `LiquidityZero` - Position has zero liquidity and therefore already has the most updated fees and reward values.
-  ///
   public static Instruction updateFeesAndRewards(final AccountMeta invokedWhirlpoolProgramMeta,
                                                  final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, UPDATE_FEES_AND_REWARDS_DISCRIMINATOR);

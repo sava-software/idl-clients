@@ -320,6 +320,7 @@
       "module": "bundle",
       "package": "orca.whirlpools",
       "program": "whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc",
+      "deployed": "metadata",
       "vcs": {
         "url": "https://cdn.jsdelivr.net/npm/@orca-so/whirlpools-sdk@latest/dist/artifacts/whirlpool.json"
       },

@@ -33,10 +33,6 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
     return accounts;
   }
 
-  private PublicKey whirlpoolProgramId() {
-    return accounts.invokedWhirlpoolProgram().publicKey();
-  }
-
   @Override
   public Instruction openPosition(final PublicKey funderKey,
                                   final PublicKey ownerKey,
@@ -58,7 +54,6 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
         positionTokenAccountKey,
         whirlpoolKey,
         tokenProgramKey,
-        whirlpoolProgramId(),
         bumps,
         tickLowerIndex,
         tickUpperIndex
@@ -92,7 +87,6 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
         tokenProgramKey,
         metadataProgramKey,
         metadataUpdateAuthKey,
-        whirlpoolProgramId(),
         bumps,
         tickLowerIndex,
         tickUpperIndex
@@ -122,7 +116,6 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
         whirlpoolKey,
         token2022ProgramKey,
         metadataUpdateAuthKey,
-        whirlpoolProgramId(),
         tickLowerIndex,
         tickUpperIndex,
         withTokenMetadataExtension
@@ -143,8 +136,7 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
         positionKey,
         positionMintKey,
         positionTokenAccountKey,
-        tokenProgramKey,
-        whirlpoolProgramId()
+        tokenProgramKey
     );
   }
 
@@ -162,8 +154,7 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
         positionKey,
         positionMintKey,
         positionTokenAccountKey,
-        token2022ProgramKey,
-        whirlpoolProgramId()
+        token2022ProgramKey
     );
   }
 
@@ -183,7 +174,6 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
         whirlpoolKey,
         positionKey,
         positionTokenAccountKey,
-        whirlpoolProgramId(),
         newTickLowerIndex,
         newTickUpperIndex
     );
@@ -210,7 +200,6 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
         lockConfigKey,
         whirlpoolKey,
         token2022ProgramKey,
-        whirlpoolProgramId(),
         lockType
     );
   }
@@ -233,8 +222,7 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
         positionTokenAccountKey,
         destinationTokenAccountKey,
         lockConfigKey,
-        token2022ProgramKey,
-        whirlpoolProgramId()
+        token2022ProgramKey
     );
   }
 
@@ -253,8 +241,7 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
         positionBundleTokenAccountKey,
         positionBundleOwnerKey,
         funderKey,
-        tokenProgramKey,
-        whirlpoolProgramId()
+        tokenProgramKey
     );
   }
 
@@ -279,8 +266,7 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
         funderKey,
         metadataUpdateAuthKey,
         tokenProgramKey,
-        metadataProgramKey,
-        whirlpoolProgramId()
+        metadataProgramKey
     );
   }
 
@@ -298,8 +284,7 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
         positionBundleTokenAccountKey,
         positionBundleOwnerKey,
         receiverKey,
-        tokenProgramKey,
-        whirlpoolProgramId()
+        tokenProgramKey
     );
   }
 
@@ -322,7 +307,6 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
         positionBundleAuthorityKey,
         whirlpoolKey,
         funderKey,
-        whirlpoolProgramId(),
         bundleIndex,
         tickLowerIndex,
         tickUpperIndex
@@ -343,7 +327,6 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
         positionBundleTokenAccountKey,
         positionBundleAuthorityKey,
         receiverKey,
-        whirlpoolProgramId(),
         bundleIndex
     );
   }
@@ -359,7 +342,6 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
         whirlpoolKey,
         funderKey,
         tickArrayKey,
-        whirlpoolProgramId(),
         startTickIndex
     );
   }
@@ -376,7 +358,6 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
         whirlpoolKey,
         funderKey,
         tickArrayKey,
-        whirlpoolProgramId(),
         startTickIndex,
         idempotent
     );
@@ -410,7 +391,6 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
         tokenVaultBKey,
         tickArrayLowerKey,
         tickArrayUpperKey,
-        whirlpoolProgramId(),
         liquidityAmount,
         tokenMaxA,
         tokenMaxB
@@ -453,7 +433,6 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
         tokenVaultBKey,
         tickArrayLowerKey,
         tickArrayUpperKey,
-        whirlpoolProgramId(),
         liquidityAmount,
         tokenMaxA,
         tokenMaxB,
@@ -495,7 +474,6 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
         tokenVaultBKey,
         tickArrayLowerKey,
         tickArrayUpperKey,
-        whirlpoolProgramId(),
         method,
         remainingAccountsInfo
     );
@@ -529,7 +507,6 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
         tokenVaultBKey,
         tickArrayLowerKey,
         tickArrayUpperKey,
-        whirlpoolProgramId(),
         liquidityAmount,
         tokenMinA,
         tokenMinB
@@ -572,7 +549,6 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
         tokenVaultBKey,
         tickArrayLowerKey,
         tickArrayUpperKey,
-        whirlpoolProgramId(),
         liquidityAmount,
         tokenMinA,
         tokenMinB,
@@ -622,7 +598,6 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
         existingTickArrayUpperKey,
         newTickArrayLowerKey,
         newTickArrayUpperKey,
-        whirlpoolProgramId(),
         newTickLowerIndex,
         newTickUpperIndex,
         method,
@@ -640,8 +615,7 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
         whirlpoolKey,
         positionKey,
         tickArrayLowerKey,
-        tickArrayUpperKey,
-        whirlpoolProgramId()
+        tickArrayUpperKey
     );
   }
 
@@ -665,8 +639,7 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
         tokenVaultAKey,
         tokenOwnerAccountBKey,
         tokenVaultBKey,
-        tokenProgramKey,
-        whirlpoolProgramId()
+        tokenProgramKey
     );
   }
 
@@ -699,7 +672,6 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
         tokenVaultBKey,
         tokenProgramAKey,
         tokenProgramBKey,
-        whirlpoolProgramId(),
         remainingAccountsInfo
     );
   }
@@ -722,7 +694,6 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
         rewardOwnerAccountKey,
         rewardVaultKey,
         tokenProgramKey,
-        whirlpoolProgramId(),
         rewardIndex
     );
   }
@@ -749,7 +720,6 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
         rewardMintKey,
         rewardVaultKey,
         rewardTokenProgramKey,
-        whirlpoolProgramId(),
         rewardIndex,
         remainingAccountsInfo
     );
@@ -785,7 +755,6 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
         tickArray1Key,
         tickArray2Key,
         oracleKey,
-        whirlpoolProgramId(),
         amount,
         otherAmountThreshold,
         sqrtPriceLimit,
@@ -832,7 +801,6 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
         tickArray1Key,
         tickArray2Key,
         oracleKey,
-        whirlpoolProgramId(),
         amount,
         otherAmountThreshold,
         sqrtPriceLimit,
@@ -892,7 +860,6 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
         tickArrayTwo2Key,
         oracleOneKey,
         oracleTwoKey,
-        whirlpoolProgramId(),
         amount,
         otherAmountThreshold,
         amountSpecifiedIsInput,
@@ -961,7 +928,6 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
         tickArrayTwo2Key,
         oracleOneKey,
         oracleTwoKey,
-        whirlpoolProgramId(),
         amount,
         otherAmountThreshold,
         amountSpecifiedIsInput,

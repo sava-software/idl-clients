@@ -23,9 +23,8 @@ import static org.junit.jupiter.api.Assertions.*;
 /// Pins every remaining instruction builder on the Whirlpools client to the
 /// generated `WhirlpoolProgram` call it must delegate to — the generated
 /// builder's parameter names are the reference for each slot, and the
-/// client-supplied values (the invoked program, the auto-wired Solana
-/// accounts, and the trailing `whirlpool_program` account the published IDL
-/// declares on every instruction) are spelled out on the mirror side. Every
+/// client-supplied values (the invoked program and the auto-wired Solana
+/// accounts) are spelled out on the mirror side. Every
 /// caller-supplied account is a distinct fill-byte key, so a transposed pair
 /// of same-typed keys changes the compared list. The `default` overloads are
 /// then checked against the explicit calls they delegate to: the property
@@ -153,7 +152,7 @@ final class OrcaWhirlpoolsClientWiringTests {
         WhirlpoolProgram.openPositionWithMetadata(
             ORCA_ACCOUNTS.invokedWhirlpoolProgram(), SOLANA_ACCOUNTS,
             FUNDER, OWNER, POSITION, POSITION_MINT, METADATA, POSITION_TA, WHIRLPOOL,
-            TOKEN_PROGRAM_A, TOKEN_PROGRAM_B, AUTHORITY, WHIRLPOOL_PROGRAM,
+            TOKEN_PROGRAM_A, TOKEN_PROGRAM_B, AUTHORITY,
             bumps, -128, 128
         ),
         client.openPositionWithMetadata(
@@ -188,7 +187,7 @@ final class OrcaWhirlpoolsClientWiringTests {
         WhirlpoolProgram.openPositionWithTokenExtensions(
             ORCA_ACCOUNTS.invokedWhirlpoolProgram(), SOLANA_ACCOUNTS,
             FUNDER, OWNER, POSITION, POSITION_MINT, POSITION_TA, WHIRLPOOL,
-            TOKEN_PROGRAM_A, AUTHORITY, WHIRLPOOL_PROGRAM,
+            TOKEN_PROGRAM_A, AUTHORITY,
             -128, 128, true
         ),
         client.openPositionWithTokenExtensions(
@@ -219,14 +218,14 @@ final class OrcaWhirlpoolsClientWiringTests {
     assertIx(
         WhirlpoolProgram.closePosition(
             ORCA_ACCOUNTS.invokedWhirlpoolProgram(),
-            AUTHORITY, RECEIVER, POSITION, POSITION_MINT, POSITION_TA, TOKEN_PROGRAM_A, WHIRLPOOL_PROGRAM
+            AUTHORITY, RECEIVER, POSITION, POSITION_MINT, POSITION_TA, TOKEN_PROGRAM_A
         ),
         client.closePosition(AUTHORITY, RECEIVER, POSITION, POSITION_MINT, POSITION_TA, TOKEN_PROGRAM_A)
     );
     assertIx(
         WhirlpoolProgram.closePositionWithTokenExtensions(
             ORCA_ACCOUNTS.invokedWhirlpoolProgram(),
-            AUTHORITY, RECEIVER, POSITION, POSITION_MINT, POSITION_TA, TOKEN_PROGRAM_A, WHIRLPOOL_PROGRAM
+            AUTHORITY, RECEIVER, POSITION, POSITION_MINT, POSITION_TA, TOKEN_PROGRAM_A
         ),
         client.closePositionWithTokenExtensions(AUTHORITY, RECEIVER, POSITION, POSITION_MINT, POSITION_TA, TOKEN_PROGRAM_A)
     );
@@ -264,7 +263,7 @@ final class OrcaWhirlpoolsClientWiringTests {
         WhirlpoolProgram.lockPosition(
             ORCA_ACCOUNTS.invokedWhirlpoolProgram(), SOLANA_ACCOUNTS,
             FUNDER, AUTHORITY, POSITION, POSITION_MINT, POSITION_TA, LOCK_CONFIG, WHIRLPOOL,
-            TOKEN_PROGRAM_A, WHIRLPOOL_PROGRAM, LockType.Permanent
+            TOKEN_PROGRAM_A, LockType.Permanent
         ),
         client.lockPosition(
             FUNDER, AUTHORITY, POSITION, POSITION_MINT, POSITION_TA, LOCK_CONFIG, WHIRLPOOL,
@@ -275,7 +274,7 @@ final class OrcaWhirlpoolsClientWiringTests {
         WhirlpoolProgram.transferLockedPosition(
             ORCA_ACCOUNTS.invokedWhirlpoolProgram(),
             AUTHORITY, RECEIVER, POSITION, POSITION_MINT, POSITION_TA, DESTINATION_TA,
-            LOCK_CONFIG, TOKEN_PROGRAM_A, WHIRLPOOL_PROGRAM
+            LOCK_CONFIG, TOKEN_PROGRAM_A
         ),
         client.transferLockedPosition(
             AUTHORITY, RECEIVER, POSITION, POSITION_MINT, POSITION_TA, DESTINATION_TA,
@@ -320,7 +319,7 @@ final class OrcaWhirlpoolsClientWiringTests {
     assertIx(
         WhirlpoolProgram.resetPositionRange(
             ORCA_ACCOUNTS.invokedWhirlpoolProgram(), SOLANA_ACCOUNTS,
-            FUNDER, AUTHORITY, WHIRLPOOL, POSITION, POSITION_TA, WHIRLPOOL_PROGRAM, -64, 64
+            FUNDER, AUTHORITY, WHIRLPOOL, POSITION, POSITION_TA, -64, 64
         ),
         client().resetPositionRange(FUNDER, AUTHORITY, WHIRLPOOL, POSITION, POSITION_TA, -64, 64)
     );
@@ -336,7 +335,7 @@ final class OrcaWhirlpoolsClientWiringTests {
     assertIx(
         WhirlpoolProgram.initializePositionBundle(
             ORCA_ACCOUNTS.invokedWhirlpoolProgram(), SOLANA_ACCOUNTS,
-            BUNDLE, BUNDLE_MINT, BUNDLE_TA, OWNER, FUNDER, TOKEN_PROGRAM_A, WHIRLPOOL_PROGRAM
+            BUNDLE, BUNDLE_MINT, BUNDLE_TA, OWNER, FUNDER, TOKEN_PROGRAM_A
         ),
         client.initializePositionBundle(BUNDLE, BUNDLE_MINT, BUNDLE_TA, OWNER, FUNDER, TOKEN_PROGRAM_A)
     );
@@ -344,7 +343,7 @@ final class OrcaWhirlpoolsClientWiringTests {
         WhirlpoolProgram.initializePositionBundleWithMetadata(
             ORCA_ACCOUNTS.invokedWhirlpoolProgram(), SOLANA_ACCOUNTS,
             BUNDLE, BUNDLE_MINT, METADATA, BUNDLE_TA, OWNER, FUNDER, AUTHORITY,
-            TOKEN_PROGRAM_A, TOKEN_PROGRAM_B, WHIRLPOOL_PROGRAM
+            TOKEN_PROGRAM_A, TOKEN_PROGRAM_B
         ),
         client.initializePositionBundleWithMetadata(
             BUNDLE, BUNDLE_MINT, METADATA, BUNDLE_TA, OWNER, FUNDER, AUTHORITY,
@@ -354,7 +353,7 @@ final class OrcaWhirlpoolsClientWiringTests {
     assertIx(
         WhirlpoolProgram.deletePositionBundle(
             ORCA_ACCOUNTS.invokedWhirlpoolProgram(),
-            BUNDLE, BUNDLE_MINT, BUNDLE_TA, OWNER, RECEIVER, TOKEN_PROGRAM_A, WHIRLPOOL_PROGRAM
+            BUNDLE, BUNDLE_MINT, BUNDLE_TA, OWNER, RECEIVER, TOKEN_PROGRAM_A
         ),
         client.deletePositionBundle(BUNDLE, BUNDLE_MINT, BUNDLE_TA, OWNER, RECEIVER, TOKEN_PROGRAM_A)
     );
@@ -366,7 +365,7 @@ final class OrcaWhirlpoolsClientWiringTests {
     assertIx(
         WhirlpoolProgram.openBundledPosition(
             ORCA_ACCOUNTS.invokedWhirlpoolProgram(), SOLANA_ACCOUNTS,
-            BUNDLED_POSITION, BUNDLE, BUNDLE_TA, AUTHORITY, WHIRLPOOL, FUNDER, WHIRLPOOL_PROGRAM,
+            BUNDLED_POSITION, BUNDLE, BUNDLE_TA, AUTHORITY, WHIRLPOOL, FUNDER,
             7, -128, 128
         ),
         client.openBundledPosition(BUNDLED_POSITION, BUNDLE, BUNDLE_TA, AUTHORITY, WHIRLPOOL, FUNDER, 7, -128, 128)
@@ -374,7 +373,7 @@ final class OrcaWhirlpoolsClientWiringTests {
     assertIx(
         WhirlpoolProgram.closeBundledPosition(
             ORCA_ACCOUNTS.invokedWhirlpoolProgram(),
-            BUNDLED_POSITION, BUNDLE, BUNDLE_TA, AUTHORITY, RECEIVER, WHIRLPOOL_PROGRAM, 7
+            BUNDLED_POSITION, BUNDLE, BUNDLE_TA, AUTHORITY, RECEIVER, 7
         ),
         client.closeBundledPosition(BUNDLED_POSITION, BUNDLE, BUNDLE_TA, AUTHORITY, RECEIVER, 7)
     );
@@ -412,14 +411,14 @@ final class OrcaWhirlpoolsClientWiringTests {
     assertIx(
         WhirlpoolProgram.initializeTickArray(
             ORCA_ACCOUNTS.invokedWhirlpoolProgram(), SOLANA_ACCOUNTS,
-            WHIRLPOOL, FUNDER, TICK_ARRAY, WHIRLPOOL_PROGRAM, -443_584
+            WHIRLPOOL, FUNDER, TICK_ARRAY, -443_584
         ),
         client.initializeTickArray(WHIRLPOOL, FUNDER, TICK_ARRAY, -443_584)
     );
     assertIx(
         WhirlpoolProgram.initializeDynamicTickArray(
             ORCA_ACCOUNTS.invokedWhirlpoolProgram(), SOLANA_ACCOUNTS,
-            WHIRLPOOL, FUNDER, TICK_ARRAY, WHIRLPOOL_PROGRAM, -443_584, true
+            WHIRLPOOL, FUNDER, TICK_ARRAY, -443_584, true
         ),
         client.initializeDynamicTickArray(WHIRLPOOL, FUNDER, TICK_ARRAY, -443_584, true)
     );
@@ -437,7 +436,7 @@ final class OrcaWhirlpoolsClientWiringTests {
         WhirlpoolProgram.increaseLiquidity(
             ORCA_ACCOUNTS.invokedWhirlpoolProgram(),
             WHIRLPOOL, TOKEN_PROGRAM_A, AUTHORITY, POSITION, POSITION_TA,
-            OWNER_A, OWNER_B, VAULT_A, VAULT_B, TICK_LOWER, TICK_UPPER, WHIRLPOOL_PROGRAM,
+            OWNER_A, OWNER_B, VAULT_A, VAULT_B, TICK_LOWER, TICK_UPPER,
             liquidity, 10L, 20L
         ),
         client.increaseLiquidity(
@@ -449,8 +448,7 @@ final class OrcaWhirlpoolsClientWiringTests {
         WhirlpoolProgram.increaseLiquidityV2(
             ORCA_ACCOUNTS.invokedWhirlpoolProgram(), SOLANA_ACCOUNTS,
             WHIRLPOOL, TOKEN_PROGRAM_A, TOKEN_PROGRAM_B, AUTHORITY, POSITION, POSITION_TA,
-            MINT_A, MINT_B, OWNER_A, OWNER_B, VAULT_A, VAULT_B, TICK_LOWER, TICK_UPPER,
-            WHIRLPOOL_PROGRAM, liquidity, 10L, 20L, REMAINING
+            MINT_A, MINT_B, OWNER_A, OWNER_B, VAULT_A, VAULT_B, TICK_LOWER, TICK_UPPER, liquidity, 10L, 20L, REMAINING
         ),
         client.increaseLiquidityV2(
             WHIRLPOOL, TOKEN_PROGRAM_A, TOKEN_PROGRAM_B, AUTHORITY, POSITION, POSITION_TA,
@@ -464,8 +462,7 @@ final class OrcaWhirlpoolsClientWiringTests {
         WhirlpoolProgram.increaseLiquidityByTokenAmountsV2(
             ORCA_ACCOUNTS.invokedWhirlpoolProgram(), SOLANA_ACCOUNTS,
             WHIRLPOOL, TOKEN_PROGRAM_A, TOKEN_PROGRAM_B, AUTHORITY, POSITION, POSITION_TA,
-            MINT_A, MINT_B, OWNER_A, OWNER_B, VAULT_A, VAULT_B, TICK_LOWER, TICK_UPPER,
-            WHIRLPOOL_PROGRAM, byAmounts, REMAINING
+            MINT_A, MINT_B, OWNER_A, OWNER_B, VAULT_A, VAULT_B, TICK_LOWER, TICK_UPPER, byAmounts, REMAINING
         ),
         client.increaseLiquidityByTokenAmountsV2(
             WHIRLPOOL, TOKEN_PROGRAM_A, TOKEN_PROGRAM_B, AUTHORITY, POSITION, POSITION_TA,
@@ -477,7 +474,7 @@ final class OrcaWhirlpoolsClientWiringTests {
         WhirlpoolProgram.decreaseLiquidity(
             ORCA_ACCOUNTS.invokedWhirlpoolProgram(),
             WHIRLPOOL, TOKEN_PROGRAM_A, AUTHORITY, POSITION, POSITION_TA,
-            OWNER_A, OWNER_B, VAULT_A, VAULT_B, TICK_LOWER, TICK_UPPER, WHIRLPOOL_PROGRAM,
+            OWNER_A, OWNER_B, VAULT_A, VAULT_B, TICK_LOWER, TICK_UPPER,
             liquidity, 1L, 2L
         ),
         client.decreaseLiquidity(
@@ -489,8 +486,7 @@ final class OrcaWhirlpoolsClientWiringTests {
         WhirlpoolProgram.decreaseLiquidityV2(
             ORCA_ACCOUNTS.invokedWhirlpoolProgram(), SOLANA_ACCOUNTS,
             WHIRLPOOL, TOKEN_PROGRAM_A, TOKEN_PROGRAM_B, AUTHORITY, POSITION, POSITION_TA,
-            MINT_A, MINT_B, OWNER_A, OWNER_B, VAULT_A, VAULT_B, TICK_LOWER, TICK_UPPER,
-            WHIRLPOOL_PROGRAM, liquidity, 1L, 2L, REMAINING
+            MINT_A, MINT_B, OWNER_A, OWNER_B, VAULT_A, VAULT_B, TICK_LOWER, TICK_UPPER, liquidity, 1L, 2L, REMAINING
         ),
         client.decreaseLiquidityV2(
             WHIRLPOOL, TOKEN_PROGRAM_A, TOKEN_PROGRAM_B, AUTHORITY, POSITION, POSITION_TA,
@@ -504,8 +500,7 @@ final class OrcaWhirlpoolsClientWiringTests {
             ORCA_ACCOUNTS.invokedWhirlpoolProgram(), SOLANA_ACCOUNTS,
             WHIRLPOOL, TOKEN_PROGRAM_A, TOKEN_PROGRAM_B, AUTHORITY, FUNDER, POSITION, POSITION_TA,
             MINT_A, MINT_B, OWNER_A, OWNER_B, VAULT_A, VAULT_B,
-            TICK_LOWER, TICK_UPPER, NEW_TICK_LOWER, NEW_TICK_UPPER,
-            WHIRLPOOL_PROGRAM, -64, 64, byLiquidity, REMAINING
+            TICK_LOWER, TICK_UPPER, NEW_TICK_LOWER, NEW_TICK_UPPER, -64, 64, byLiquidity, REMAINING
         ),
         client.repositionLiquidityV2(
             WHIRLPOOL, TOKEN_PROGRAM_A, TOKEN_PROGRAM_B, AUTHORITY, FUNDER, POSITION, POSITION_TA,
@@ -526,7 +521,7 @@ final class OrcaWhirlpoolsClientWiringTests {
     assertIx(
         WhirlpoolProgram.updateFeesAndRewards(
             ORCA_ACCOUNTS.invokedWhirlpoolProgram(),
-            WHIRLPOOL, POSITION, TICK_LOWER, TICK_UPPER, WHIRLPOOL_PROGRAM
+            WHIRLPOOL, POSITION, TICK_LOWER, TICK_UPPER
         ),
         client.updateFeesAndRewards(WHIRLPOOL, POSITION, TICK_LOWER, TICK_UPPER)
     );
@@ -534,7 +529,7 @@ final class OrcaWhirlpoolsClientWiringTests {
         WhirlpoolProgram.collectFees(
             ORCA_ACCOUNTS.invokedWhirlpoolProgram(),
             WHIRLPOOL, AUTHORITY, POSITION, POSITION_TA,
-            OWNER_A, VAULT_A, OWNER_B, VAULT_B, TOKEN_PROGRAM_A, WHIRLPOOL_PROGRAM
+            OWNER_A, VAULT_A, OWNER_B, VAULT_B, TOKEN_PROGRAM_A
         ),
         client.collectFees(
             WHIRLPOOL, AUTHORITY, POSITION, POSITION_TA, OWNER_A, VAULT_A, OWNER_B, VAULT_B, TOKEN_PROGRAM_A
@@ -544,8 +539,7 @@ final class OrcaWhirlpoolsClientWiringTests {
         WhirlpoolProgram.collectFeesV2(
             ORCA_ACCOUNTS.invokedWhirlpoolProgram(), SOLANA_ACCOUNTS,
             WHIRLPOOL, AUTHORITY, POSITION, POSITION_TA, MINT_A, MINT_B,
-            OWNER_A, VAULT_A, OWNER_B, VAULT_B, TOKEN_PROGRAM_A, TOKEN_PROGRAM_B,
-            WHIRLPOOL_PROGRAM, REMAINING
+            OWNER_A, VAULT_A, OWNER_B, VAULT_B, TOKEN_PROGRAM_A, TOKEN_PROGRAM_B, REMAINING
         ),
         client.collectFeesV2(
             WHIRLPOOL, AUTHORITY, POSITION, POSITION_TA, MINT_A, MINT_B,
@@ -556,7 +550,7 @@ final class OrcaWhirlpoolsClientWiringTests {
         WhirlpoolProgram.collectReward(
             ORCA_ACCOUNTS.invokedWhirlpoolProgram(),
             WHIRLPOOL, AUTHORITY, POSITION, POSITION_TA, REWARD_OWNER, REWARD_VAULT,
-            TOKEN_PROGRAM_A, WHIRLPOOL_PROGRAM, 2
+            TOKEN_PROGRAM_A, 2
         ),
         client.collectReward(WHIRLPOOL, AUTHORITY, POSITION, POSITION_TA, REWARD_OWNER, REWARD_VAULT, TOKEN_PROGRAM_A, 2)
     );
@@ -564,7 +558,7 @@ final class OrcaWhirlpoolsClientWiringTests {
         WhirlpoolProgram.collectRewardV2(
             ORCA_ACCOUNTS.invokedWhirlpoolProgram(), SOLANA_ACCOUNTS,
             WHIRLPOOL, AUTHORITY, POSITION, POSITION_TA, REWARD_OWNER, REWARD_MINT, REWARD_VAULT,
-            TOKEN_PROGRAM_A, WHIRLPOOL_PROGRAM, 2, REMAINING
+            TOKEN_PROGRAM_A, 2, REMAINING
         ),
         client.collectRewardV2(
             WHIRLPOOL, AUTHORITY, POSITION, POSITION_TA, REWARD_OWNER, REWARD_MINT, REWARD_VAULT,
@@ -585,8 +579,7 @@ final class OrcaWhirlpoolsClientWiringTests {
         WhirlpoolProgram.swapV2(
             ORCA_ACCOUNTS.invokedWhirlpoolProgram(), SOLANA_ACCOUNTS,
             TOKEN_PROGRAM_A, TOKEN_PROGRAM_B, AUTHORITY, WHIRLPOOL, MINT_A, MINT_B,
-            OWNER_A, VAULT_A, OWNER_B, VAULT_B, TICK_LOWER, TICK_UPPER, TICK_ARRAY, ORACLE,
-            WHIRLPOOL_PROGRAM, 1_000L, 900L, limit, true, false, REMAINING
+            OWNER_A, VAULT_A, OWNER_B, VAULT_B, TICK_LOWER, TICK_UPPER, TICK_ARRAY, ORACLE, 1_000L, 900L, limit, true, false, REMAINING
         ),
         client.swapV2(
             TOKEN_PROGRAM_A, TOKEN_PROGRAM_B, AUTHORITY, WHIRLPOOL, MINT_A, MINT_B,
@@ -610,6 +603,34 @@ final class OrcaWhirlpoolsClientWiringTests {
     );
   }
 
+  /// The program partitions `ctx.remaining_accounts` in order from index 0
+  /// (`parse_remaining_accounts`), so the first appended extra has to sit
+  /// immediately after the last declared account. Until 2026-09-26 the client
+  /// was generated from the anchor IDL account, which declares a trailing
+  /// `whirlpool_program` the Rust does not, and every appended transfer-hook
+  /// and supplemental-tick-array slice arrived shifted by one.
+  @Test
+  void swapV2AppendedRemainingAccountsFollowTheOracleDirectly() {
+    final var client = client();
+    final var supplemental = key(0x51);
+    final var extras = WhirlpoolRemainingAccounts.builder()
+        .addSupplementalTickArrays(supplemental)
+        .build();
+    final var ix = WhirlpoolRemainingAccounts.append(
+        client.swapV2(
+            TOKEN_PROGRAM_A, TOKEN_PROGRAM_B, AUTHORITY, WHIRLPOOL, MINT_A, MINT_B,
+            OWNER_A, VAULT_A, OWNER_B, VAULT_B, TICK_LOWER, TICK_UPPER, TICK_ARRAY, ORACLE,
+            1_000L, 900L, BigInteger.ONE.shiftLeft(64), true, false, extras.info()
+        ),
+        extras
+    );
+    final var keys = ix.accounts().stream().map(AccountMeta::publicKey).toList();
+    assertEquals(16, keys.size(), "15 declared accounts plus the one extra");
+    assertEquals(ORACLE, keys.get(14), "the oracle is the last declared account");
+    assertEquals(supplemental, keys.get(15), "remaining_accounts[0] is the first appended extra");
+    assertFalse(keys.contains(WHIRLPOOL_PROGRAM), "no builder passes the program as an account");
+  }
+
   @Test
   void twoHopSwapsBindTheGeneratedCalls() {
     final var client = client();
@@ -624,7 +645,7 @@ final class OrcaWhirlpoolsClientWiringTests {
             key(0x50), key(0x51), key(0x52), key(0x53),
             key(0x54), key(0x55), key(0x56), key(0x57),
             key(0x58), key(0x59), key(0x5A), key(0x5B), key(0x5C), key(0x5D),
-            ORACLE, oracle2, WHIRLPOOL_PROGRAM,
+            ORACLE, oracle2,
             1_000L, 900L, true, true, false, limit1, limit2
         ),
         client.twoHopSwap(
@@ -644,7 +665,7 @@ final class OrcaWhirlpoolsClientWiringTests {
             key(0x56), key(0x57), key(0x58), key(0x59), key(0x5A), key(0x5B),
             AUTHORITY,
             key(0x5C), key(0x5D), key(0x5E), key(0x5F), key(0x60), key(0x61),
-            ORACLE, oracle2, WHIRLPOOL_PROGRAM,
+            ORACLE, oracle2,
             1_000L, 900L, true, true, false, limit1, limit2, REMAINING
         ),
         client.twoHopSwapV2(
