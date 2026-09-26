@@ -50,6 +50,9 @@ javaModules {
   directory(".") {
     group = "software.sava"
     plugin("software.sava.build.java-module")
+    // idl-clients-drift is dead code: Drift's programs no longer work on-chain.
+    // Assigning replaces the 'build' and '.*' conventions, so they are restated.
+    exclusions = listOf("build", "\\..*", "idl-clients-drift")
   }
 }
 

@@ -37,8 +37,9 @@ both calling instructions and reading/deserializing on-chain data. It contains:
 - `idl-clients-bundle/` — the bulk of third-party programs (Jupiter, Kamino,
   Meteora, Orca, Marginfi, Metaplex, Squads, oracles, ...), plus REST API
   clients for off-chain services (e.g. Jupiter swap/ultra APIs).
-- `idl-clients-drift/` — Drift. Dead code for now — not actively maintained;
-  don't invest effort here unless asked.
+- `idl-clients-drift/` — Drift. Dead code: Drift's programs no longer work
+  on-chain, so the module is excluded from the build (`settings.gradle.kts`) and
+  is neither compiled, tested nor published. Don't invest effort here unless asked.
 
 Within a program's package, `gen/` is generated code — **never hand-edit it**.
 Fixes to generated output belong in the idl-src-gen generator; then regenerate.
