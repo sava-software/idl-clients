@@ -133,20 +133,26 @@ public final class WhirlpoolRemainingAccounts {
       return addSlice(type, metas);
     }
 
-    /// Convenience for `SupplementalTickArrays` (used by `swapV2`).
+    /// Convenience for `SupplementalTickArrays` (used by `swapV2`). The arrays
+    /// are appended **writable**: the program merges them with the three
+    /// declared tick arrays and loads every one through `load_tick_array_mut`
+    /// (`util/sparse_swap.rs`), which rejects a non-writable account before any
+    /// other check (`AccountNotMutable`), and Orca's SDK appends them writable.
     public Builder addSupplementalTickArrays(final PublicKey... tickArrays) {
       return addSupplementalTickArrays(AccountsType.SupplementalTickArrays, tickArrays);
     }
 
     /// Convenience for `SupplementalTickArraysOne` / `SupplementalTickArraysTwo`
-    /// (used by `twoHopSwapV2`). Pick the matching slice kind for the hop.
+    /// (used by `twoHopSwapV2`). Pick the matching slice kind for the hop. The
+    /// arrays are appended writable, for the reason given on the single-hop
+    /// overload.
     public Builder addSupplementalTickArrays(final AccountsType type, final PublicKey... tickArrays) {
       if (tickArrays.length == 0) {
         return this;
       }
       final var metas = new ArrayList<AccountMeta>(tickArrays.length);
       for (final var ta : tickArrays) {
-        metas.add(AccountMeta.createRead(ta));
+        metas.add(AccountMeta.createWrite(ta));
       }
       return addSlice(type, metas);
     }

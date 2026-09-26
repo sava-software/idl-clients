@@ -216,16 +216,38 @@ final class OrcaBoundaryTests {
     assertEquals(AccountsType.SupplementalTickArrays, slices[1].accountsType());
     assertEquals(2, slices[1].length());
 
-    // the flat account list preserves slice order, all read-only
+    // the flat account list preserves slice order; hook accounts are read-only,
+    // tick arrays writable because the program loads them mutably
     assertEquals(
         List.of(
             AccountMeta.createRead(hookProgram),
             AccountMeta.createRead(metasPda),
             AccountMeta.createRead(extra),
-            AccountMeta.createRead(tickArray1),
-            AccountMeta.createRead(tickArray2)
+            AccountMeta.createWrite(tickArray1),
+            AccountMeta.createWrite(tickArray2)
         ),
         remaining.accounts());
+  }
+
+  /// The program loads every tick array it merges into a swap's sequence
+  /// through `load_tick_array_mut`, which rejects a non-writable account before
+  /// any other check (`AccountNotMutable`), and Orca's SDK appends supplemental
+  /// arrays writable. Until 2026-09-26 the helper appended them read-only, so
+  /// any initialized supplemental tick array failed the whole swap.
+  @Test
+  void supplementalTickArraysAreAppendedWritable() {
+    final var one = key(6);
+    final var two = key(7);
+    final var extras = WhirlpoolRemainingAccounts.builder()
+        .addSupplementalTickArrays(one)
+        .addSupplementalTickArrays(AccountsType.SupplementalTickArraysTwo, two)
+        .build();
+    assertEquals(
+        List.of(AccountMeta.createWrite(one), AccountMeta.createWrite(two)),
+        extras.accounts());
+    final var slices = extras.info().slices();
+    assertEquals(AccountsType.SupplementalTickArrays, slices[0].accountsType());
+    assertEquals(AccountsType.SupplementalTickArraysTwo, slices[1].accountsType());
   }
 
   @Test

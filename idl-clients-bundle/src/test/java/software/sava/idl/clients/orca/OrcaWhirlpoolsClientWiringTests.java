@@ -628,6 +628,7 @@ final class OrcaWhirlpoolsClientWiringTests {
     assertEquals(16, keys.size(), "15 declared accounts plus the one extra");
     assertEquals(ORACLE, keys.get(14), "the oracle is the last declared account");
     assertEquals(supplemental, keys.get(15), "remaining_accounts[0] is the first appended extra");
+    assertTrue(ix.accounts().get(15).write(), "a supplemental tick array is loaded mutably, so it is appended writable");
     assertFalse(keys.contains(WHIRLPOOL_PROGRAM), "no builder passes the program as an account");
   }
 
