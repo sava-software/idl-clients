@@ -678,9 +678,9 @@ in the current population — the baselines carry no stale rows.
 `:hardeningCertifyAll` (the root manifest over both modules' receipts) and a
 local `fuzzAll` per module are therefore release-checklist items here, not CI's.
 Both refuse, once Git reads clean, any source input the tree does not bind —
-git-ignored files under a source root included — so scratch code lives under
-`idl-clients-bundle/scratch/`, outside every source root (see "Exclusion
-ownership" below).
+git-ignored files under a source root included — so run them from a clean
+`git worktree add --detach` of the commit, which carries no ignored file (see
+"Exclusion ownership" below).
 
 **The shared block above is a verbatim copy**, not a contract. Since 21.5.37
 nothing gates it: `check` no longer runs `agentsTemplateInSync`,
@@ -750,12 +750,12 @@ exclusions, **never by allowlist** — an allowlist silently exempts every class
 added after it was written. Generated `**.gen.*` code is excluded everywhere
 (its correctness belongs to idl-src-gen, and `tools/GroundTruth.java` plus the
 execution tests are what check it). Git-ignored `Integ.java` scratch mains live
-under `idl-clients-bundle/scratch/`, outside every source root: since sava-build
-21.5.37, certification and `fuzzAll` refuse an ignored file under a source root,
-and `recompileExcludes` only keeps one out of the PIT/Jazzer recompile, not out
-of the evidence inventory. The bundle keeps `recompileExcludes =
-listOf("Integ.java")` so a scratch file that strays back under `src/` still cannot
-make the tool class path or ownership audit differ between a dev machine and CI.
+in the bundle's test sources, in the package they exercise, so they never reach
+the jar, the javadoc or the ownership audit, and `recompileExcludes =
+listOf("Integ.java")` keeps them out of the PIT/Jazzer recompile, so the tool class
+path cannot differ between a dev machine and CI. Since sava-build 21.5.37 a clean
+certification or `fuzzAll` still refuses an ignored file under any source root,
+test sources included, so both run from a clean worktree, where none exists.
 Generated exclusions are declared to
 the ownership audit as
 `declineExclusionAudit(...)` in each module's `hardening {}` block — that DSL
