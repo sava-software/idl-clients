@@ -494,8 +494,15 @@ time:
   "verified against the live on-chain IDL" — the same account, so the check was
   circular — and the account arrived as the first remaining account, shifting
   every transfer-hook and supplemental-tick-array slice on the nine V2
-  instructions that take `remaining_accounts_info` by one. The config now
-  declares `"deployed": "metadata"` and the diff needs no normalisation
+  instructions that take `remaining_accounts_info` by one. An unsigned mainnet
+  simulation of `swap_v2` on pool `8EyLmmyt8VNqhu8c2NzJ2BCTEZZk4W9SccbEoie2raR7`
+  at slot 450788034 with one initialized supplemental tick array confirmed it:
+  the old 16-account list fails with Anchor's `AccountNotMutable` (3006) because
+  the program id is what lands in the supplemental slot, the corrected list with
+  the array appended read-only fails the same way, and the corrected list with
+  the array appended writable succeeds — which is why `WhirlpoolRemainingAccounts`
+  now appends supplemental arrays writable. The config declares
+  `"deployed": "metadata"` and the diff needs no normalisation
   (`compared 61 match 61`). `--drop-trailing=<name>` stays for the next program
   that publishes such an account, but only the Rust can license it: normalise
   after showing that the deployed handlers never read past their declared
