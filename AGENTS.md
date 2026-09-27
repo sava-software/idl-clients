@@ -195,17 +195,27 @@ Three traps are worth carrying around even when you are not investigating:
   our code matches *the IDL* — a separate account that a deploy does not update.
 - **A repo under a different org may still be the program's home.** Teams
   rebrand; treat provenance as a question to answer, not a disqualifier.
-- **There are two on-chain accounts, and the default is the anchor one.** A
+- **There are two on-chain accounts, and a program that names neither is read
+  from whichever holds an IDL.** Since idl-src-gen b4fae92 (2026-09-27), a
   program declaring none of `deployed`, `syncIdl`, `idlURL`, `idlFile` or
-  `idlAccountProgramOwner` is generated from the anchor IDL account, and
-  `syncIdl` chooses between the two by last-write slot; neither rule reads
-  content. Orca's anchor account (last written 2026-02-22) declares a trailing
+  `idlAccountProgramOwner` is generated from the account that holds an IDL in
+  its dialect, and when both do, from the one declaring the higher program
+  version, a tie going to the program-metadata PDA — the only account Anchor
+  1.0 writes, and the only one a program built with it can update. Before that
+  the default read the anchor account alone, which is how glam-next took
+  Phoenix (metadata PDA only) for a program with no on-chain IDL. `syncIdl`
+  still chooses by last-write slot. Neither rule reads *accounts*: Orca's
+  anchor account (last written 2026-02-22) declares a trailing
   `whirlpool_program` on all 66 instructions that its metadata PDA
-  (2026-02-13), its SDK copy and its Rust all lack, so both rules chose it, and
-  the client generated from it passed that account as the first remaining
-  account from 2026-05-20 to 2026-09-26. When the two on-chain channels
-  disagree on *accounts*, read both against the Rust and declare `"deployed"` —
-  Marginfi and Orca both do.
+  (2026-02-13), its SDK copy and its Rust all lack, at the same 0.9.0 version.
+  The tie now picks metadata, but the old default and `syncIdl`'s rule both
+  chose the phantom, and the client generated from it passed that account as
+  the first remaining account from 2026-05-20 to 2026-09-26. When the two
+  on-chain channels disagree on *accounts*, read both against the Rust and
+  declare `"deployed"` — Marginfi and Orca both do, and a declaration outranks
+  the version rule. A configured program for which the run finds no IDL at all
+  now fails the run with exit 9 (the monitor's digest names it at ERROR)
+  instead of silently keeping its last generated client.
 
 The program can be asked directly, by simulating an instruction and reading the
 dispatch error. There is no tool for it: `tools/idl_probe.py` did this and was
