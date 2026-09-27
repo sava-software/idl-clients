@@ -113,9 +113,9 @@ final class PhoenixClientWiringTests {
     assertIx(
         EmberProgram.withdraw(ACCOUNTS.invokedEmberProgram(), OWNER, ACCOUNTS.emberStateProgram(),
             MINT, OUTPUT_MINT, TOKEN_ACCOUNT, OUTPUT_TOKEN_ACCOUNT, ACCOUNTS.emberVaultProgram(),
-            TOKEN_PROGRAM, new WithdrawParams(1_000L)),
+            TOKEN_PROGRAM, new WithdrawParams(OptionalLong.of(1_000L))),
         CLIENT.withdraw(OWNER, MINT, OUTPUT_MINT, TOKEN_ACCOUNT, OUTPUT_TOKEN_ACCOUNT,
-            TOKEN_PROGRAM, new WithdrawParams(1_000L)));
+            TOKEN_PROGRAM, new WithdrawParams(OptionalLong.of(1_000L))));
   }
 
   @Test

@@ -265,8 +265,6 @@ public final class EmberProgram {
       return read(instruction.copyData(), 0);
     }
 
-    public static final int BYTES = 16;
-
     public static final int WITHDRAW_PARAMS_OFFSET = 8;
 
     public static WithdrawIxData read(final byte[] _data, final int _offset) {
@@ -288,7 +286,7 @@ public final class EmberProgram {
 
     @Override
     public int l() {
-      return BYTES;
+      return 8 + withdrawParams.l();
     }
   }
 

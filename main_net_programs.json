@@ -336,6 +336,9 @@
       "idlType": "anchor",
       "accountDiscriminators": {
         "EmberState": "state_account"
+      },
+      "fieldTypes": {
+        "WithdrawParams.amount": {"option": "u64"}
       }
     },
     {

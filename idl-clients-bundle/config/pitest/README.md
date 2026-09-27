@@ -1051,6 +1051,34 @@ and Phoenix publishes no IDL in their repo to track — that fix belongs upstrea
 the shortfall, so if `BYTES` ever becomes 136 the test fails and says upstream
 shipped a corrected IDL.
 
+**The same IDL is stale about `withdraw`'s argument too, and that one is
+corrected (2026-09-27).** It declares `WithdrawParams.amount` as `u64`; the
+deployed program reads `Option<u64>`, `None` meaning the full withdrawal. The
+evidence is independent of the IDL:
+
+- Phoenix's SDK, `Ellipsis-Labs/rise-public` at `e688686`: `rust/ix/src/cpi.rs`
+  declares `EmberWithdrawArgs { amount: Option<u64> }` and writes 9 or 17 bytes,
+  and `instructions.json` carries `"EmberWithdraw": "b712469c946da122010100000000000000"`.
+- Every sampled mainnet withdraw is 17 bytes, the discriminator, `01`, then the
+  amount (`24tXGERM…` carried `Some(121_960_000)`).
+- Simulated against live accounts: `Some(1)` and `None` succeeded, and every
+  16-byte `u64` encoding panicked, whatever its first byte.
+
+So the client generated from the IDL failed on every call. `"fieldTypes":
+{"WithdrawParams.amount": {"option": "u64"}}` in `main_net_programs.json`
+corrects it: `WithdrawParams(OptionalLong amount)`. The correction reaches the
+generated code only. `idl.json` and the channel record stay what Phoenix
+published, `sources.json` records the override on its own line, and
+`idl-change-report-gap.txt` carries it as a standing entry. The generator
+refuses the run once upstream declares the field `Option<u64>` itself, so the
+override cannot outlive its reason; remove it then.
+
+This does not reverse the layout decision above. An argument every call gets
+wrong makes the builder unusable, and correcting it is one checked line,
+where the account's missing fourth key would mean adding a field to someone
+else's definition, which `"fieldTypes"` cannot do. `EmberWithdrawTests` holds
+the encoding to the SDK's vector and the mainnet bytes.
+
 #### kvault: the lending-market block was missing entirely (2026-08-06)
 
 `KaminoVaultsRemainingAccounts.appendVaultReserves` appended the vault's

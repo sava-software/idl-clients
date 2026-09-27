@@ -2,35 +2,39 @@
 package software.sava.idl.clients.phoenix.ember.gen.types;
 
 import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+
+import java.util.OptionalLong;
 
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
-import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
-/// @param amount: u64
-public record WithdrawParams(long amount) implements SerDe {
+/// @param amount: Option<u64>
+public record WithdrawParams(OptionalLong amount) implements SerDe {
 
-  public static final int BYTES = 8;
-
-  public static final int AMOUNT_OFFSET = 0;
+  public static final int AMOUNT_OFFSET = 1;
 
   public static WithdrawParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var amount = getInt64LE(_data, _offset);
+    final OptionalLong amount;
+    if (SerDeUtil.isAbsent(1, _data, _offset)) {
+      amount = OptionalLong.empty();
+    } else {
+      amount = OptionalLong.of(getInt64LE(_data, _offset + 1));
+    }
     return new WithdrawParams(amount);
   }
 
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    putInt64LE(_data, i, amount);
-    i += 8;
+    i += SerDeUtil.writeOptional(1, amount, _data, i);
     return i - _offset;
   }
 
   @Override
   public int l() {
-    return BYTES;
+    return (amount == null || amount.isEmpty() ? 1 : (1 + 8));
   }
 }

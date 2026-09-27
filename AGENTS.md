@@ -244,8 +244,8 @@ fetches all of them and commits what it found beside the generated source:
 
 | File | What it holds |
 | --- | --- |
-| `idl.json` | the document the client was generated from |
-| `sources.json` | which channel that was, and what every channel answered with |
+| `idl.json` | the document the client was generated from, as published — see `"fieldTypes"` below |
+| `sources.json` | which channel that was, what every channel answered with, and any `"fieldTypes"` correction |
 | `anchor.json` / `metadata.json` / `vcs.json` | a channel whose document **disagrees** with `idl.json` |
 | `*.original.json` | the verbatim published bytes, when a legacy IDL had to be converted |
 
@@ -255,6 +255,17 @@ Exactly one is the **deployed** channel: its document *is* `idl.json` and
 generates the client, defaulting to the on-chain account for the reason above. A
 channel matching `idl.json` writes no file of its own — **absence is agreement**,
 which is also why the deployed channel never has one.
+
+**One correction reaches the client without touching `idl.json`.** A program
+whose config declares `"fieldTypes"` (idl-src-gen `ffbb964`) is generated with
+those struct fields' types replaced — Ember's `WithdrawParams.amount`, published
+as `u64` and read by the program as `Option<u64>`. `idl.json` and every channel
+hash stay what upstream published, so the record keeps comparing like with like
+and an upstream fix still shows as movement; the `"fieldTypes"` line in
+`sources.json` and a standing entry in `idl-change-report-gap.txt` are what say
+the client deviates, and the generator refuses the run once upstream declares the
+corrected type itself. It changes a field's type and cannot add or remove one.
+The evidence behind each correction is in `idl-clients-bundle/config/pitest/README.md`.
 
 A fourth, `vcsHead`, appears only for a `vcs` source pinned to a `commit`. Pinning
 makes the generated client reproducible and, in the same move, freezes that
