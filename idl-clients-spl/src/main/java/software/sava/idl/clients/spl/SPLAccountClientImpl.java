@@ -93,6 +93,7 @@ final class SPLAccountClientImpl implements SPLAccountClient {
         tokenMint,
         toTokenAccount,
         owner,
+        true,
         scaledAmount,
         decimals
     );
@@ -104,7 +105,8 @@ final class SPLAccountClientImpl implements SPLAccountClient {
         invokedTokenProgram,
         tokenAccount,
         owner,
-        owner
+        owner,
+        true
     );
   }
 

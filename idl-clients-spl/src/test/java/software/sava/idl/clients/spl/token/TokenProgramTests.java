@@ -13,6 +13,23 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 final class TokenProgramTests {
 
+  /// `authority` is `isSigner: "either"` in the IDL: a single key signs, a multisig is seated unsigned
+  /// in the same position and its member signers follow. The flag beside the key chooses.
+  @Test
+  void transferSeatsTheAuthorityAsTheFlagSays() {
+    final var source = PublicKey.fromBase58Encoded("3ntfH5pyhTGePb2cv2gqhyBmZHVW3EggCnbq1ND7YmgX");
+    final var destination = PublicKey.fromBase58Encoded("2NYZ8sqfCnH5gWwvb3E8eYv9DeMkaHQE9EZVjNBZAVYJ");
+    final var authority = PublicKey.fromBase58Encoded("4Nd1mBQtrMJVYVfKf2PJy9NZUZdTAsp7D4xWLs4gDB4T");
+
+    final var signing = TokenProgram.transferKeys(source, destination, authority, true);
+    assertEquals(AccountMeta.createReadOnlySigner(authority), signing.get(2));
+
+    final var multisig = TokenProgram.transferKeys(source, destination, authority, false);
+    assertEquals(AccountMeta.createRead(authority), multisig.get(2));
+    assertEquals(signing.subList(0, 2), multisig.subList(0, 2));
+    assertEquals(3, multisig.size());
+  }
+
   @Test
   void initializeMint() {
     final var mint = PublicKey.fromBase58Encoded("3ntfH5pyhTGePb2cv2gqhyBmZHVW3EggCnbq1ND7YmgX");

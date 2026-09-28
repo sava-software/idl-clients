@@ -9,7 +9,7 @@
   "channels": {
     "vcs": {
       "origin": "https://raw.githubusercontent.com/solana-foundation/solana-attestation-service/refs/heads/master/idl/solana_attestation_service.json",
-      "hash": "eb2af32873d03611be9aca8265595a816329ab1a9c1585d3c1812ed71710135f",
+      "hash": "d773f12b01a204bae3cb5762251995a4720f3318a0e4e4d371e9bd766dbdec02",
       "matchesDeployed": true,
       "verbatim": "idl.json"
     }

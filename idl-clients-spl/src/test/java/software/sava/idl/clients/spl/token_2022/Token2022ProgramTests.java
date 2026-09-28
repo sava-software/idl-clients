@@ -144,6 +144,7 @@ final class Token2022ProgramTests {
         solAccounts.invokedToken2022Program(),
         mintAccount,
         mintAuthority,
+        true,
         newTransferHookProgramId
     );
 
@@ -172,6 +173,7 @@ final class Token2022ProgramTests {
         solAccounts.invokedToken2022Program(),
         mintAccount,
         mintAuthority,
+        true,
         newMetadataAddress
     );
 
@@ -367,7 +369,7 @@ final class Token2022ProgramTests {
   void transferMatchesUpstreamPacking() {
     final var expected = vector().u8(3).u64LE(1).done();
 
-    final var ix = Token2022Program.transfer(INVOKED_TOKEN_2022, TOKEN_ACCOUNT, DESTINATION, OWNER, 1L);
+    final var ix = Token2022Program.transfer(INVOKED_TOKEN_2022, TOKEN_ACCOUNT, DESTINATION, OWNER, true, 1L);
 
     assertArrayEquals(expected, ix.data());
     assertEquals(List.of(
@@ -379,21 +381,26 @@ final class Token2022ProgramTests {
 
   /// Oracle: `transfer` in `interface/src/instruction.rs`. Its authority meta is
   /// `AccountMeta::new_readonly(owner, signer_pubkeys.is_empty())`, so a multisig owner is a
-  /// read-only **non**-signer followed by the M signers. The generated key helper always marks the
-  /// owner a signer and appends nothing, so that list is the caller's to build.
+  /// read-only **non**-signer followed by the M signers. The IDL declares the owner
+  /// `isSigner: "either"`, so the key helper takes the choice as `authorityIsSigner` and seats the
+  /// owner in the same position either way; the M signers are not declared, so appending them is
+  /// still the caller's work.
   @Test
-  void aMultisigOwnerAccountListIsTheCallersToBuild() {
+  void aMultisigOwnerIsSeatedUnsignedAndItsSignersAreTheCallersToAppend() {
     final var expected = vector().u8(3).u64LE(1).done();
 
     assertEquals(
-        AccountMeta.createReadOnlySigner(MULTISIG),
-        Token2022Program.transferKeys(TOKEN_ACCOUNT, DESTINATION, MULTISIG).getLast()
+        AccountMeta.createReadOnlySigner(OWNER),
+        Token2022Program.transferKeys(TOKEN_ACCOUNT, DESTINATION, OWNER, true).getLast()
     );
+    final var declared = Token2022Program.transferKeys(TOKEN_ACCOUNT, DESTINATION, MULTISIG, false);
+    assertEquals(List.of(
+        AccountMeta.createWrite(TOKEN_ACCOUNT),
+        AccountMeta.createWrite(DESTINATION),
+        AccountMeta.createRead(MULTISIG)
+    ), declared);
 
-    final var keys = new ArrayList<AccountMeta>();
-    keys.add(AccountMeta.createWrite(TOKEN_ACCOUNT));
-    keys.add(AccountMeta.createWrite(DESTINATION));
-    keys.add(AccountMeta.createRead(MULTISIG));
+    final var keys = new ArrayList<>(declared);
     MULTISIG_SIGNERS.forEach(signer -> keys.add(AccountMeta.createReadOnlySigner(signer)));
 
     final var ix = Token2022Program.transfer(INVOKED_TOKEN_2022, keys, 1L);
@@ -407,7 +414,7 @@ final class Token2022ProgramTests {
   void approveMatchesUpstreamPacking() {
     final var expected = vector().u8(4).u64LE(1).done();
 
-    final var ix = Token2022Program.approve(INVOKED_TOKEN_2022, TOKEN_ACCOUNT, DELEGATE, OWNER, 1L);
+    final var ix = Token2022Program.approve(INVOKED_TOKEN_2022, TOKEN_ACCOUNT, DELEGATE, OWNER, true, 1L);
 
     assertArrayEquals(expected, ix.data());
     assertEquals(List.of(
@@ -422,7 +429,7 @@ final class Token2022ProgramTests {
   void revokeMatchesUpstreamPacking() {
     final var expected = vector().u8(5).done();
 
-    final var ix = Token2022Program.revoke(INVOKED_TOKEN_2022, TOKEN_ACCOUNT, OWNER);
+    final var ix = Token2022Program.revoke(INVOKED_TOKEN_2022, TOKEN_ACCOUNT, OWNER, true);
 
     assertArrayEquals(expected, ix.data());
     assertEquals(List.of(
@@ -438,7 +445,7 @@ final class Token2022ProgramTests {
   void setAuthorityMatchesUpstreamPacking() {
     final var withNewAuthority = vector().u8(6).u8(1).u8(1).repeat(4, 32).done();
     final var ix = Token2022Program.setAuthority(
-        INVOKED_TOKEN_2022, TOKEN_ACCOUNT, OWNER, AuthorityType.freezeAccount, filledKey(4)
+        INVOKED_TOKEN_2022, TOKEN_ACCOUNT, OWNER, true, AuthorityType.freezeAccount, filledKey(4)
     );
     assertArrayEquals(withNewAuthority, ix.data());
     assertEquals(List.of(
@@ -448,7 +455,7 @@ final class Token2022ProgramTests {
 
     final var cleared = vector().u8(6).u8(1).u8(0).done();
     assertArrayEquals(cleared, Token2022Program.setAuthority(
-        INVOKED_TOKEN_2022, TOKEN_ACCOUNT, OWNER, AuthorityType.freezeAccount, null
+        INVOKED_TOKEN_2022, TOKEN_ACCOUNT, OWNER, true, AuthorityType.freezeAccount, null
     ).data());
   }
 
@@ -457,7 +464,7 @@ final class Token2022ProgramTests {
   void mintToMatchesUpstreamPacking() {
     final var expected = vector().u8(7).u64LE(1).done();
 
-    final var ix = Token2022Program.mintTo(INVOKED_TOKEN_2022, MINT, TOKEN_ACCOUNT, OWNER, 1L);
+    final var ix = Token2022Program.mintTo(INVOKED_TOKEN_2022, MINT, TOKEN_ACCOUNT, OWNER, true, 1L);
 
     assertArrayEquals(expected, ix.data());
     assertEquals(List.of(
@@ -472,7 +479,7 @@ final class Token2022ProgramTests {
   void burnMatchesUpstreamPacking() {
     final var expected = vector().u8(8).u64LE(1).done();
 
-    final var ix = Token2022Program.burn(INVOKED_TOKEN_2022, TOKEN_ACCOUNT, MINT, OWNER, 1L);
+    final var ix = Token2022Program.burn(INVOKED_TOKEN_2022, TOKEN_ACCOUNT, MINT, OWNER, true, 1L);
 
     assertArrayEquals(expected, ix.data());
     assertEquals(List.of(
@@ -487,7 +494,7 @@ final class Token2022ProgramTests {
   void closeAccountMatchesUpstreamPacking() {
     final var expected = vector().u8(9).done();
 
-    final var ix = Token2022Program.closeAccount(INVOKED_TOKEN_2022, TOKEN_ACCOUNT, DESTINATION, OWNER);
+    final var ix = Token2022Program.closeAccount(INVOKED_TOKEN_2022, TOKEN_ACCOUNT, DESTINATION, OWNER, true);
 
     assertArrayEquals(expected, ix.data());
     assertEquals(List.of(
@@ -502,7 +509,7 @@ final class Token2022ProgramTests {
   void freezeAccountMatchesUpstreamPacking() {
     final var expected = vector().u8(10).done();
 
-    final var ix = Token2022Program.freezeAccount(INVOKED_TOKEN_2022, TOKEN_ACCOUNT, MINT, OWNER);
+    final var ix = Token2022Program.freezeAccount(INVOKED_TOKEN_2022, TOKEN_ACCOUNT, MINT, OWNER, true);
 
     assertArrayEquals(expected, ix.data());
     assertEquals(List.of(
@@ -517,7 +524,7 @@ final class Token2022ProgramTests {
   void thawAccountMatchesUpstreamPacking() {
     final var expected = vector().u8(11).done();
 
-    final var ix = Token2022Program.thawAccount(INVOKED_TOKEN_2022, TOKEN_ACCOUNT, MINT, OWNER);
+    final var ix = Token2022Program.thawAccount(INVOKED_TOKEN_2022, TOKEN_ACCOUNT, MINT, OWNER, true);
 
     assertArrayEquals(expected, ix.data());
     assertEquals(List.of(
@@ -533,7 +540,7 @@ final class Token2022ProgramTests {
     final var expected = vector().u8(12).u64LE(1).u8(2).done();
 
     final var ix = Token2022Program.transferChecked(
-        INVOKED_TOKEN_2022, TOKEN_ACCOUNT, MINT, DESTINATION, OWNER, 1L, 2
+        INVOKED_TOKEN_2022, TOKEN_ACCOUNT, MINT, DESTINATION, OWNER, true, 1L, 2
     );
 
     assertArrayEquals(expected, ix.data());
@@ -551,7 +558,7 @@ final class Token2022ProgramTests {
     final var expected = vector().u8(13).u64LE(1).u8(2).done();
 
     final var ix = Token2022Program.approveChecked(
-        INVOKED_TOKEN_2022, TOKEN_ACCOUNT, MINT, DELEGATE, OWNER, 1L, 2
+        INVOKED_TOKEN_2022, TOKEN_ACCOUNT, MINT, DELEGATE, OWNER, true, 1L, 2
     );
 
     assertArrayEquals(expected, ix.data());
@@ -568,7 +575,7 @@ final class Token2022ProgramTests {
   void mintToCheckedMatchesUpstreamPacking() {
     final var expected = vector().u8(14).u64LE(1).u8(2).done();
 
-    final var ix = Token2022Program.mintToChecked(INVOKED_TOKEN_2022, MINT, TOKEN_ACCOUNT, OWNER, 1L, 2);
+    final var ix = Token2022Program.mintToChecked(INVOKED_TOKEN_2022, MINT, TOKEN_ACCOUNT, OWNER, true, 1L, 2);
 
     assertArrayEquals(expected, ix.data());
     assertEquals(List.of(
@@ -583,7 +590,7 @@ final class Token2022ProgramTests {
   void burnCheckedMatchesUpstreamPacking() {
     final var expected = vector().u8(15).u64LE(1).u8(2).done();
 
-    final var ix = Token2022Program.burnChecked(INVOKED_TOKEN_2022, TOKEN_ACCOUNT, MINT, OWNER, 1L, 2);
+    final var ix = Token2022Program.burnChecked(INVOKED_TOKEN_2022, TOKEN_ACCOUNT, MINT, OWNER, true, 1L, 2);
 
     assertArrayEquals(expected, ix.data());
     assertEquals(List.of(
@@ -737,6 +744,7 @@ final class Token2022ProgramTests {
         TOKEN_ACCOUNT,
         PAYER,
         OWNER,
+        true,
         new ExtensionType[]{ExtensionType.transferFeeConfig, ExtensionType.transferFeeAmount}
     );
 
@@ -783,7 +791,7 @@ final class Token2022ProgramTests {
   void unwrapLamportsMatchesUpstreamPacking() {
     final var wholeBalance = vector().u8(45).u8(0).done();
     final var wholeBalanceIx = Token2022Program.unwrapLamports(
-        INVOKED_TOKEN_2022, TOKEN_ACCOUNT, DESTINATION, OWNER, OptionalLong.empty()
+        INVOKED_TOKEN_2022, TOKEN_ACCOUNT, DESTINATION, OWNER, true, OptionalLong.empty()
     );
     assertArrayEquals(wholeBalance, wholeBalanceIx.data());
     assertEquals(List.of(
@@ -794,7 +802,7 @@ final class Token2022ProgramTests {
 
     final var oneLamport = vector().u8(45).u8(1).u64LE(1).done();
     assertArrayEquals(oneLamport, Token2022Program.unwrapLamports(
-        INVOKED_TOKEN_2022, TOKEN_ACCOUNT, DESTINATION, OWNER, OptionalLong.of(1L)
+        INVOKED_TOKEN_2022, TOKEN_ACCOUNT, DESTINATION, OWNER, true, OptionalLong.of(1L)
     ).data());
   }
 
@@ -830,7 +838,7 @@ final class Token2022ProgramTests {
     final var expected = vector().u8(26).u8(1).u64LE(24).u8(24).u64LE(23).done();
 
     final var ix = Token2022Program.transferCheckedWithFee(
-        INVOKED_TOKEN_2022, TOKEN_ACCOUNT, MINT, DESTINATION, OWNER, 24L, 24, 23L
+        INVOKED_TOKEN_2022, TOKEN_ACCOUNT, MINT, DESTINATION, OWNER, true, 24L, 24, 23L
     );
 
     assertArrayEquals(expected, ix.data());
@@ -849,7 +857,7 @@ final class Token2022ProgramTests {
     final var expected = vector().u8(26).u8(2).done();
 
     final var ix = Token2022Program.withdrawWithheldTokensFromMint(
-        INVOKED_TOKEN_2022, MINT, FEE_RECEIVER, OWNER
+        INVOKED_TOKEN_2022, MINT, FEE_RECEIVER, OWNER, true
     );
 
     assertArrayEquals(expected, ix.data());
@@ -868,7 +876,7 @@ final class Token2022ProgramTests {
     final var expected = vector().u8(26).u8(3).u8(255).done();
 
     final var ix = Token2022Program.withdrawWithheldTokensFromAccounts(
-        INVOKED_TOKEN_2022, MINT, FEE_RECEIVER, OWNER, 255
+        INVOKED_TOKEN_2022, MINT, FEE_RECEIVER, OWNER, true, 255
     );
 
     assertArrayEquals(expected, ix.data());
@@ -896,7 +904,7 @@ final class Token2022ProgramTests {
   void setTransferFeeMatchesUpstreamPacking() {
     final var expected = vector().u8(26).u8(5).u16LE(0xFFFF).u64LE(-1L).done();
 
-    final var ix = Token2022Program.setTransferFee(INVOKED_TOKEN_2022, MINT, OWNER, 0xFFFF, -1L);
+    final var ix = Token2022Program.setTransferFee(INVOKED_TOKEN_2022, MINT, OWNER, true, 0xFFFF, -1L);
 
     assertArrayEquals(expected, ix.data());
     assertEquals(List.of(
@@ -947,7 +955,7 @@ final class Token2022ProgramTests {
 
     final var ix = Token2022Program.confidentialTransfer(
         INVOKED_TOKEN_2022,
-        JS_1, JS_2, JS_3, JS_4, JS_5, JS_6, JS_7, JS_8,
+        JS_1, JS_2, JS_3, JS_4, JS_5, JS_6, JS_7, JS_8, true,
         decryptableBalance(0x11), encryptedBalance(0x22), encryptedBalance(0x33),
         5, 6, 7
     );
@@ -968,7 +976,7 @@ final class Token2022ProgramTests {
     // than substituting the program id, and emits the same data bytes.
     final var omitted = Token2022Program.confidentialTransfer(
         INVOKED_TOKEN_2022,
-        JS_1, JS_2, JS_3, null, null, null, null, JS_8,
+        JS_1, JS_2, JS_3, null, null, null, null, JS_8, true,
         decryptableBalance(0x11), encryptedBalance(0x22), encryptedBalance(0x33),
         5, 6, 7
     );
@@ -996,7 +1004,7 @@ final class Token2022ProgramTests {
 
     final var ix = Token2022Program.confidentialWithdraw(
         INVOKED_TOKEN_2022,
-        JS_1, JS_2, JS_3, JS_4, JS_5, JS_6,
+        JS_1, JS_2, JS_3, JS_4, JS_5, JS_6, true,
         0x0102030405060708L, 9, decryptableBalance(0x11), 5, 7
     );
 
@@ -1012,7 +1020,7 @@ final class Token2022ProgramTests {
 
     final var omitted = Token2022Program.confidentialWithdraw(
         INVOKED_TOKEN_2022,
-        JS_1, JS_2, null, null, null, JS_6,
+        JS_1, JS_2, null, null, null, JS_6, true,
         0x0102030405060708L, 9, decryptableBalance(0x11), 5, 7
     );
     assertArrayEquals(expected, omitted.data());
@@ -1074,7 +1082,7 @@ final class Token2022ProgramTests {
 
     final var ix = Token2022Program.confidentialMint(
         INVOKED_TOKEN_2022,
-        JS_1, JS_2, JS_3, JS_4, JS_5, JS_6, JS_7,
+        JS_1, JS_2, JS_3, JS_4, JS_5, JS_6, JS_7, true,
         decryptableBalance(0x11), encryptedBalance(0x22), encryptedBalance(0x33),
         5, 6, 7
     );
@@ -1092,7 +1100,7 @@ final class Token2022ProgramTests {
 
     final var omitted = Token2022Program.confidentialMint(
         INVOKED_TOKEN_2022,
-        JS_1, JS_2, null, null, null, null, JS_7,
+        JS_1, JS_2, null, null, null, null, JS_7, true,
         decryptableBalance(0x11), encryptedBalance(0x22), encryptedBalance(0x33),
         5, 6, 7
     );
@@ -1114,7 +1122,7 @@ final class Token2022ProgramTests {
     assertEquals(39, expected.length);
 
     final var ix = Token2022Program.withdrawWithheldTokensFromMintForConfidentialTransferFee(
-        INVOKED_TOKEN_2022, JS_1, JS_2, JS_3, JS_4, 5, decryptableBalance(0x11)
+        INVOKED_TOKEN_2022, JS_1, JS_2, JS_3, JS_4, true, 5, decryptableBalance(0x11)
     );
 
     assertArrayEquals(expected, ix.data());
@@ -1126,13 +1134,18 @@ final class Token2022ProgramTests {
     ), ix.accounts());
 
     // The JS builder demotes the authority to a read-only non-signer and appends the multisig
-    // signers when it is handed a plain address rather than a signer. The generated key helper has
-    // no such spelling, so that list is hand-built.
-    final var keys = new ArrayList<AccountMeta>();
-    keys.add(AccountMeta.createWrite(JS_1));
-    keys.add(AccountMeta.createWrite(JS_2));
-    keys.add(AccountMeta.createRead(JS_3));
-    keys.add(AccountMeta.createRead(JS_4));
+    // signers when it is handed a plain address rather than a signer. The generated key helper
+    // spells the demotion as `authorityIsSigner = false`; the signers it does not declare, so
+    // they are appended by hand.
+    final var keys = new ArrayList<>(
+        Token2022Program.withdrawWithheldTokensFromMintForConfidentialTransferFeeKeys(JS_1, JS_2, JS_3, JS_4, false)
+    );
+    assertEquals(List.of(
+        AccountMeta.createWrite(JS_1),
+        AccountMeta.createWrite(JS_2),
+        AccountMeta.createRead(JS_3),
+        AccountMeta.createRead(JS_4)
+    ), keys);
     keys.add(AccountMeta.createReadOnlySigner(JS_5));
     keys.add(AccountMeta.createReadOnlySigner(JS_6));
 
@@ -1316,7 +1329,7 @@ final class Token2022ProgramTests {
 
     // the constant is exactly the prefix its builder writes, and a sibling's is not
     final byte[] data = Token2022Program.transferCheckedWithFee(
-        INVOKED_TOKEN_2022, TOKEN_ACCOUNT, MINT, DESTINATION, OWNER, 24L, 24, 23L
+        INVOKED_TOKEN_2022, TOKEN_ACCOUNT, MINT, DESTINATION, OWNER, true, 24L, 24, 23L
     ).data();
     assertTrue(Token2022Program.TRANSFER_CHECKED_WITH_FEE_DISCRIMINATOR.equals(data, 0));
     assertFalse(Token2022Program.INITIALIZE_TRANSFER_FEE_CONFIG_DISCRIMINATOR.equals(data, 0));

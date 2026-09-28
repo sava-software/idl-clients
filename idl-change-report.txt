@@ -7,13 +7,6 @@ nobody took. The standing disagreements live beside this file, at its name with 
 before the extension. Ordered by program and channel, and carrying no timestamp, so
 consecutive runs are worth diffing against each other.
 
-== Movement (2) ==
+== Movement (1) ==
 
-Kamino Scope: the anchor IDL at AWUuZ6o4ZJX2fDqjUqDaA1pfHenZ6XEbmuTamMgM911E moved since the last generation, 4cdf6112b87c022bb63a1f60db23e823955f5990219bed2dbf82cc52dbbe1bcc -> 45b3cf33093c78600961d10384d36cf0fbca864e18c08a39ae9dbf7273b65aa7: instructions +1 ~2, types +1 ~4, errors +6
-  instructions added (1): resume_suspended_price_v2
-  instructions changed (2): resume_chainlinkx_price, resume_suspended_price
-  types added (1): Token2022MultiplierMappingData
-  types changed (4): every one type changed
-  errors added (6): AutoApprovalBpsOutOfRange, CanaryFeedExpTooLarge, CanaryPriceCPIError, InvalidApprovedMultiplier, RefPriceSelfReference, TwapSourceSelfReference
-
-Kamino Scope: the program was redeployed at slot 451262414, up from 443102298; the stored program image changed: 10485715 payload bytes, was 10485715 — review required
+Solana Attestation Service: the vcs IDL at https://raw.githubusercontent.com/solana-foundation/solana-attestation-service/refs/heads/master/idl/solana_attestation_service.json moved since the last generation, eb2af32873d03611be9aca8265595a816329ab1a9c1585d3c1812ed71710135f -> d773f12b01a204bae3cb5762251995a4720f3318a0e4e4d371e9bd766dbdec02: version 0.1.0 -> 2.0.0

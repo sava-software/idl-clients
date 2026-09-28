@@ -44,6 +44,8 @@ final class StakePoolProgramEquivalenceTests {
   private static final PublicKey CUSTOM_DEPOSIT_AUTHORITY = key(15);
   private static final PublicKey WITHDRAW_AUTHORITY = StakePoolProgram
       .findStakePoolWithdrawAuthority(STAKE_POOL, PROGRAM).publicKey();
+  private static final PublicKey DEFAULT_DEPOSIT_AUTHORITY = StakePoolProgram
+      .findStakePoolDepositAuthority(STAKE_POOL, PROGRAM).publicKey();
 
   private static PublicKey key(final int seed) {
     final byte[] publicKey = new byte[PublicKey.PUBLIC_KEY_LENGTH];
@@ -193,41 +195,69 @@ final class StakePoolProgramEquivalenceTests {
     );
   }
 
-  /// The custom deposit authority case: the hand-written client marks the authority a signer
-  /// exactly when it is not the derived default; the generated client, whose IDL declares the
-  /// account `isSigner: "either"`, always requires the signature. For a pool with the default
-  /// (permissionless) deposit authority the hand-written form is the correct one, reachable
-  /// through the generated client's `List<AccountMeta>` overload.
+  /// The IDL declares the deposit authority `isSigner: "either"`, so the generated client takes
+  /// `depositAuthorityIsSigner` from the caller. The hand-written client decides it itself: a
+  /// signer exactly when the authority is not the pool's derived `[pool, "deposit"]` address, a
+  /// PDA the program signs for and a transaction never can. Both pool shapes are compared, and
+  /// the account at index 2 is pinned for each.
   @Test
   void depositStake() {
-    assertEquivalent(
-        StakePoolProgram.depositStake(
-            SOLANA_ACCOUNTS, INVOKED, STAKE_POOL, VALIDATOR_LIST, CUSTOM_DEPOSIT_AUTHORITY,
-            EPHEMERAL_STAKE, VALIDATOR_STAKE, RESERVE_STAKE, USER_POOL_ACCOUNT,
-            MANAGER_FEE_ACCOUNT, REFERRAL_POOL_ACCOUNT, POOL_MINT, TOKEN_PROGRAM
-        ),
-        software.sava.idl.clients.spl.stakepool.gen.StakePoolProgram.depositStake(
-            INVOKED, SOLANA_ACCOUNTS, STAKE_POOL, VALIDATOR_LIST, CUSTOM_DEPOSIT_AUTHORITY,
-            WITHDRAW_AUTHORITY, EPHEMERAL_STAKE, VALIDATOR_STAKE, RESERVE_STAKE, USER_POOL_ACCOUNT,
-            MANAGER_FEE_ACCOUNT, REFERRAL_POOL_ACCOUNT, POOL_MINT, TOKEN_PROGRAM
-        )
+    assertEquals(
+        AccountMeta.createReadOnlySigner(CUSTOM_DEPOSIT_AUTHORITY),
+        equivalentDepositStake(CUSTOM_DEPOSIT_AUTHORITY, true).accounts().get(2)
+    );
+    assertEquals(
+        AccountMeta.createRead(DEFAULT_DEPOSIT_AUTHORITY),
+        equivalentDepositStake(DEFAULT_DEPOSIT_AUTHORITY, false).accounts().get(2)
     );
   }
 
   @Test
   void depositStakeWithSlippage() {
+    assertEquals(
+        AccountMeta.createReadOnlySigner(CUSTOM_DEPOSIT_AUTHORITY),
+        equivalentDepositStakeWithSlippage(CUSTOM_DEPOSIT_AUTHORITY, true).accounts().get(2)
+    );
+    assertEquals(
+        AccountMeta.createRead(DEFAULT_DEPOSIT_AUTHORITY),
+        equivalentDepositStakeWithSlippage(DEFAULT_DEPOSIT_AUTHORITY, false).accounts().get(2)
+    );
+  }
+
+  private static Instruction equivalentDepositStake(final PublicKey depositAuthority,
+                                                    final boolean depositAuthorityIsSigner) {
+    final var generated = software.sava.idl.clients.spl.stakepool.gen.StakePoolProgram.depositStake(
+        INVOKED, SOLANA_ACCOUNTS, STAKE_POOL, VALIDATOR_LIST, depositAuthority, depositAuthorityIsSigner,
+        WITHDRAW_AUTHORITY, EPHEMERAL_STAKE, VALIDATOR_STAKE, RESERVE_STAKE, USER_POOL_ACCOUNT,
+        MANAGER_FEE_ACCOUNT, REFERRAL_POOL_ACCOUNT, POOL_MINT, TOKEN_PROGRAM
+    );
+    assertEquivalent(
+        StakePoolProgram.depositStake(
+            SOLANA_ACCOUNTS, INVOKED, STAKE_POOL, VALIDATOR_LIST, depositAuthority,
+            EPHEMERAL_STAKE, VALIDATOR_STAKE, RESERVE_STAKE, USER_POOL_ACCOUNT,
+            MANAGER_FEE_ACCOUNT, REFERRAL_POOL_ACCOUNT, POOL_MINT, TOKEN_PROGRAM
+        ),
+        generated
+    );
+    return generated;
+  }
+
+  private static Instruction equivalentDepositStakeWithSlippage(final PublicKey depositAuthority,
+                                                                final boolean depositAuthorityIsSigner) {
+    final var generated = software.sava.idl.clients.spl.stakepool.gen.StakePoolProgram.depositStakeWithSlippage(
+        INVOKED, SOLANA_ACCOUNTS, STAKE_POOL, VALIDATOR_LIST, depositAuthority, depositAuthorityIsSigner,
+        WITHDRAW_AUTHORITY, EPHEMERAL_STAKE, VALIDATOR_STAKE, RESERVE_STAKE, USER_POOL_ACCOUNT,
+        MANAGER_FEE_ACCOUNT, REFERRAL_POOL_ACCOUNT, POOL_MINT, TOKEN_PROGRAM, 9_876
+    );
     assertEquivalent(
         StakePoolProgram.depositStakeWithSlippage(
-            SOLANA_ACCOUNTS, INVOKED, STAKE_POOL, VALIDATOR_LIST, CUSTOM_DEPOSIT_AUTHORITY,
+            SOLANA_ACCOUNTS, INVOKED, STAKE_POOL, VALIDATOR_LIST, depositAuthority,
             EPHEMERAL_STAKE, VALIDATOR_STAKE, RESERVE_STAKE, USER_POOL_ACCOUNT,
             MANAGER_FEE_ACCOUNT, REFERRAL_POOL_ACCOUNT, POOL_MINT, TOKEN_PROGRAM, 9_876
         ),
-        software.sava.idl.clients.spl.stakepool.gen.StakePoolProgram.depositStakeWithSlippage(
-            INVOKED, SOLANA_ACCOUNTS, STAKE_POOL, VALIDATOR_LIST, CUSTOM_DEPOSIT_AUTHORITY,
-            WITHDRAW_AUTHORITY, EPHEMERAL_STAKE, VALIDATOR_STAKE, RESERVE_STAKE, USER_POOL_ACCOUNT,
-            MANAGER_FEE_ACCOUNT, REFERRAL_POOL_ACCOUNT, POOL_MINT, TOKEN_PROGRAM, 9_876
-        )
+        generated
     );
+    return generated;
   }
 
   @Test

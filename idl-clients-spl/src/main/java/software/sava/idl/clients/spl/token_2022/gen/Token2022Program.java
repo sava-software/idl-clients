@@ -437,13 +437,15 @@ public final class Token2022Program {
   /// @param sourceKey The source account.
   /// @param destinationKey The destination account.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> transferKeys(final PublicKey sourceKey,
                                                final PublicKey destinationKey,
-                                               final PublicKey authorityKey) {
+                                               final PublicKey authorityKey,
+                                               final boolean authorityIsSigner) {
     return List.of(
       createWrite(sourceKey),
       createWrite(destinationKey),
-      createReadOnlySigner(authorityKey)
+      authorityIsSigner ? createReadOnlySigner(authorityKey) : createRead(authorityKey)
     );
   }
 
@@ -454,16 +456,19 @@ public final class Token2022Program {
   /// @param sourceKey The source account.
   /// @param destinationKey The destination account.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param amount: u64 The amount of tokens to transfer.
   public static Instruction transfer(final AccountMeta invokedToken2022ProgramMeta,
                                      final PublicKey sourceKey,
                                      final PublicKey destinationKey,
                                      final PublicKey authorityKey,
+                                     final boolean authorityIsSigner,
                                      final long amount) {
     final var keys = transferKeys(
       sourceKey,
       destinationKey,
-      authorityKey
+      authorityKey,
+      authorityIsSigner
     );
     return transfer(invokedToken2022ProgramMeta, keys, amount);
   }
@@ -535,13 +540,15 @@ public final class Token2022Program {
   /// @param sourceKey The source account.
   /// @param delegateKey The delegate.
   /// @param ownerKey The source account owner or its multisignature account.
+  /// @param ownerIsSigner whether the `owner` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> approveKeys(final PublicKey sourceKey,
                                               final PublicKey delegateKey,
-                                              final PublicKey ownerKey) {
+                                              final PublicKey ownerKey,
+                                              final boolean ownerIsSigner) {
     return List.of(
       createWrite(sourceKey),
       createRead(delegateKey),
-      createReadOnlySigner(ownerKey)
+      ownerIsSigner ? createReadOnlySigner(ownerKey) : createRead(ownerKey)
     );
   }
 
@@ -551,16 +558,19 @@ public final class Token2022Program {
   /// @param sourceKey The source account.
   /// @param delegateKey The delegate.
   /// @param ownerKey The source account owner or its multisignature account.
+  /// @param ownerIsSigner whether the `owner` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param amount: u64 The amount of tokens the delegate is approved for.
   public static Instruction approve(final AccountMeta invokedToken2022ProgramMeta,
                                     final PublicKey sourceKey,
                                     final PublicKey delegateKey,
                                     final PublicKey ownerKey,
+                                    final boolean ownerIsSigner,
                                     final long amount) {
     final var keys = approveKeys(
       sourceKey,
       delegateKey,
-      ownerKey
+      ownerKey,
+      ownerIsSigner
     );
     return approve(invokedToken2022ProgramMeta, keys, amount);
   }
@@ -628,11 +638,13 @@ public final class Token2022Program {
   ///
   /// @param sourceKey The source account.
   /// @param ownerKey The source account owner or its multisignature.
+  /// @param ownerIsSigner whether the `owner` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> revokeKeys(final PublicKey sourceKey,
-                                             final PublicKey ownerKey) {
+                                             final PublicKey ownerKey,
+                                             final boolean ownerIsSigner) {
     return List.of(
       createWrite(sourceKey),
-      createReadOnlySigner(ownerKey)
+      ownerIsSigner ? createReadOnlySigner(ownerKey) : createRead(ownerKey)
     );
   }
 
@@ -640,12 +652,15 @@ public final class Token2022Program {
   ///
   /// @param sourceKey The source account.
   /// @param ownerKey The source account owner or its multisignature.
+  /// @param ownerIsSigner whether the `owner` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static Instruction revoke(final AccountMeta invokedToken2022ProgramMeta,
                                    final PublicKey sourceKey,
-                                   final PublicKey ownerKey) {
+                                   final PublicKey ownerKey,
+                                   final boolean ownerIsSigner) {
     final var keys = revokeKeys(
       sourceKey,
-      ownerKey
+      ownerKey,
+      ownerIsSigner
     );
     return revoke(invokedToken2022ProgramMeta, keys);
   }
@@ -700,11 +715,13 @@ public final class Token2022Program {
   ///
   /// @param ownedKey The mint or account to change the authority of.
   /// @param ownerKey The current authority or the multisignature account of the mint or account to update.
+  /// @param ownerIsSigner whether the `owner` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> setAuthorityKeys(final PublicKey ownedKey,
-                                                   final PublicKey ownerKey) {
+                                                   final PublicKey ownerKey,
+                                                   final boolean ownerIsSigner) {
     return List.of(
       createWrite(ownedKey),
-      createReadOnlySigner(ownerKey)
+      ownerIsSigner ? createReadOnlySigner(ownerKey) : createRead(ownerKey)
     );
   }
 
@@ -712,16 +729,19 @@ public final class Token2022Program {
   ///
   /// @param ownedKey The mint or account to change the authority of.
   /// @param ownerKey The current authority or the multisignature account of the mint or account to update.
+  /// @param ownerIsSigner whether the `owner` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param authorityType The type of authority to update.
   /// @param newAuthority The new authority
   public static Instruction setAuthority(final AccountMeta invokedToken2022ProgramMeta,
                                          final PublicKey ownedKey,
                                          final PublicKey ownerKey,
+                                         final boolean ownerIsSigner,
                                          final AuthorityType authorityType,
                                          final PublicKey newAuthority) {
     final var keys = setAuthorityKeys(
       ownedKey,
-      ownerKey
+      ownerKey,
+      ownerIsSigner
     );
     return setAuthority(
       invokedToken2022ProgramMeta,
@@ -809,13 +829,15 @@ public final class Token2022Program {
   /// @param mintKey The mint account.
   /// @param tokenKey The account to mint tokens to.
   /// @param mintAuthorityKey The mint's minting authority or its multisignature account.
+  /// @param mintAuthorityIsSigner whether the `mintAuthority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> mintToKeys(final PublicKey mintKey,
                                              final PublicKey tokenKey,
-                                             final PublicKey mintAuthorityKey) {
+                                             final PublicKey mintAuthorityKey,
+                                             final boolean mintAuthorityIsSigner) {
     return List.of(
       createWrite(mintKey),
       createWrite(tokenKey),
-      createReadOnlySigner(mintAuthorityKey)
+      mintAuthorityIsSigner ? createReadOnlySigner(mintAuthorityKey) : createRead(mintAuthorityKey)
     );
   }
 
@@ -824,16 +846,19 @@ public final class Token2022Program {
   /// @param mintKey The mint account.
   /// @param tokenKey The account to mint tokens to.
   /// @param mintAuthorityKey The mint's minting authority or its multisignature account.
+  /// @param mintAuthorityIsSigner whether the `mintAuthority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param amount: u64 The amount of new tokens to mint.
   public static Instruction mintTo(final AccountMeta invokedToken2022ProgramMeta,
                                    final PublicKey mintKey,
                                    final PublicKey tokenKey,
                                    final PublicKey mintAuthorityKey,
+                                   final boolean mintAuthorityIsSigner,
                                    final long amount) {
     final var keys = mintToKeys(
       mintKey,
       tokenKey,
-      mintAuthorityKey
+      mintAuthorityKey,
+      mintAuthorityIsSigner
     );
     return mintTo(invokedToken2022ProgramMeta, keys, amount);
   }
@@ -901,13 +926,15 @@ public final class Token2022Program {
   /// @param accountKey The account to burn from.
   /// @param mintKey The token mint.
   /// @param authorityKey The account's owner/delegate or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> burnKeys(final PublicKey accountKey,
                                            final PublicKey mintKey,
-                                           final PublicKey authorityKey) {
+                                           final PublicKey authorityKey,
+                                           final boolean authorityIsSigner) {
     return List.of(
       createWrite(accountKey),
       createWrite(mintKey),
-      createReadOnlySigner(authorityKey)
+      authorityIsSigner ? createReadOnlySigner(authorityKey) : createRead(authorityKey)
     );
   }
 
@@ -917,16 +944,19 @@ public final class Token2022Program {
   /// @param accountKey The account to burn from.
   /// @param mintKey The token mint.
   /// @param authorityKey The account's owner/delegate or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param amount: u64
   public static Instruction burn(final AccountMeta invokedToken2022ProgramMeta,
                                  final PublicKey accountKey,
                                  final PublicKey mintKey,
                                  final PublicKey authorityKey,
+                                 final boolean authorityIsSigner,
                                  final long amount) {
     final var keys = burnKeys(
       accountKey,
       mintKey,
-      authorityKey
+      authorityKey,
+      authorityIsSigner
     );
     return burn(invokedToken2022ProgramMeta, keys, amount);
   }
@@ -996,13 +1026,15 @@ public final class Token2022Program {
   /// @param accountKey The account to close.
   /// @param destinationKey The destination account.
   /// @param ownerKey The account's owner or its multisignature account.
+  /// @param ownerIsSigner whether the `owner` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> closeAccountKeys(final PublicKey accountKey,
                                                    final PublicKey destinationKey,
-                                                   final PublicKey ownerKey) {
+                                                   final PublicKey ownerKey,
+                                                   final boolean ownerIsSigner) {
     return List.of(
       createWrite(accountKey),
       createWrite(destinationKey),
-      createReadOnlySigner(ownerKey)
+      ownerIsSigner ? createReadOnlySigner(ownerKey) : createRead(ownerKey)
     );
   }
 
@@ -1012,14 +1044,17 @@ public final class Token2022Program {
   /// @param accountKey The account to close.
   /// @param destinationKey The destination account.
   /// @param ownerKey The account's owner or its multisignature account.
+  /// @param ownerIsSigner whether the `owner` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static Instruction closeAccount(final AccountMeta invokedToken2022ProgramMeta,
                                          final PublicKey accountKey,
                                          final PublicKey destinationKey,
-                                         final PublicKey ownerKey) {
+                                         final PublicKey ownerKey,
+                                         final boolean ownerIsSigner) {
     final var keys = closeAccountKeys(
       accountKey,
       destinationKey,
-      ownerKey
+      ownerKey,
+      ownerIsSigner
     );
     return closeAccount(invokedToken2022ProgramMeta, keys);
   }
@@ -1077,13 +1112,15 @@ public final class Token2022Program {
   /// @param accountKey The account to freeze.
   /// @param mintKey The token mint.
   /// @param ownerKey The mint freeze authority or its multisignature account.
+  /// @param ownerIsSigner whether the `owner` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> freezeAccountKeys(final PublicKey accountKey,
                                                     final PublicKey mintKey,
-                                                    final PublicKey ownerKey) {
+                                                    final PublicKey ownerKey,
+                                                    final boolean ownerIsSigner) {
     return List.of(
       createWrite(accountKey),
       createRead(mintKey),
-      createReadOnlySigner(ownerKey)
+      ownerIsSigner ? createReadOnlySigner(ownerKey) : createRead(ownerKey)
     );
   }
 
@@ -1092,14 +1129,17 @@ public final class Token2022Program {
   /// @param accountKey The account to freeze.
   /// @param mintKey The token mint.
   /// @param ownerKey The mint freeze authority or its multisignature account.
+  /// @param ownerIsSigner whether the `owner` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static Instruction freezeAccount(final AccountMeta invokedToken2022ProgramMeta,
                                           final PublicKey accountKey,
                                           final PublicKey mintKey,
-                                          final PublicKey ownerKey) {
+                                          final PublicKey ownerKey,
+                                          final boolean ownerIsSigner) {
     final var keys = freezeAccountKeys(
       accountKey,
       mintKey,
-      ownerKey
+      ownerKey,
+      ownerIsSigner
     );
     return freezeAccount(invokedToken2022ProgramMeta, keys);
   }
@@ -1155,13 +1195,15 @@ public final class Token2022Program {
   /// @param accountKey The account to thaw.
   /// @param mintKey The token mint.
   /// @param ownerKey The mint freeze authority or its multisignature account.
+  /// @param ownerIsSigner whether the `owner` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> thawAccountKeys(final PublicKey accountKey,
                                                   final PublicKey mintKey,
-                                                  final PublicKey ownerKey) {
+                                                  final PublicKey ownerKey,
+                                                  final boolean ownerIsSigner) {
     return List.of(
       createWrite(accountKey),
       createRead(mintKey),
-      createReadOnlySigner(ownerKey)
+      ownerIsSigner ? createReadOnlySigner(ownerKey) : createRead(ownerKey)
     );
   }
 
@@ -1170,14 +1212,17 @@ public final class Token2022Program {
   /// @param accountKey The account to thaw.
   /// @param mintKey The token mint.
   /// @param ownerKey The mint freeze authority or its multisignature account.
+  /// @param ownerIsSigner whether the `owner` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static Instruction thawAccount(final AccountMeta invokedToken2022ProgramMeta,
                                         final PublicKey accountKey,
                                         final PublicKey mintKey,
-                                        final PublicKey ownerKey) {
+                                        final PublicKey ownerKey,
+                                        final boolean ownerIsSigner) {
     final var keys = thawAccountKeys(
       accountKey,
       mintKey,
-      ownerKey
+      ownerKey,
+      ownerIsSigner
     );
     return thawAccount(invokedToken2022ProgramMeta, keys);
   }
@@ -1240,15 +1285,17 @@ public final class Token2022Program {
   /// @param mintKey The token mint.
   /// @param destinationKey The destination account.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> transferCheckedKeys(final PublicKey sourceKey,
                                                       final PublicKey mintKey,
                                                       final PublicKey destinationKey,
-                                                      final PublicKey authorityKey) {
+                                                      final PublicKey authorityKey,
+                                                      final boolean authorityIsSigner) {
     return List.of(
       createWrite(sourceKey),
       createRead(mintKey),
       createWrite(destinationKey),
-      createReadOnlySigner(authorityKey)
+      authorityIsSigner ? createReadOnlySigner(authorityKey) : createRead(authorityKey)
     );
   }
 
@@ -1264,6 +1311,7 @@ public final class Token2022Program {
   /// @param mintKey The token mint.
   /// @param destinationKey The destination account.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param amount: u64 The amount of tokens to transfer.
   /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public static Instruction transferChecked(final AccountMeta invokedToken2022ProgramMeta,
@@ -1271,13 +1319,15 @@ public final class Token2022Program {
                                             final PublicKey mintKey,
                                             final PublicKey destinationKey,
                                             final PublicKey authorityKey,
+                                            final boolean authorityIsSigner,
                                             final long amount,
                                             final int decimals) {
     final var keys = transferCheckedKeys(
       sourceKey,
       mintKey,
       destinationKey,
-      authorityKey
+      authorityKey,
+      authorityIsSigner
     );
     return transferChecked(
       invokedToken2022ProgramMeta,
@@ -1379,15 +1429,17 @@ public final class Token2022Program {
   /// @param mintKey The token mint.
   /// @param delegateKey The delegate.
   /// @param ownerKey The source account owner or its multisignature account.
+  /// @param ownerIsSigner whether the `owner` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> approveCheckedKeys(final PublicKey sourceKey,
                                                      final PublicKey mintKey,
                                                      final PublicKey delegateKey,
-                                                     final PublicKey ownerKey) {
+                                                     final PublicKey ownerKey,
+                                                     final boolean ownerIsSigner) {
     return List.of(
       createWrite(sourceKey),
       createRead(mintKey),
       createRead(delegateKey),
-      createReadOnlySigner(ownerKey)
+      ownerIsSigner ? createReadOnlySigner(ownerKey) : createRead(ownerKey)
     );
   }
 
@@ -1402,6 +1454,7 @@ public final class Token2022Program {
   /// @param mintKey The token mint.
   /// @param delegateKey The delegate.
   /// @param ownerKey The source account owner or its multisignature account.
+  /// @param ownerIsSigner whether the `owner` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param amount: u64 The amount of tokens the delegate is approved for.
   /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public static Instruction approveChecked(final AccountMeta invokedToken2022ProgramMeta,
@@ -1409,13 +1462,15 @@ public final class Token2022Program {
                                            final PublicKey mintKey,
                                            final PublicKey delegateKey,
                                            final PublicKey ownerKey,
+                                           final boolean ownerIsSigner,
                                            final long amount,
                                            final int decimals) {
     final var keys = approveCheckedKeys(
       sourceKey,
       mintKey,
       delegateKey,
-      ownerKey
+      ownerKey,
+      ownerIsSigner
     );
     return approveChecked(
       invokedToken2022ProgramMeta,
@@ -1513,13 +1568,15 @@ public final class Token2022Program {
   /// @param mintKey The mint.
   /// @param tokenKey The account to mint tokens to.
   /// @param mintAuthorityKey The mint's minting authority or its multisignature account.
+  /// @param mintAuthorityIsSigner whether the `mintAuthority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> mintToCheckedKeys(final PublicKey mintKey,
                                                     final PublicKey tokenKey,
-                                                    final PublicKey mintAuthorityKey) {
+                                                    final PublicKey mintAuthorityKey,
+                                                    final boolean mintAuthorityIsSigner) {
     return List.of(
       createWrite(mintKey),
       createWrite(tokenKey),
-      createReadOnlySigner(mintAuthorityKey)
+      mintAuthorityIsSigner ? createReadOnlySigner(mintAuthorityKey) : createRead(mintAuthorityKey)
     );
   }
 
@@ -1532,18 +1589,21 @@ public final class Token2022Program {
   /// @param mintKey The mint.
   /// @param tokenKey The account to mint tokens to.
   /// @param mintAuthorityKey The mint's minting authority or its multisignature account.
+  /// @param mintAuthorityIsSigner whether the `mintAuthority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param amount: u64 The amount of new tokens to mint.
   /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public static Instruction mintToChecked(final AccountMeta invokedToken2022ProgramMeta,
                                           final PublicKey mintKey,
                                           final PublicKey tokenKey,
                                           final PublicKey mintAuthorityKey,
+                                          final boolean mintAuthorityIsSigner,
                                           final long amount,
                                           final int decimals) {
     final var keys = mintToCheckedKeys(
       mintKey,
       tokenKey,
-      mintAuthorityKey
+      mintAuthorityKey,
+      mintAuthorityIsSigner
     );
     return mintToChecked(
       invokedToken2022ProgramMeta,
@@ -1640,13 +1700,15 @@ public final class Token2022Program {
   /// @param accountKey The account to burn from.
   /// @param mintKey The token mint.
   /// @param authorityKey The account's owner/delegate or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> burnCheckedKeys(final PublicKey accountKey,
                                                   final PublicKey mintKey,
-                                                  final PublicKey authorityKey) {
+                                                  final PublicKey authorityKey,
+                                                  final boolean authorityIsSigner) {
     return List.of(
       createWrite(accountKey),
       createWrite(mintKey),
-      createReadOnlySigner(authorityKey)
+      authorityIsSigner ? createReadOnlySigner(authorityKey) : createRead(authorityKey)
     );
   }
 
@@ -1660,18 +1722,21 @@ public final class Token2022Program {
   /// @param accountKey The account to burn from.
   /// @param mintKey The token mint.
   /// @param authorityKey The account's owner/delegate or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param amount: u64 The amount of tokens to burn.
   /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public static Instruction burnChecked(final AccountMeta invokedToken2022ProgramMeta,
                                         final PublicKey accountKey,
                                         final PublicKey mintKey,
                                         final PublicKey authorityKey,
+                                        final boolean authorityIsSigner,
                                         final long amount,
                                         final int decimals) {
     final var keys = burnCheckedKeys(
       accountKey,
       mintKey,
-      authorityKey
+      authorityKey,
+      authorityIsSigner
     );
     return burnChecked(
       invokedToken2022ProgramMeta,
@@ -2913,15 +2978,17 @@ public final class Token2022Program {
   /// @param mintKey The token mint. May include the `TransferFeeConfig` extension.
   /// @param destinationKey The destination account. May include the `TransferFeeAmount` extension.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> transferCheckedWithFeeKeys(final PublicKey sourceKey,
                                                              final PublicKey mintKey,
                                                              final PublicKey destinationKey,
-                                                             final PublicKey authorityKey) {
+                                                             final PublicKey authorityKey,
+                                                             final boolean authorityIsSigner) {
     return List.of(
       createWrite(sourceKey),
       createRead(mintKey),
       createWrite(destinationKey),
-      createReadOnlySigner(authorityKey)
+      authorityIsSigner ? createReadOnlySigner(authorityKey) : createRead(authorityKey)
     );
   }
 
@@ -2935,6 +3002,7 @@ public final class Token2022Program {
   /// @param mintKey The token mint. May include the `TransferFeeConfig` extension.
   /// @param destinationKey The destination account. May include the `TransferFeeAmount` extension.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param amount: u64 The amount of tokens to transfer.
   /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   /// @param fee: u64 Expected fee assessed on this transfer, calculated off-chain based
@@ -2945,6 +3013,7 @@ public final class Token2022Program {
                                                    final PublicKey mintKey,
                                                    final PublicKey destinationKey,
                                                    final PublicKey authorityKey,
+                                                   final boolean authorityIsSigner,
                                                    final long amount,
                                                    final int decimals,
                                                    final long fee) {
@@ -2952,7 +3021,8 @@ public final class Token2022Program {
       sourceKey,
       mintKey,
       destinationKey,
-      authorityKey
+      authorityKey,
+      authorityIsSigner
     );
     return transferCheckedWithFee(
       invokedToken2022ProgramMeta,
@@ -3072,13 +3142,15 @@ public final class Token2022Program {
   /// @param feeReceiverKey The fee receiver account. Must include the `TransferFeeAmount`
   ///                       extension associated with the provided mint.
   /// @param withdrawWithheldAuthorityKey The mint's `withdraw_withheld_authority` or its multisignature account.
+  /// @param withdrawWithheldAuthorityIsSigner whether the `withdrawWithheldAuthority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> withdrawWithheldTokensFromMintKeys(final PublicKey mintKey,
                                                                      final PublicKey feeReceiverKey,
-                                                                     final PublicKey withdrawWithheldAuthorityKey) {
+                                                                     final PublicKey withdrawWithheldAuthorityKey,
+                                                                     final boolean withdrawWithheldAuthorityIsSigner) {
     return List.of(
       createWrite(mintKey),
       createWrite(feeReceiverKey),
-      createReadOnlySigner(withdrawWithheldAuthorityKey)
+      withdrawWithheldAuthorityIsSigner ? createReadOnlySigner(withdrawWithheldAuthorityKey) : createRead(withdrawWithheldAuthorityKey)
     );
   }
 
@@ -3089,14 +3161,17 @@ public final class Token2022Program {
   /// @param feeReceiverKey The fee receiver account. Must include the `TransferFeeAmount`
   ///                       extension associated with the provided mint.
   /// @param withdrawWithheldAuthorityKey The mint's `withdraw_withheld_authority` or its multisignature account.
+  /// @param withdrawWithheldAuthorityIsSigner whether the `withdrawWithheldAuthority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static Instruction withdrawWithheldTokensFromMint(final AccountMeta invokedToken2022ProgramMeta,
                                                            final PublicKey mintKey,
                                                            final PublicKey feeReceiverKey,
-                                                           final PublicKey withdrawWithheldAuthorityKey) {
+                                                           final PublicKey withdrawWithheldAuthorityKey,
+                                                           final boolean withdrawWithheldAuthorityIsSigner) {
     final var keys = withdrawWithheldTokensFromMintKeys(
       mintKey,
       feeReceiverKey,
-      withdrawWithheldAuthorityKey
+      withdrawWithheldAuthorityKey,
+      withdrawWithheldAuthorityIsSigner
     );
     return withdrawWithheldTokensFromMint(invokedToken2022ProgramMeta, keys);
   }
@@ -3163,13 +3238,15 @@ public final class Token2022Program {
   /// @param feeReceiverKey The fee receiver account. Must include the `TransferFeeAmount`
   ///                       extension associated with the provided mint.
   /// @param withdrawWithheldAuthorityKey The mint's `withdraw_withheld_authority` or its multisignature account.
+  /// @param withdrawWithheldAuthorityIsSigner whether the `withdrawWithheldAuthority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> withdrawWithheldTokensFromAccountsKeys(final PublicKey mintKey,
                                                                          final PublicKey feeReceiverKey,
-                                                                         final PublicKey withdrawWithheldAuthorityKey) {
+                                                                         final PublicKey withdrawWithheldAuthorityKey,
+                                                                         final boolean withdrawWithheldAuthorityIsSigner) {
     return List.of(
       createRead(mintKey),
       createWrite(feeReceiverKey),
-      createReadOnlySigner(withdrawWithheldAuthorityKey)
+      withdrawWithheldAuthorityIsSigner ? createReadOnlySigner(withdrawWithheldAuthorityKey) : createRead(withdrawWithheldAuthorityKey)
     );
   }
 
@@ -3180,16 +3257,19 @@ public final class Token2022Program {
   /// @param feeReceiverKey The fee receiver account. Must include the `TransferFeeAmount`
   ///                       extension associated with the provided mint.
   /// @param withdrawWithheldAuthorityKey The mint's `withdraw_withheld_authority` or its multisignature account.
+  /// @param withdrawWithheldAuthorityIsSigner whether the `withdrawWithheldAuthority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param numTokenAccounts: u8 Number of token accounts harvested.
   public static Instruction withdrawWithheldTokensFromAccounts(final AccountMeta invokedToken2022ProgramMeta,
                                                                final PublicKey mintKey,
                                                                final PublicKey feeReceiverKey,
                                                                final PublicKey withdrawWithheldAuthorityKey,
+                                                               final boolean withdrawWithheldAuthorityIsSigner,
                                                                final int numTokenAccounts) {
     final var keys = withdrawWithheldTokensFromAccountsKeys(
       mintKey,
       feeReceiverKey,
-      withdrawWithheldAuthorityKey
+      withdrawWithheldAuthorityKey,
+      withdrawWithheldAuthorityIsSigner
     );
     return withdrawWithheldTokensFromAccounts(
       invokedToken2022ProgramMeta,
@@ -3362,11 +3442,13 @@ public final class Token2022Program {
   ///
   /// @param mintKey The mint.
   /// @param transferFeeConfigAuthorityKey The mint's fee account owner or its multisignature account.
+  /// @param transferFeeConfigAuthorityIsSigner whether the `transferFeeConfigAuthority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> setTransferFeeKeys(final PublicKey mintKey,
-                                                     final PublicKey transferFeeConfigAuthorityKey) {
+                                                     final PublicKey transferFeeConfigAuthorityKey,
+                                                     final boolean transferFeeConfigAuthorityIsSigner) {
     return List.of(
       createWrite(mintKey),
-      createReadOnlySigner(transferFeeConfigAuthorityKey)
+      transferFeeConfigAuthorityIsSigner ? createReadOnlySigner(transferFeeConfigAuthorityKey) : createRead(transferFeeConfigAuthorityKey)
     );
   }
 
@@ -3375,16 +3457,19 @@ public final class Token2022Program {
   ///
   /// @param mintKey The mint.
   /// @param transferFeeConfigAuthorityKey The mint's fee account owner or its multisignature account.
+  /// @param transferFeeConfigAuthorityIsSigner whether the `transferFeeConfigAuthority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param transferFeeBasisPoints: u16 Amount of transfer collected as fees, expressed as basis points of the transfer amount.
   /// @param maximumFee: u64 Maximum fee assessed on transfers.
   public static Instruction setTransferFee(final AccountMeta invokedToken2022ProgramMeta,
                                            final PublicKey mintKey,
                                            final PublicKey transferFeeConfigAuthorityKey,
+                                           final boolean transferFeeConfigAuthorityIsSigner,
                                            final int transferFeeBasisPoints,
                                            final long maximumFee) {
     final var keys = setTransferFeeKeys(
       mintKey,
-      transferFeeConfigAuthorityKey
+      transferFeeConfigAuthorityKey,
+      transferFeeConfigAuthorityIsSigner
     );
     return setTransferFee(
       invokedToken2022ProgramMeta,
@@ -3809,15 +3894,17 @@ public final class Token2022Program {
   /// @param tokenKey The SPL Token account.
   /// @param mintKey The corresponding SPL Token mint.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> configureConfidentialTransferAccountKeys(final SolanaAccounts solanaAccounts,
                                                                            final PublicKey tokenKey,
                                                                            final PublicKey mintKey,
-                                                                           final PublicKey authorityKey) {
+                                                                           final PublicKey authorityKey,
+                                                                           final boolean authorityIsSigner) {
     return List.of(
       createWrite(tokenKey),
       createRead(mintKey),
       createRead(solanaAccounts.instructionsSysVar()),
-      createReadOnlySigner(authorityKey)
+      authorityIsSigner ? createReadOnlySigner(authorityKey) : createRead(authorityKey)
     );
   }
 
@@ -3842,6 +3929,7 @@ public final class Token2022Program {
   /// @param tokenKey The SPL Token account.
   /// @param mintKey The corresponding SPL Token mint.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param decryptableZeroBalance The decryptable balance (always 0) once the configure account succeeds.
   /// @param maximumPendingBalanceCreditCounter: u64 The maximum number of despots and transfers that an account can receiver
   ///                                           before the `ApplyPendingBalance` is executed
@@ -3854,6 +3942,7 @@ public final class Token2022Program {
                                                                  final PublicKey tokenKey,
                                                                  final PublicKey mintKey,
                                                                  final PublicKey authorityKey,
+                                                                 final boolean authorityIsSigner,
                                                                  final DecryptableBalance decryptableZeroBalance,
                                                                  final long maximumPendingBalanceCreditCounter,
                                                                  final int proofInstructionOffset) {
@@ -3861,7 +3950,8 @@ public final class Token2022Program {
       solanaAccounts,
       tokenKey,
       mintKey,
-      authorityKey
+      authorityKey,
+      authorityIsSigner
     );
     return configureConfidentialTransferAccount(
       invokedToken2022ProgramMeta,
@@ -4131,13 +4221,15 @@ public final class Token2022Program {
   ///
   /// @param tokenKey The SPL Token account.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> emptyConfidentialTransferAccountKeys(final SolanaAccounts solanaAccounts,
                                                                        final PublicKey tokenKey,
-                                                                       final PublicKey authorityKey) {
+                                                                       final PublicKey authorityKey,
+                                                                       final boolean authorityIsSigner) {
     return List.of(
       createWrite(tokenKey),
       createRead(solanaAccounts.instructionsSysVar()),
-      createReadOnlySigner(authorityKey)
+      authorityIsSigner ? createReadOnlySigner(authorityKey) : createRead(authorityKey)
     );
   }
 
@@ -4163,6 +4255,7 @@ public final class Token2022Program {
   ///
   /// @param tokenKey The SPL Token account.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param proofInstructionOffset: i8 Relative location of the `ProofInstruction::VerifyCloseAccount`
   ///                               instruction to the `EmptyAccount` instruction in the transaction. If
   ///                               the offset is `0`, then use a context state account for the proof.
@@ -4170,11 +4263,13 @@ public final class Token2022Program {
                                                              final SolanaAccounts solanaAccounts,
                                                              final PublicKey tokenKey,
                                                              final PublicKey authorityKey,
+                                                             final boolean authorityIsSigner,
                                                              final int proofInstructionOffset) {
     final var keys = emptyConfidentialTransferAccountKeys(
       solanaAccounts,
       tokenKey,
-      authorityKey
+      authorityKey,
+      authorityIsSigner
     );
     return emptyConfidentialTransferAccount(
       invokedToken2022ProgramMeta,
@@ -4300,13 +4395,15 @@ public final class Token2022Program {
   /// @param tokenKey The SPL Token account.
   /// @param mintKey The corresponding SPL Token mint.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> confidentialDepositKeys(final PublicKey tokenKey,
                                                           final PublicKey mintKey,
-                                                          final PublicKey authorityKey) {
+                                                          final PublicKey authorityKey,
+                                                          final boolean authorityIsSigner) {
     return List.of(
       createWrite(tokenKey),
       createRead(mintKey),
-      createReadOnlySigner(authorityKey)
+      authorityIsSigner ? createReadOnlySigner(authorityKey) : createRead(authorityKey)
     );
   }
 
@@ -4323,18 +4420,21 @@ public final class Token2022Program {
   /// @param tokenKey The SPL Token account.
   /// @param mintKey The corresponding SPL Token mint.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param amount: u64 The amount of tokens to deposit.
   /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public static Instruction confidentialDeposit(final AccountMeta invokedToken2022ProgramMeta,
                                                 final PublicKey tokenKey,
                                                 final PublicKey mintKey,
                                                 final PublicKey authorityKey,
+                                                final boolean authorityIsSigner,
                                                 final long amount,
                                                 final int decimals) {
     final var keys = confidentialDepositKeys(
       tokenKey,
       mintKey,
-      authorityKey
+      authorityKey,
+      authorityIsSigner
     );
     return confidentialDeposit(
       invokedToken2022ProgramMeta,
@@ -4461,12 +4561,14 @@ public final class Token2022Program {
   /// @param equalityRecordKey (Optional) Equality proof record account or context state account.
   /// @param rangeRecordKey (Optional) Range proof record account or context state account.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> confidentialWithdrawKeys(final PublicKey tokenKey,
                                                            final PublicKey mintKey,
                                                            final PublicKey instructionsSysvarKey,
                                                            final PublicKey equalityRecordKey,
                                                            final PublicKey rangeRecordKey,
-                                                           final PublicKey authorityKey) {
+                                                           final PublicKey authorityKey,
+                                                           final boolean authorityIsSigner) {
     final var keys = new ArrayList<AccountMeta>(6);
     keys.add(createWrite(tokenKey));
     keys.add(createRead(mintKey));
@@ -4479,7 +4581,7 @@ public final class Token2022Program {
     if (rangeRecordKey != null) {
       keys.add(createRead(rangeRecordKey));
     }
-    keys.add(createReadOnlySigner(authorityKey));
+    keys.add(authorityIsSigner ? createReadOnlySigner(authorityKey) : createRead(authorityKey));
     return keys;
   }
 
@@ -4506,6 +4608,7 @@ public final class Token2022Program {
   /// @param equalityRecordKey (Optional) Equality proof record account or context state account.
   /// @param rangeRecordKey (Optional) Range proof record account or context state account.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param amount: u64 The amount of tokens to withdraw.
   /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   /// @param newDecryptableAvailableBalance The new decryptable balance if the withdrawal succeeds.
@@ -4523,6 +4626,7 @@ public final class Token2022Program {
                                                  final PublicKey equalityRecordKey,
                                                  final PublicKey rangeRecordKey,
                                                  final PublicKey authorityKey,
+                                                 final boolean authorityIsSigner,
                                                  final long amount,
                                                  final int decimals,
                                                  final DecryptableBalance newDecryptableAvailableBalance,
@@ -4534,7 +4638,8 @@ public final class Token2022Program {
       instructionsSysvarKey,
       equalityRecordKey,
       rangeRecordKey,
-      authorityKey
+      authorityKey,
+      authorityIsSigner
     );
     return confidentialWithdraw(
       invokedToken2022ProgramMeta,
@@ -4719,6 +4824,7 @@ public final class Token2022Program {
   /// @param ciphertextValidityRecordKey (Optional) Ciphertext validity proof record account or context state account.
   /// @param rangeRecordKey (Optional) Range proof record account or context state account.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> confidentialTransferKeys(final PublicKey sourceTokenKey,
                                                            final PublicKey mintKey,
                                                            final PublicKey destinationTokenKey,
@@ -4726,7 +4832,8 @@ public final class Token2022Program {
                                                            final PublicKey equalityRecordKey,
                                                            final PublicKey ciphertextValidityRecordKey,
                                                            final PublicKey rangeRecordKey,
-                                                           final PublicKey authorityKey) {
+                                                           final PublicKey authorityKey,
+                                                           final boolean authorityIsSigner) {
     final var keys = new ArrayList<AccountMeta>(8);
     keys.add(createWrite(sourceTokenKey));
     keys.add(createRead(mintKey));
@@ -4743,7 +4850,7 @@ public final class Token2022Program {
     if (rangeRecordKey != null) {
       keys.add(createRead(rangeRecordKey));
     }
-    keys.add(createReadOnlySigner(authorityKey));
+    keys.add(authorityIsSigner ? createReadOnlySigner(authorityKey) : createRead(authorityKey));
     return keys;
   }
 
@@ -4771,6 +4878,7 @@ public final class Token2022Program {
   /// @param ciphertextValidityRecordKey (Optional) Ciphertext validity proof record account or context state account.
   /// @param rangeRecordKey (Optional) Range proof record account or context state account.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param newSourceDecryptableAvailableBalance The new source decryptable balance if the transfer succeeds.
   /// @param transferAmountAuditorCiphertextLo The transfer amount encrypted under the auditor ElGamal public key.
   /// @param transferAmountAuditorCiphertextHi The transfer amount encrypted under the auditor ElGamal public key.
@@ -4794,6 +4902,7 @@ public final class Token2022Program {
                                                  final PublicKey ciphertextValidityRecordKey,
                                                  final PublicKey rangeRecordKey,
                                                  final PublicKey authorityKey,
+                                                 final boolean authorityIsSigner,
                                                  final DecryptableBalance newSourceDecryptableAvailableBalance,
                                                  final EncryptedBalance transferAmountAuditorCiphertextLo,
                                                  final EncryptedBalance transferAmountAuditorCiphertextHi,
@@ -4808,7 +4917,8 @@ public final class Token2022Program {
       equalityRecordKey,
       ciphertextValidityRecordKey,
       rangeRecordKey,
-      authorityKey
+      authorityKey,
+      authorityIsSigner
     );
     return confidentialTransfer(
       invokedToken2022ProgramMeta,
@@ -4996,11 +5106,13 @@ public final class Token2022Program {
   ///
   /// @param tokenKey The SPL Token account.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> applyConfidentialPendingBalanceKeys(final PublicKey tokenKey,
-                                                                      final PublicKey authorityKey) {
+                                                                      final PublicKey authorityKey,
+                                                                      final boolean authorityIsSigner) {
     return List.of(
       createWrite(tokenKey),
-      createReadOnlySigner(authorityKey)
+      authorityIsSigner ? createReadOnlySigner(authorityKey) : createRead(authorityKey)
     );
   }
 
@@ -5018,6 +5130,7 @@ public final class Token2022Program {
   ///
   /// @param tokenKey The SPL Token account.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param expectedPendingBalanceCreditCounter: u64 The expected number of pending balance credits since the last successful
   ///                                            `ApplyPendingBalance` instruction
   /// @param newDecryptableAvailableBalance The new decryptable balance if the pending balance is applied
@@ -5025,11 +5138,13 @@ public final class Token2022Program {
   public static Instruction applyConfidentialPendingBalance(final AccountMeta invokedToken2022ProgramMeta,
                                                             final PublicKey tokenKey,
                                                             final PublicKey authorityKey,
+                                                            final boolean authorityIsSigner,
                                                             final long expectedPendingBalanceCreditCounter,
                                                             final DecryptableBalance newDecryptableAvailableBalance) {
     final var keys = applyConfidentialPendingBalanceKeys(
       tokenKey,
-      authorityKey
+      authorityKey,
+      authorityIsSigner
     );
     return applyConfidentialPendingBalance(
       invokedToken2022ProgramMeta,
@@ -5145,11 +5260,13 @@ public final class Token2022Program {
   ///
   /// @param tokenKey The SPL Token account.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> enableConfidentialCreditsKeys(final PublicKey tokenKey,
-                                                                final PublicKey authorityKey) {
+                                                                final PublicKey authorityKey,
+                                                                final boolean authorityIsSigner) {
     return List.of(
       createWrite(tokenKey),
-      createReadOnlySigner(authorityKey)
+      authorityIsSigner ? createReadOnlySigner(authorityKey) : createRead(authorityKey)
     );
   }
 
@@ -5158,12 +5275,15 @@ public final class Token2022Program {
   ///
   /// @param tokenKey The SPL Token account.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static Instruction enableConfidentialCredits(final AccountMeta invokedToken2022ProgramMeta,
                                                       final PublicKey tokenKey,
-                                                      final PublicKey authorityKey) {
+                                                      final PublicKey authorityKey,
+                                                      final boolean authorityIsSigner) {
     final var keys = enableConfidentialCreditsKeys(
       tokenKey,
-      authorityKey
+      authorityKey,
+      authorityIsSigner
     );
     return enableConfidentialCredits(invokedToken2022ProgramMeta, keys);
   }
@@ -5234,11 +5354,13 @@ public final class Token2022Program {
   ///
   /// @param tokenKey The SPL Token account.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> disableConfidentialCreditsKeys(final PublicKey tokenKey,
-                                                                 final PublicKey authorityKey) {
+                                                                 final PublicKey authorityKey,
+                                                                 final boolean authorityIsSigner) {
     return List.of(
       createWrite(tokenKey),
-      createReadOnlySigner(authorityKey)
+      authorityIsSigner ? createReadOnlySigner(authorityKey) : createRead(authorityKey)
     );
   }
 
@@ -5253,12 +5375,15 @@ public final class Token2022Program {
   ///
   /// @param tokenKey The SPL Token account.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static Instruction disableConfidentialCredits(final AccountMeta invokedToken2022ProgramMeta,
                                                        final PublicKey tokenKey,
-                                                       final PublicKey authorityKey) {
+                                                       final PublicKey authorityKey,
+                                                       final boolean authorityIsSigner) {
     final var keys = disableConfidentialCreditsKeys(
       tokenKey,
-      authorityKey
+      authorityKey,
+      authorityIsSigner
     );
     return disableConfidentialCredits(invokedToken2022ProgramMeta, keys);
   }
@@ -5335,11 +5460,13 @@ public final class Token2022Program {
   ///
   /// @param tokenKey The SPL Token account.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> enableNonConfidentialCreditsKeys(final PublicKey tokenKey,
-                                                                   final PublicKey authorityKey) {
+                                                                   final PublicKey authorityKey,
+                                                                   final boolean authorityIsSigner) {
     return List.of(
       createWrite(tokenKey),
-      createReadOnlySigner(authorityKey)
+      authorityIsSigner ? createReadOnlySigner(authorityKey) : createRead(authorityKey)
     );
   }
 
@@ -5348,12 +5475,15 @@ public final class Token2022Program {
   ///
   /// @param tokenKey The SPL Token account.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static Instruction enableNonConfidentialCredits(final AccountMeta invokedToken2022ProgramMeta,
                                                          final PublicKey tokenKey,
-                                                         final PublicKey authorityKey) {
+                                                         final PublicKey authorityKey,
+                                                         final boolean authorityIsSigner) {
     final var keys = enableNonConfidentialCreditsKeys(
       tokenKey,
-      authorityKey
+      authorityKey,
+      authorityIsSigner
     );
     return enableNonConfidentialCredits(invokedToken2022ProgramMeta, keys);
   }
@@ -5421,11 +5551,13 @@ public final class Token2022Program {
   ///
   /// @param tokenKey The SPL Token account.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> disableNonConfidentialCreditsKeys(final PublicKey tokenKey,
-                                                                    final PublicKey authorityKey) {
+                                                                    final PublicKey authorityKey,
+                                                                    final boolean authorityIsSigner) {
     return List.of(
       createWrite(tokenKey),
-      createReadOnlySigner(authorityKey)
+      authorityIsSigner ? createReadOnlySigner(authorityKey) : createRead(authorityKey)
     );
   }
 
@@ -5437,12 +5569,15 @@ public final class Token2022Program {
   ///
   /// @param tokenKey The SPL Token account.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static Instruction disableNonConfidentialCredits(final AccountMeta invokedToken2022ProgramMeta,
                                                           final PublicKey tokenKey,
-                                                          final PublicKey authorityKey) {
+                                                          final PublicKey authorityKey,
+                                                          final boolean authorityIsSigner) {
     final var keys = disableNonConfidentialCreditsKeys(
       tokenKey,
-      authorityKey
+      authorityKey,
+      authorityIsSigner
     );
     return disableNonConfidentialCredits(invokedToken2022ProgramMeta, keys);
   }
@@ -5540,6 +5675,7 @@ public final class Token2022Program {
   /// @param feeCiphertextValidityRecordKey (Optional) Fee ciphertext validity proof record account or context state account.
   /// @param rangeRecordKey (Optional) Range proof record account or context state account.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> confidentialTransferWithFeeKeys(final PublicKey sourceTokenKey,
                                                                   final PublicKey mintKey,
                                                                   final PublicKey destinationTokenKey,
@@ -5549,7 +5685,8 @@ public final class Token2022Program {
                                                                   final PublicKey feeSigmaRecordKey,
                                                                   final PublicKey feeCiphertextValidityRecordKey,
                                                                   final PublicKey rangeRecordKey,
-                                                                  final PublicKey authorityKey) {
+                                                                  final PublicKey authorityKey,
+                                                                  final boolean authorityIsSigner) {
     final var keys = new ArrayList<AccountMeta>(10);
     keys.add(createWrite(sourceTokenKey));
     keys.add(createRead(mintKey));
@@ -5572,7 +5709,7 @@ public final class Token2022Program {
     if (rangeRecordKey != null) {
       keys.add(createRead(rangeRecordKey));
     }
-    keys.add(createReadOnlySigner(authorityKey));
+    keys.add(authorityIsSigner ? createReadOnlySigner(authorityKey) : createRead(authorityKey));
     return keys;
   }
 
@@ -5608,6 +5745,7 @@ public final class Token2022Program {
   /// @param feeCiphertextValidityRecordKey (Optional) Fee ciphertext validity proof record account or context state account.
   /// @param rangeRecordKey (Optional) Range proof record account or context state account.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param newSourceDecryptableAvailableBalance The new source decryptable balance if the transfer succeeds.
   /// @param transferAmountAuditorCiphertextLo The transfer amount encrypted under the auditor ElGamal public key.
   /// @param transferAmountAuditorCiphertextHi The transfer amount encrypted under the auditor ElGamal public key.
@@ -5644,6 +5782,7 @@ public final class Token2022Program {
                                                         final PublicKey feeCiphertextValidityRecordKey,
                                                         final PublicKey rangeRecordKey,
                                                         final PublicKey authorityKey,
+                                                        final boolean authorityIsSigner,
                                                         final DecryptableBalance newSourceDecryptableAvailableBalance,
                                                         final EncryptedBalance transferAmountAuditorCiphertextLo,
                                                         final EncryptedBalance transferAmountAuditorCiphertextHi,
@@ -5662,7 +5801,8 @@ public final class Token2022Program {
       feeSigmaRecordKey,
       feeCiphertextValidityRecordKey,
       rangeRecordKey,
-      authorityKey
+      authorityKey,
+      authorityIsSigner
     );
     return confidentialTransferWithFee(
       invokedToken2022ProgramMeta,
@@ -6173,11 +6313,13 @@ public final class Token2022Program {
   ///
   /// @param mintKey The mint.
   /// @param freezeAuthorityKey The mint freeze authority or its multisignature account.
+  /// @param freezeAuthorityIsSigner whether the `freezeAuthority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> updateDefaultAccountStateKeys(final PublicKey mintKey,
-                                                                final PublicKey freezeAuthorityKey) {
+                                                                final PublicKey freezeAuthorityKey,
+                                                                final boolean freezeAuthorityIsSigner) {
     return List.of(
       createWrite(mintKey),
-      createReadOnlySigner(freezeAuthorityKey)
+      freezeAuthorityIsSigner ? createReadOnlySigner(freezeAuthorityKey) : createRead(freezeAuthorityKey)
     );
   }
 
@@ -6186,14 +6328,17 @@ public final class Token2022Program {
   ///
   /// @param mintKey The mint.
   /// @param freezeAuthorityKey The mint freeze authority or its multisignature account.
+  /// @param freezeAuthorityIsSigner whether the `freezeAuthority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param state The state each new token account should start with.
   public static Instruction updateDefaultAccountState(final AccountMeta invokedToken2022ProgramMeta,
                                                       final PublicKey mintKey,
                                                       final PublicKey freezeAuthorityKey,
+                                                      final boolean freezeAuthorityIsSigner,
                                                       final AccountState state) {
     final var keys = updateDefaultAccountStateKeys(
       mintKey,
-      freezeAuthorityKey
+      freezeAuthorityKey,
+      freezeAuthorityIsSigner
     );
     return updateDefaultAccountState(
       invokedToken2022ProgramMeta,
@@ -6274,15 +6419,17 @@ public final class Token2022Program {
   /// @param tokenKey The token account to reallocate.
   /// @param payerKey The payer account to fund reallocation.
   /// @param ownerKey The account's owner or its multisignature account.
+  /// @param ownerIsSigner whether the `owner` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> reallocateKeys(final SolanaAccounts solanaAccounts,
                                                  final PublicKey tokenKey,
                                                  final PublicKey payerKey,
-                                                 final PublicKey ownerKey) {
+                                                 final PublicKey ownerKey,
+                                                 final boolean ownerIsSigner) {
     return List.of(
       createWrite(tokenKey),
       createWritableSigner(payerKey),
       createRead(solanaAccounts.systemProgram()),
-      createReadOnlySigner(ownerKey)
+      ownerIsSigner ? createReadOnlySigner(ownerKey) : createRead(ownerKey)
     );
   }
 
@@ -6293,18 +6440,21 @@ public final class Token2022Program {
   /// @param tokenKey The token account to reallocate.
   /// @param payerKey The payer account to fund reallocation.
   /// @param ownerKey The account's owner or its multisignature account.
+  /// @param ownerIsSigner whether the `owner` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param newExtensionTypes New extension types to include in the reallocated account.
   public static Instruction reallocate(final AccountMeta invokedToken2022ProgramMeta,
                                        final SolanaAccounts solanaAccounts,
                                        final PublicKey tokenKey,
                                        final PublicKey payerKey,
                                        final PublicKey ownerKey,
+                                       final boolean ownerIsSigner,
                                        final ExtensionType[] newExtensionTypes) {
     final var keys = reallocateKeys(
       solanaAccounts,
       tokenKey,
       payerKey,
-      ownerKey
+      ownerKey,
+      ownerIsSigner
     );
     return reallocate(invokedToken2022ProgramMeta, keys, newExtensionTypes);
   }
@@ -6378,11 +6528,13 @@ public final class Token2022Program {
   ///
   /// @param tokenKey The token account to update.
   /// @param ownerKey The account's owner or its multisignature account.
+  /// @param ownerIsSigner whether the `owner` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> enableMemoTransfersKeys(final PublicKey tokenKey,
-                                                          final PublicKey ownerKey) {
+                                                          final PublicKey ownerKey,
+                                                          final boolean ownerIsSigner) {
     return List.of(
       createWrite(tokenKey),
-      createReadOnlySigner(ownerKey)
+      ownerIsSigner ? createReadOnlySigner(ownerKey) : createRead(ownerKey)
     );
   }
 
@@ -6391,12 +6543,15 @@ public final class Token2022Program {
   ///
   /// @param tokenKey The token account to update.
   /// @param ownerKey The account's owner or its multisignature account.
+  /// @param ownerIsSigner whether the `owner` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static Instruction enableMemoTransfers(final AccountMeta invokedToken2022ProgramMeta,
                                                 final PublicKey tokenKey,
-                                                final PublicKey ownerKey) {
+                                                final PublicKey ownerKey,
+                                                final boolean ownerIsSigner) {
     final var keys = enableMemoTransfersKeys(
       tokenKey,
-      ownerKey
+      ownerKey,
+      ownerIsSigner
     );
     return enableMemoTransfers(invokedToken2022ProgramMeta, keys);
   }
@@ -6463,11 +6618,13 @@ public final class Token2022Program {
   ///
   /// @param tokenKey The token account to update.
   /// @param ownerKey The account's owner or its multisignature account.
+  /// @param ownerIsSigner whether the `owner` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> disableMemoTransfersKeys(final PublicKey tokenKey,
-                                                           final PublicKey ownerKey) {
+                                                           final PublicKey ownerKey,
+                                                           final boolean ownerIsSigner) {
     return List.of(
       createWrite(tokenKey),
-      createReadOnlySigner(ownerKey)
+      ownerIsSigner ? createReadOnlySigner(ownerKey) : createRead(ownerKey)
     );
   }
 
@@ -6478,12 +6635,15 @@ public final class Token2022Program {
   ///
   /// @param tokenKey The token account to update.
   /// @param ownerKey The account's owner or its multisignature account.
+  /// @param ownerIsSigner whether the `owner` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static Instruction disableMemoTransfers(final AccountMeta invokedToken2022ProgramMeta,
                                                  final PublicKey tokenKey,
-                                                 final PublicKey ownerKey) {
+                                                 final PublicKey ownerKey,
+                                                 final boolean ownerIsSigner) {
     final var keys = disableMemoTransfersKeys(
       tokenKey,
-      ownerKey
+      ownerKey,
+      ownerIsSigner
     );
     return disableMemoTransfers(invokedToken2022ProgramMeta, keys);
   }
@@ -6861,11 +7021,13 @@ public final class Token2022Program {
   ///
   /// @param mintKey The mint.
   /// @param rateAuthorityKey The mint rate authority.
+  /// @param rateAuthorityIsSigner whether the `rateAuthority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> updateRateInterestBearingMintKeys(final PublicKey mintKey,
-                                                                    final PublicKey rateAuthorityKey) {
+                                                                    final PublicKey rateAuthorityKey,
+                                                                    final boolean rateAuthorityIsSigner) {
     return List.of(
       createWrite(mintKey),
-      createWritableSigner(rateAuthorityKey)
+      rateAuthorityIsSigner ? createWritableSigner(rateAuthorityKey) : createWrite(rateAuthorityKey)
     );
   }
 
@@ -6874,14 +7036,17 @@ public final class Token2022Program {
   ///
   /// @param mintKey The mint.
   /// @param rateAuthorityKey The mint rate authority.
+  /// @param rateAuthorityIsSigner whether the `rateAuthority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param rate The interest rate to update.
   public static Instruction updateRateInterestBearingMint(final AccountMeta invokedToken2022ProgramMeta,
                                                           final PublicKey mintKey,
                                                           final PublicKey rateAuthorityKey,
+                                                          final boolean rateAuthorityIsSigner,
                                                           final int rate) {
     final var keys = updateRateInterestBearingMintKeys(
       mintKey,
-      rateAuthorityKey
+      rateAuthorityKey,
+      rateAuthorityIsSigner
     );
     return updateRateInterestBearingMint(
       invokedToken2022ProgramMeta,
@@ -6966,11 +7131,13 @@ public final class Token2022Program {
   ///
   /// @param tokenKey The token account to update.
   /// @param ownerKey The account's owner/delegate or its multisignature account.
+  /// @param ownerIsSigner whether the `owner` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> enableCpiGuardKeys(final PublicKey tokenKey,
-                                                     final PublicKey ownerKey) {
+                                                     final PublicKey ownerKey,
+                                                     final boolean ownerIsSigner) {
     return List.of(
       createWrite(tokenKey),
-      createReadOnlySigner(ownerKey)
+      ownerIsSigner ? createReadOnlySigner(ownerKey) : createRead(ownerKey)
     );
   }
 
@@ -6984,12 +7151,15 @@ public final class Token2022Program {
   ///
   /// @param tokenKey The token account to update.
   /// @param ownerKey The account's owner/delegate or its multisignature account.
+  /// @param ownerIsSigner whether the `owner` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static Instruction enableCpiGuard(final AccountMeta invokedToken2022ProgramMeta,
                                            final PublicKey tokenKey,
-                                           final PublicKey ownerKey) {
+                                           final PublicKey ownerKey,
+                                           final boolean ownerIsSigner) {
     final var keys = enableCpiGuardKeys(
       tokenKey,
-      ownerKey
+      ownerKey,
+      ownerIsSigner
     );
     return enableCpiGuard(invokedToken2022ProgramMeta, keys);
   }
@@ -7065,11 +7235,13 @@ public final class Token2022Program {
   ///
   /// @param tokenKey The token account to update.
   /// @param ownerKey The account's owner/delegate or its multisignature account.
+  /// @param ownerIsSigner whether the `owner` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> disableCpiGuardKeys(final PublicKey tokenKey,
-                                                      final PublicKey ownerKey) {
+                                                      final PublicKey ownerKey,
+                                                      final boolean ownerIsSigner) {
     return List.of(
       createWrite(tokenKey),
-      createReadOnlySigner(ownerKey)
+      ownerIsSigner ? createReadOnlySigner(ownerKey) : createRead(ownerKey)
     );
   }
 
@@ -7079,12 +7251,15 @@ public final class Token2022Program {
   ///
   /// @param tokenKey The token account to update.
   /// @param ownerKey The account's owner/delegate or its multisignature account.
+  /// @param ownerIsSigner whether the `owner` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static Instruction disableCpiGuard(final AccountMeta invokedToken2022ProgramMeta,
                                             final PublicKey tokenKey,
-                                            final PublicKey ownerKey) {
+                                            final PublicKey ownerKey,
+                                            final boolean ownerIsSigner) {
     final var keys = disableCpiGuardKeys(
       tokenKey,
-      ownerKey
+      ownerKey,
+      ownerIsSigner
     );
     return disableCpiGuard(invokedToken2022ProgramMeta, keys);
   }
@@ -7407,11 +7582,13 @@ public final class Token2022Program {
   ///
   /// @param mintKey The mint.
   /// @param authorityKey The transfer hook authority.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> updateTransferHookKeys(final PublicKey mintKey,
-                                                         final PublicKey authorityKey) {
+                                                         final PublicKey authorityKey,
+                                                         final boolean authorityIsSigner) {
     return List.of(
       createWrite(mintKey),
-      createReadOnlySigner(authorityKey)
+      authorityIsSigner ? createReadOnlySigner(authorityKey) : createRead(authorityKey)
     );
   }
 
@@ -7425,14 +7602,17 @@ public final class Token2022Program {
   ///
   /// @param mintKey The mint.
   /// @param authorityKey The transfer hook authority.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param programId The program id that performs logic during transfers
   public static Instruction updateTransferHook(final AccountMeta invokedToken2022ProgramMeta,
                                                final PublicKey mintKey,
                                                final PublicKey authorityKey,
+                                               final boolean authorityIsSigner,
                                                final PublicKey programId) {
     final var keys = updateTransferHookKeys(
       mintKey,
-      authorityKey
+      authorityKey,
+      authorityIsSigner
     );
     return updateTransferHook(
       invokedToken2022ProgramMeta,
@@ -7677,15 +7857,17 @@ public final class Token2022Program {
   ///                                            `VerifyCiphertextCiphertextEquality` is pre-verified into a context
   ///                                            state account.
   /// @param authorityKey The mint's withdraw_withheld_authority
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> withdrawWithheldTokensFromMintForConfidentialTransferFeeKeys(final PublicKey mintKey,
                                                                                                final PublicKey destinationKey,
                                                                                                final PublicKey instructionsSysvarOrContextStateKey,
-                                                                                               final PublicKey authorityKey) {
+                                                                                               final PublicKey authorityKey,
+                                                                                               final boolean authorityIsSigner) {
     return List.of(
       createWrite(mintKey),
       createWrite(destinationKey),
       createRead(instructionsSysvarOrContextStateKey),
-      createReadOnlySigner(authorityKey)
+      authorityIsSigner ? createReadOnlySigner(authorityKey) : createRead(authorityKey)
     );
   }
 
@@ -7705,6 +7887,7 @@ public final class Token2022Program {
   ///                                            `VerifyCiphertextCiphertextEquality` is pre-verified into a context
   ///                                            state account.
   /// @param authorityKey The mint's withdraw_withheld_authority
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param proofInstructionOffset: i8 Proof instruction offset
   /// @param newDecryptableAvailableBalance The new decryptable balance in the destination token account
   public static Instruction withdrawWithheldTokensFromMintForConfidentialTransferFee(final AccountMeta invokedToken2022ProgramMeta,
@@ -7712,13 +7895,15 @@ public final class Token2022Program {
                                                                                      final PublicKey destinationKey,
                                                                                      final PublicKey instructionsSysvarOrContextStateKey,
                                                                                      final PublicKey authorityKey,
+                                                                                     final boolean authorityIsSigner,
                                                                                      final int proofInstructionOffset,
                                                                                      final DecryptableBalance newDecryptableAvailableBalance) {
     final var keys = withdrawWithheldTokensFromMintForConfidentialTransferFeeKeys(
       mintKey,
       destinationKey,
       instructionsSysvarOrContextStateKey,
-      authorityKey
+      authorityKey,
+      authorityIsSigner
     );
     return withdrawWithheldTokensFromMintForConfidentialTransferFee(
       invokedToken2022ProgramMeta,
@@ -7832,15 +8017,17 @@ public final class Token2022Program {
   ///                                            `VerifyCiphertextCiphertextEquality` is pre-verified into a context
   ///                                            state account.
   /// @param authorityKey The mint's withdraw_withheld_authority
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> withdrawWithheldTokensFromAccountsForConfidentialTransferFeeKeys(final PublicKey mintKey,
                                                                                                    final PublicKey destinationKey,
                                                                                                    final PublicKey instructionsSysvarOrContextStateKey,
-                                                                                                   final PublicKey authorityKey) {
+                                                                                                   final PublicKey authorityKey,
+                                                                                                   final boolean authorityIsSigner) {
     return List.of(
       createRead(mintKey),
       createWrite(destinationKey),
       createRead(instructionsSysvarOrContextStateKey),
-      createReadOnlySigner(authorityKey)
+      authorityIsSigner ? createReadOnlySigner(authorityKey) : createRead(authorityKey)
     );
   }
 
@@ -7857,6 +8044,7 @@ public final class Token2022Program {
   ///                                            `VerifyCiphertextCiphertextEquality` is pre-verified into a context
   ///                                            state account.
   /// @param authorityKey The mint's withdraw_withheld_authority
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param numTokenAccounts: u8 Number of token accounts harvested
   /// @param proofInstructionOffset: i8 Proof instruction offset
   /// @param newDecryptableAvailableBalance The new decryptable balance in the destination token account
@@ -7865,6 +8053,7 @@ public final class Token2022Program {
                                                                                          final PublicKey destinationKey,
                                                                                          final PublicKey instructionsSysvarOrContextStateKey,
                                                                                          final PublicKey authorityKey,
+                                                                                         final boolean authorityIsSigner,
                                                                                          final int numTokenAccounts,
                                                                                          final int proofInstructionOffset,
                                                                                          final DecryptableBalance newDecryptableAvailableBalance) {
@@ -7872,7 +8061,8 @@ public final class Token2022Program {
       mintKey,
       destinationKey,
       instructionsSysvarOrContextStateKey,
-      authorityKey
+      authorityKey,
+      authorityIsSigner
     );
     return withdrawWithheldTokensFromAccountsForConfidentialTransferFee(
       invokedToken2022ProgramMeta,
@@ -8077,11 +8267,13 @@ public final class Token2022Program {
   ///
   /// @param mintKey The token mint.
   /// @param authorityKey The confidential transfer fee authority
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> enableHarvestToMintKeys(final PublicKey mintKey,
-                                                          final PublicKey authorityKey) {
+                                                          final PublicKey authorityKey,
+                                                          final boolean authorityIsSigner) {
     return List.of(
       createWrite(mintKey),
-      createReadOnlySigner(authorityKey)
+      authorityIsSigner ? createReadOnlySigner(authorityKey) : createRead(authorityKey)
     );
   }
 
@@ -8089,12 +8281,15 @@ public final class Token2022Program {
   ///
   /// @param mintKey The token mint.
   /// @param authorityKey The confidential transfer fee authority
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static Instruction enableHarvestToMint(final AccountMeta invokedToken2022ProgramMeta,
                                                 final PublicKey mintKey,
-                                                final PublicKey authorityKey) {
+                                                final PublicKey authorityKey,
+                                                final boolean authorityIsSigner) {
     final var keys = enableHarvestToMintKeys(
       mintKey,
-      authorityKey
+      authorityKey,
+      authorityIsSigner
     );
     return enableHarvestToMint(invokedToken2022ProgramMeta, keys);
   }
@@ -8156,11 +8351,13 @@ public final class Token2022Program {
   ///
   /// @param mintKey The token mint.
   /// @param authorityKey The confidential transfer fee authority
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> disableHarvestToMintKeys(final PublicKey mintKey,
-                                                           final PublicKey authorityKey) {
+                                                           final PublicKey authorityKey,
+                                                           final boolean authorityIsSigner) {
     return List.of(
       createWrite(mintKey),
-      createReadOnlySigner(authorityKey)
+      authorityIsSigner ? createReadOnlySigner(authorityKey) : createRead(authorityKey)
     );
   }
 
@@ -8168,12 +8365,15 @@ public final class Token2022Program {
   ///
   /// @param mintKey The token mint.
   /// @param authorityKey The confidential transfer fee authority
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static Instruction disableHarvestToMint(final AccountMeta invokedToken2022ProgramMeta,
                                                  final PublicKey mintKey,
-                                                 final PublicKey authorityKey) {
+                                                 final PublicKey authorityKey,
+                                                 final boolean authorityIsSigner) {
     final var keys = disableHarvestToMintKeys(
       mintKey,
-      authorityKey
+      authorityKey,
+      authorityIsSigner
     );
     return disableHarvestToMint(invokedToken2022ProgramMeta, keys);
   }
@@ -8238,13 +8438,15 @@ public final class Token2022Program {
   /// @param sourceKey The source account.
   /// @param destinationKey The destination account.
   /// @param authorityKey The source account owner or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> withdrawExcessLamportsKeys(final PublicKey sourceKey,
                                                              final PublicKey destinationKey,
-                                                             final PublicKey authorityKey) {
+                                                             final PublicKey authorityKey,
+                                                             final boolean authorityIsSigner) {
     return List.of(
       createWrite(sourceKey),
       createWrite(destinationKey),
-      createReadOnlySigner(authorityKey)
+      authorityIsSigner ? createReadOnlySigner(authorityKey) : createRead(authorityKey)
     );
   }
 
@@ -8255,14 +8457,17 @@ public final class Token2022Program {
   /// @param sourceKey The source account.
   /// @param destinationKey The destination account.
   /// @param authorityKey The source account owner or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static Instruction withdrawExcessLamports(final AccountMeta invokedToken2022ProgramMeta,
                                                    final PublicKey sourceKey,
                                                    final PublicKey destinationKey,
-                                                   final PublicKey authorityKey) {
+                                                   final PublicKey authorityKey,
+                                                   final boolean authorityIsSigner) {
     final var keys = withdrawExcessLamportsKeys(
       sourceKey,
       destinationKey,
-      authorityKey
+      authorityKey,
+      authorityIsSigner
     );
     return withdrawExcessLamports(invokedToken2022ProgramMeta, keys);
   }
@@ -8474,11 +8679,13 @@ public final class Token2022Program {
   ///
   /// @param mintKey The mint to initialize.
   /// @param metadataPointerAuthorityKey The metadata pointer authority or its multisignature account.
+  /// @param metadataPointerAuthorityIsSigner whether the `metadataPointerAuthority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> updateMetadataPointerKeys(final PublicKey mintKey,
-                                                            final PublicKey metadataPointerAuthorityKey) {
+                                                            final PublicKey metadataPointerAuthorityKey,
+                                                            final boolean metadataPointerAuthorityIsSigner) {
     return List.of(
       createWrite(mintKey),
-      createReadOnlySigner(metadataPointerAuthorityKey)
+      metadataPointerAuthorityIsSigner ? createReadOnlySigner(metadataPointerAuthorityKey) : createRead(metadataPointerAuthorityKey)
     );
   }
 
@@ -8487,14 +8694,17 @@ public final class Token2022Program {
   ///
   /// @param mintKey The mint to initialize.
   /// @param metadataPointerAuthorityKey The metadata pointer authority or its multisignature account.
+  /// @param metadataPointerAuthorityIsSigner whether the `metadataPointerAuthority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param metadataAddress The new account address that holds the metadata.
   public static Instruction updateMetadataPointer(final AccountMeta invokedToken2022ProgramMeta,
                                                   final PublicKey mintKey,
                                                   final PublicKey metadataPointerAuthorityKey,
+                                                  final boolean metadataPointerAuthorityIsSigner,
                                                   final PublicKey metadataAddress) {
     final var keys = updateMetadataPointerKeys(
       mintKey,
-      metadataPointerAuthorityKey
+      metadataPointerAuthorityKey,
+      metadataPointerAuthorityIsSigner
     );
     return updateMetadataPointer(
       invokedToken2022ProgramMeta,
@@ -8735,11 +8945,13 @@ public final class Token2022Program {
   ///
   /// @param mintKey The mint to initialize.
   /// @param groupPointerAuthorityKey The group pointer authority or its multisignature account.
+  /// @param groupPointerAuthorityIsSigner whether the `groupPointerAuthority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> updateGroupPointerKeys(final PublicKey mintKey,
-                                                         final PublicKey groupPointerAuthorityKey) {
+                                                         final PublicKey groupPointerAuthorityKey,
+                                                         final boolean groupPointerAuthorityIsSigner) {
     return List.of(
       createWrite(mintKey),
-      createReadOnlySigner(groupPointerAuthorityKey)
+      groupPointerAuthorityIsSigner ? createReadOnlySigner(groupPointerAuthorityKey) : createRead(groupPointerAuthorityKey)
     );
   }
 
@@ -8748,14 +8960,17 @@ public final class Token2022Program {
   ///
   /// @param mintKey The mint to initialize.
   /// @param groupPointerAuthorityKey The group pointer authority or its multisignature account.
+  /// @param groupPointerAuthorityIsSigner whether the `groupPointerAuthority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param groupAddress The new account address that holds the group configurations.
   public static Instruction updateGroupPointer(final AccountMeta invokedToken2022ProgramMeta,
                                                final PublicKey mintKey,
                                                final PublicKey groupPointerAuthorityKey,
+                                               final boolean groupPointerAuthorityIsSigner,
                                                final PublicKey groupAddress) {
     final var keys = updateGroupPointerKeys(
       mintKey,
-      groupPointerAuthorityKey
+      groupPointerAuthorityKey,
+      groupPointerAuthorityIsSigner
     );
     return updateGroupPointer(
       invokedToken2022ProgramMeta,
@@ -8996,11 +9211,13 @@ public final class Token2022Program {
   ///
   /// @param mintKey The mint to initialize.
   /// @param groupMemberPointerAuthorityKey The group member pointer authority or its multisignature account.
+  /// @param groupMemberPointerAuthorityIsSigner whether the `groupMemberPointerAuthority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> updateGroupMemberPointerKeys(final PublicKey mintKey,
-                                                               final PublicKey groupMemberPointerAuthorityKey) {
+                                                               final PublicKey groupMemberPointerAuthorityKey,
+                                                               final boolean groupMemberPointerAuthorityIsSigner) {
     return List.of(
       createWrite(mintKey),
-      createReadOnlySigner(groupMemberPointerAuthorityKey)
+      groupMemberPointerAuthorityIsSigner ? createReadOnlySigner(groupMemberPointerAuthorityKey) : createRead(groupMemberPointerAuthorityKey)
     );
   }
 
@@ -9009,14 +9226,17 @@ public final class Token2022Program {
   ///
   /// @param mintKey The mint to initialize.
   /// @param groupMemberPointerAuthorityKey The group member pointer authority or its multisignature account.
+  /// @param groupMemberPointerAuthorityIsSigner whether the `groupMemberPointerAuthority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param memberAddress The new account address that holds the member.
   public static Instruction updateGroupMemberPointer(final AccountMeta invokedToken2022ProgramMeta,
                                                      final PublicKey mintKey,
                                                      final PublicKey groupMemberPointerAuthorityKey,
+                                                     final boolean groupMemberPointerAuthorityIsSigner,
                                                      final PublicKey memberAddress) {
     final var keys = updateGroupMemberPointerKeys(
       mintKey,
-      groupMemberPointerAuthorityKey
+      groupMemberPointerAuthorityKey,
+      groupMemberPointerAuthorityIsSigner
     );
     return updateGroupMemberPointer(
       invokedToken2022ProgramMeta,
@@ -9245,13 +9465,15 @@ public final class Token2022Program {
   ///
   /// @param mintKey The SPL Token mint.
   /// @param authorityKey The confidential mint authority or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> rotateSupplyElgamalPubkeyKeys(final SolanaAccounts solanaAccounts,
                                                                 final PublicKey mintKey,
-                                                                final PublicKey authorityKey) {
+                                                                final PublicKey authorityKey,
+                                                                final boolean authorityIsSigner) {
     return List.of(
       createWrite(mintKey),
       createRead(solanaAccounts.instructionsSysVar()),
-      createReadOnlySigner(authorityKey)
+      authorityIsSigner ? createReadOnlySigner(authorityKey) : createRead(authorityKey)
     );
   }
 
@@ -9262,6 +9484,7 @@ public final class Token2022Program {
   ///
   /// @param mintKey The SPL Token mint.
   /// @param authorityKey The confidential mint authority or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param newSupplyElgamalPubkey The new ElGamal pubkey for supply encryption.
   /// @param proofInstructionOffset: i8 The location of the
   ///                               `ProofInstruction::VerifyCiphertextCiphertextEquality` instruction
@@ -9272,12 +9495,14 @@ public final class Token2022Program {
                                                       final SolanaAccounts solanaAccounts,
                                                       final PublicKey mintKey,
                                                       final PublicKey authorityKey,
+                                                      final boolean authorityIsSigner,
                                                       final PublicKey newSupplyElgamalPubkey,
                                                       final int proofInstructionOffset) {
     final var keys = rotateSupplyElgamalPubkeyKeys(
       solanaAccounts,
       mintKey,
-      authorityKey
+      authorityKey,
+      authorityIsSigner
     );
     return rotateSupplyElgamalPubkey(
       invokedToken2022ProgramMeta,
@@ -9383,11 +9608,13 @@ public final class Token2022Program {
   ///
   /// @param mintKey The SPL Token mint.
   /// @param authorityKey The confidential mint authority or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> updateConfidentialMintBurnDecryptableSupplyKeys(final PublicKey mintKey,
-                                                                                  final PublicKey authorityKey) {
+                                                                                  final PublicKey authorityKey,
+                                                                                  final boolean authorityIsSigner) {
     return List.of(
       createWrite(mintKey),
-      createReadOnlySigner(authorityKey)
+      authorityIsSigner ? createReadOnlySigner(authorityKey) : createRead(authorityKey)
     );
   }
 
@@ -9395,14 +9622,17 @@ public final class Token2022Program {
   ///
   /// @param mintKey The SPL Token mint.
   /// @param authorityKey The confidential mint authority or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param newDecryptableSupply The new decryptable supply.
   public static Instruction updateConfidentialMintBurnDecryptableSupply(final AccountMeta invokedToken2022ProgramMeta,
                                                                         final PublicKey mintKey,
                                                                         final PublicKey authorityKey,
+                                                                        final boolean authorityIsSigner,
                                                                         final DecryptableBalance newDecryptableSupply) {
     final var keys = updateConfidentialMintBurnDecryptableSupplyKeys(
       mintKey,
-      authorityKey
+      authorityKey,
+      authorityIsSigner
     );
     return updateConfidentialMintBurnDecryptableSupply(
       invokedToken2022ProgramMeta,
@@ -9500,13 +9730,15 @@ public final class Token2022Program {
   /// @param rangeRecordKey (Optional) The context state account containing the pre-verified
   ///                       `VerifyBatchedRangeProofU128` proof.
   /// @param authorityKey The account owner or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> confidentialMintKeys(final PublicKey tokenKey,
                                                        final PublicKey mintKey,
                                                        final PublicKey instructionsSysvarKey,
                                                        final PublicKey equalityRecordKey,
                                                        final PublicKey ciphertextValidityRecordKey,
                                                        final PublicKey rangeRecordKey,
-                                                       final PublicKey authorityKey) {
+                                                       final PublicKey authorityKey,
+                                                       final boolean authorityIsSigner) {
     final var keys = new ArrayList<AccountMeta>(7);
     keys.add(createWrite(tokenKey));
     keys.add(createWrite(mintKey));
@@ -9522,7 +9754,7 @@ public final class Token2022Program {
     if (rangeRecordKey != null) {
       keys.add(createRead(rangeRecordKey));
     }
-    keys.add(createReadOnlySigner(authorityKey));
+    keys.add(authorityIsSigner ? createReadOnlySigner(authorityKey) : createRead(authorityKey));
     return keys;
   }
 
@@ -9552,6 +9784,7 @@ public final class Token2022Program {
   /// @param rangeRecordKey (Optional) The context state account containing the pre-verified
   ///                       `VerifyBatchedRangeProofU128` proof.
   /// @param authorityKey The account owner or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param newDecryptableSupply The new decryptable supply if the mint succeeds.
   /// @param mintAmountAuditorCiphertextLo The mint amount encrypted under the auditor ElGamal public key.
   /// @param mintAmountAuditorCiphertextHi The mint amount encrypted under the auditor ElGamal public key.
@@ -9575,6 +9808,7 @@ public final class Token2022Program {
                                              final PublicKey ciphertextValidityRecordKey,
                                              final PublicKey rangeRecordKey,
                                              final PublicKey authorityKey,
+                                             final boolean authorityIsSigner,
                                              final DecryptableBalance newDecryptableSupply,
                                              final EncryptedBalance mintAmountAuditorCiphertextLo,
                                              final EncryptedBalance mintAmountAuditorCiphertextHi,
@@ -9588,7 +9822,8 @@ public final class Token2022Program {
       equalityRecordKey,
       ciphertextValidityRecordKey,
       rangeRecordKey,
-      authorityKey
+      authorityKey,
+      authorityIsSigner
     );
     return confidentialMint(
       invokedToken2022ProgramMeta,
@@ -9790,13 +10025,15 @@ public final class Token2022Program {
   /// @param rangeRecordKey (Optional) The context state account containing the pre-verified
   ///                       `VerifyBatchedRangeProofU128` proof.
   /// @param authorityKey The account owner or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> confidentialBurnKeys(final PublicKey tokenKey,
                                                        final PublicKey mintKey,
                                                        final PublicKey instructionsSysvarKey,
                                                        final PublicKey equalityRecordKey,
                                                        final PublicKey ciphertextValidityRecordKey,
                                                        final PublicKey rangeRecordKey,
-                                                       final PublicKey authorityKey) {
+                                                       final PublicKey authorityKey,
+                                                       final boolean authorityIsSigner) {
     final var keys = new ArrayList<AccountMeta>(7);
     keys.add(createWrite(tokenKey));
     keys.add(createWrite(mintKey));
@@ -9812,7 +10049,7 @@ public final class Token2022Program {
     if (rangeRecordKey != null) {
       keys.add(createRead(rangeRecordKey));
     }
-    keys.add(createReadOnlySigner(authorityKey));
+    keys.add(authorityIsSigner ? createReadOnlySigner(authorityKey) : createRead(authorityKey));
     return keys;
   }
 
@@ -9842,6 +10079,7 @@ public final class Token2022Program {
   /// @param rangeRecordKey (Optional) The context state account containing the pre-verified
   ///                       `VerifyBatchedRangeProofU128` proof.
   /// @param authorityKey The account owner or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param newDecryptableAvailableBalance The new decryptable balance of the burner if the burn succeeds.
   /// @param burnAmountAuditorCiphertextLo The burn amount encrypted under the auditor ElGamal public key.
   /// @param burnAmountAuditorCiphertextHi The burn amount encrypted under the auditor ElGamal public key.
@@ -9865,6 +10103,7 @@ public final class Token2022Program {
                                              final PublicKey ciphertextValidityRecordKey,
                                              final PublicKey rangeRecordKey,
                                              final PublicKey authorityKey,
+                                             final boolean authorityIsSigner,
                                              final DecryptableBalance newDecryptableAvailableBalance,
                                              final EncryptedBalance burnAmountAuditorCiphertextLo,
                                              final EncryptedBalance burnAmountAuditorCiphertextHi,
@@ -9878,7 +10117,8 @@ public final class Token2022Program {
       equalityRecordKey,
       ciphertextValidityRecordKey,
       rangeRecordKey,
-      authorityKey
+      authorityKey,
+      authorityIsSigner
     );
     return confidentialBurn(
       invokedToken2022ProgramMeta,
@@ -10058,11 +10298,13 @@ public final class Token2022Program {
   ///
   /// @param mintKey The SPL Token mint.
   /// @param authorityKey The mint authority or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> applyConfidentialPendingBurnKeys(final PublicKey mintKey,
-                                                                   final PublicKey authorityKey) {
+                                                                   final PublicKey authorityKey,
+                                                                   final boolean authorityIsSigner) {
     return List.of(
       createWrite(mintKey),
-      createReadOnlySigner(authorityKey)
+      authorityIsSigner ? createReadOnlySigner(authorityKey) : createRead(authorityKey)
     );
   }
 
@@ -10070,12 +10312,15 @@ public final class Token2022Program {
   ///
   /// @param mintKey The SPL Token mint.
   /// @param authorityKey The mint authority or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static Instruction applyConfidentialPendingBurn(final AccountMeta invokedToken2022ProgramMeta,
                                                          final PublicKey mintKey,
-                                                         final PublicKey authorityKey) {
+                                                         final PublicKey authorityKey,
+                                                         final boolean authorityIsSigner) {
     final var keys = applyConfidentialPendingBurnKeys(
       mintKey,
-      authorityKey
+      authorityKey,
+      authorityIsSigner
     );
     return applyConfidentialPendingBurn(invokedToken2022ProgramMeta, keys);
   }
@@ -10278,11 +10523,13 @@ public final class Token2022Program {
   ///
   /// @param mintKey The mint.
   /// @param authorityKey The multiplier authority.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> updateMultiplierScaledUiMintKeys(final PublicKey mintKey,
-                                                                   final PublicKey authorityKey) {
+                                                                   final PublicKey authorityKey,
+                                                                   final boolean authorityIsSigner) {
     return List.of(
       createWrite(mintKey),
-      createWritableSigner(authorityKey)
+      authorityIsSigner ? createWritableSigner(authorityKey) : createWrite(authorityKey)
     );
   }
 
@@ -10292,16 +10539,19 @@ public final class Token2022Program {
   ///
   /// @param mintKey The mint.
   /// @param authorityKey The multiplier authority.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param multiplier The new multiplier for the scaled UI extension
   /// @param effectiveTimestamp The timestamp at which the new multiplier will take effect
   public static Instruction updateMultiplierScaledUiMint(final AccountMeta invokedToken2022ProgramMeta,
                                                          final PublicKey mintKey,
                                                          final PublicKey authorityKey,
+                                                         final boolean authorityIsSigner,
                                                          final double multiplier,
                                                          final long effectiveTimestamp) {
     final var keys = updateMultiplierScaledUiMintKeys(
       mintKey,
-      authorityKey
+      authorityKey,
+      authorityIsSigner
     );
     return updateMultiplierScaledUiMint(
       invokedToken2022ProgramMeta,
@@ -10506,11 +10756,13 @@ public final class Token2022Program {
   ///
   /// @param mintKey The mint.
   /// @param authorityKey The pausable authority that can pause the mint.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> pauseKeys(final PublicKey mintKey,
-                                            final PublicKey authorityKey) {
+                                            final PublicKey authorityKey,
+                                            final boolean authorityIsSigner) {
     return List.of(
       createWrite(mintKey),
-      createReadOnlySigner(authorityKey)
+      authorityIsSigner ? createReadOnlySigner(authorityKey) : createRead(authorityKey)
     );
   }
 
@@ -10520,12 +10772,15 @@ public final class Token2022Program {
   ///
   /// @param mintKey The mint.
   /// @param authorityKey The pausable authority that can pause the mint.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static Instruction pause(final AccountMeta invokedToken2022ProgramMeta,
                                   final PublicKey mintKey,
-                                  final PublicKey authorityKey) {
+                                  final PublicKey authorityKey,
+                                  final boolean authorityIsSigner) {
     final var keys = pauseKeys(
       mintKey,
-      authorityKey
+      authorityKey,
+      authorityIsSigner
     );
     return pause(invokedToken2022ProgramMeta, keys);
   }
@@ -10593,11 +10848,13 @@ public final class Token2022Program {
   ///
   /// @param mintKey The mint.
   /// @param authorityKey The pausable authority that can resume the mint.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> resumeKeys(final PublicKey mintKey,
-                                             final PublicKey authorityKey) {
+                                             final PublicKey authorityKey,
+                                             final boolean authorityIsSigner) {
     return List.of(
       createWrite(mintKey),
-      createReadOnlySigner(authorityKey)
+      authorityIsSigner ? createReadOnlySigner(authorityKey) : createRead(authorityKey)
     );
   }
 
@@ -10607,12 +10864,15 @@ public final class Token2022Program {
   ///
   /// @param mintKey The mint.
   /// @param authorityKey The pausable authority that can resume the mint.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static Instruction resume(final AccountMeta invokedToken2022ProgramMeta,
                                    final PublicKey mintKey,
-                                   final PublicKey authorityKey) {
+                                   final PublicKey authorityKey,
+                                   final boolean authorityIsSigner) {
     final var keys = resumeKeys(
       mintKey,
-      authorityKey
+      authorityKey,
+      authorityIsSigner
     );
     return resume(invokedToken2022ProgramMeta, keys);
   }
@@ -11837,13 +12097,15 @@ public final class Token2022Program {
   /// @param sourceKey The source account.
   /// @param destinationKey The destination account.
   /// @param authorityKey The source account's owner or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> unwrapLamportsKeys(final PublicKey sourceKey,
                                                      final PublicKey destinationKey,
-                                                     final PublicKey authorityKey) {
+                                                     final PublicKey authorityKey,
+                                                     final boolean authorityIsSigner) {
     return List.of(
       createWrite(sourceKey),
       createWrite(destinationKey),
-      createReadOnlySigner(authorityKey)
+      authorityIsSigner ? createReadOnlySigner(authorityKey) : createRead(authorityKey)
     );
   }
 
@@ -11852,16 +12114,19 @@ public final class Token2022Program {
   /// @param sourceKey The source account.
   /// @param destinationKey The destination account.
   /// @param authorityKey The source account's owner or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param amount: Option<u64> The amount of lamports to transfer.
   public static Instruction unwrapLamports(final AccountMeta invokedToken2022ProgramMeta,
                                            final PublicKey sourceKey,
                                            final PublicKey destinationKey,
                                            final PublicKey authorityKey,
+                                           final boolean authorityIsSigner,
                                            final OptionalLong amount) {
     final var keys = unwrapLamportsKeys(
       sourceKey,
       destinationKey,
-      authorityKey
+      authorityKey,
+      authorityIsSigner
     );
     return unwrapLamports(invokedToken2022ProgramMeta, keys, amount);
   }
@@ -12033,15 +12298,17 @@ public final class Token2022Program {
   /// @param mintKey The token mint.
   /// @param permissionedBurnAuthorityKey Authority configured on the mint that must sign any permissioned burn instruction.
   /// @param authorityKey The account's owner/delegate or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> permissionedBurnKeys(final PublicKey accountKey,
                                                        final PublicKey mintKey,
                                                        final PublicKey permissionedBurnAuthorityKey,
-                                                       final PublicKey authorityKey) {
+                                                       final PublicKey authorityKey,
+                                                       final boolean authorityIsSigner) {
     return List.of(
       createWrite(accountKey),
       createWrite(mintKey),
       createReadOnlySigner(permissionedBurnAuthorityKey),
-      createReadOnlySigner(authorityKey)
+      authorityIsSigner ? createReadOnlySigner(authorityKey) : createRead(authorityKey)
     );
   }
 
@@ -12051,18 +12318,21 @@ public final class Token2022Program {
   /// @param mintKey The token mint.
   /// @param permissionedBurnAuthorityKey Authority configured on the mint that must sign any permissioned burn instruction.
   /// @param authorityKey The account's owner/delegate or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param amount: u64 The amount of tokens to burn.
   public static Instruction permissionedBurn(final AccountMeta invokedToken2022ProgramMeta,
                                              final PublicKey accountKey,
                                              final PublicKey mintKey,
                                              final PublicKey permissionedBurnAuthorityKey,
                                              final PublicKey authorityKey,
+                                             final boolean authorityIsSigner,
                                              final long amount) {
     final var keys = permissionedBurnKeys(
       accountKey,
       mintKey,
       permissionedBurnAuthorityKey,
-      authorityKey
+      authorityKey,
+      authorityIsSigner
     );
     return permissionedBurn(
       invokedToken2022ProgramMeta,
@@ -12141,15 +12411,17 @@ public final class Token2022Program {
   /// @param mintKey The token mint.
   /// @param permissionedBurnAuthorityKey Authority configured on the mint that must sign any permissioned burn instruction.
   /// @param authorityKey The account's owner/delegate or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> permissionedBurnCheckedKeys(final PublicKey accountKey,
                                                               final PublicKey mintKey,
                                                               final PublicKey permissionedBurnAuthorityKey,
-                                                              final PublicKey authorityKey) {
+                                                              final PublicKey authorityKey,
+                                                              final boolean authorityIsSigner) {
     return List.of(
       createWrite(accountKey),
       createWrite(mintKey),
       createReadOnlySigner(permissionedBurnAuthorityKey),
-      createReadOnlySigner(authorityKey)
+      authorityIsSigner ? createReadOnlySigner(authorityKey) : createRead(authorityKey)
     );
   }
 
@@ -12159,6 +12431,7 @@ public final class Token2022Program {
   /// @param mintKey The token mint.
   /// @param permissionedBurnAuthorityKey Authority configured on the mint that must sign any permissioned burn instruction.
   /// @param authorityKey The account's owner/delegate or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param amount: u64 The amount of tokens to burn.
   /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public static Instruction permissionedBurnChecked(final AccountMeta invokedToken2022ProgramMeta,
@@ -12166,13 +12439,15 @@ public final class Token2022Program {
                                                     final PublicKey mintKey,
                                                     final PublicKey permissionedBurnAuthorityKey,
                                                     final PublicKey authorityKey,
+                                                    final boolean authorityIsSigner,
                                                     final long amount,
                                                     final int decimals) {
     final var keys = permissionedBurnCheckedKeys(
       accountKey,
       mintKey,
       permissionedBurnAuthorityKey,
-      authorityKey
+      authorityKey,
+      authorityIsSigner
     );
     return permissionedBurnChecked(
       invokedToken2022ProgramMeta,
@@ -12288,6 +12563,7 @@ public final class Token2022Program {
   ///                       `VerifyBatchedRangeProofU128` proof.
   /// @param permissionedBurnAuthorityKey Authority configured on the mint that must sign any permissioned burn instruction.
   /// @param authorityKey The account's owner/delegate or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   public static List<AccountMeta> permissionedConfidentialBurnKeys(final PublicKey tokenKey,
                                                                    final PublicKey mintKey,
                                                                    final PublicKey instructionsSysvarKey,
@@ -12295,7 +12571,8 @@ public final class Token2022Program {
                                                                    final PublicKey ciphertextValidityRecordKey,
                                                                    final PublicKey rangeRecordKey,
                                                                    final PublicKey permissionedBurnAuthorityKey,
-                                                                   final PublicKey authorityKey) {
+                                                                   final PublicKey authorityKey,
+                                                                   final boolean authorityIsSigner) {
     final var keys = new ArrayList<AccountMeta>(8);
     keys.add(createWrite(tokenKey));
     keys.add(createWrite(mintKey));
@@ -12312,7 +12589,7 @@ public final class Token2022Program {
       keys.add(createRead(rangeRecordKey));
     }
     keys.add(createReadOnlySigner(permissionedBurnAuthorityKey));
-    keys.add(createReadOnlySigner(authorityKey));
+    keys.add(authorityIsSigner ? createReadOnlySigner(authorityKey) : createRead(authorityKey));
     return keys;
   }
 
@@ -12344,6 +12621,7 @@ public final class Token2022Program {
   ///                       `VerifyBatchedRangeProofU128` proof.
   /// @param permissionedBurnAuthorityKey Authority configured on the mint that must sign any permissioned burn instruction.
   /// @param authorityKey The account's owner/delegate or its multisignature account.
+  /// @param authorityIsSigner whether the `authority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param newDecryptableAvailableBalance The new decryptable balance of the burner if the burn succeeds.
   /// @param burnAmountAuditorCiphertextLo The burn amount encrypted under the auditor ElGamal public key.
   /// @param burnAmountAuditorCiphertextHi The burn amount encrypted under the auditor ElGamal public key.
@@ -12368,6 +12646,7 @@ public final class Token2022Program {
                                                          final PublicKey rangeRecordKey,
                                                          final PublicKey permissionedBurnAuthorityKey,
                                                          final PublicKey authorityKey,
+                                                         final boolean authorityIsSigner,
                                                          final DecryptableBalance newDecryptableAvailableBalance,
                                                          final EncryptedBalance burnAmountAuditorCiphertextLo,
                                                          final EncryptedBalance burnAmountAuditorCiphertextHi,
@@ -12382,7 +12661,8 @@ public final class Token2022Program {
       ciphertextValidityRecordKey,
       rangeRecordKey,
       permissionedBurnAuthorityKey,
-      authorityKey
+      authorityKey,
+      authorityIsSigner
     );
     return permissionedConfidentialBurn(
       invokedToken2022ProgramMeta,

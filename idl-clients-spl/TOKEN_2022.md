@@ -297,6 +297,7 @@ Instruction ix = Token2022Program.transferChecked(
         mintKey,
         destinationKey,
         authorityKey,
+        true, // authorityIsSigner: false for a multisig authority, see below
         amount,
         decimals
     );
@@ -341,15 +342,13 @@ Every instruction also exposes a `*Keys` helper returning the declared account l
 here:
 
 - **Multisig owners.** The IDL declares the M signer accounts as remaining accounts on 58 instructions, and marks 56
-  owner or authority accounts `"isSigner": "either"`. The generated key helpers express neither: they mark the owner a
-  required signer and accept no trailing accounts. For a multisig owner, build the list yourself — the owner read-only
-  and *not* a signer, then each of its signers read-only and a signer:
+  owner or authority accounts `"isSigner": "either"`. The generated builders express the second as a
+  `boolean <account>IsSigner` directly after the key: `true` seats a single-key owner as a signer, `false` seats a
+  multisig owner unsigned, with its declared writability, in the same position. They do not express the first, so for a multisig
+  owner take the key helper's list and append each of its signers read-only and a signer:
 
   ```java
-  var keys = new ArrayList<AccountMeta>();
-  keys.add(AccountMeta.createWrite(sourceKey));
-  keys.add(AccountMeta.createWrite(destinationKey));
-  keys.add(AccountMeta.createRead(multisigOwnerKey));
+  var keys = new ArrayList<>(Token2022Program.transferKeys(sourceKey, destinationKey, multisigOwnerKey, false));
   for (var signer : signerKeys) {
     keys.add(AccountMeta.createReadOnlySigner(signer));
   }

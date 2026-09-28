@@ -188,6 +188,11 @@ Instruction closeIx = splAccountClient.closeTokenAccount(invokedTokenProgram, to
 
 Low-level instruction builders for the SPL Token program.
 
+An owner or authority that may be either a single key or a multisig account is followed by a
+`boolean <account>IsSigner`: pass `true` when that key signs the transaction, and `false` for a
+multisig account, which is seated read-only and unsigned — then append its signers yourself through
+the `List<AccountMeta>` overload.
+
 ```java
 var invokedTokenProgram = solanaAccounts.invokedTokenProgram();
 
@@ -207,6 +212,7 @@ Instruction transferIx = TokenProgram.transfer(
     sourceKey,
     destinationKey,
     authorityKey,
+    true, // authorityIsSigner
     amount
 );
 
@@ -217,6 +223,7 @@ Instruction transferCheckedIx = TokenProgram.transferChecked(
     mintKey,
     destinationKey,
     authorityKey,
+    true, // authorityIsSigner
     amount,
     decimals
 );
@@ -227,6 +234,7 @@ Instruction mintToIx = TokenProgram.mintTo(
     mintKey,
     tokenKey,
     mintAuthorityKey,
+    true, // mintAuthorityIsSigner
     amount
 );
 
@@ -236,6 +244,7 @@ Instruction burnIx = TokenProgram.burn(
     accountKey,
     mintKey,
     authorityKey,
+    true, // authorityIsSigner
     amount
 );
 
@@ -244,16 +253,17 @@ Instruction setAuthIx = TokenProgram.setAuthority(
     invokedTokenProgram,
     ownedKey,
     ownerKey,
+    true, // ownerIsSigner
     AuthorityType.mintTokens,
     newAuthority
 );
 
 // Freeze/thaw accounts
-Instruction freezeIx = TokenProgram.freezeAccount(invokedTokenProgram, accountKey, mintKey, ownerKey);
-Instruction thawIx = TokenProgram.thawAccount(invokedTokenProgram, accountKey, mintKey, ownerKey);
+Instruction freezeIx = TokenProgram.freezeAccount(invokedTokenProgram, accountKey, mintKey, ownerKey, true);
+Instruction thawIx = TokenProgram.thawAccount(invokedTokenProgram, accountKey, mintKey, ownerKey, true);
 
 // Close account
-Instruction closeIx = TokenProgram.closeAccount(invokedTokenProgram, accountKey, destinationKey, ownerKey);
+Instruction closeIx = TokenProgram.closeAccount(invokedTokenProgram, accountKey, destinationKey, ownerKey, true);
 
 // Sync native token balance
 Instruction syncNativeIx = TokenProgram.syncNative(invokedTokenProgram, accountKey);

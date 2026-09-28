@@ -61,33 +61,39 @@ final class StakePoolProgramClientTests {
 
   private static final Fee FEE = new Fee(1000L, 25L);
 
-  private static final StakePoolState STATE = new StakePoolState(
-      POOL,
-      AccountType.StakePool,
-      key(0x61), // manager
-      key(0x62), // staker
-      key(0x63), // stakeDepositAuthority
-      255,       // stakeWithdrawBumpSeed
-      VALIDATOR_LIST,
-      RESERVE_STAKE,
-      POOL_MINT,
-      MANAGER_FEE,
-      TOKEN_PROGRAM,
-      BigDecimal.valueOf(10L), // totalLamports
-      BigDecimal.valueOf(4L),  // poolTokenSupply
-      7L,                      // lastUpdateEpoch
-      LockUp.NO_LOCKUP,
-      FEE, null,
-      null, null,
-      FEE, FEE, null,
-      0,
-      null,
-      FEE,
-      0,
-      null,
-      FEE, null,
-      0L, 0L
-  );
+  private static final PublicKey CUSTOM_DEPOSIT_AUTHORITY = key(0x63);
+
+  private static final StakePoolState STATE = state(CUSTOM_DEPOSIT_AUTHORITY);
+
+  private static StakePoolState state(final PublicKey stakeDepositAuthority) {
+    return new StakePoolState(
+        POOL,
+        AccountType.StakePool,
+        key(0x61), // manager
+        key(0x62), // staker
+        stakeDepositAuthority,
+        255,       // stakeWithdrawBumpSeed
+        VALIDATOR_LIST,
+        RESERVE_STAKE,
+        POOL_MINT,
+        MANAGER_FEE,
+        TOKEN_PROGRAM,
+        BigDecimal.valueOf(10L), // totalLamports
+        BigDecimal.valueOf(4L),  // poolTokenSupply
+        7L,                      // lastUpdateEpoch
+        LockUp.NO_LOCKUP,
+        FEE, null,
+        null, null,
+        FEE, FEE, null,
+        0,
+        null,
+        FEE,
+        0,
+        null,
+        FEE, null,
+        0L, 0L
+    );
+  }
 
   /// An `AccountInfo` wrapping the state, owned by the pool program — the owner *is* how the
   /// convenience overloads learn which program to invoke.
@@ -167,6 +173,27 @@ final class StakePoolProgramClientTests {
     assertEquals(keys(plain), keys(slippage));
     assertNotEquals(plain.data()[0], slippage.data()[0]);
     assertEquals(4_900L, software.sava.core.encoding.ByteUtil.getInt64LE(slippage.data(), 1));
+  }
+
+  /// The deposit authority is read off the pool state and signs only when the pool set a custom
+  /// one. A permissionless pool stores its derived `[pool, "deposit"]` address, a PDA that cannot
+  /// sign, so the client seats it unsigned at the same index.
+  @Test
+  void depositStakeSignsOnlyACustomDepositAuthority() {
+    final var custom = CLIENT.depositStake(POOL_PROGRAM, STATE, DEPOSIT_STAKE, VALIDATOR_STAKE, POOL_TOKEN_ATA);
+    assertEquals(AccountMeta.createReadOnlySigner(CUSTOM_DEPOSIT_AUTHORITY), custom.accounts().get(2));
+    final var customWithSlippage = CLIENT.depositStakeWithSlippage(
+        POOL_PROGRAM, STATE, DEPOSIT_STAKE, VALIDATOR_STAKE, POOL_TOKEN_ATA, 4_900L);
+    assertEquals(AccountMeta.createReadOnlySigner(CUSTOM_DEPOSIT_AUTHORITY), customWithSlippage.accounts().get(2));
+
+    final var derived = StakePoolProgram.findStakePoolDepositAuthority(POOL, POOL_PROGRAM).publicKey();
+    assertNotEquals(CUSTOM_DEPOSIT_AUTHORITY, derived);
+    final var permissionless = state(derived);
+    final var ix = CLIENT.depositStake(POOL_PROGRAM, permissionless, DEPOSIT_STAKE, VALIDATOR_STAKE, POOL_TOKEN_ATA);
+    assertEquals(AccountMeta.createRead(derived), ix.accounts().get(2));
+    final var withSlippage = CLIENT.depositStakeWithSlippage(
+        POOL_PROGRAM, permissionless, DEPOSIT_STAKE, VALIDATOR_STAKE, POOL_TOKEN_ATA, 4_900L);
+    assertEquals(AccountMeta.createRead(derived), withSlippage.accounts().get(2));
   }
 
   // ---------------------------------------------------------------------------

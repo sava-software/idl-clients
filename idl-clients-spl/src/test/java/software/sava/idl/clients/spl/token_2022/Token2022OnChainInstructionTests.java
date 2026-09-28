@@ -64,9 +64,10 @@ import static systems.comodal.jsoniter.JsonIterator.fieldEquals;
 ///    [#UNDER_DECLARED_ARGUMENTS] and reported rather than excused;
 /// 3. the generated `List<AccountMeta>` builder overload, fed the decoded fields, emits byte-equal
 ///    data — so the decode is not merely self-consistent;
-/// 4. the generated `*Keys` helper, fed the captured addresses, reproduces the captured account
-///    list. Where it cannot, the difference is classified into [AccountDifference] and pinned
-///    per fixture in [#EXPECTED_DIFFERENCES]; anything else fails.
+/// 4. the generated `*Keys` helper, fed the captured addresses and `true` for every
+///    `<account>IsSigner` flag, reproduces the captured account list. Where it cannot, the
+///    difference is classified into [AccountDifference] and pinned per fixture in
+///    [#EXPECTED_DIFFERENCES]; anything else fails.
 ///
 /// The helpers are reached by reflection, deliberately. A hand-written table of ninety-nine
 /// decode/rebuild lambdas would be a second transcription of the generator's output and would
@@ -106,10 +107,11 @@ final class Token2022OnChainInstructionTests {
     /// an **inner** one: the invoking program signed for it with `invoke_signed`, so the
     /// signature is granted at the CPI boundary and never appears in the message header.
     CPI_SIGNER,
-    /// The helper builds a signer and the key in that slot is a Token-2022 **multisignature
-    /// account**, which signs nothing itself: this is `isSigner: "either"` resolved the second
-    /// way, with the member signers following as remaining accounts. Listed file by file in
-    /// [#multisigOwnerOccurrences()].
+    /// The helper, asked for a signer, builds one and the key in that slot is a Token-2022
+    /// **multisignature account**, which signs nothing itself: this is `isSigner: "either"`
+    /// resolved the second way, with the member signers following as remaining accounts. A caller
+    /// spells it `<account>IsSigner = false`; [#multisigOwnerOccurrences()] lists each one and
+    /// rebuilds it that way.
     MULTISIG_AUTHORITY,
     /// The helper builds a signer, the key is not a multisig, and the instruction is top-level,
     /// so nothing grants the signature. The program would have rejected it, so no fixture is
@@ -551,15 +553,24 @@ final class Token2022OnChainInstructionTests {
     return keys;
   }
 
-  /// Which parameters of a `*Keys` helper the generator lets go null, discovered by trying.
+  /// Which parameters of a `*Keys` helper the generator lets go null, discovered by trying, and
+  /// which keys are followed by a caller-chosen `<account>IsSigner` flag.
   private record KeysShape(Method method,
                            boolean takesSolanaAccounts,
                            int keyParams,
+                           Set<Integer> signerFlags,
                            List<Integer> optional) {
   }
 
-  @SuppressWarnings("unchecked")
   private static List<AccountMeta> invokeKeys(final KeysShape shape, final PublicKey[] keys) {
+    return invokeKeys(shape, keys, Set.of());
+  }
+
+  /// Every `<account>IsSigner` flag is passed `true`, except those of the keys in `unsigned`.
+  @SuppressWarnings("unchecked")
+  private static List<AccountMeta> invokeKeys(final KeysShape shape,
+                                              final PublicKey[] keys,
+                                              final Set<Integer> unsigned) {
     final var args = new Object[shape.method().getParameterCount()];
     int i = 0;
     if (shape.takesSolanaAccounts()) {
@@ -567,6 +578,9 @@ final class Token2022OnChainInstructionTests {
     }
     for (int k = 0; k < shape.keyParams(); ++k) {
       args[i++] = keys[k];
+      if (shape.signerFlags().contains(k)) {
+        args[i++] = !unsigned.contains(k);
+      }
     }
     try {
       return (List<AccountMeta>) shape.method().invoke(null, args);
@@ -581,12 +595,20 @@ final class Token2022OnChainInstructionTests {
     final var m = keysMethod(instruction);
     final var params = m.getParameterTypes();
     final boolean solanaAccounts = params.length > 0 && params[0] == SolanaAccounts.class;
-    final int keyParams = params.length - (solanaAccounts ? 1 : 0);
+    int keyParams = 0;
+    final var signerFlags = new TreeSet<Integer>();
     for (int i = solanaAccounts ? 1 : 0; i < params.length; ++i) {
-      assertEquals(PublicKey.class, params[i],
-          instruction + "Keys takes an unexpected parameter type at " + i);
+      if (params[i] == boolean.class) {
+        assertEquals(PublicKey.class, params[i - 1],
+            instruction + "Keys takes a signer flag at " + i + " that follows no key");
+        signerFlags.add(keyParams - 1);
+      } else {
+        assertEquals(PublicKey.class, params[i],
+            instruction + "Keys takes an unexpected parameter type at " + i);
+        ++keyParams;
+      }
     }
-    final var probing = new KeysShape(m, solanaAccounts, keyParams, List.of());
+    final var probing = new KeysShape(m, solanaAccounts, keyParams, Set.copyOf(signerFlags), List.of());
     final var all = Arrays.copyOf(SENTINELS, keyParams);
     final int base = invokeKeys(probing, all).size();
     final var optional = new ArrayList<Integer>();
@@ -602,7 +624,7 @@ final class Token2022OnChainInstructionTests {
       }
     }
     assertTrue(optional.size() <= 8, instruction + "Keys has too many optional accounts to solve");
-    return new KeysShape(m, solanaAccounts, keyParams, List.copyOf(optional));
+    return new KeysShape(m, solanaAccounts, keyParams, probing.signerFlags(), List.copyOf(optional));
   }
 
   /// Positions of the produced list expressed as parameter indexes, with -1 where the helper
@@ -627,9 +649,9 @@ final class Token2022OnChainInstructionTests {
     return out;
   }
 
-  /// What the helper built, and which of its parameters supplied each position (-1 where it
-  /// supplied a constant of its own).
-  private record Rebuilt(List<AccountMeta> keys, int[] layout) {
+  /// What the helper built, which of its parameters supplied each position (-1 where it supplied a
+  /// constant of its own), and the shape and keys it was fed.
+  private record Rebuilt(List<AccountMeta> keys, int[] layout, KeysShape shape, PublicKey[] fed) {
   }
 
   /// Feeds the captured addresses back through the helper. Every combination of omitted optional
@@ -670,7 +692,7 @@ final class Token2022OnChainInstructionTests {
       }
       final int score = (matched << 8) - Math.max(0, produced.size() - onChain.size());
       if (score > bestScore || (score == bestScore && omit.size() < bestOmissions)) {
-        best = new Rebuilt(produced, layout);
+        best = new Rebuilt(produced, layout, shape, keys);
         bestScore = score;
         bestOmissions = omit.size();
       }
@@ -881,17 +903,20 @@ final class Token2022OnChainInstructionTests {
   /// **The scaled-UI multiplier authority is declared writable and is not.** The program's
   /// `update_multiplier` builds `AccountMeta::new_readonly(authority, ..)` and the captured
   /// instruction carries it read-only; upstream's `idl.json` marks it `isWritable: true`, so
-  /// `updateMultiplierScaledUiMintKeys` emits `createWritableSigner`. A caller following the
-  /// helper asks for write access the program never uses — harmless to the transaction, wrong
-  /// about the program, and again an IDL fix rather than one to make here.
+  /// `updateMultiplierScaledUiMintKeys` emits `createWritableSigner`, or `createWrite` when the
+  /// caller does not sign. A caller following the helper asks for write access the program never
+  /// uses — harmless to the transaction, wrong about the program, and again an IDL fix rather
+  /// than one to make here.
   @Test
   void theScaledUiMultiplierAuthorityIsDeclaredWritableAndIsNot() {
     final var f = fixture("updateMultiplierScaledUiMint-1.json");
     final var authority = f.accounts().get(1);
     assertFalse(authority.writable(), "the captured multiplier authority is read-only");
-    final var built = Token2022Program.updateMultiplierScaledUiMintKeys(
-        f.accounts().getFirst().pubkey(), authority.pubkey());
+    final var mint = f.accounts().getFirst().pubkey();
+    final var built = Token2022Program.updateMultiplierScaledUiMintKeys(mint, authority.pubkey(), true);
     assertTrue(built.get(1).write(), "the helper still marks it writable");
+    assertTrue(Token2022Program.updateMultiplierScaledUiMintKeys(mint, authority.pubkey(), false).get(1).write(),
+        "and writable whether or not the caller signs");
     assertTrue(differences(f).get(1).contains(AccountDifference.DECLARED_WRITABLE_BUT_READ_ONLY));
   }
 
@@ -905,7 +930,7 @@ final class Token2022OnChainInstructionTests {
   void theEmptyAccountProofSlotCannotBeOverridden() {
     final var f = fixture("emptyConfidentialTransferAccount-1.json");
     final var built = Token2022Program.emptyConfidentialTransferAccountKeys(
-        SolanaAccounts.MAIN_NET, f.accounts().getFirst().pubkey(), f.accounts().get(2).pubkey());
+        SolanaAccounts.MAIN_NET, f.accounts().getFirst().pubkey(), f.accounts().get(2).pubkey(), true);
     assertEquals(SolanaAccounts.MAIN_NET.instructionsSysVar(), built.get(1).publicKey());
     assertNotEquals(SolanaAccounts.MAIN_NET.instructionsSysVar(), f.accounts().get(1).pubkey(),
         "the captured instruction used a context-state account, not the sysvar");
@@ -947,7 +972,9 @@ final class Token2022OnChainInstructionTests {
   /// Reported explicitly because it is the only on-chain evidence for `isSigner: "either"`: the
   /// authority slot holds a Token-2022 `Multisig` account, which never signs, and the member
   /// signers follow it as accounts the IDL does not declare. Every occurrence is listed with the
-  /// multisig's address and the position it occupied.
+  /// multisig's address and the position it occupied, and is rebuilt with that account's
+  /// `<account>IsSigner` flag `false`, which must seat the multisig unsigned where it stood and
+  /// change nothing else in the list.
   @Test
   void multisigOwnerOccurrences() {
     final var found = new TreeMap<String, String>();
@@ -959,6 +986,23 @@ final class Token2022OnChainInstructionTests {
           assertTrue(f.accounts().size() > index + 1,
               f.file() + ": a multisig authority must be followed by its member signers");
           found.put(f.file(), index + ":" + authority.pubkey());
+
+          final var solved = solve(f.instruction(), f.accounts());
+          final int key = solved.layout()[index];
+          assertTrue(solved.shape().signerFlags().contains(key),
+              f.file() + ": the multisig stands where the IDL declares a fixed signer");
+          final var expected = new ArrayList<>(solved.keys());
+          expected.set(index, solved.keys().get(index).write()
+              ? AccountMeta.createWrite(authority.pubkey())
+              : AccountMeta.createRead(authority.pubkey()));
+          final var rebuilt = invokeKeys(solved.shape(), solved.fed(), Set.of(key));
+          assertEquals(expected, rebuilt,
+              f.file() + ": with its signer flag false the helper must seat the multisig unsigned, in place");
+          // Against the captured account, not the helper's own output: the fixture's bits are the oracle.
+          final var seated = rebuilt.get(index);
+          assertFalse(seated.signer(), f.file() + ": the unsigned multisig carries no signer flag");
+          assertEquals(authority.writable(), seated.write(),
+              f.file() + ": the unsigned multisig keeps the writability the chain captured");
         }
       });
     }

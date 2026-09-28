@@ -96,6 +96,11 @@ final class Token2022ReferenceEncodingTests {
   private static final PublicKey POINTER_ADDRESS = key(0x8f);
   private static final PublicKey MULTISIG = key(0x9f);
 
+  /// The `<account>IsSigner` argument of every builder whose IDL declares that account
+  /// `isSigner: "either"`. Upstream's builder makes such an account a signer whenever it is handed
+  /// a signer, and the vectors hand it one every time, so each call here asks for the signature.
+  private static final boolean AUTHORITY_SIGNS = true;
+
   private static final long AMOUNT = 4_230_000_000_000L;
   /// u64 max. Java has no unsigned long, so the caller passes the same 64 bits as -1.
   private static final long MAX_U64 = -1L;
@@ -153,9 +158,9 @@ final class Token2022ReferenceEncodingTests {
   /// `confidentialTransferWithFee`, `confidentialMint`, `confidentialBurn`,
   /// `permissionedConfidentialBurn`, `configureConfidentialTransferAccountWithRegistry`, and
   /// `syncNative`) are the only ones upstream renders with the `omitted` strategy, and the
-  /// generated builders drop a null account the same way. Every account either IDL declares a
-  /// signer is marked one unconditionally here, and upstream marks it one whenever a signer was
-  /// passed — which the vectors do for all of them.
+  /// generated builders drop a null account the same way. An account the IDL declares
+  /// `isSigner: "either"` is a signer here when the caller says so ([#AUTHORITY_SIGNS]), and
+  /// upstream marks it one whenever a signer was passed — which the vectors do for all of them.
   ///
   /// What is deliberately *not* compared is anything appended past the declared account list:
   /// upstream's `multiSigners`, and the `signers` / `sources` arrays on `initializeMultisig`,
@@ -493,34 +498,38 @@ final class Token2022ReferenceEncodingTests {
 
       case "initializeMultisig.m3" -> Token2022Program.initializeMultisig(PROGRAM, ACCOUNTS, MULTISIG, M);
 
-      case "transfer.amount" -> Token2022Program.transfer(PROGRAM, SOURCE, DESTINATION, AUTHORITY, AMOUNT);
-      case "transfer.max-u64" -> Token2022Program.transfer(PROGRAM, SOURCE, DESTINATION, AUTHORITY, MAX_U64);
+      case "transfer.amount" -> Token2022Program.transfer(
+          PROGRAM, SOURCE, DESTINATION, AUTHORITY, AUTHORITY_SIGNS, AMOUNT);
+      case "transfer.max-u64" -> Token2022Program.transfer(
+          PROGRAM, SOURCE, DESTINATION, AUTHORITY, AUTHORITY_SIGNS, MAX_U64);
 
-      case "approve.amount" -> Token2022Program.approve(PROGRAM, SOURCE, DELEGATE, AUTHORITY, AMOUNT);
+      case "approve.amount" -> Token2022Program.approve(
+          PROGRAM, SOURCE, DELEGATE, AUTHORITY, AUTHORITY_SIGNS, AMOUNT);
 
-      case "revoke.bare" -> Token2022Program.revoke(PROGRAM, SOURCE, AUTHORITY);
+      case "revoke.bare" -> Token2022Program.revoke(PROGRAM, SOURCE, AUTHORITY, AUTHORITY_SIGNS);
 
       case "setAuthority.mint-tokens" -> Token2022Program.setAuthority(
-          PROGRAM, MINT, AUTHORITY, AuthorityType.mintTokens, NEW_AUTHORITY);
+          PROGRAM, MINT, AUTHORITY, AUTHORITY_SIGNS, AuthorityType.mintTokens, NEW_AUTHORITY);
       case "setAuthority.close-account-none" -> Token2022Program.setAuthority(
-          PROGRAM, TOKEN, AUTHORITY, AuthorityType.closeAccount, null);
+          PROGRAM, TOKEN, AUTHORITY, AUTHORITY_SIGNS, AuthorityType.closeAccount, null);
       case "setAuthority.permissioned-burn" -> Token2022Program.setAuthority(
-          PROGRAM, MINT, AUTHORITY, AuthorityType.permissionedBurn, NEW_AUTHORITY);
+          PROGRAM, MINT, AUTHORITY, AUTHORITY_SIGNS, AuthorityType.permissionedBurn, NEW_AUTHORITY);
 
-      case "mintTo.amount" -> Token2022Program.mintTo(PROGRAM, MINT, TOKEN, AUTHORITY, AMOUNT);
-      case "burn.amount" -> Token2022Program.burn(PROGRAM, TOKEN, MINT, AUTHORITY, AMOUNT);
-      case "closeAccount.bare" -> Token2022Program.closeAccount(PROGRAM, TOKEN, DESTINATION, AUTHORITY);
-      case "freezeAccount.bare" -> Token2022Program.freezeAccount(PROGRAM, TOKEN, MINT, AUTHORITY);
-      case "thawAccount.bare" -> Token2022Program.thawAccount(PROGRAM, TOKEN, MINT, AUTHORITY);
+      case "mintTo.amount" -> Token2022Program.mintTo(PROGRAM, MINT, TOKEN, AUTHORITY, AUTHORITY_SIGNS, AMOUNT);
+      case "burn.amount" -> Token2022Program.burn(PROGRAM, TOKEN, MINT, AUTHORITY, AUTHORITY_SIGNS, AMOUNT);
+      case "closeAccount.bare" -> Token2022Program.closeAccount(
+          PROGRAM, TOKEN, DESTINATION, AUTHORITY, AUTHORITY_SIGNS);
+      case "freezeAccount.bare" -> Token2022Program.freezeAccount(PROGRAM, TOKEN, MINT, AUTHORITY, AUTHORITY_SIGNS);
+      case "thawAccount.bare" -> Token2022Program.thawAccount(PROGRAM, TOKEN, MINT, AUTHORITY, AUTHORITY_SIGNS);
 
       case "transferChecked.amount" -> Token2022Program.transferChecked(
-          PROGRAM, SOURCE, MINT, DESTINATION, AUTHORITY, AMOUNT, DECIMALS);
+          PROGRAM, SOURCE, MINT, DESTINATION, AUTHORITY, AUTHORITY_SIGNS, AMOUNT, DECIMALS);
       case "approveChecked.amount" -> Token2022Program.approveChecked(
-          PROGRAM, SOURCE, MINT, DELEGATE, AUTHORITY, AMOUNT, DECIMALS);
+          PROGRAM, SOURCE, MINT, DELEGATE, AUTHORITY, AUTHORITY_SIGNS, AMOUNT, DECIMALS);
       case "mintToChecked.amount" -> Token2022Program.mintToChecked(
-          PROGRAM, MINT, TOKEN, AUTHORITY, AMOUNT, DECIMALS);
+          PROGRAM, MINT, TOKEN, AUTHORITY, AUTHORITY_SIGNS, AMOUNT, DECIMALS);
       case "burnChecked.amount" -> Token2022Program.burnChecked(
-          PROGRAM, TOKEN, MINT, AUTHORITY, AMOUNT, DECIMALS);
+          PROGRAM, TOKEN, MINT, AUTHORITY, AUTHORITY_SIGNS, AMOUNT, DECIMALS);
 
       case "syncNative.bare" -> Token2022Program.syncNative(PROGRAM, ACCOUNTS, TOKEN);
       case "getAccountDataSize.bare" -> Token2022Program.getAccountDataSize(PROGRAM, MINT);
@@ -554,15 +563,15 @@ final class Token2022ReferenceEncodingTests {
           PROGRAM, MINT, null, SECOND_AUTHORITY, FEE_BASIS_POINTS, MAXIMUM_FEE);
 
       case "transferCheckedWithFee.fee" -> Token2022Program.transferCheckedWithFee(
-          PROGRAM, SOURCE, MINT, DESTINATION, AUTHORITY, AMOUNT, DECIMALS, FEE);
+          PROGRAM, SOURCE, MINT, DESTINATION, AUTHORITY, AUTHORITY_SIGNS, AMOUNT, DECIMALS, FEE);
 
       case "withdrawWithheldTokensFromMint.bare" -> Token2022Program.withdrawWithheldTokensFromMint(
-          PROGRAM, MINT, FEE_RECEIVER, AUTHORITY);
+          PROGRAM, MINT, FEE_RECEIVER, AUTHORITY, AUTHORITY_SIGNS);
       case "withdrawWithheldTokensFromAccounts.count" -> Token2022Program.withdrawWithheldTokensFromAccounts(
-          PROGRAM, MINT, FEE_RECEIVER, AUTHORITY, NUM_TOKEN_ACCOUNTS);
+          PROGRAM, MINT, FEE_RECEIVER, AUTHORITY, AUTHORITY_SIGNS, NUM_TOKEN_ACCOUNTS);
       case "harvestWithheldTokensToMint.bare" -> Token2022Program.harvestWithheldTokensToMint(PROGRAM, MINT);
       case "setTransferFee.fee" -> Token2022Program.setTransferFee(
-          PROGRAM, MINT, AUTHORITY, FEE_BASIS_POINTS, MAXIMUM_FEE);
+          PROGRAM, MINT, AUTHORITY, AUTHORITY_SIGNS, FEE_BASIS_POINTS, MAXIMUM_FEE);
 
       // Confidential transfer extension
       case "initializeConfidentialTransferMint.auto-approve" -> Token2022Program.initializeConfidentialTransferMint(
@@ -576,51 +585,55 @@ final class Token2022ReferenceEncodingTests {
           PROGRAM, MINT, AUTHORITY, false, null);
 
       case "configureConfidentialTransferAccount.basic" -> Token2022Program.configureConfidentialTransferAccount(
-          PROGRAM, ACCOUNTS, TOKEN, MINT, AUTHORITY, AVAILABLE_BALANCE, MAX_PENDING_CREDITS, PROOF_OFFSET);
+          PROGRAM, ACCOUNTS, TOKEN, MINT, AUTHORITY, AUTHORITY_SIGNS,
+          AVAILABLE_BALANCE, MAX_PENDING_CREDITS, PROOF_OFFSET);
       case "approveConfidentialTransferAccount.bare" -> Token2022Program.approveConfidentialTransferAccount(
           PROGRAM, TOKEN, MINT, AUTHORITY);
       case "emptyConfidentialTransferAccount.offset" -> Token2022Program.emptyConfidentialTransferAccount(
-          PROGRAM, ACCOUNTS, TOKEN, AUTHORITY, PROOF_OFFSET);
+          PROGRAM, ACCOUNTS, TOKEN, AUTHORITY, AUTHORITY_SIGNS, PROOF_OFFSET);
       case "emptyConfidentialTransferAccount.negative-offset" -> Token2022Program.emptyConfidentialTransferAccount(
-          PROGRAM, ACCOUNTS, TOKEN, AUTHORITY, NEGATIVE_PROOF_OFFSET);
+          PROGRAM, ACCOUNTS, TOKEN, AUTHORITY, AUTHORITY_SIGNS, NEGATIVE_PROOF_OFFSET);
 
       case "confidentialDeposit.amount" -> Token2022Program.confidentialDeposit(
-          PROGRAM, TOKEN, MINT, AUTHORITY, AMOUNT, DECIMALS);
+          PROGRAM, TOKEN, MINT, AUTHORITY, AUTHORITY_SIGNS, AMOUNT, DECIMALS);
 
       case "confidentialWithdraw.all-records" -> Token2022Program.confidentialWithdraw(
-          PROGRAM, TOKEN, MINT, ACCOUNTS.instructionsSysVar(), EQUALITY_RECORD, RANGE_RECORD, AUTHORITY,
+          PROGRAM, TOKEN, MINT, ACCOUNTS.instructionsSysVar(), EQUALITY_RECORD, RANGE_RECORD,
+          AUTHORITY, AUTHORITY_SIGNS,
           AMOUNT, DECIMALS, AVAILABLE_BALANCE, NEGATIVE_PROOF_OFFSET, PROOF_OFFSET);
       case "confidentialWithdraw.no-records" -> Token2022Program.confidentialWithdraw(
-          PROGRAM, TOKEN, MINT, null, null, null, AUTHORITY,
+          PROGRAM, TOKEN, MINT, null, null, null, AUTHORITY, AUTHORITY_SIGNS,
           AMOUNT, DECIMALS, AVAILABLE_BALANCE, NEGATIVE_PROOF_OFFSET, PROOF_OFFSET);
 
       case "confidentialTransfer.all-records" -> Token2022Program.confidentialTransfer(
           PROGRAM, SOURCE, MINT, DESTINATION, ACCOUNTS.instructionsSysVar(),
-          EQUALITY_RECORD, VALIDITY_RECORD, RANGE_RECORD, AUTHORITY,
+          EQUALITY_RECORD, VALIDITY_RECORD, RANGE_RECORD, AUTHORITY, AUTHORITY_SIGNS,
           AVAILABLE_BALANCE, AUDITOR_LO, AUDITOR_HI,
           NEGATIVE_PROOF_OFFSET, PROOF_OFFSET, NEGATIVE_PROOF_OFFSET);
       case "confidentialTransfer.no-records" -> Token2022Program.confidentialTransfer(
-          PROGRAM, SOURCE, MINT, DESTINATION, null, null, null, null, AUTHORITY,
+          PROGRAM, SOURCE, MINT, DESTINATION, null, null, null, null, AUTHORITY, AUTHORITY_SIGNS,
           AVAILABLE_BALANCE, AUDITOR_LO, AUDITOR_HI,
           NEGATIVE_PROOF_OFFSET, PROOF_OFFSET, NEGATIVE_PROOF_OFFSET);
 
       case "applyConfidentialPendingBalance.counter" -> Token2022Program.applyConfidentialPendingBalance(
-          PROGRAM, TOKEN, AUTHORITY, CREDIT_COUNTER, AVAILABLE_BALANCE);
+          PROGRAM, TOKEN, AUTHORITY, AUTHORITY_SIGNS, CREDIT_COUNTER, AVAILABLE_BALANCE);
 
-      case "enableConfidentialCredits.bare" -> Token2022Program.enableConfidentialCredits(PROGRAM, TOKEN, AUTHORITY);
-      case "disableConfidentialCredits.bare" -> Token2022Program.disableConfidentialCredits(PROGRAM, TOKEN, AUTHORITY);
+      case "enableConfidentialCredits.bare" -> Token2022Program.enableConfidentialCredits(
+          PROGRAM, TOKEN, AUTHORITY, AUTHORITY_SIGNS);
+      case "disableConfidentialCredits.bare" -> Token2022Program.disableConfidentialCredits(
+          PROGRAM, TOKEN, AUTHORITY, AUTHORITY_SIGNS);
       case "enableNonConfidentialCredits.bare" -> Token2022Program.enableNonConfidentialCredits(
-          PROGRAM, TOKEN, AUTHORITY);
+          PROGRAM, TOKEN, AUTHORITY, AUTHORITY_SIGNS);
       case "disableNonConfidentialCredits.bare" -> Token2022Program.disableNonConfidentialCredits(
-          PROGRAM, TOKEN, AUTHORITY);
+          PROGRAM, TOKEN, AUTHORITY, AUTHORITY_SIGNS);
 
       case "confidentialTransferWithFee.all-records" -> Token2022Program.confidentialTransferWithFee(
           PROGRAM, SOURCE, MINT, DESTINATION, ACCOUNTS.instructionsSysVar(), EQUALITY_RECORD, VALIDITY_RECORD,
-          FEE_SIGMA_RECORD, FEE_VALIDITY_RECORD, RANGE_RECORD, AUTHORITY,
+          FEE_SIGMA_RECORD, FEE_VALIDITY_RECORD, RANGE_RECORD, AUTHORITY, AUTHORITY_SIGNS,
           AVAILABLE_BALANCE, AUDITOR_LO, AUDITOR_HI,
           NEGATIVE_PROOF_OFFSET, PROOF_OFFSET, NEGATIVE_PROOF_OFFSET, PROOF_OFFSET, NEGATIVE_PROOF_OFFSET);
       case "confidentialTransferWithFee.no-records" -> Token2022Program.confidentialTransferWithFee(
-          PROGRAM, SOURCE, MINT, DESTINATION, null, null, null, null, null, null, AUTHORITY,
+          PROGRAM, SOURCE, MINT, DESTINATION, null, null, null, null, null, null, AUTHORITY, AUTHORITY_SIGNS,
           AVAILABLE_BALANCE, AUDITOR_LO, AUDITOR_HI,
           NEGATIVE_PROOF_OFFSET, PROOF_OFFSET, NEGATIVE_PROOF_OFFSET, PROOF_OFFSET, NEGATIVE_PROOF_OFFSET);
 
@@ -637,17 +650,22 @@ final class Token2022ReferenceEncodingTests {
       case "initializeDefaultAccountState.uninitialized" -> Token2022Program.initializeDefaultAccountState(
           PROGRAM, MINT, AccountState.uninitialized);
       case "updateDefaultAccountState.initialized" -> Token2022Program.updateDefaultAccountState(
-          PROGRAM, MINT, AUTHORITY, AccountState.initialized);
+          PROGRAM, MINT, AUTHORITY, AUTHORITY_SIGNS, AccountState.initialized);
 
-      case "reallocate.two-extensions" -> Token2022Program.reallocate(PROGRAM, ACCOUNTS, TOKEN, PAYER, AUTHORITY,
+      case "reallocate.two-extensions" -> Token2022Program.reallocate(
+          PROGRAM, ACCOUNTS, TOKEN, PAYER, AUTHORITY, AUTHORITY_SIGNS,
           new ExtensionType[]{ExtensionType.memoTransfer, ExtensionType.cpiGuard});
-      case "reallocate.empty" -> Token2022Program.reallocate(PROGRAM, ACCOUNTS, TOKEN, PAYER, AUTHORITY,
+      case "reallocate.empty" -> Token2022Program.reallocate(
+          PROGRAM, ACCOUNTS, TOKEN, PAYER, AUTHORITY, AUTHORITY_SIGNS,
           new ExtensionType[0]);
-      case "reallocate.high-ordinal" -> Token2022Program.reallocate(PROGRAM, ACCOUNTS, TOKEN, PAYER, AUTHORITY,
+      case "reallocate.high-ordinal" -> Token2022Program.reallocate(
+          PROGRAM, ACCOUNTS, TOKEN, PAYER, AUTHORITY, AUTHORITY_SIGNS,
           new ExtensionType[]{ExtensionType.permissionedBurn});
 
-      case "enableMemoTransfers.bare" -> Token2022Program.enableMemoTransfers(PROGRAM, TOKEN, AUTHORITY);
-      case "disableMemoTransfers.bare" -> Token2022Program.disableMemoTransfers(PROGRAM, TOKEN, AUTHORITY);
+      case "enableMemoTransfers.bare" -> Token2022Program.enableMemoTransfers(
+          PROGRAM, TOKEN, AUTHORITY, AUTHORITY_SIGNS);
+      case "disableMemoTransfers.bare" -> Token2022Program.disableMemoTransfers(
+          PROGRAM, TOKEN, AUTHORITY, AUTHORITY_SIGNS);
 
       case "createNativeMint.bare" -> Token2022Program.createNativeMint(PROGRAM, ACCOUNTS, PAYER, NATIVE_MINT);
       case "initializeNonTransferableMint.bare" -> Token2022Program.initializeNonTransferableMint(PROGRAM, MINT);
@@ -659,10 +677,10 @@ final class Token2022ReferenceEncodingTests {
       case "initializeInterestBearingMint.no-authority" -> Token2022Program.initializeInterestBearingMint(
           PROGRAM, MINT, null, RATE);
       case "updateRateInterestBearingMint.negative-rate" -> Token2022Program.updateRateInterestBearingMint(
-          PROGRAM, MINT, AUTHORITY, NEGATIVE_RATE);
+          PROGRAM, MINT, AUTHORITY, AUTHORITY_SIGNS, NEGATIVE_RATE);
 
-      case "enableCpiGuard.bare" -> Token2022Program.enableCpiGuard(PROGRAM, TOKEN, AUTHORITY);
-      case "disableCpiGuard.bare" -> Token2022Program.disableCpiGuard(PROGRAM, TOKEN, AUTHORITY);
+      case "enableCpiGuard.bare" -> Token2022Program.enableCpiGuard(PROGRAM, TOKEN, AUTHORITY, AUTHORITY_SIGNS);
+      case "disableCpiGuard.bare" -> Token2022Program.disableCpiGuard(PROGRAM, TOKEN, AUTHORITY, AUTHORITY_SIGNS);
       case "initializePermanentDelegate.bare" -> Token2022Program.initializePermanentDelegate(PROGRAM, MINT, DELEGATE);
 
       // Transfer hook, confidential transfer fee, excess lamports
@@ -671,8 +689,10 @@ final class Token2022ReferenceEncodingTests {
       case "initializeTransferHook.none" -> Token2022Program.initializeTransferHook(PROGRAM, MINT, null, null);
       case "initializeTransferHook.authority-only" -> Token2022Program.initializeTransferHook(
           PROGRAM, MINT, AUTHORITY, null);
-      case "updateTransferHook.some" -> Token2022Program.updateTransferHook(PROGRAM, MINT, AUTHORITY, HOOK_PROGRAM);
-      case "updateTransferHook.none" -> Token2022Program.updateTransferHook(PROGRAM, MINT, AUTHORITY, null);
+      case "updateTransferHook.some" -> Token2022Program.updateTransferHook(
+          PROGRAM, MINT, AUTHORITY, AUTHORITY_SIGNS, HOOK_PROGRAM);
+      case "updateTransferHook.none" -> Token2022Program.updateTransferHook(
+          PROGRAM, MINT, AUTHORITY, AUTHORITY_SIGNS, null);
 
       case "initializeConfidentialTransferFee.some-authority" -> Token2022Program.initializeConfidentialTransferFee(
           PROGRAM, MINT, AUTHORITY, ELGAMAL_PUBKEY);
@@ -681,19 +701,21 @@ final class Token2022ReferenceEncodingTests {
 
       case "withdrawWithheldTokensFromMintForConfidentialTransferFee.offset" ->
           Token2022Program.withdrawWithheldTokensFromMintForConfidentialTransferFee(
-              PROGRAM, MINT, DESTINATION, ACCOUNTS.instructionsSysVar(), AUTHORITY,
+              PROGRAM, MINT, DESTINATION, ACCOUNTS.instructionsSysVar(), AUTHORITY, AUTHORITY_SIGNS,
               NEGATIVE_PROOF_OFFSET, AVAILABLE_BALANCE);
       case "withdrawWithheldTokensFromAccountsForConfidentialTransferFee.offset" ->
           Token2022Program.withdrawWithheldTokensFromAccountsForConfidentialTransferFee(
-              PROGRAM, MINT, DESTINATION, ACCOUNTS.instructionsSysVar(), AUTHORITY,
+              PROGRAM, MINT, DESTINATION, ACCOUNTS.instructionsSysVar(), AUTHORITY, AUTHORITY_SIGNS,
               NUM_TOKEN_ACCOUNTS, NEGATIVE_PROOF_OFFSET, AVAILABLE_BALANCE);
       case "harvestWithheldTokensToMintForConfidentialTransferFee.bare" ->
           Token2022Program.harvestWithheldTokensToMintForConfidentialTransferFee(PROGRAM, MINT);
 
-      case "enableHarvestToMint.bare" -> Token2022Program.enableHarvestToMint(PROGRAM, MINT, AUTHORITY);
-      case "disableHarvestToMint.bare" -> Token2022Program.disableHarvestToMint(PROGRAM, MINT, AUTHORITY);
+      case "enableHarvestToMint.bare" -> Token2022Program.enableHarvestToMint(
+          PROGRAM, MINT, AUTHORITY, AUTHORITY_SIGNS);
+      case "disableHarvestToMint.bare" -> Token2022Program.disableHarvestToMint(
+          PROGRAM, MINT, AUTHORITY, AUTHORITY_SIGNS);
       case "withdrawExcessLamports.bare" -> Token2022Program.withdrawExcessLamports(
-          PROGRAM, SOURCE, DESTINATION, AUTHORITY);
+          PROGRAM, SOURCE, DESTINATION, AUTHORITY, AUTHORITY_SIGNS);
 
       // Pointer extensions
       case "initializeMetadataPointer.both" -> Token2022Program.initializeMetadataPointer(
@@ -702,50 +724,54 @@ final class Token2022ReferenceEncodingTests {
       case "initializeMetadataPointer.address-only" -> Token2022Program.initializeMetadataPointer(
           PROGRAM, MINT, null, POINTER_ADDRESS);
       case "updateMetadataPointer.some" -> Token2022Program.updateMetadataPointer(
-          PROGRAM, MINT, AUTHORITY, POINTER_ADDRESS);
-      case "updateMetadataPointer.none" -> Token2022Program.updateMetadataPointer(PROGRAM, MINT, AUTHORITY, null);
+          PROGRAM, MINT, AUTHORITY, AUTHORITY_SIGNS, POINTER_ADDRESS);
+      case "updateMetadataPointer.none" -> Token2022Program.updateMetadataPointer(
+          PROGRAM, MINT, AUTHORITY, AUTHORITY_SIGNS, null);
 
       case "initializeGroupPointer.both" -> Token2022Program.initializeGroupPointer(
           PROGRAM, MINT, AUTHORITY, POINTER_ADDRESS);
       case "initializeGroupPointer.none" -> Token2022Program.initializeGroupPointer(PROGRAM, MINT, null, null);
       case "updateGroupPointer.some" -> Token2022Program.updateGroupPointer(
-          PROGRAM, MINT, AUTHORITY, POINTER_ADDRESS);
-      case "updateGroupPointer.none" -> Token2022Program.updateGroupPointer(PROGRAM, MINT, AUTHORITY, null);
+          PROGRAM, MINT, AUTHORITY, AUTHORITY_SIGNS, POINTER_ADDRESS);
+      case "updateGroupPointer.none" -> Token2022Program.updateGroupPointer(
+          PROGRAM, MINT, AUTHORITY, AUTHORITY_SIGNS, null);
 
       case "initializeGroupMemberPointer.both" -> Token2022Program.initializeGroupMemberPointer(
           PROGRAM, MINT, AUTHORITY, POINTER_ADDRESS);
       case "initializeGroupMemberPointer.none" -> Token2022Program.initializeGroupMemberPointer(
           PROGRAM, MINT, null, null);
       case "updateGroupMemberPointer.some" -> Token2022Program.updateGroupMemberPointer(
-          PROGRAM, MINT, AUTHORITY, POINTER_ADDRESS);
-      case "updateGroupMemberPointer.none" -> Token2022Program.updateGroupMemberPointer(PROGRAM, MINT, AUTHORITY, null);
+          PROGRAM, MINT, AUTHORITY, AUTHORITY_SIGNS, POINTER_ADDRESS);
+      case "updateGroupMemberPointer.none" -> Token2022Program.updateGroupMemberPointer(
+          PROGRAM, MINT, AUTHORITY, AUTHORITY_SIGNS, null);
 
       // Confidential mint/burn extension
       case "initializeConfidentialMintBurn.basic" -> Token2022Program.initializeConfidentialMintBurn(
           PROGRAM, MINT, ELGAMAL_PUBKEY, SUPPLY_BALANCE);
       case "rotateSupplyElgamalPubkey.offset" -> Token2022Program.rotateSupplyElgamalPubkey(
-          PROGRAM, ACCOUNTS, MINT, AUTHORITY, ELGAMAL_PUBKEY, NEGATIVE_PROOF_OFFSET);
+          PROGRAM, ACCOUNTS, MINT, AUTHORITY, AUTHORITY_SIGNS, ELGAMAL_PUBKEY, NEGATIVE_PROOF_OFFSET);
       case "updateConfidentialMintBurnDecryptableSupply.basic" ->
-          Token2022Program.updateConfidentialMintBurnDecryptableSupply(PROGRAM, MINT, AUTHORITY, SUPPLY_BALANCE);
+          Token2022Program.updateConfidentialMintBurnDecryptableSupply(
+              PROGRAM, MINT, AUTHORITY, AUTHORITY_SIGNS, SUPPLY_BALANCE);
 
       case "confidentialMint.all-records" -> Token2022Program.confidentialMint(
           PROGRAM, TOKEN, MINT, ACCOUNTS.instructionsSysVar(), EQUALITY_RECORD, VALIDITY_RECORD, RANGE_RECORD,
-          AUTHORITY, SUPPLY_BALANCE, AUDITOR_LO, AUDITOR_HI,
+          AUTHORITY, AUTHORITY_SIGNS, SUPPLY_BALANCE, AUDITOR_LO, AUDITOR_HI,
           NEGATIVE_PROOF_OFFSET, PROOF_OFFSET, NEGATIVE_PROOF_OFFSET);
       case "confidentialMint.no-records" -> Token2022Program.confidentialMint(
           PROGRAM, TOKEN, MINT, null, null, null, null,
-          AUTHORITY, SUPPLY_BALANCE, AUDITOR_LO, AUDITOR_HI,
+          AUTHORITY, AUTHORITY_SIGNS, SUPPLY_BALANCE, AUDITOR_LO, AUDITOR_HI,
           NEGATIVE_PROOF_OFFSET, PROOF_OFFSET, NEGATIVE_PROOF_OFFSET);
       case "confidentialBurn.all-records" -> Token2022Program.confidentialBurn(
           PROGRAM, TOKEN, MINT, ACCOUNTS.instructionsSysVar(), EQUALITY_RECORD, VALIDITY_RECORD, RANGE_RECORD,
-          AUTHORITY, AVAILABLE_BALANCE, AUDITOR_LO, AUDITOR_HI,
+          AUTHORITY, AUTHORITY_SIGNS, AVAILABLE_BALANCE, AUDITOR_LO, AUDITOR_HI,
           NEGATIVE_PROOF_OFFSET, PROOF_OFFSET, NEGATIVE_PROOF_OFFSET);
       case "confidentialBurn.no-records" -> Token2022Program.confidentialBurn(
           PROGRAM, TOKEN, MINT, null, null, null, null,
-          AUTHORITY, AVAILABLE_BALANCE, AUDITOR_LO, AUDITOR_HI,
+          AUTHORITY, AUTHORITY_SIGNS, AVAILABLE_BALANCE, AUDITOR_LO, AUDITOR_HI,
           NEGATIVE_PROOF_OFFSET, PROOF_OFFSET, NEGATIVE_PROOF_OFFSET);
       case "applyConfidentialPendingBurn.bare" -> Token2022Program.applyConfidentialPendingBurn(
-          PROGRAM, MINT, AUTHORITY);
+          PROGRAM, MINT, AUTHORITY, AUTHORITY_SIGNS);
 
       // Scaled UI amount and pausable extensions
       case "initializeScaledUiAmountMint.multiplier" -> Token2022Program.initializeScaledUiAmountMint(
@@ -755,14 +781,14 @@ final class Token2022ReferenceEncodingTests {
       case "initializeScaledUiAmountMint.no-authority" -> Token2022Program.initializeScaledUiAmountMint(
           PROGRAM, MINT, null, MULTIPLIER);
       case "updateMultiplierScaledUiMint.multiplier" -> Token2022Program.updateMultiplierScaledUiMint(
-          PROGRAM, MINT, AUTHORITY, MULTIPLIER, EFFECTIVE_TIMESTAMP);
+          PROGRAM, MINT, AUTHORITY, AUTHORITY_SIGNS, MULTIPLIER, EFFECTIVE_TIMESTAMP);
       case "updateMultiplierScaledUiMint.negative-timestamp" -> Token2022Program.updateMultiplierScaledUiMint(
-          PROGRAM, MINT, AUTHORITY, NEGATIVE_MULTIPLIER, -1L);
+          PROGRAM, MINT, AUTHORITY, AUTHORITY_SIGNS, NEGATIVE_MULTIPLIER, -1L);
 
       case "initializePausableConfig.some" -> Token2022Program.initializePausableConfig(PROGRAM, MINT, AUTHORITY);
       case "initializePausableConfig.none" -> Token2022Program.initializePausableConfig(PROGRAM, MINT, null);
-      case "pause.bare" -> Token2022Program.pause(PROGRAM, MINT, AUTHORITY);
-      case "resume.bare" -> Token2022Program.resume(PROGRAM, MINT, AUTHORITY);
+      case "pause.bare" -> Token2022Program.pause(PROGRAM, MINT, AUTHORITY, AUTHORITY_SIGNS);
+      case "resume.bare" -> Token2022Program.resume(PROGRAM, MINT, AUTHORITY, AUTHORITY_SIGNS);
 
       // Token metadata interface
       case "initializeTokenMetadata.basic" -> Token2022Program.initializeTokenMetadata(
@@ -820,22 +846,22 @@ final class Token2022ReferenceEncodingTests {
 
       // Unwrap lamports and the permissioned burn extension
       case "unwrapLamports.amount" -> Token2022Program.unwrapLamports(
-          PROGRAM, SOURCE, DESTINATION, AUTHORITY, OptionalLong.of(AMOUNT));
+          PROGRAM, SOURCE, DESTINATION, AUTHORITY, AUTHORITY_SIGNS, OptionalLong.of(AMOUNT));
       case "unwrapLamports.none" -> Token2022Program.unwrapLamports(
-          PROGRAM, SOURCE, DESTINATION, AUTHORITY, OptionalLong.empty());
+          PROGRAM, SOURCE, DESTINATION, AUTHORITY, AUTHORITY_SIGNS, OptionalLong.empty());
 
       case "initializePermissionedBurn.bare" -> Token2022Program.initializePermissionedBurn(PROGRAM, MINT, AUTHORITY);
       case "permissionedBurn.amount" -> Token2022Program.permissionedBurn(
-          PROGRAM, TOKEN, MINT, SECOND_AUTHORITY, AUTHORITY, AMOUNT);
+          PROGRAM, TOKEN, MINT, SECOND_AUTHORITY, AUTHORITY, AUTHORITY_SIGNS, AMOUNT);
       case "permissionedBurnChecked.amount" -> Token2022Program.permissionedBurnChecked(
-          PROGRAM, TOKEN, MINT, SECOND_AUTHORITY, AUTHORITY, AMOUNT, DECIMALS);
+          PROGRAM, TOKEN, MINT, SECOND_AUTHORITY, AUTHORITY, AUTHORITY_SIGNS, AMOUNT, DECIMALS);
       case "permissionedConfidentialBurn.all-records" -> Token2022Program.permissionedConfidentialBurn(
           PROGRAM, TOKEN, MINT, ACCOUNTS.instructionsSysVar(), EQUALITY_RECORD, VALIDITY_RECORD, RANGE_RECORD,
-          SECOND_AUTHORITY, AUTHORITY, AVAILABLE_BALANCE, AUDITOR_LO, AUDITOR_HI,
+          SECOND_AUTHORITY, AUTHORITY, AUTHORITY_SIGNS, AVAILABLE_BALANCE, AUDITOR_LO, AUDITOR_HI,
           NEGATIVE_PROOF_OFFSET, PROOF_OFFSET, NEGATIVE_PROOF_OFFSET);
       case "permissionedConfidentialBurn.no-records" -> Token2022Program.permissionedConfidentialBurn(
           PROGRAM, TOKEN, MINT, null, null, null, null,
-          SECOND_AUTHORITY, AUTHORITY, AVAILABLE_BALANCE, AUDITOR_LO, AUDITOR_HI,
+          SECOND_AUTHORITY, AUTHORITY, AUTHORITY_SIGNS, AVAILABLE_BALANCE, AUDITOR_LO, AUDITOR_HI,
           NEGATIVE_PROOF_OFFSET, PROOF_OFFSET, NEGATIVE_PROOF_OFFSET);
 
       default -> throw new IllegalStateException(

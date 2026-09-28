@@ -1068,6 +1068,7 @@ public final class StakePoolProgram {
   /// Deposit some stake into the pool. The output is a "pool" token representing ownership into the pool. Inputs are converted to the current ratio.
   ///
   /// @param depositAuthorityKey Stake pool deposit authority; must sign when the pool uses a custom deposit authority
+  /// @param depositAuthorityIsSigner whether the `depositAuthority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param depositStakeAccountKey Stake account to join the pool; its withdraw authority must first be set to the stake pool deposit authority
   /// @param validatorStakeAccountKey Validator stake account to merge the deposited stake into
   /// @param reserveStakeKey Reserve stake account, to withdraw the rent exempt reserve
@@ -1077,6 +1078,7 @@ public final class StakePoolProgram {
                                                    final PublicKey stakePoolKey,
                                                    final PublicKey validatorListKey,
                                                    final PublicKey depositAuthorityKey,
+                                                   final boolean depositAuthorityIsSigner,
                                                    final PublicKey stakePoolWithdrawAuthorityKey,
                                                    final PublicKey depositStakeAccountKey,
                                                    final PublicKey validatorStakeAccountKey,
@@ -1089,7 +1091,7 @@ public final class StakePoolProgram {
     return List.of(
       createWrite(stakePoolKey),
       createWrite(validatorListKey),
-      createReadOnlySigner(depositAuthorityKey),
+      depositAuthorityIsSigner ? createReadOnlySigner(depositAuthorityKey) : createRead(depositAuthorityKey),
       createRead(stakePoolWithdrawAuthorityKey),
       createWrite(depositStakeAccountKey),
       createWrite(validatorStakeAccountKey),
@@ -1108,6 +1110,7 @@ public final class StakePoolProgram {
   /// Deposit some stake into the pool. The output is a "pool" token representing ownership into the pool. Inputs are converted to the current ratio.
   ///
   /// @param depositAuthorityKey Stake pool deposit authority; must sign when the pool uses a custom deposit authority
+  /// @param depositAuthorityIsSigner whether the `depositAuthority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param depositStakeAccountKey Stake account to join the pool; its withdraw authority must first be set to the stake pool deposit authority
   /// @param validatorStakeAccountKey Validator stake account to merge the deposited stake into
   /// @param reserveStakeKey Reserve stake account, to withdraw the rent exempt reserve
@@ -1118,6 +1121,7 @@ public final class StakePoolProgram {
                                          final PublicKey stakePoolKey,
                                          final PublicKey validatorListKey,
                                          final PublicKey depositAuthorityKey,
+                                         final boolean depositAuthorityIsSigner,
                                          final PublicKey stakePoolWithdrawAuthorityKey,
                                          final PublicKey depositStakeAccountKey,
                                          final PublicKey validatorStakeAccountKey,
@@ -1132,6 +1136,7 @@ public final class StakePoolProgram {
       stakePoolKey,
       validatorListKey,
       depositAuthorityKey,
+      depositAuthorityIsSigner,
       stakePoolWithdrawAuthorityKey,
       depositStakeAccountKey,
       validatorStakeAccountKey,
@@ -2853,6 +2858,7 @@ public final class StakePoolProgram {
   /// Deposit some stake into the pool, with a specified slippage constraint.
   ///
   /// @param depositAuthorityKey Stake pool deposit authority; must sign when the pool uses a custom deposit authority
+  /// @param depositAuthorityIsSigner whether the `depositAuthority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param depositStakeAccountKey Stake account to join the pool; its withdraw authority must first be set to the stake pool deposit authority
   /// @param validatorStakeAccountKey Validator stake account to merge the deposited stake into
   /// @param reserveStakeKey Reserve stake account, to withdraw the rent exempt reserve
@@ -2862,6 +2868,7 @@ public final class StakePoolProgram {
                                                                final PublicKey stakePoolKey,
                                                                final PublicKey validatorListKey,
                                                                final PublicKey depositAuthorityKey,
+                                                               final boolean depositAuthorityIsSigner,
                                                                final PublicKey stakePoolWithdrawAuthorityKey,
                                                                final PublicKey depositStakeAccountKey,
                                                                final PublicKey validatorStakeAccountKey,
@@ -2874,7 +2881,7 @@ public final class StakePoolProgram {
     return List.of(
       createWrite(stakePoolKey),
       createWrite(validatorListKey),
-      createReadOnlySigner(depositAuthorityKey),
+      depositAuthorityIsSigner ? createReadOnlySigner(depositAuthorityKey) : createRead(depositAuthorityKey),
       createRead(stakePoolWithdrawAuthorityKey),
       createWrite(depositStakeAccountKey),
       createWrite(validatorStakeAccountKey),
@@ -2893,6 +2900,7 @@ public final class StakePoolProgram {
   /// Deposit some stake into the pool, with a specified slippage constraint.
   ///
   /// @param depositAuthorityKey Stake pool deposit authority; must sign when the pool uses a custom deposit authority
+  /// @param depositAuthorityIsSigner whether the `depositAuthority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param depositStakeAccountKey Stake account to join the pool; its withdraw authority must first be set to the stake pool deposit authority
   /// @param validatorStakeAccountKey Validator stake account to merge the deposited stake into
   /// @param reserveStakeKey Reserve stake account, to withdraw the rent exempt reserve
@@ -2904,6 +2912,7 @@ public final class StakePoolProgram {
                                                      final PublicKey stakePoolKey,
                                                      final PublicKey validatorListKey,
                                                      final PublicKey depositAuthorityKey,
+                                                     final boolean depositAuthorityIsSigner,
                                                      final PublicKey stakePoolWithdrawAuthorityKey,
                                                      final PublicKey depositStakeAccountKey,
                                                      final PublicKey validatorStakeAccountKey,
@@ -2919,6 +2928,7 @@ public final class StakePoolProgram {
       stakePoolKey,
       validatorListKey,
       depositAuthorityKey,
+      depositAuthorityIsSigner,
       stakePoolWithdrawAuthorityKey,
       depositStakeAccountKey,
       validatorStakeAccountKey,
