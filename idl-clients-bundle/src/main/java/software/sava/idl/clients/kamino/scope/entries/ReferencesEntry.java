@@ -8,12 +8,15 @@ public sealed interface ReferencesEntry
 
   /// The slot whose last stored price bounds this one on refresh.
   ///
-  /// Resolved while the entry graph is still being built, so a slot that references
-  /// itself — or a pair that reference each other, both of which the program accepts
-  /// and treats as a per-refresh move limiter — reads as `null` here for whichever of
-  /// them is resolved second. `ScopeEntries.referencePrice(int)` resolves the same
-  /// field after the whole account is walked and has no such gap; prefer it when the
-  /// answer has to be complete.
+  /// Resolved while the entry graph is still being built, so a pair of slots that
+  /// reference each other — which the program accepts, each bounding its refresh
+  /// against the other's last stored price — reads as `null` here for whichever of
+  /// them is resolved second, and so does a slot that references itself, which bounds
+  /// how far each refresh may move its own price and which the program has refused on
+  /// write since Scope 0.42.0 (`RefPriceSelfReference`) but still honours on entries
+  /// configured earlier. `ScopeEntries.referencePrice(int)` resolves the same field
+  /// after the whole account is walked and has no such gap; prefer it when the answer
+  /// has to be complete.
   ScopeEntry refPrice();
 
   /// Max divergence from [#refPrice()] tolerated on refresh, in bps.

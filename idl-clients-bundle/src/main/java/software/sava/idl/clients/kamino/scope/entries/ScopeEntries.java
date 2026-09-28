@@ -53,11 +53,13 @@ public interface ScopeEntries {
   /// ask, and the only way for the types that have no field for it.
   ///
   /// It names a slot, not a nested computation. On refresh the program compares
-  /// against that slot's *last stored* price, so a slot may legitimately reference
-  /// itself — that configuration bounds how far each refresh may move the price — and
-  /// two slots may reference each other. Those resolve here; the entry-level
-  /// [ReferencesEntry#refPrice()] cannot see them, because it is built while the
-  /// graph is still being walked.
+  /// against that slot's *last stored* price, so two slots may reference each other,
+  /// and a slot may reference itself — which bounds how far each refresh may move the
+  /// price. Since Scope 0.42.0 a *new* self-reference is refused on write
+  /// (`RefPriceSelfReference`), but one configured earlier is still honoured by the
+  /// refresh, which never re-validates, and a mutual pair is still accepted. Both
+  /// resolve here; the entry-level [ReferencesEntry#refPrice()] cannot see them,
+  /// because it is built while the graph is still being walked.
   ScopeEntry referencePrice(final int index);
 
   /// Max divergence from [#referencePrice(int)] tolerated on refresh, in bps.

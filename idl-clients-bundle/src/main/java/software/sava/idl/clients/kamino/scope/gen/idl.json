@@ -483,7 +483,57 @@
       "args": []
     },
     {
+      "name": "resume_suspended_price_v2",
+      "discriminator": [
+        159,
+        237,
+        209,
+        194,
+        252,
+        121,
+        43,
+        140
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "signer": true
+        },
+        {
+          "name": "configuration"
+        },
+        {
+          "name": "oracle_prices",
+          "writable": true
+        },
+        {
+          "name": "oracle_mappings"
+        },
+        {
+          "name": "tokens_metadata"
+        }
+      ],
+      "args": [
+        {
+          "name": "token",
+          "type": "u16"
+        },
+        {
+          "name": "feed_name",
+          "type": "string"
+        },
+        {
+          "name": "approved_multiplier",
+          "type": "f64"
+        }
+      ]
+    },
+    {
       "name": "resume_suspended_price",
+      "docs": [
+        "Deprecated: use `resume_suspended_price_v2`, which names the multiplier it approves rather",
+        "than the price data the entry holds."
+      ],
       "discriminator": [
         78,
         87,
@@ -536,8 +586,8 @@
     {
       "name": "resume_chainlinkx_price",
       "docs": [
-        "Deprecated: use `resume_suspended_price` instead. This one names no price data, so it",
-        "cannot be tied to the suspension it approves, and it now errors instead of resuming."
+        "Deprecated: use `resume_suspended_price_v2` instead. This one names no multiplier to",
+        "approve, so it now errors instead of resuming."
       ],
       "discriminator": [
         136,
@@ -1171,6 +1221,36 @@
       "code": 6080,
       "name": "EagerEvalBpsOutOfRange",
       "msg": "Eager eval threshold (bps) is greater than FULL_BPS"
+    },
+    {
+      "code": 6081,
+      "name": "RefPriceSelfReference",
+      "msg": "The reference price of an entry cannot be the entry itself"
+    },
+    {
+      "code": 6082,
+      "name": "TwapSourceSelfReference",
+      "msg": "The TWAP source of an entry cannot be the entry itself"
+    },
+    {
+      "code": 6083,
+      "name": "CanaryPriceCPIError",
+      "msg": "Canary get_price CPI did not return usable price data"
+    },
+    {
+      "code": 6084,
+      "name": "CanaryFeedExpTooLarge",
+      "msg": "Canary feed exponent is above the scope-supported bound"
+    },
+    {
+      "code": 6085,
+      "name": "InvalidApprovedMultiplier",
+      "msg": "The multiplier a resume approves must convert to a non-zero price for the oracle type"
+    },
+    {
+      "code": 6086,
+      "name": "AutoApprovalBpsOutOfRange",
+      "msg": "Token2022Multiplier auto approval threshold (bps) is greater than the allowed maximum"
     }
   ],
   "types": [
@@ -1216,6 +1296,13 @@
             "type": {
               "option": "u16"
             }
+          },
+          {
+            "name": "sources_max_age_s",
+            "docs": [
+              "Max age of the source and bound entries."
+            ],
+            "type": "u64"
           }
         ]
       }
@@ -1310,7 +1397,20 @@
           },
           {
             "name": "activation_date_time",
-            "type": "u64"
+            "docs": [
+              "The activation the last report announced, as the `u32` the report carries."
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "approved_multiplier_bits",
+            "docs": [
+              "Raw `f64` bits of the multiplier a resume approved. Set by a resume, cleared by the next",
+              "report: each suspension needs its own."
+            ],
+            "type": {
+              "option": "u64"
+            }
           }
         ]
       }
@@ -1825,6 +1925,33 @@
       }
     },
     {
+      "name": "Token2022MultiplierMappingData",
+      "docs": [
+        "Per-entry configuration, stored in the mapping's generic data."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "daily_auto_approval_bps",
+            "docs": [
+              "A multiplier within this many bps of the approved one is published without a resume, and",
+              "a scheduled switch within it triggers no blackout. Zero means every change suspends.",
+              "",
+              "The reference it is measured against is replaced every 24h, on a fixed period rather than",
+              "a rolling window. The last value published before the boundary can sit this far below the",
+              "old reference and the first value after it, this far above, becomes the new one, so two",
+              "consecutive published values can be about three times this apart, within seconds.",
+              "",
+              "A mapping update that only changes this value does not reset the entry, so the approved",
+              "multiplier survives it: the update must not approve whatever the mint holds at that moment."
+            ],
+            "type": "u16"
+          }
+        ]
+      }
+    },
+    {
       "name": "Token2022MultiplierStoredData",
       "type": {
         "kind": "struct",
@@ -1836,33 +1963,30 @@
           {
             "name": "approved_multiplier_bits",
             "docs": [
-              "Raw bits of the multiplier the entry may price now. `None` on an entry that has priced",
-              "nothing yet, which takes whatever the mint holds on its first refresh."
+              "Raw bits of one multiplier, whose meaning is based on `suspended`:",
+              "- while suspended: the value a resume approved, and the price comes back only once the mint",
+              "has it, or a multiplier within the threshold of it;",
+              "- when running: the reference auto approval measures a change against.",
+              "",
+              "`None` on an entry that has priced nothing yet, which takes whatever the mint holds on its",
+              "first refresh."
             ],
             "type": {
               "option": "u64"
             }
           },
           {
-            "name": "approved_pending_bits",
+            "name": "timestamp",
             "docs": [
-              "Raw bits of the scheduled multiplier a resume covered in advance, priceable once the mint's",
-              "schedule flips to it. Only a blackout suspension records one."
+              "One timestamp, whose meaning is based on `suspended`:",
+              "- while suspended: the activation timestamp the mint announced for the switch the entry",
+              "suspended on;",
+              "- when running: when the reference was set, which is when its 24h period started.",
+              "",
+              "`None` when there is neither."
             ],
             "type": {
               "option": "u64"
-            }
-          },
-          {
-            "name": "suspension_activation_timestamp",
-            "docs": [
-              "The mint's switch timestamp when the entry suspended. `None` on an entry that is not",
-              "suspended. The mint stores an `i64`, but this is a `u32` because the whole record has to",
-              "fit the entry's 24 bytes: a switch announced past 2106 cannot be recorded, and the refresh",
-              "rejects it."
-            ],
-            "type": {
-              "option": "u32"
             }
           }
         ]
@@ -2509,6 +2633,9 @@
           },
           {
             "name": "Token2022Multiplier"
+          },
+          {
+            "name": "Canary"
           }
         ]
       }

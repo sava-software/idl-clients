@@ -6,21 +6,24 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import java.util.OptionalLong;
 
-import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 
-/// @param approvedMultiplierBits: Option<u64> Raw bits of the multiplier the entry may price now. `None` on an entry that has priced
-///                               nothing yet, which takes whatever the mint holds on its first refresh.
-/// @param approvedPendingBits: Option<u64> Raw bits of the scheduled multiplier a resume covered in advance, priceable once the mint's
-///                            schedule flips to it. Only a blackout suspension records one.
-/// @param suspensionActivationTimestamp: Option<u32> The mint's switch timestamp when the entry suspended. `None` on an entry that is not
-///                                      suspended. The mint stores an `i64`, but this is a `u32` because the whole record has to
-///                                      fit the entry's 24 bytes: a switch announced past 2106 cannot be recorded, and the refresh
-///                                      rejects it.
+/// @param approvedMultiplierBits: Option<u64> Raw bits of one multiplier, whose meaning is based on `suspended`:
+///                               - while suspended: the value a resume approved, and the price comes back only once the mint
+///                               has it, or a multiplier within the threshold of it;
+///                               - when running: the reference auto approval measures a change against.
+///
+///                               `None` on an entry that has priced nothing yet, which takes whatever the mint holds on its
+///                               first refresh.
+/// @param timestamp: Option<u64> One timestamp, whose meaning is based on `suspended`:
+///                  - while suspended: the activation timestamp the mint announced for the switch the entry
+///                  suspended on;
+///                  - when running: when the reference was set, which is when its 24h period started.
+///
+///                  `None` when there is neither.
 public record Token2022MultiplierStoredData(boolean suspended,
                                             OptionalLong approvedMultiplierBits,
-                                            OptionalLong approvedPendingBits,
-                                            OptionalLong suspensionActivationTimestamp) implements SerDe {
+                                            OptionalLong timestamp) implements SerDe {
 
   public static final int SUSPENDED_OFFSET = 0;
   public static final int APPROVED_MULTIPLIER_BITS_OFFSET = 2;
@@ -41,26 +44,14 @@ public record Token2022MultiplierStoredData(boolean suspended,
       approvedMultiplierBits = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
-    final OptionalLong approvedPendingBits;
+    final OptionalLong timestamp;
     if (SerDeUtil.isAbsent(1, _data, i)) {
-      approvedPendingBits = OptionalLong.empty();
-      ++i;
+      timestamp = OptionalLong.empty();
     } else {
       ++i;
-      approvedPendingBits = OptionalLong.of(getInt64LE(_data, i));
-      i += 8;
+      timestamp = OptionalLong.of(getInt64LE(_data, i));
     }
-    final OptionalLong suspensionActivationTimestamp;
-    if (SerDeUtil.isAbsent(1, _data, i)) {
-      suspensionActivationTimestamp = OptionalLong.empty();
-    } else {
-      ++i;
-      suspensionActivationTimestamp = OptionalLong.of(Integer.toUnsignedLong(getInt32LE(_data, i)));
-    }
-    return new Token2022MultiplierStoredData(suspended,
-                                             approvedMultiplierBits,
-                                             approvedPendingBits,
-                                             suspensionActivationTimestamp);
+    return new Token2022MultiplierStoredData(suspended, approvedMultiplierBits, timestamp);
   }
 
   @Override
@@ -69,13 +60,12 @@ public record Token2022MultiplierStoredData(boolean suspended,
     _data[i] = (byte) (suspended ? 1 : 0);
     ++i;
     i += SerDeUtil.writeOptional(1, approvedMultiplierBits, _data, i);
-    i += SerDeUtil.writeOptional(1, approvedPendingBits, _data, i);
-    i += SerDeUtil.writeOptionalUnsignedInt(1, suspensionActivationTimestamp, _data, i);
+    i += SerDeUtil.writeOptional(1, timestamp, _data, i);
     return i - _offset;
   }
 
   @Override
   public int l() {
-    return 1 + (approvedMultiplierBits == null || approvedMultiplierBits.isEmpty() ? 1 : (1 + 8)) + (approvedPendingBits == null || approvedPendingBits.isEmpty() ? 1 : (1 + 8)) + (suspensionActivationTimestamp == null || suspensionActivationTimestamp.isEmpty() ? 1 : (1 + 4));
+    return 1 + (approvedMultiplierBits == null || approvedMultiplierBits.isEmpty() ? 1 : (1 + 8)) + (timestamp == null || timestamp.isEmpty() ? 1 : (1 + 8));
   }
 }

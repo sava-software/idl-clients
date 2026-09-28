@@ -8,7 +8,7 @@ its members and changes only when that membership does, while the volatile count
 versions stay on the console summaries and the movement log. Ordered by program and channel,
 and carrying no timestamp.
 
-== Next gap (16) ==
+== Next gap (17) ==
 
 Exponent: the vcsHead IDL at github:exponent-finance/exponent-core@main/target/idl/exponent_core.json differs from the deployed idl.json
   types changed (2): Number, Principles
@@ -30,12 +30,14 @@ Kamino Lend: the vcs IDL at github:Kamino-Finance/klend-sdk@master/src/idl/klend
   instructions changed (17): abort_obligation_ownership_transfer, accept_obligation_ownership, approve_obligation_ownership_transfer, cancel_withdraw_ticket, clone_reserve_config, enqueue_to_withdraw, fill_borrow_order, fill_borrow_order_v2, initiate_obligation_ownership_transfer, recover_invalid_ticket_collateral, refresh_obligation_farms_for_reserve, rollover_fixed_term_borrow, set_borrow_order, set_borrow_order_v2, topup_reserve_rewards, update_obligation_config, withdraw_queued_liquidity
   types changed (31): BorrowOrder, BorrowOrderConfigArgs, ElevationGroup, ExchangeRateWithDecimals, FeeCalculation, FixedTermBorrowRolloverConfig, GlobalConfig, LastUpdate, LendingMarket, Obligation, ObligationCollateral, ObligationLiquidity, ObligationOrder, PriceHeuristic, ProgressCallbackType, PythConfiguration, ReferrerTokenState, Reserve, ReserveCollateral, ReserveConfig, ReserveConfigCustomizationArgs, ReserveFees, ReserveLiquidity, ScopeConfiguration, SwitchboardConfiguration, TokenInfo, UpdateObligationConfigMode, UserMetadata, WithdrawalCaps, WithdrawQueue, WithdrawTicket
 
+Kamino Scope: reviewed at slot 451262414 — anchor IDL republished after the deploy (account last written at slot 451308451), its version string still 0.41.0, and matches Kamino-Finance/scope 03b3dad (release/v0.42.0, whose Cargo.toml also still says 0.41.0): Canary oracle type 51 refreshes by CPI and consumes the canary program as an extra account, CappedFlooredData gains sources_max_age_s (zero on entries configured earlier), CappedMostRecentOf now age-checks its cap entry as well, Token2022Multiplier reads daily_auto_approval_bps from the mapping, re-lays its stored price data and keeps its price across a mapping update that changes only that value, ChainlinkXPriceData re-laid, a direct self-reference is refused on write (RefPriceSelfReference, TwapSourceSelfReference, composite sources), resume_suspended_price_v2 supersedes resume_suspended_price, which now fails with DeprecatedInstruction as resume_chainlinkx_price already did; GroundTruth compared 12 builders, 12 match
+
 Kamino Scope: the vcs IDL at github:Kamino-Finance/scope-sdk@master/src/idl/scope.json differs from the deployed idl.json
-  instructions removed (1): resume_suspended_price
+  instructions removed (2): resume_suspended_price, resume_suspended_price_v2
   instructions changed (5): refresh_chainlink_price, refresh_price_list, refresh_pyth_lazer_price, resume_chainlinkx_price, update_mapping_and_metadata
-  types removed (2): PriceRefreshOutcome, Token2022MultiplierStoredData
-  types changed (17): ChainlinkStandardPriceData, ChainlinkXPriceData, ConditionalData, EmaTwap, LiqPool, MintsToScopeChains, OracleType, PythLazerData, PythLazerEmaRefData, PythLazerStoredData, ReportDataV9RipcordFlag, ScopeChainError, StakeSystem, State, TokenMetadata, UpdateOracleMappingAndMetadataEntry, ValidatorSystem
-  errors removed (4): DeprecatedInstruction, EagerEvalBpsOutOfRange, PriceNotSuspended, ResumeStateMismatch
+  types removed (3): PriceRefreshOutcome, Token2022MultiplierMappingData, Token2022MultiplierStoredData
+  types changed (18): CappedFlooredData, ChainlinkStandardPriceData, ChainlinkXPriceData, ConditionalData, EmaTwap, LiqPool, MintsToScopeChains, OracleType, PythLazerData, PythLazerEmaRefData, PythLazerStoredData, ReportDataV9RipcordFlag, ScopeChainError, StakeSystem, State, TokenMetadata, UpdateOracleMappingAndMetadataEntry, ValidatorSystem
+  errors removed (10): AutoApprovalBpsOutOfRange, CanaryFeedExpTooLarge, CanaryPriceCPIError, DeprecatedInstruction, EagerEvalBpsOutOfRange, InvalidApprovedMultiplier, PriceNotSuspended, RefPriceSelfReference, ResumeStateMismatch, TwapSourceSelfReference
 
 Kamino Vaults: the vcs IDL at https://cdn.jsdelivr.net/npm/@kamino-finance/klend-sdk@latest/src/idl/kvault.json differs from the deployed idl.json
   instructions changed (5): invest, invest_with_max_amount, update_reserve_allocation, update_reserve_allocation_v2, withdraw_pending_fees

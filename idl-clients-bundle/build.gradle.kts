@@ -175,7 +175,7 @@ hardening {
     mutators = "STRONGER,EXPERIMENTAL_NAKED_RECEIVER"
     targetClasses = listOf("software.sava.idl.clients.kamino.scope.*")
     excludedClasses = notMutated
-    // 45 kamino.scope.gen.* classes; Integ.java stays out of the tool recompile
+    // 48 kamino.scope.gen.* classes; Integ.java stays out of the tool recompile
     declineExclusionAudit("software.sava.idl.clients.*.gen.*", generatedDecline)
     targetTests = "software.sava.idl.clients.kamino.*Test*"
   }

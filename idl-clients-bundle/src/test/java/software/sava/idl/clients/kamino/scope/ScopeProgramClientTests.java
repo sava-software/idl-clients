@@ -85,10 +85,11 @@ final class ScopeProgramClientTests {
   /// takes a mint account, so a token of that type anywhere but last in the batch
   /// makes the handler read the *next* token's base account as its mint and fail
   /// the whole transaction. `KlendCTokenExchangeRate` pulls the klend program and
-  /// lending market the same way.
+  /// lending market the same way, and `Canary` the canary program it CPIs into.
   @Test
   void refreshPriceListExtraAccountsRejectsTypesThatConsumeExtraAccounts() {
     for (final var type : new OracleType[]{
+        OracleType.Canary,
         OracleType.KToken, OracleType.KTokenToTokenA, OracleType.KTokenToTokenB,
         OracleType.JupiterLpFetch,
         OracleType.KlendCTokenExchangeRate,
@@ -103,6 +104,13 @@ final class ScopeProgramClientTests {
           () -> ScopeProgramClient.refreshPriceListExtraAccounts(mappings, new int[]{1}),
           type.name());
     }
+
+    // Canary's one missing account is a constant, so the rejection names it
+    final var canary = mappings();
+    canary.priceTypes()[1] = (byte) OracleType.Canary.ordinal();
+    final var ex = assertThrows(IllegalStateException.class,
+        () -> ScopeProgramClient.refreshPriceListExtraAccounts(canary, new int[]{1}));
+    assertTrue(ex.getMessage().contains("CanarFxHDSnbrPmrE79Qq6hL2p7ZMyyV4ZLTKQ6g7tpK"), ex.getMessage());
   }
 
   /// Bit 7 of a `price_types` byte is the program's frozen flag, not part of the

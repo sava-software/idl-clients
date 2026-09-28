@@ -72,8 +72,8 @@ public interface ScopeProgramClient {
   /// The rejected types are every arm of the program's `refresh_prices` dispatch that
   /// pulls an account out of `extra_accounts`: a plain read meta for one of those makes
   /// the handler consume the following token's base account in its place — as an asset
-  /// mint, or for `KlendCTokenExchangeRate` as the klend program — which fails the
-  /// whole transaction rather than just that entry.
+  /// mint, for `KlendCTokenExchangeRate` as the klend program, or for `Canary` as the
+  /// canary program — which fails the whole transaction rather than just that entry.
   static List<AccountMeta> refreshPriceListExtraAccounts(final OracleMappings oracleMappings, final int[] tokens) {
     final var priceInfoAccounts = oracleMappings.priceInfoAccounts();
     final var priceTypes = oracleMappings.priceTypes();
@@ -99,6 +99,8 @@ public interface ScopeProgramClient {
              SplBalance -> throw new IllegalStateException(oracleType + " requires asset mints as well.");
         case KlendCTokenExchangeRate ->
             throw new IllegalStateException(oracleType + " requires the klend program and lending market as well.");
+        case Canary -> throw new IllegalStateException(oracleType
+            + " requires the canary program (CanarFxHDSnbrPmrE79Qq6hL2p7ZMyyV4ZLTKQ6g7tpK on mainnet) as well.");
       }
       accountMetas[i] = AccountMeta.createRead(priceInfoAccounts[token]);
     }

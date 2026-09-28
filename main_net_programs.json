@@ -212,6 +212,10 @@
         "repo": "Kamino-Finance/scope-sdk",
         "path": "src/idl/scope.json",
         "ref": "master"
+      },
+      "review": {
+        "deploySlot": 451262414,
+        "verdict": "anchor IDL republished after the deploy (account last written at slot 451308451), its version string still 0.41.0, and matches Kamino-Finance/scope 03b3dad (release/v0.42.0, whose Cargo.toml also still says 0.41.0): Canary oracle type 51 refreshes by CPI and consumes the canary program as an extra account, CappedFlooredData gains sources_max_age_s (zero on entries configured earlier), CappedMostRecentOf now age-checks its cap entry as well, Token2022Multiplier reads daily_auto_approval_bps from the mapping, re-lays its stored price data and keeps its price across a mapping update that changes only that value, ChainlinkXPriceData re-laid, a direct self-reference is refused on write (RefPriceSelfReference, TwapSourceSelfReference, composite sources), resume_suspended_price_v2 supersedes resume_suspended_price, which now fails with DeprecatedInstruction as resume_chainlinkx_price already did; GroundTruth compared 12 builders, 12 match"
       }
     },
     {

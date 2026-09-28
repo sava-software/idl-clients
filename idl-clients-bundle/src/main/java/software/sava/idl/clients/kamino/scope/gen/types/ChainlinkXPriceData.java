@@ -2,23 +2,30 @@
 package software.sava.idl.clients.kamino.scope.gen.types;
 
 import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
+import java.util.OptionalLong;
+
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Price data for ChainlinkX type (v10)
 ///
 /// @param observationsTimestamp: u64
-/// @param activationDateTime: u64
+/// @param activationDateTime: u32 The activation the last report announced, as the `u32` the report carries.
+/// @param approvedMultiplierBits: Option<u64> Raw `f64` bits of the multiplier a resume approved. Set by a resume, cleared by the next
+///                               report: each suspension needs its own.
 public record ChainlinkXPriceData(long observationsTimestamp,
                                   boolean suspended,
-                                  long activationDateTime) implements SerDe {
-
-  public static final int BYTES = 17;
+                                  long activationDateTime,
+                                  OptionalLong approvedMultiplierBits) implements SerDe {
 
   public static final int OBSERVATIONS_TIMESTAMP_OFFSET = 0;
   public static final int SUSPENDED_OFFSET = 8;
   public static final int ACTIVATION_DATE_TIME_OFFSET = 9;
+  public static final int APPROVED_MULTIPLIER_BITS_OFFSET = 14;
 
   public static ChainlinkXPriceData read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -29,8 +36,19 @@ public record ChainlinkXPriceData(long observationsTimestamp,
     i += 8;
     final var suspended = _data[i] == 1;
     ++i;
-    final var activationDateTime = getInt64LE(_data, i);
-    return new ChainlinkXPriceData(observationsTimestamp, suspended, activationDateTime);
+    final var activationDateTime = Integer.toUnsignedLong(getInt32LE(_data, i));
+    i += 4;
+    final OptionalLong approvedMultiplierBits;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      approvedMultiplierBits = OptionalLong.empty();
+    } else {
+      ++i;
+      approvedMultiplierBits = OptionalLong.of(getInt64LE(_data, i));
+    }
+    return new ChainlinkXPriceData(observationsTimestamp,
+                                   suspended,
+                                   activationDateTime,
+                                   approvedMultiplierBits);
   }
 
   @Override
@@ -40,13 +58,14 @@ public record ChainlinkXPriceData(long observationsTimestamp,
     i += 8;
     _data[i] = (byte) (suspended ? 1 : 0);
     ++i;
-    putInt64LE(_data, i, activationDateTime);
-    i += 8;
+    putInt32LE(_data, i, (int) activationDateTime);
+    i += 4;
+    i += SerDeUtil.writeOptional(1, approvedMultiplierBits, _data, i);
     return i - _offset;
   }
 
   @Override
   public int l() {
-    return BYTES;
+    return 8 + 1 + 4 + (approvedMultiplierBits == null || approvedMultiplierBits.isEmpty() ? 1 : (1 + 8));
   }
 }

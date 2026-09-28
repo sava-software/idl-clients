@@ -107,14 +107,21 @@ record ScopeReaderRecord(ScopeEntry[] entries,
       return entry;
     }
     if (visiting[i]) {
-      // A reference cycle is legal on-chain and the program never notices one, because
+      // A reference cycle can exist on-chain and the refresh never notices one, because
       // it does not recurse: a reference price and a composite's sources are read as
       // the *last stored* price of that slot out of the OraclePrices account, so
-      // `ref_price[i] == i` is simply "bound this refresh against my own previous
-      // price". Building a graph of entries does recurse, so the cycle has to be broken
-      // here; the back-reference reads as absent rather than overflowing the stack.
-      // ScopeEntries.referencePrice(int) resolves these after the walk and is the
-      // complete view.
+      // `ref_price[i] == j, ref_price[j] == i` is simply each slot bounding its refresh
+      // against the other's previous price. Since Scope 0.42.0 the mapping update
+      // refuses a *direct* self-reference — a ref price (RefPriceSelfReference), a
+      // TWAP source (TwapSourceSelfReference), a composite source, cap or floor
+      // (OracleConfigInvalidSourceIndices, which Conditional already raised) and a
+      // PythLazerEMA source (CompositeOracleInvalidSourceIndex) — but it validates only
+      // the entry being written, so a mutual cycle is still configurable and a
+      // self-reference written earlier still stands. Building a graph of entries does
+      // recurse, so the cycle has to be broken here; the back-reference reads as
+      // absent rather than overflowing the stack. ScopeEntries.referencePrice(int)
+      // resolves a reference price after the walk and is the complete view for that
+      // field; a composite's back-reference has no such second pass.
       return null;
     }
     visiting[i] = true;
@@ -133,11 +140,13 @@ record ScopeReaderRecord(ScopeEntry[] entries,
 
   /// Not every entry type has a field for every value the mapping can carry: a TWAP
   /// bitmask and a reference price are settable on any slot, and the program checks
-  /// neither against the oracle type. `MappingTwapEnabledBitmask` validates only that
-  /// the bitmask is in range, `refresh_prices` gates the EMA update on the bitmask
-  /// alone, and `MappingRefPrice` sets the index and tolerance ungated — so a
-  /// composite really does accumulate EMAs, and a type modelled here without a
-  /// ref-price field really can have one configured.
+  /// neither the bitmask nor the reference index against the oracle type.
+  /// `MappingTwapEnabledBitmask` validates only that the bitmask is in range,
+  /// `refresh_prices` gates the EMA update on the bitmask alone, and `MappingRefPrice`
+  /// sets the index on any slot and refuses only a tolerance on a TWAP slot, whose
+  /// field holds the TWAP source instead — so a composite really does accumulate
+  /// EMAs, and a type modelled here without a ref-price field really can have one
+  /// configured.
   ///
   /// Where this model has nowhere to put such a value it is dropped, never rejected.
   /// One walk builds all 512 entries, so refusing a slot the program permits would
@@ -156,12 +165,13 @@ record ScopeReaderRecord(ScopeEntry[] entries,
     }
     return switch (oracleType) {
       case AdrenaLp -> new AdrenaLp(i, priceAccount, emaTypes);
+      case Canary -> new Canary(i, priceAccount, emaTypes);
       case CappedFloored -> {
         final var cappedFlooredData = CappedFlooredData.read(generic[i], 0);
         final var sourceEntry = entry(cappedFlooredData.sourceEntry());
         final var capEntry = entry(cappedFlooredData.capEntry());
         final var floorEntry = entry(cappedFlooredData.floorEntry());
-        yield new CappedFloored(i, sourceEntry, capEntry, floorEntry);
+        yield new CappedFloored(i, sourceEntry, capEntry, floorEntry, cappedFlooredData.sourcesMaxAgeS());
       }
       case CappedMostRecentOf -> {
         final var cappedMostRecentOf = CappedMostRecentOfData.read(generic[i], 0);
@@ -254,7 +264,10 @@ record ScopeReaderRecord(ScopeEntry[] entries,
       case SplBalance -> new SplBalance(i, priceAccount);
       case SplStake -> new SplStake(i, priceAccount);
       case StakedSolBalance -> new StakedSolBalance(i, priceAccount);
-      case Token2022Multiplier -> new Token2022Multiplier(i, priceAccount, emaTypes);
+      case Token2022Multiplier -> {
+        final var mappingData = Token2022MultiplierMappingData.read(generic[i], 0);
+        yield new Token2022Multiplier(i, priceAccount, emaTypes, mappingData.dailyAutoApprovalBps());
+      }
       case TotalMintSupply -> new TotalMintSupply(i, priceAccount, emaTypes);
       case SwitchboardOnDemand -> new SwitchboardOnDemand(i, priceAccount, emaTypes);
       case Unused -> new Unused(i);

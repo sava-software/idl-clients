@@ -200,24 +200,113 @@ final class ScopeComputeEntryTests {
         .slot(3, OracleType.FixedPrice)
         .generic(3, new Price(1L, 0L))
         .slot(0, OracleType.CappedFloored)
-        .generic(0, new CappedFlooredData(1, OptionalInt.of(2), OptionalInt.of(3)))
+        .generic(0, new CappedFlooredData(1, OptionalInt.of(2), OptionalInt.of(3), 90L))
         .parse();
 
     final var cappedFloored = assertInstanceOf(CappedFloored.class, entries.scopeEntry(0));
     assertEquals(entries.scopeEntry(1), cappedFloored.sourceEntry());
     assertEquals(entries.scopeEntry(2), cappedFloored.capEntry());
     assertEquals(entries.scopeEntry(3), cappedFloored.flooredEntry());
+    assertEquals(90L, cappedFloored.sourcesMaxAgeS());
 
-    // absent cap/floor stay null rather than resolving slot 0
+    // absent cap/floor stay null rather than resolving slot 0; the max age sits after
+    // the two absent tags, so it must still be read from the right offset
     final var bare = new Mappings()
         .slot(1, OracleType.PythPull)
         .slot(0, OracleType.CappedFloored)
-        .generic(0, new CappedFlooredData(1, OptionalInt.empty(), OptionalInt.empty()))
+        .generic(0, new CappedFlooredData(1, OptionalInt.empty(), OptionalInt.empty(), 120L))
         .parse();
     final var noBounds = assertInstanceOf(CappedFloored.class, bare.scopeEntry(0));
     assertEquals(bare.scopeEntry(1), noBounds.sourceEntry());
     assertNull(noBounds.capEntry());
     assertNull(noBounds.flooredEntry());
+    assertEquals(120L, noBounds.sourcesMaxAgeS());
+  }
+
+  /// An entry configured before Scope 0.42.0 added `sources_max_age_s` holds whatever
+  /// its tooling wrote after the optional bounds, which 0.41.0 neither read nor
+  /// validated — zeros when written through the program's own helper, which
+  /// serializes into a zeroed buffer — and the program reads that zero as "skip the
+  /// age check" rather than as absent. The reader reports it as the zero it is.
+  @Test
+  void cappedFlooredConfiguredBeforeTheMaxAgeReadsZero() {
+    final var mappings = new Mappings()
+        .slot(1, OracleType.PythPull)
+        .slot(2, OracleType.FixedPrice)
+        .generic(2, new Price(9L, 0L))
+        .slot(0, OracleType.CappedFloored);
+    // the 0.41.0 layout: source u16, a present cap (tag 1, then a u16), an absent
+    // floor (tag 0), and nothing after them
+    final byte[] legacy = mappings.generic[0];
+    legacy[0] = 1;
+    legacy[1] = 0;
+    legacy[2] = 1; // cap present
+    legacy[3] = 2;
+    legacy[4] = 0;
+    legacy[5] = 0; // floor absent
+    final var entries = mappings.parse();
+    final var cappedFloored = assertInstanceOf(CappedFloored.class, entries.scopeEntry(0));
+    assertSame(entries.scopeEntry(1), cappedFloored.sourceEntry());
+    assertSame(entries.scopeEntry(2), cappedFloored.capEntry());
+    assertNull(cappedFloored.flooredEntry());
+    assertEquals(0L, cappedFloored.sourcesMaxAgeS());
+  }
+
+  /// `sources_max_age_s` is Borsh-encoded after two `Option<u16>`s, so its offset is
+  /// 4, 6 or 8 depending on which bounds are present. Laid out by hand rather than
+  /// through the generated writer, so a placement error the generated read and write
+  /// might share cannot cancel out.
+  @Test
+  void cappedFlooredMaxAgeIsReadFromWhereTheOptionalBoundsLeaveIt() {
+    // cap present, floor absent: 2 + 3 + 1 = offset 6
+    final var oneBound = new Mappings()
+        .slot(1, OracleType.PythPull)
+        .slot(2, OracleType.FixedPrice)
+        .generic(2, new Price(9L, 0L))
+        .slot(0, OracleType.CappedFloored);
+    final byte[] six = oneBound.generic[0];
+    six[0] = 1;
+    six[1] = 0;
+    six[2] = 1;
+    six[3] = 2;
+    six[4] = 0;
+    six[5] = 0;
+    six[6] = 0x2C; // 300 = 0x012C, little-endian
+    six[7] = 0x01;
+    assertEquals(300L, assertInstanceOf(CappedFloored.class, oneBound.parse().scopeEntry(0)).sourcesMaxAgeS());
+
+    // both absent: 2 + 1 + 1 = offset 4
+    final var noBounds = new Mappings()
+        .slot(1, OracleType.PythPull)
+        .slot(0, OracleType.CappedFloored);
+    final byte[] four = noBounds.generic[0];
+    four[0] = 1;
+    four[1] = 0;
+    four[2] = 0;
+    four[3] = 0;
+    four[4] = 0x10; // 4112 = 0x1010
+    four[5] = 0x10;
+    assertEquals(4112L, assertInstanceOf(CappedFloored.class, noBounds.parse().scopeEntry(0)).sourcesMaxAgeS());
+
+    // both present: 2 + 3 + 3 = offset 8
+    final var twoBounds = new Mappings()
+        .slot(1, OracleType.PythPull)
+        .slot(2, OracleType.FixedPrice)
+        .generic(2, new Price(9L, 0L))
+        .slot(3, OracleType.FixedPrice)
+        .generic(3, new Price(1L, 0L))
+        .slot(0, OracleType.CappedFloored);
+    final byte[] eight = twoBounds.generic[0];
+    eight[0] = 1;
+    eight[1] = 0;
+    eight[2] = 1;
+    eight[3] = 2;
+    eight[4] = 0;
+    eight[5] = 1;
+    eight[6] = 3;
+    eight[7] = 0;
+    eight[8] = 0x05; // 5
+    assertEquals(5L, assertInstanceOf(CappedFloored.class, twoBounds.parse().scopeEntry(0)).sourcesMaxAgeS());
   }
 
   // ---------------------------------------------------------------------------
@@ -486,15 +575,17 @@ final class ScopeComputeEntryTests {
   }
 
   /// `Token2022Multiplier` prices the `ScaledUiAmount` multiplier of the mapped
-  /// Token-2022 mint. The mapping stores nothing else for the type — the refresh
-  /// keeps its approval state in the *prices* account's generic data — so stray
-  /// bytes in the mapping-side generic, or a configured ref price the record has
-  /// no field for, must not change how the entry decodes.
+  /// Token-2022 mint. Since Scope 0.42.0 the mapping's generic data carries the
+  /// entry's auto-approval threshold, a `u16` at offset 0
+  /// (`Token2022MultiplierMappingData`); the refresh keeps its approval state in the
+  /// *prices* account's generic data. Bytes past the threshold, or a configured ref
+  /// price the record has no field for, must not change how the entry decodes.
   @Test
-  void token2022MultiplierCarriesTheMintAndIgnoresMappingGenerics() {
+  void token2022MultiplierCarriesTheMintAndItsAutoApprovalThreshold() {
     // a nonzero slot, so the index assertion cannot pass by a constant
     final var entries = new Mappings()
         .slot(7, OracleType.Token2022Multiplier)
+        .generic(7, new Token2022MultiplierMappingData(25))
         .bitmask(7, 1) // Ema1h
         .parse();
 
@@ -504,15 +595,60 @@ final class ScopeComputeEntryTests {
     assertEquals(OracleType.Token2022Multiplier, multiplier.oracleType());
     assertEquals(Set.of(EmaType.Ema1h), multiplier.emaTypes());
     assertTrue(multiplier.twapEnabled());
+    assertEquals(25, multiplier.dailyAutoApprovalBps());
 
     final var configured = new Mappings()
         .slot(1, OracleType.PythPull)
         .slot(7, OracleType.Token2022Multiplier)
+        .generic(7, new Token2022MultiplierMappingData(25))
         .bitmask(7, 1)
         .refPrice(7, 1)
         .tolerance(7, 300);
-    Arrays.fill(configured.generic[7], (byte) 0x5A);
+    Arrays.fill(configured.generic[7], 2, 20, (byte) 0x5A);
     assertEquals(multiplier, configured.parse().scopeEntry(7));
+
+    // a zeroed generic is what the program reads as "every change suspends"; it is not
+    // an absent value. It is also what an entry configured before 0.42.0 holds when
+    // its tooling wrote zeros, which 0.41.0 neither read nor validated
+    final var legacy = new Mappings().slot(7, OracleType.Token2022Multiplier).parse();
+    assertEquals(0, assertInstanceOf(Token2022Multiplier.class, legacy.scopeEntry(7)).dailyAutoApprovalBps());
+
+    // the field is a u16: the program caps it at 100 on write, but the reader reports
+    // what is stored, unsigned
+    final var wide = new Mappings()
+        .slot(7, OracleType.Token2022Multiplier)
+        .generic(7, new Token2022MultiplierMappingData(0xFFFF))
+        .parse();
+    assertEquals(0xFFFF, assertInstanceOf(Token2022Multiplier.class, wide.scopeEntry(7)).dailyAutoApprovalBps());
+  }
+
+  /// `Canary` prices a Canary median feed: the mapped account is the feed, and the
+  /// mapping stores nothing else for the type — the refresh reads the price out of
+  /// the canary program's CPI return data — so stray bytes in the mapping-side
+  /// generic, or a configured ref price the record has no field for, must not change
+  /// how the entry decodes.
+  @Test
+  void canaryCarriesTheFeedAndIgnoresMappingGenerics() {
+    final var entries = new Mappings()
+        .slot(9, OracleType.Canary)
+        .bitmask(9, 1) // Ema1h
+        .parse();
+
+    final var canary = assertInstanceOf(Canary.class, entries.scopeEntry(9));
+    assertEquals(9, canary.index());
+    assertEquals(key(10), canary.oracle());
+    assertEquals(OracleType.Canary, canary.oracleType());
+    assertEquals(Set.of(EmaType.Ema1h), canary.emaTypes());
+    assertTrue(canary.twapEnabled());
+
+    final var configured = new Mappings()
+        .slot(1, OracleType.PythPull)
+        .slot(9, OracleType.Canary)
+        .bitmask(9, 1)
+        .refPrice(9, 1)
+        .tolerance(9, 300);
+    Arrays.fill(configured.generic[9], (byte) 0x5A);
+    assertEquals(canary, configured.parse().scopeEntry(9));
   }
 
   /// `KlendCTokenExchangeRate` prices a klend cToken's exchange rate: the mapped
@@ -754,7 +890,8 @@ final class ScopeComputeEntryTests {
         OracleType.JitoRestaking, OracleType.FlashtradeLp, OracleType.AdrenaLp,
         OracleType.ChainlinkExchangeRate, OracleType.ChainlinkNAV,
         OracleType.RedStone, OracleType.Securitize, OracleType.SwitchboardOnDemand,
-        OracleType.PythPullEMA, OracleType.Token2022Multiplier, OracleType.KlendCTokenExchangeRate
+        OracleType.PythPullEMA, OracleType.Token2022Multiplier, OracleType.KlendCTokenExchangeRate,
+        OracleType.Canary
     };
     final var mappings = new Mappings();
     for (int i = 0; i < types.length; ++i) {
@@ -812,7 +949,7 @@ final class ScopeComputeEntryTests {
         .slot(0, OracleType.MostRecentOf)
         .generic(0, new MostRecentOfData(new int[]{3, NONE, NONE, NONE}, 0, 0L))
         .slot(1, OracleType.CappedFloored)
-        .generic(1, new CappedFlooredData(3, OptionalInt.empty(), OptionalInt.empty()))
+        .generic(1, new CappedFlooredData(3, OptionalInt.empty(), OptionalInt.empty(), 60L))
         .slot(2, OracleType.FixedPrice)
         .generic(2, new Price(5L, 0L))
         .bitmask(0, 0b0001)
@@ -886,11 +1023,14 @@ final class ScopeComputeEntryTests {
         "7 is not a tolerance here — the program never gets far enough to read it");
   }
 
-  /// A slot may reference itself, and the program is untroubled by it: reference
+  /// A slot may reference itself, and the refresh never recurses on it: reference
   /// prices are read as the referenced slot's *last stored* price out of the
   /// OraclePrices account, never recomputed, so `ref_price[i] == i` just bounds how
-  /// far one refresh may move slot i's price. Nothing on-chain recurses, which is why
-  /// nothing on-chain guards against this.
+  /// far one refresh may move slot i's price (and pins a slot whose stored price is
+  /// zero, since only another zero passes the check against zero). Since Scope
+  /// 0.42.0 `MappingRefPrice` refuses to *write* a direct self-reference
+  /// (`RefPriceSelfReference`), but it re-validates nothing already stored, so one
+  /// configured earlier is still live data.
   ///
   /// Building a graph of entries does recurse, so the reader has to break the cycle,
   /// and the entry-level field loses the reference. The mapping-level view resolves it

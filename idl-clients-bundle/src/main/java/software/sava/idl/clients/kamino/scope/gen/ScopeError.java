@@ -84,7 +84,13 @@ public sealed interface ScopeError extends ProgramError permits
     ScopeError.PriceNotSuspended,
     ScopeError.ResumeStateMismatch,
     ScopeError.DeprecatedInstruction,
-    ScopeError.EagerEvalBpsOutOfRange {
+    ScopeError.EagerEvalBpsOutOfRange,
+    ScopeError.RefPriceSelfReference,
+    ScopeError.TwapSourceSelfReference,
+    ScopeError.CanaryPriceCPIError,
+    ScopeError.CanaryFeedExpTooLarge,
+    ScopeError.InvalidApprovedMultiplier,
+    ScopeError.AutoApprovalBpsOutOfRange {
 
   static ScopeError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -169,6 +175,12 @@ public sealed interface ScopeError extends ProgramError permits
       case 6078 -> ResumeStateMismatch.INSTANCE;
       case 6079 -> DeprecatedInstruction.INSTANCE;
       case 6080 -> EagerEvalBpsOutOfRange.INSTANCE;
+      case 6081 -> RefPriceSelfReference.INSTANCE;
+      case 6082 -> TwapSourceSelfReference.INSTANCE;
+      case 6083 -> CanaryPriceCPIError.INSTANCE;
+      case 6084 -> CanaryFeedExpTooLarge.INSTANCE;
+      case 6085 -> InvalidApprovedMultiplier.INSTANCE;
+      case 6086 -> AutoApprovalBpsOutOfRange.INSTANCE;
       default -> null;
     };
   }
@@ -737,6 +749,48 @@ public sealed interface ScopeError extends ProgramError permits
 
     public static final EagerEvalBpsOutOfRange INSTANCE = new EagerEvalBpsOutOfRange(
         6080, "Eager eval threshold (bps) is greater than FULL_BPS"
+    );
+  }
+
+  record RefPriceSelfReference(int code, String msg) implements ScopeError {
+
+    public static final RefPriceSelfReference INSTANCE = new RefPriceSelfReference(
+        6081, "The reference price of an entry cannot be the entry itself"
+    );
+  }
+
+  record TwapSourceSelfReference(int code, String msg) implements ScopeError {
+
+    public static final TwapSourceSelfReference INSTANCE = new TwapSourceSelfReference(
+        6082, "The TWAP source of an entry cannot be the entry itself"
+    );
+  }
+
+  record CanaryPriceCPIError(int code, String msg) implements ScopeError {
+
+    public static final CanaryPriceCPIError INSTANCE = new CanaryPriceCPIError(
+        6083, "Canary get_price CPI did not return usable price data"
+    );
+  }
+
+  record CanaryFeedExpTooLarge(int code, String msg) implements ScopeError {
+
+    public static final CanaryFeedExpTooLarge INSTANCE = new CanaryFeedExpTooLarge(
+        6084, "Canary feed exponent is above the scope-supported bound"
+    );
+  }
+
+  record InvalidApprovedMultiplier(int code, String msg) implements ScopeError {
+
+    public static final InvalidApprovedMultiplier INSTANCE = new InvalidApprovedMultiplier(
+        6085, "The multiplier a resume approves must convert to a non-zero price for the oracle type"
+    );
+  }
+
+  record AutoApprovalBpsOutOfRange(int code, String msg) implements ScopeError {
+
+    public static final AutoApprovalBpsOutOfRange INSTANCE = new AutoApprovalBpsOutOfRange(
+        6086, "Token2022Multiplier auto approval threshold (bps) is greater than the allowed maximum"
     );
   }
 }

@@ -7,6 +7,7 @@ import java.util.Set;
 
 public sealed interface OracleEntry extends ScopeEntry permits
     AdrenaLp,
+    Canary,
     ChainlinkExchangeRate,
     ChainlinkNAV,
     ChainlinkStatusEntry,

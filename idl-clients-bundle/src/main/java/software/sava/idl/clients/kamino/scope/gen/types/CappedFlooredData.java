@@ -7,14 +7,18 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 import java.util.OptionalInt;
 
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// @param sourceEntry: u16
 /// @param capEntry: Option<u16>
 /// @param floorEntry: Option<u16>
+/// @param sourcesMaxAgeS: u64 Max age of the source and bound entries.
 public record CappedFlooredData(int sourceEntry,
                                 OptionalInt capEntry,
-                                OptionalInt floorEntry) implements SerDe {
+                                OptionalInt floorEntry,
+                                long sourcesMaxAgeS) implements SerDe {
 
   public static final int SOURCE_ENTRY_OFFSET = 0;
   public static final int CAP_ENTRY_OFFSET = 3;
@@ -38,11 +42,17 @@ public record CappedFlooredData(int sourceEntry,
     final OptionalInt floorEntry;
     if (SerDeUtil.isAbsent(1, _data, i)) {
       floorEntry = OptionalInt.empty();
+      ++i;
     } else {
       ++i;
       floorEntry = OptionalInt.of(Short.toUnsignedInt(getInt16LE(_data, i)));
+      i += 2;
     }
-    return new CappedFlooredData(sourceEntry, capEntry, floorEntry);
+    final var sourcesMaxAgeS = getInt64LE(_data, i);
+    return new CappedFlooredData(sourceEntry,
+                                 capEntry,
+                                 floorEntry,
+                                 sourcesMaxAgeS);
   }
 
   @Override
@@ -52,11 +62,13 @@ public record CappedFlooredData(int sourceEntry,
     i += 2;
     i += SerDeUtil.writeOptionalshort(1, capEntry, _data, i);
     i += SerDeUtil.writeOptionalshort(1, floorEntry, _data, i);
+    putInt64LE(_data, i, sourcesMaxAgeS);
+    i += 8;
     return i - _offset;
   }
 
   @Override
   public int l() {
-    return 2 + (capEntry == null || capEntry.isEmpty() ? 1 : (1 + 2)) + (floorEntry == null || floorEntry.isEmpty() ? 1 : (1 + 2));
+    return 2 + (capEntry == null || capEntry.isEmpty() ? 1 : (1 + 2)) + (floorEntry == null || floorEntry.isEmpty() ? 1 : (1 + 2)) + 8;
   }
 }
