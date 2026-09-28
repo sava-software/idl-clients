@@ -8,7 +8,7 @@
   "programDataPayloadLength": 135680,
   "channels": {
     "vcs": {
-      "origin": "https://raw.githubusercontent.com/solana-foundation/solana-attestation-service/refs/heads/master/idl/solana_attestation_service.json",
+      "origin": "https://raw.githubusercontent.com/solana-foundation/solana-attestation-service/575152d6b470108305c944dc0e3751c29e4c3a03/idl/solana_attestation_service.json",
       "hash": "d773f12b01a204bae3cb5762251995a4720f3318a0e4e4d371e9bd766dbdec02",
       "matchesDeployed": true,
       "verbatim": "idl.json"

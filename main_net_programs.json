@@ -438,7 +438,7 @@
       "module": "spl",
       "package": "spl.attestation_service",
       "program": "22zoJMtdu4tQc2PzL74ZUT7FrwgB1Udec8DdW4yw4BdG",
-      "idlURL": "https://raw.githubusercontent.com/solana-foundation/solana-attestation-service/refs/heads/master/idl/solana_attestation_service.json",
+      "idlURL": "https://raw.githubusercontent.com/solana-foundation/solana-attestation-service/575152d6b470108305c944dc0e3751c29e4c3a03/idl/solana_attestation_service.json",
       "accountDiscriminators": {
         "Credential": [
           0
