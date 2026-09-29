@@ -7,6 +7,6 @@ nobody took. The standing disagreements live beside this file, at its name with 
 before the extension. Ordered by program and channel, and carrying no timestamp, so
 consecutive runs are worth diffing against each other.
 
-== Movement (0) ==
+== Movement (1) ==
 
-Nothing moved since the last generation.
+Phoenix Perpetuals: the program was redeployed at slot 451718798, up from 447323692, and no IDL channel moved with it (the metadata IDL was last written at slot 447674939, between the previous deploy and this one; nothing has been written for this deploy); the stored program image changed: 3624048 payload bytes, was 3359480 — review required; last reviewed at slot 447323692: metadata IDL republished at slot 447589572 names exactly the 113 dispatched instructions; still stale upstream: Trader.maxPositions is a u64 over u32 max_positions + u32 trader_preference_bits, and GlobalConfiguration padding1 hides the native SOL collateral config
