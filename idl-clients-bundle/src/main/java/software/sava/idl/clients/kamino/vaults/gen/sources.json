@@ -15,7 +15,7 @@
     },
     "vcs": {
       "origin": "https://cdn.jsdelivr.net/npm/@kamino-finance/klend-sdk@latest/src/idl/kvault.json",
-      "hash": "619d8eefc50309a639201b3c75a16dfd48539fd6205157178237d2edd76a8e09",
+      "hash": "20daab2693573b3649387e12861f3c46f00ccebde209b2ac2f646455dcf07379",
       "matchesDeployed": false,
       "file": "vcs.json",
       "verbatim": "vcs.original.json"

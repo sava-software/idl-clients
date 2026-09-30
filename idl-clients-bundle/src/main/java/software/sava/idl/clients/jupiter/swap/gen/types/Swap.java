@@ -203,7 +203,9 @@ public sealed interface Swap extends RustEnum permits
   Swap.HumidiFiRouter,
   Swap.HumidiFiRouterV2,
   Swap.PumpWrappedBuyV6,
-  Swap.HyloRouter {
+  Swap.HyloRouter,
+  Swap.Memefun,
+  Swap.HumidiFiRouterV3 {
 
   static Swap read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -398,6 +400,8 @@ public sealed interface Swap extends RustEnum permits
       case 186 -> HumidiFiRouterV2.read(_data, i);
       case 187 -> PumpWrappedBuyV6.read(_data, i);
       case 188 -> HyloRouter.INSTANCE;
+      case 189 -> Memefun.read(_data, i);
+      case 190 -> HumidiFiRouterV3.read(_data, i);
       default -> null;
     };
   }
@@ -3352,6 +3356,101 @@ public sealed interface Swap extends RustEnum permits
     @Override
     public int ordinal() {
       return 188;
+    }
+  }
+
+  record Memefun(boolean val) implements EnumBool, Swap {
+
+    public static final Memefun TRUE = new Memefun(true);
+    public static final Memefun FALSE = new Memefun(false);
+
+    public static Memefun read(final byte[] _data, int i) {
+      return _data[i] == 1 ? Memefun.TRUE : Memefun.FALSE;
+    }
+
+    @Override
+    public int ordinal() {
+      return 189;
+    }
+  }
+
+  /// @param routerId: u64
+  /// @param generation: u64
+  /// @param minted: u64
+  /// @param expiry: u64
+  record HumidiFiRouterV3(long routerId,
+                          long generation,
+                          long minted,
+                          long expiry,
+                          byte[] seedRng,
+                          byte[] token,
+                          boolean isBaseToQuote) implements Swap {
+
+    public static final int BYTES = 81;
+    public static final int SEED_RNG_LEN = 32;
+    public static final int TOKEN_LEN = 16;
+
+    public static final int ROUTER_ID_OFFSET = 0;
+    public static final int GENERATION_OFFSET = 8;
+    public static final int MINTED_OFFSET = 16;
+    public static final int EXPIRY_OFFSET = 24;
+    public static final int SEED_RNG_OFFSET = 32;
+    public static final int TOKEN_OFFSET = 64;
+    public static final int IS_BASE_TO_QUOTE_OFFSET = 80;
+
+    public static HumidiFiRouterV3 read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var routerId = getInt64LE(_data, i);
+      i += 8;
+      final var generation = getInt64LE(_data, i);
+      i += 8;
+      final var minted = getInt64LE(_data, i);
+      i += 8;
+      final var expiry = getInt64LE(_data, i);
+      i += 8;
+      final var seedRng = new byte[32];
+      i += SerDeUtil.readArray(seedRng, _data, i);
+      final var token = new byte[16];
+      i += SerDeUtil.readArray(token, _data, i);
+      final var isBaseToQuote = _data[i] == 1;
+      return new HumidiFiRouterV3(routerId,
+                                  generation,
+                                  minted,
+                                  expiry,
+                                  seedRng,
+                                  token,
+                                  isBaseToQuote);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + writeOrdinal(_data, _offset);
+      putInt64LE(_data, i, routerId);
+      i += 8;
+      putInt64LE(_data, i, generation);
+      i += 8;
+      putInt64LE(_data, i, minted);
+      i += 8;
+      putInt64LE(_data, i, expiry);
+      i += 8;
+      i += SerDeUtil.writeArrayChecked(seedRng, 32, _data, i);
+      i += SerDeUtil.writeArrayChecked(token, 16, _data, i);
+      _data[i] = (byte) (isBaseToQuote ? 1 : 0);
+      ++i;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return ordinalBytes() + BYTES;
+    }
+
+    @Override
+    public int ordinal() {
+      return 190;
     }
   }
 }

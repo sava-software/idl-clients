@@ -1984,6 +1984,11 @@
       "code": 7064,
       "name": "SharesOutBelowMinimum",
       "msg": "Shares out is below minimum requested"
+    },
+    {
+      "code": 7065,
+      "name": "InvalidPermissioningAuthority",
+      "msg": "Invalid permissioning authority"
     }
   ],
   "types": [
@@ -2727,6 +2732,9 @@
           },
           {
             "name": "DepositCap"
+          },
+          {
+            "name": "PermissioningAuthority"
           }
         ]
       }
@@ -3237,11 +3245,15 @@
             }
           },
           {
+            "name": "permissioning_authority",
+            "type": "pubkey"
+          },
+          {
             "name": "padding3",
             "type": {
               "array": [
                 "u128",
-                232
+                230
               ]
             }
           }

@@ -286,6 +286,127 @@ public final class JupiterProgram {
     }
   }
 
+  public static final Discriminator WITHDRAW_TOKEN_ACCOUNT_EXCESS_LAMPORTS_DISCRIMINATOR = toDiscriminator(146, 124, 14, 0, 181, 113, 114, 147);
+
+  public static List<AccountMeta> withdrawTokenAccountExcessLamportsKeys(final PublicKey operatorKey,
+                                                                         final PublicKey walletKey,
+                                                                         final PublicKey programAuthorityKey,
+                                                                         final PublicKey tokenProgramKey) {
+    return List.of(
+      createReadOnlySigner(operatorKey),
+      createWrite(walletKey),
+      createRead(programAuthorityKey),
+      createRead(tokenProgramKey)
+    );
+  }
+
+  /// @param id: u8
+  public static Instruction withdrawTokenAccountExcessLamports(final AccountMeta invokedJupiterProgramMeta,
+                                                               final PublicKey operatorKey,
+                                                               final PublicKey walletKey,
+                                                               final PublicKey programAuthorityKey,
+                                                               final PublicKey tokenProgramKey,
+                                                               final int id) {
+    final var keys = withdrawTokenAccountExcessLamportsKeys(
+      operatorKey,
+      walletKey,
+      programAuthorityKey,
+      tokenProgramKey
+    );
+    return withdrawTokenAccountExcessLamports(invokedJupiterProgramMeta, keys, id);
+  }
+
+  /// @param id: u8
+  public static Instruction withdrawTokenAccountExcessLamports(final AccountMeta invokedJupiterProgramMeta,
+                                                               final List<AccountMeta> keys,
+                                                               final int id) {
+    final byte[] _data = new byte[9];
+    int i = WITHDRAW_TOKEN_ACCOUNT_EXCESS_LAMPORTS_DISCRIMINATOR.write(_data, 0);
+    _data[i] = (byte) id;
+
+    return Instruction.createInstruction(invokedJupiterProgramMeta, keys, _data);
+  }
+
+  /// @param id: u8
+  public record WithdrawTokenAccountExcessLamportsIxData(Discriminator discriminator, int id) implements SerDe {
+
+    public static WithdrawTokenAccountExcessLamportsIxData read(final Instruction instruction) {
+      return read(instruction.copyData(), 0);
+    }
+
+    public static final int BYTES = 9;
+
+    public static final int ID_OFFSET = 8;
+
+    public static WithdrawTokenAccountExcessLamportsIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var id = _data[i] & 0xFF;
+      return new WithdrawTokenAccountExcessLamportsIxData(discriminator, id);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      _data[i] = (byte) id;
+      ++i;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator CREATE_IDEMPOTENT_ASSOCIATED_TOKEN_ACCOUNT_DISCRIMINATOR = toDiscriminator(83, 104, 192, 150, 180, 71, 156, 198);
+
+  public static List<AccountMeta> createIdempotentAssociatedTokenAccountKeys(final PublicKey payerKey,
+                                                                             final PublicKey associatedTokenAccountKey,
+                                                                             final PublicKey ownerKey,
+                                                                             final PublicKey mintKey,
+                                                                             final PublicKey systemProgramKey,
+                                                                             final PublicKey tokenProgramKey,
+                                                                             final PublicKey closeAuthorityKey) {
+    return List.of(
+      createWritableSigner(payerKey),
+      createWrite(associatedTokenAccountKey),
+      createReadOnlySigner(ownerKey),
+      createRead(mintKey),
+      createRead(systemProgramKey),
+      createRead(tokenProgramKey),
+      createRead(closeAuthorityKey)
+    );
+  }
+
+  public static Instruction createIdempotentAssociatedTokenAccount(final AccountMeta invokedJupiterProgramMeta,
+                                                                   final PublicKey payerKey,
+                                                                   final PublicKey associatedTokenAccountKey,
+                                                                   final PublicKey ownerKey,
+                                                                   final PublicKey mintKey,
+                                                                   final PublicKey systemProgramKey,
+                                                                   final PublicKey tokenProgramKey,
+                                                                   final PublicKey closeAuthorityKey) {
+    final var keys = createIdempotentAssociatedTokenAccountKeys(
+      payerKey,
+      associatedTokenAccountKey,
+      ownerKey,
+      mintKey,
+      systemProgramKey,
+      tokenProgramKey,
+      closeAuthorityKey
+    );
+    return createIdempotentAssociatedTokenAccount(invokedJupiterProgramMeta, keys);
+  }
+
+  public static Instruction createIdempotentAssociatedTokenAccount(final AccountMeta invokedJupiterProgramMeta,
+                                                                   final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedJupiterProgramMeta, keys, CREATE_IDEMPOTENT_ASSOCIATED_TOKEN_ACCOUNT_DISCRIMINATOR);
+  }
+
   public static final Discriminator CREATE_TOKEN_LEDGER_DISCRIMINATOR = toDiscriminator(232, 242, 197, 253, 240, 143, 129, 52);
 
   public static List<AccountMeta> createTokenLedgerKeys(final SolanaAccounts solanaAccounts,
