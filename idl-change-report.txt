@@ -7,16 +7,6 @@ nobody took. The standing disagreements live beside this file, at its name with 
 before the extension. Ordered by program and channel, and carrying no timestamp, so
 consecutive runs are worth diffing against each other.
 
-== Movement (4) ==
+== Movement (0) ==
 
-Jupiter Swap: the anchor IDL at C88XWfp26heEmDkmfSzeXP7Fd7GQJ2j9dDTUsyiZbUTa moved since the last generation, 4e41e551dd0023b42e143c2ba092b77ab8316941bbd35e79c741aab99f8cd72d -> 0536651ec211d59ecb068da7a9308cbcfdbb970874bf64a8ec7c045479b5017c: instructions +2, types ~2
-  instructions added (2): create_idempotent_associated_token_account, withdraw_token_account_excess_lamports
-  types changed (2): every one type changed
-
-Jupiter Swap: the program was redeployed at slot 451957263, up from 449280566; the stored program image changed: 2892224 payload bytes, was 2892224 — review required
-
-Kamino Vaults: the vcs IDL at https://cdn.jsdelivr.net/npm/@kamino-finance/klend-sdk@latest/src/idl/kvault.json moved since the last generation, 619d8eefc50309a639201b3c75a16dfd48539fd6205157178237d2edd76a8e09 -> 20daab2693573b3649387e12861f3c46f00ccebde209b2ac2f646455dcf07379: types ~2, errors +1
-  types changed (2): every one type changed
-  errors added (1): InvalidPermissioningAuthority
-
-Phoenix Perpetuals Dev: the program was redeployed at slot 451767033, up from 450119387, and no IDL channel moved with it (the metadata IDL was last written at slot 420691791, before the previous deploy); the stored program image changed: 3624048 payload bytes, was 3624048 — review required
+Nothing moved since the last generation.

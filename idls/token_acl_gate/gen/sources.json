@@ -1,0 +1,30 @@
+{
+  "program": "GATEzzqxhJnsWF6vHRsgtixxSB8PaQdcqGEVTEHWiULz",
+  "deployed": "vcs",
+  "lastDeploySlot": 404649752,
+  "programDataState": "upgradeable",
+  "programDataStateSlot": 451983866,
+  "programDataPayloadSha256": "b869c9137e075c5db964e9469e0e14daafcf832d7327cbecc92e5e8344336e6b",
+  "programDataPayloadLength": 72824,
+  "channels": {
+    "metadata": {
+      "origin": "9xRvGwTcgcJjhsiNETdQTYs8YEuwYWY7W23FVF6fXvS1",
+      "hash": "a4df5ed8ee3b9b27c39664f45f5a51a7ff76d36e622196ed18210e94dbac351b",
+      "matchesDeployed": false,
+      "file": "metadata.json",
+      "verbatim": "metadata.json"
+    },
+    "vcs": {
+      "origin": "github:solana-foundation/token-acl-gate@master#c525fa710883a55cedd0cd7bf2a5aef6eac05171/idl/token_acl_gate_program.json",
+      "hash": "5e17c627d0864f27b02b40969499babdfb8184d33f524eb2f8af912baf9b58b7",
+      "matchesDeployed": true,
+      "verbatim": "idl.json"
+    },
+    "vcsHead": {
+      "origin": "github:solana-foundation/token-acl-gate@master/idl/token_acl_gate_program.json",
+      "hash": "5e17c627d0864f27b02b40969499babdfb8184d33f524eb2f8af912baf9b58b7",
+      "matchesDeployed": true,
+      "verbatim": "idl.json"
+    }
+  }
+}

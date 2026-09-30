@@ -8,7 +8,7 @@ its members and changes only when that membership does, while the volatile count
 versions stay on the console summaries and the movement log. Ordered by program and channel,
 and carrying no timestamp.
 
-== Next gap (17) ==
+== Next gap (18) ==
 
 Exponent: the vcsHead IDL at github:exponent-finance/exponent-core@main/target/idl/exponent_core.json differs from the deployed idl.json
   types changed (2): Number, Principles
@@ -96,3 +96,10 @@ Squads V4: the anchor IDL at 6i4UjrDtkc7dqEmCyNDRfoxnAhDKSrY92u96Z74nRFdX differ
   types removed (3): TransactionBuffer, TransactionBufferCreateArgs, TransactionBufferExtendArgs
   types changed (1): MultisigAddSpendingLimitArgs
   errors removed (5): FinalBufferHashMismatch, FinalBufferSizeExceeded, FinalBufferSizeMismatch, InvalidInstructionArgs, MultisigCreateDeprecated
+
+Token ACL Gate: the metadata IDL at 9xRvGwTcgcJjhsiNETdQTYs8YEuwYWY7W23FVF6fXvS1 differs from the deployed idl.json
+  instructions removed (3): canFreezePermissionless, canThawPermissionless, setupFreezeExtraMetas
+  instructions changed (5): addWallet, createList, deleteList, removeWallet, setupExtraMetas
+  accounts changed (2): listConfig, walletEntry
+  types changed (1): mode
+  errors removed (18): accountAllowed, accountBlocked, accountNotWritable, immutableOwnerExtensionMissing, invalidAccountData, invalidAuthority, invalidConfigAccount, invalidData, invalidExtraMetasAccount, invalidGatingProgram, invalidInstruction, invalidListConfig, invalidRemainingAccounts, invalidSystemProgram, invalidTokenAclMintConfig, invalidWalletEntry, listNotEmpty, notEnoughAccounts

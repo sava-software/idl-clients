@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "program": "GATEzzqxhJnsWF6vHRsgtixxSB8PaQdcqGEVTEHWiULz",
+  "sourceProgram": "GATEzzqxhJnsWF6vHRsgtixxSB8PaQdcqGEVTEHWiULz",
+  "vcs": "VcsSource[host=github, repo=solana-foundation/token-acl-gate, path=idl/token_acl_gate_program.json, ref=master, commit=c525fa710883a55cedd0cd7bf2a5aef6eac05171, url=null, head=true]",
+  "idlURL": "https://raw.githubusercontent.com/solana-foundation/token-acl-gate/c525fa710883a55cedd0cd7bf2a5aef6eac05171/idl/token_acl_gate_program.json",
+  "idlFile": "null",
+  "idlAddress": "null",
+  "rawSha256": "a99cc384598b6f84ea36cdbaea16351b215464aa2f475e22f7a30669c4f3f408",
+  "normalizedSha256": "a99cc384598b6f84ea36cdbaea16351b215464aa2f475e22f7a30669c4f3f408",
+  "projectedSha256": "a99cc384598b6f84ea36cdbaea16351b215464aa2f475e22f7a30669c4f3f408",
+  "generatedSha256": "a99cc384598b6f84ea36cdbaea16351b215464aa2f475e22f7a30669c4f3f408"
+}

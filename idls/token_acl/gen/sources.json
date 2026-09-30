@@ -1,0 +1,17 @@
+{
+  "program": "TACLkU6CiCdkQN2MjoyDkVg2yAH9zkxiHDsiztQ52TP",
+  "deployed": "metadata",
+  "lastDeploySlot": 422539919,
+  "programDataState": "upgradeable",
+  "programDataStateSlot": 451983866,
+  "programDataPayloadSha256": "af9bffc6f6dc143656b82cb7cc8a78e57bdb0172e7d36bd51659157bf01fb4a0",
+  "programDataPayloadLength": 147152,
+  "channels": {
+    "metadata": {
+      "origin": "F5SuEDfU6RAJ8jZftxtNewGsAEqG9v8KnF5oyiwyrPaj",
+      "hash": "6ebb4af649981d816349d50888bae508bed46fa21179c52c11dd84ee6082bbdd",
+      "matchesDeployed": true,
+      "verbatim": "idl.json"
+    }
+  }
+}

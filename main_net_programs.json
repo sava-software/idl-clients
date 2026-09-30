@@ -543,6 +543,31 @@
       "package": "oracles.wormhole.verify_vaa",
       "program": "EFaNWErqAtVWufdNb7yofSHHfWFos843DFpu4JBw24at",
       "idlURL": "https://raw.githubusercontent.com/wormhole-foundation/wormhole/refs/heads/main/svm/wormhole-core-shims/anchor/idls/wormhole_verify_vaa_shim.json"
+    },
+    {
+      "name": "Token ACL",
+      "program": "TACLkU6CiCdkQN2MjoyDkVg2yAH9zkxiHDsiztQ52TP",
+      "idlType": "codama",
+      "deployed": "metadata",
+      "storeOnly": true,
+      "idlPlacement": "managed",
+      "idlDirectory": "idls/token_acl"
+    },
+    {
+      "name": "Token ACL Gate",
+      "program": "GATEzzqxhJnsWF6vHRsgtixxSB8PaQdcqGEVTEHWiULz",
+      "idlType": "codama",
+      "vcs": {
+        "repo": "solana-foundation/token-acl-gate",
+        "path": "idl/token_acl_gate_program.json",
+        "ref": "master",
+        "commit": "c525fa710883a55cedd0cd7bf2a5aef6eac05171",
+        "head": true
+      },
+      "deployed": "vcs",
+      "storeOnly": true,
+      "idlPlacement": "managed",
+      "idlDirectory": "idls/token_acl_gate"
     }
   ]
 }
