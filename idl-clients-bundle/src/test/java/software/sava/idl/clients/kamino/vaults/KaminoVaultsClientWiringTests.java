@@ -135,7 +135,7 @@ final class KaminoVaultsClientWiringTests {
     return new VaultState(VAULT_STATE, null, null, BASE_AUTHORITY, 0L, TOKEN_MINT, 0L,
         TOKEN_VAULT, TOKEN_PROGRAM, SHARES_MINT, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L,
         null, null, null, null, 0L, 0L, 0L, 0L, 0L, null, null, null, null, null,
-        null, null, 0L, 0L, null, 0L, 0L, null, 0, 0, null, 0L, null, null);
+        null, null, 0L, 0L, null, 0L, 0L, null, 0, 0, null, 0L, null, null, null);
   }
 
   private static Reserve reserve() {

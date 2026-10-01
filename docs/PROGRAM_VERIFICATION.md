@@ -84,6 +84,14 @@ gives no oracle, it cannot. Marinade's override rested on the deploy slot plus
 live account layout instead. Any evidence that is actually conclusive will do;
 the requirement is on the evidence, not on the method.
 
+**The on-chain copy can also run ahead of the program.** Kamino Vaults rewrote its
+anchor IDL account with its 2.3.0 deploy (slot 452240450), from a later build that
+was not deployed: three more instructions, three more trailing `invest` accounts,
+padding carved into new fields. The deployed image matched the `release/v2.3.0`
+asset byte for byte, so the program is generated from the SDK copy that describes
+that release, pinned to its package version. An IDL written in the deploy's own
+window usually describes it; only the image can say that it does.
+
 **Check how the URL versions itself.** A path tracking a branch
 (`marinade_finance.json`) keeps following upstream; a version-pinned filename
 (`marginfi_0.1.9.json`) silently freezes at that release and fails closed into

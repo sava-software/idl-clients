@@ -1,23 +1,23 @@
 {
   "program": "KvauGMspG5k6rtzrqqn7WNn3oZdyKqLKwK2XWQ8FLjd",
-  "deployed": "anchor",
-  "lastDeploySlot": 432874668,
+  "deployed": "vcs",
+  "lastDeploySlot": 452240450,
   "programDataState": "upgradeable",
   "programDataStateSlot": 440077852,
-  "programDataPayloadSha256": "abe18b58539e82ed54d33f1c09451a584ecbb35b3a24995336b16fbe695a4689",
+  "programDataPayloadSha256": "5d3e1faaa1e06417197b5e15980a47b90d24f4217217940677de32ab9d8763f4",
   "programDataPayloadLength": 10485715,
   "channels": {
     "anchor": {
       "origin": "CEMRqxNQ9UKW5LaxGwFSbYY63DCyHwpX2XYKcyDmmdVL",
-      "hash": "c7995cf5a47207fd9369774f72654f2abf09d4c89759927016dfef0308b21d6c",
-      "matchesDeployed": true,
+      "hash": "80c950b21b1dfed76f7521213cebcbe4f8b9801166eb74435d0993b932221b7b",
+      "matchesDeployed": false,
+      "file": "anchor.json",
       "verbatim": "anchor.original.json"
     },
     "vcs": {
-      "origin": "https://cdn.jsdelivr.net/npm/@kamino-finance/klend-sdk@latest/src/idl/kvault.json",
+      "origin": "https://cdn.jsdelivr.net/npm/@kamino-finance/klend-sdk@13.0.1/src/idl/kvault.json",
       "hash": "20daab2693573b3649387e12861f3c46f00ccebde209b2ac2f646455dcf07379",
-      "matchesDeployed": false,
-      "file": "vcs.json",
+      "matchesDeployed": true,
       "verbatim": "vcs.original.json"
     }
   }

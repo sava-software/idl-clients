@@ -225,8 +225,9 @@
       "package": "kamino.vaults",
       "program": "KvauGMspG5k6rtzrqqn7WNn3oZdyKqLKwK2XWQ8FLjd",
       "vcs": {
-        "url": "https://cdn.jsdelivr.net/npm/@kamino-finance/klend-sdk@latest/src/idl/kvault.json"
+        "url": "https://cdn.jsdelivr.net/npm/@kamino-finance/klend-sdk@13.0.1/src/idl/kvault.json"
       },
+      "deployed": "vcs",
       "typeRefs": [
         {
           "refProgram": "KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
@@ -255,7 +256,11 @@
           "excludeTypes": [],
           "explicitRules": []
         }
-      ]
+      ],
+      "review": {
+        "deploySlot": 452240450,
+        "verdict": "the deployed binary is byte-identical to Kamino-Finance/kvault release/v2.3.0's kamino_vault.so (de2daca, the commit the otter-verify PDA names): VaultState gains permissioning_authority (taken from padding_3), VaultConfigField gains PermissioningAuthority and errors gain 7065 InvalidPermissioningAuthority, and on a vault that sets the authority deposit, deposit_with_min_shares_out, buy, buy_with_min_shares_out, withdraw, sell, withdraw_from_available and redeem_in_kind require it as the last remaining account, signing; the anchor IDL rewritten with this deploy describes an unreleased build (withdraw tickets, conditional reserves, update_reserve_allocation_v3, three more trailing invest accounts) that the binary does not contain, so the client is generated from the klend-sdk 13.0.1 IDL, which matches 2.3.0; GroundTruth compared 20 builders, 20 match"
+      }
     },
     {
       "name": "Loopscale",

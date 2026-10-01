@@ -7,6 +7,14 @@ nobody took. The standing disagreements live beside this file, at its name with 
 before the extension. Ordered by program and channel, and carrying no timestamp, so
 consecutive runs are worth diffing against each other.
 
-== Movement (0) ==
+== Movement (2) ==
 
-Nothing moved since the last generation.
+Kamino Vaults: the anchor IDL at CEMRqxNQ9UKW5LaxGwFSbYY63DCyHwpX2XYKcyDmmdVL moved since the last generation, c7995cf5a47207fd9369774f72654f2abf09d4c89759927016dfef0308b21d6c -> 80c950b21b1dfed76f7521213cebcbe4f8b9801166eb74435d0993b932221b7b: instructions +3 ~7, accounts +4, types +12 ~8, errors +13
+  instructions added (3): invest_in_conditional_reserve, update_klend_queue_accounting, update_reserve_allocation_v3
+  instructions changed (7): invest, invest_with_max_amount, sell, update_reserve_allocation, update_reserve_allocation_v2, withdraw, withdraw_pending_fees
+  accounts added (4): LendingMarket, Obligation, ReferrerTokenState, WithdrawTicket
+  types added (12): BorrowOrder, ElevationGroup, FixedTermBorrowRolloverConfig, LendingMarket, Obligation, ObligationCollateral, ObligationLiquidity, ObligationOrder, ReferrerTokenState, ReserveType, WithdrawTicket, WithdrawTicketProgressEvent
+  types changed (8): every one type changed
+  errors added (13): AllSourceAccountsMustBeProvided, AUMDecreasedAfterInvestInConditionalReserve, ConditionalLiquidityDisabled, DestinationReserveIsNotConditional, InvalidPermissioningAuthority, InvestAndFillVaultStateMismatch, MissingWithdrawQueueAccounts, NotEnoughAvailableLiquidityToInvestIntoConditional, NotEnoughCTokensToWithdrawFromReserve, ReserveCtokenAllocationCapExceeded, ReserveTokenAllocationCapExceeded, SourceReserveHasHigherPriority, WithdrawTicketCallbackAccountingMismatch
+
+Kamino Vaults: the program was redeployed at slot 452240450, up from 432874668; the stored program image changed: 10485715 payload bytes, was 10485715; already reviewed at this slot: the deployed binary is byte-identical to Kamino-Finance/kvault release/v2.3.0's kamino_vault.so (de2daca, the commit the otter-verify PDA names): VaultState gains permissioning_authority (taken from padding_3), VaultConfigField gains PermissioningAuthority and errors gain 7065 InvalidPermissioningAuthority, and on a vault that sets the authority deposit, deposit_with_min_shares_out, buy, buy_with_min_shares_out, withdraw, sell, withdraw_from_available and redeem_in_kind require it as the last remaining account, signing; the anchor IDL rewritten with this deploy describes an unreleased build (withdraw tickets, conditional reserves, update_reserve_allocation_v3, three more trailing invest accounts) that the binary does not contain, so the client is generated from the klend-sdk 13.0.1 IDL, which matches 2.3.0; GroundTruth compared 20 builders, 20 match

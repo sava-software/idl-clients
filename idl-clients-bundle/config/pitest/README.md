@@ -984,7 +984,9 @@ Age alone is not a reason to switch, so each was confirmed against chain:
   the Ember fixes live in the hand-written layer.
 
 The four Kamino programs, `jupiter.swap` and `orca.whirlpools` publish their IDL
-in the same deploy, so the on-chain copy stays authoritative for them.
+in the same deploy, so the on-chain copy stays authoritative for them. Kamino
+Vaults stopped being one on 2026-10-01, when the document published with a deploy
+described a later build; see "Kamino Vaults: `"deployed": "vcs"`" below.
 
 **Switching `squads.v4` drops four generated types**, three of which were
 duplicates the on-chain IDL carried alongside the names the program actually uses:
@@ -1382,6 +1384,54 @@ kLend program and the farms builders substitute the farms program. The generated
 `requireNonNullElse(oracle, invokedProgram)`; the hand-written layer adds the
 mapping from Kamino's *semantic* null keys (`PublicKey.NONE`, `nu111…`) onto
 that positional convention, which `requireNonNullElse` alone would not catch.
+
+#### Kamino Vaults: `"deployed": "vcs"` because the on-chain IDL ran *ahead* of the deploy (2026-10-01)
+
+The reverse of Marinade. Kamino Vaults redeployed at slot 452240450 and rewrote its
+anchor IDL account (`CEMRqxNQ9UKW5LaxGwFSbYY63DCyHwpX2XYKcyDmmdVL`) ten minutes
+later, at slot 452242685, as it has after each recent deploy. But the document it
+wrote describes a build that is not deployed: withdraw tickets
+(`update_klend_queue_accounting`, `VaultState.withdraw_ticket_rent_budget`,
+`VaultAllocation.klend_queued_ctokens`), conditional reserves
+(`invest_in_conditional_reserve`, `ReserveType`, `allocation_priority`,
+`GlobalConfig.conditional_liquidity_enabled`), `update_reserve_allocation_v3`, and
+three more trailing accounts on `invest` and `invest_with_max_amount`. The client
+generated from it compiled.
+
+1. **The deployed image is identified at artifact level.** The ProgramData payload,
+   trimmed of trailing zeros, hashes to `b2bb00e4…` and equals the `kamino_vault.so`
+   asset of the GitHub release `release/v2.3.0` byte for byte. The otter-verify PDA
+   names `de2daca`, the commit that tag points at. None of the twelve error messages
+   the unreleased build adds occurs in the binary, while `Invalid permissioning
+   authority` does. No public branch, tag or pull-request head of
+   `Kamino-Finance/kvault` carries the unreleased code.
+2. **The replacement matches the deployed program.** `klend-sdk` 13.0.1 ships the
+   2.3.0 document (`src/idl/kvault.json`, still versioned `2.2.2`). Generated from it,
+   the client differs from the 2.2.2-era one only by the 2.2.2→2.3.0 source diff
+   (`permissioning_authority` taken from `padding_3`,
+   `VaultConfigField::PermissioningAuthority`, error 7065) and by the doc comments it
+   loses, which that document does not carry. `GroundTruth` over `de2daca` compares 20
+   builders and all 20 match; over the anchor document it flags `invest` at 20
+   accounts against the Rust's 17.
+3. **The extra `invest` accounts break the call, and the extra instructions are
+   absent.** Simulated on mainnet with `sigVerify` off against Galaxy USDT
+   (`FPQNECVaw9qCHTJ7JRQXQUV94YffmhX3he5khUgx4m3j`, two reserves) at slot 452309938,
+   `invest` built from the 2.3.0 document ran to completion and deposited into its
+   reserve. The same call with the anchor document's three trailing accounts
+   panicked in `allocation_reserve_accounts_iter` (`vault_operations.rs:1048`,
+   `AccountOwnedByWrongProgram`) on its first remaining account: the kvault program
+   id, read as reserve 0. The three instructions only the anchor document declares
+   answer `InstructionFallbackNotFound` (101), as a garbage discriminator does, while
+   `update_reserve_allocation_v2` dispatches and fails decoding its missing arguments
+   (102). 2.3.0 declares no `#[fallback]`, so 101 is an absence oracle here.
+
+The `vcs` source is pinned to `@kamino-finance/klend-sdk@13.0.1`. A deployed channel
+following `@latest` would generate the client from whatever Kamino publishes next,
+which can lead a deploy just as this anchor document did. A bare URL has no
+`vcsHead`, so the pin gives up the SDK's early warning: the anchor channel, now a
+standing entry in the gap report, and `lastDeploySlot` are what will move first.
+When the monitor reports the next redeploy, compare the image with the release
+assets before advancing the pin.
 
 ## Audited timeout-detected mutants (seeded 2026-07-28, sava-build 21.5.17)
 

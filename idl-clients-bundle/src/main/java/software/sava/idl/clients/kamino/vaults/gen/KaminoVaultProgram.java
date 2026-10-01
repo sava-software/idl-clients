@@ -89,11 +89,6 @@ public final class KaminoVaultProgram {
 
   public static final Discriminator UPDATE_RESERVE_ALLOCATION_DISCRIMINATOR = toDiscriminator(5, 54, 213, 112, 75, 232, 117, 37);
 
-  /// Updates a reserve allocation without changing an existing `ctoken_allocation_cap`.
-  ///
-  /// New allocations created through this v1 instruction use `0`, which is treated as uncapped.
-  /// Callers that need to set or clear a cToken cap must use `update_reserve_allocation_v2`.
-  ///
   public static List<AccountMeta> updateReserveAllocationKeys(final AccountMeta invokedKaminoVaultProgramMeta,
                                                               final PublicKey signerKey,
                                                               final PublicKey vaultStateKey,
@@ -119,11 +114,6 @@ public final class KaminoVaultProgram {
     );
   }
 
-  /// Updates a reserve allocation without changing an existing `ctoken_allocation_cap`.
-  ///
-  /// New allocations created through this v1 instruction use `0`, which is treated as uncapped.
-  /// Callers that need to set or clear a cToken cap must use `update_reserve_allocation_v2`.
-  ///
   /// @param weight: u64
   /// @param cap: u64
   public static Instruction updateReserveAllocation(final AccountMeta invokedKaminoVaultProgramMeta,
@@ -155,11 +145,6 @@ public final class KaminoVaultProgram {
     return updateReserveAllocation(invokedKaminoVaultProgramMeta, keys, weight, cap);
   }
 
-  /// Updates a reserve allocation without changing an existing `ctoken_allocation_cap`.
-  ///
-  /// New allocations created through this v1 instruction use `0`, which is treated as uncapped.
-  /// Callers that need to set or clear a cToken cap must use `update_reserve_allocation_v2`.
-  ///
   /// @param weight: u64
   /// @param cap: u64
   public static Instruction updateReserveAllocation(final AccountMeta invokedKaminoVaultProgramMeta,
@@ -218,11 +203,6 @@ public final class KaminoVaultProgram {
 
   public static final Discriminator UPDATE_RESERVE_ALLOCATION_V_2_DISCRIMINATOR = toDiscriminator(195, 136, 1, 79, 10, 123, 121, 100);
 
-  /// Updates a reserve allocation with an optional cToken-denominated cap.
-  ///
-  /// `ctoken_allocation_cap` limits the allocation after conversion to token liquidity at
-  /// the current reserve exchange rate. `0` and `u64::MAX` mean uncapped.
-  ///
   public static List<AccountMeta> updateReserveAllocationV2Keys(final AccountMeta invokedKaminoVaultProgramMeta,
                                                                 final PublicKey signerKey,
                                                                 final PublicKey vaultStateKey,
@@ -248,11 +228,6 @@ public final class KaminoVaultProgram {
     );
   }
 
-  /// Updates a reserve allocation with an optional cToken-denominated cap.
-  ///
-  /// `ctoken_allocation_cap` limits the allocation after conversion to token liquidity at
-  /// the current reserve exchange rate. `0` and `u64::MAX` mean uncapped.
-  ///
   /// @param weight: u64
   /// @param cap: u64
   /// @param ctokenAllocationCap: u64
@@ -292,11 +267,6 @@ public final class KaminoVaultProgram {
     );
   }
 
-  /// Updates a reserve allocation with an optional cToken-denominated cap.
-  ///
-  /// `ctoken_allocation_cap` limits the allocation after conversion to token liquidity at
-  /// the current reserve exchange rate. `0` and `u64::MAX` mean uncapped.
-  ///
   /// @param weight: u64
   /// @param cap: u64
   /// @param ctokenAllocationCap: u64
@@ -1160,7 +1130,6 @@ public final class KaminoVaultProgram {
 
   public static final Discriminator INVEST_DISCRIMINATOR = toDiscriminator(13, 245, 180, 103, 254, 182, 121, 4);
 
-  /// @param reserveKey CPI accounts
   public static List<AccountMeta> investKeys(final AccountMeta invokedKaminoVaultProgramMeta,
                                              final PublicKey payerKey,
                                              final PublicKey payerTokenAccountKey,
@@ -1200,7 +1169,6 @@ public final class KaminoVaultProgram {
     );
   }
 
-  /// @param reserveKey CPI accounts
   public static Instruction invest(final AccountMeta invokedKaminoVaultProgramMeta,
                                    final PublicKey payerKey,
                                    final PublicKey payerTokenAccountKey,
@@ -1249,11 +1217,6 @@ public final class KaminoVaultProgram {
 
   public static final Discriminator INVEST_WITH_MAX_AMOUNT_DISCRIMINATOR = toDiscriminator(135, 92, 184, 137, 69, 72, 118, 7);
 
-  /// Same as `invest` but moves at most `max_amount` liquidity towards the target allocation.
-  /// If `max_amount` is below the liquidity value of one ctoken, the call succeeds without
-  /// moving any funds; check the resulting balances rather than infer movement from success.
-  ///
-  /// @param reserveKey CPI accounts
   public static List<AccountMeta> investWithMaxAmountKeys(final AccountMeta invokedKaminoVaultProgramMeta,
                                                           final PublicKey payerKey,
                                                           final PublicKey payerTokenAccountKey,
@@ -1293,11 +1256,6 @@ public final class KaminoVaultProgram {
     );
   }
 
-  /// Same as `invest` but moves at most `max_amount` liquidity towards the target allocation.
-  /// If `max_amount` is below the liquidity value of one ctoken, the call succeeds without
-  /// moving any funds; check the resulting balances rather than infer movement from success.
-  ///
-  /// @param reserveKey CPI accounts
   /// @param maxAmount: u64
   public static Instruction investWithMaxAmount(final AccountMeta invokedKaminoVaultProgramMeta,
                                                 final PublicKey payerKey,
@@ -1341,10 +1299,6 @@ public final class KaminoVaultProgram {
     return investWithMaxAmount(invokedKaminoVaultProgramMeta, keys, maxAmount);
   }
 
-  /// Same as `invest` but moves at most `max_amount` liquidity towards the target allocation.
-  /// If `max_amount` is below the liquidity value of one ctoken, the call succeeds without
-  /// moving any funds; check the resulting balances rather than infer movement from success.
-  ///
   /// @param maxAmount: u64
   public static Instruction investWithMaxAmount(final AccountMeta invokedKaminoVaultProgramMeta,
                                                 final List<AccountMeta> keys,
@@ -1470,7 +1424,6 @@ public final class KaminoVaultProgram {
 
   public static final Discriminator WITHDRAW_PENDING_FEES_DISCRIMINATOR = toDiscriminator(131, 194, 200, 140, 175, 244, 217, 183);
 
-  /// @param lendingMarketKey CPI accounts
   public static List<AccountMeta> withdrawPendingFeesKeys(final PublicKey vaultAdminAuthorityKey,
                                                           final PublicKey vaultStateKey,
                                                           final PublicKey reserveKey,
@@ -1507,7 +1460,6 @@ public final class KaminoVaultProgram {
     );
   }
 
-  /// @param lendingMarketKey CPI accounts
   public static Instruction withdrawPendingFees(final AccountMeta invokedKaminoVaultProgramMeta,
                                                 final PublicKey vaultAdminAuthorityKey,
                                                 final PublicKey vaultStateKey,

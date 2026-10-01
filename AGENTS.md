@@ -192,7 +192,10 @@ which breaks the client just as quietly because it still compiles.
 Three traps are worth carrying around even when you are not investigating:
 
 - **"The on-chain IDL agrees with our generated code" proves nothing.** It shows
-  our code matches *the IDL* — a separate account that a deploy does not update.
+  our code matches *the IDL* — a separate account that a deploy does not update,
+  and one a team can also write *ahead* of the deploy: Kamino Vaults' 2.3.0
+  deploy came with an anchor document for a later, unreleased build, so that
+  program declares `"deployed": "vcs"` (bundle README).
 - **A repo under a different org may still be the program's home.** Teams
   rebrand; treat provenance as a question to answer, not a disqualifier.
 - **There are two on-chain accounts, and a program that names neither is read

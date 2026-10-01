@@ -68,7 +68,8 @@ public sealed interface KaminoVaultError extends ProgramError permits
     KaminoVaultError.RewardsStaleForFeeUpdate,
     KaminoVaultError.VaultDepositCapReached,
     KaminoVaultError.MaxInvestAmountMustBeGreaterThanZero,
-    KaminoVaultError.SharesOutBelowMinimum {
+    KaminoVaultError.SharesOutBelowMinimum,
+    KaminoVaultError.InvalidPermissioningAuthority {
 
   static KaminoVaultError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -137,6 +138,7 @@ public sealed interface KaminoVaultError extends ProgramError permits
       case 7062 -> VaultDepositCapReached.INSTANCE;
       case 7063 -> MaxInvestAmountMustBeGreaterThanZero.INSTANCE;
       case 7064 -> SharesOutBelowMinimum.INSTANCE;
+      case 7065 -> InvalidPermissioningAuthority.INSTANCE;
       default -> null;
     };
   }
@@ -593,6 +595,13 @@ public sealed interface KaminoVaultError extends ProgramError permits
 
     public static final SharesOutBelowMinimum INSTANCE = new SharesOutBelowMinimum(
         7064, "Shares out is below minimum requested"
+    );
+  }
+
+  record InvalidPermissioningAuthority(int code, String msg) implements KaminoVaultError {
+
+    public static final InvalidPermissioningAuthority INSTANCE = new InvalidPermissioningAuthority(
+        7065, "Invalid permissioning authority"
     );
   }
 }

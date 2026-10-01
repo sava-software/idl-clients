@@ -9,7 +9,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// @param rewardPerSecond: u64
 /// @param lastIssuanceTs: u64
-/// @param rewardsAvailable: u64 Rewards available to distribute (topped up but not yet moved to vault.token_available)
+/// @param rewardsAvailable: u64
 /// @param cumulativeRewardsDistributedAnalytics: u64
 /// @param padding: u64[]
 public record VaultRewardInfo(long rewardPerSecond,

@@ -26,7 +26,8 @@ public enum VaultConfigField implements RustEnum {
   AllowAllocationsInWhitelistedReservesOnly,
   AllowInvestInWhitelistedReservesOnly,
   RewardPerSecond,
-  DepositCap;
+  DepositCap,
+  PermissioningAuthority;
 
   public static VaultConfigField read(final byte[] _data, final int _offset) {
     return SerDeUtil.read(1, VaultConfigField.values(), _data, _offset);

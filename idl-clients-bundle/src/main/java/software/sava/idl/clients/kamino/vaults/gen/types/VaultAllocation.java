@@ -14,7 +14,7 @@ import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// @param targetAllocationWeight: u64
-/// @param tokenAllocationCap: u64 Maximum token invested in this reserve
+/// @param tokenAllocationCap: u64
 /// @param ctokenVaultBump: u64
 /// @param ctokenAllocationCap: u64
 /// @param configPadding: u64[]

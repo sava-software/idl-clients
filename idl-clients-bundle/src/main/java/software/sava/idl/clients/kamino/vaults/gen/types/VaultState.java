@@ -41,7 +41,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param withdrawalPenaltyBps: u64
 /// @param allowAllocationsInWhitelistedReservesOnly: u8
 /// @param allowInvestInWhitelistedReservesOnly: u8
-/// @param depositCap: u64 total vault deposit cap; 0 means uncapped for backward compatibility reasons; this is a soft cap that just blocks new deposits but the vault AUM can go above this cap because of the earned interest
+/// @param depositCap: u64
 public record VaultState(PublicKey _address,
                          Discriminator discriminator,
                          PublicKey vaultAdminAuthority,
@@ -87,6 +87,7 @@ public record VaultState(PublicKey _address,
                          byte[] padding2,
                          long depositCap,
                          VaultRewardInfo rewardInfo,
+                         PublicKey permissioningAuthority,
                          BigInteger[] padding3) implements SerDe {
 
   public static final int BYTES = 62552;
@@ -94,7 +95,7 @@ public record VaultState(PublicKey _address,
   public static final int PADDING_1_LEN = 256;
   public static final int NAME_LEN = 40;
   public static final int PADDING_2_LEN = 6;
-  public static final int PADDING_3_LEN = 232;
+  public static final int PADDING_3_LEN = 230;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(228, 196, 82, 165, 98, 210, 235, 152);
@@ -143,7 +144,8 @@ public record VaultState(PublicKey _address,
   public static final int PADDING_2_OFFSET = 58730;
   public static final int DEPOSIT_CAP_OFFSET = 58736;
   public static final int REWARD_INFO_OFFSET = 58744;
-  public static final int PADDING_3_OFFSET = 58840;
+  public static final int PERMISSIONING_AUTHORITY_OFFSET = 58840;
+  public static final int PADDING_3_OFFSET = 58872;
 
   public static Filter createVaultAdminAuthorityFilter(final PublicKey vaultAdminAuthority) {
     return Filter.createMemCompFilter(VAULT_ADMIN_AUTHORITY_OFFSET, vaultAdminAuthority);
@@ -351,6 +353,10 @@ public record VaultState(PublicKey _address,
     return Filter.createMemCompFilter(REWARD_INFO_OFFSET, rewardInfo.write());
   }
 
+  public static Filter createPermissioningAuthorityFilter(final PublicKey permissioningAuthority) {
+    return Filter.createMemCompFilter(PERMISSIONING_AUTHORITY_OFFSET, permissioningAuthority);
+  }
+
   public static VaultState read(final byte[] _data, final int _offset) {
     return read(null, _data, _offset);
   }
@@ -471,7 +477,9 @@ public record VaultState(PublicKey _address,
     i += 8;
     final var rewardInfo = VaultRewardInfo.read(_data, i);
     i += 96;
-    final var padding3 = new BigInteger[232];
+    final var permissioningAuthority = readPubKey(_data, i);
+    i += 32;
+    final var padding3 = new BigInteger[230];
     SerDeUtil.readU128Array(padding3, _data, i);
     return new VaultState(_address,
                           discriminator,
@@ -518,6 +526,7 @@ public record VaultState(PublicKey _address,
                           padding2,
                           depositCap,
                           rewardInfo,
+                          permissioningAuthority,
                           padding3);
   }
 
@@ -605,7 +614,9 @@ public record VaultState(PublicKey _address,
     putInt64LE(_data, i, depositCap);
     i += 8;
     i += rewardInfo.write(_data, i);
-    i += SerDeUtil.writeU128ArrayChecked(padding3, 232, _data, i);
+    permissioningAuthority.write(_data, i);
+    i += 32;
+    i += SerDeUtil.writeU128ArrayChecked(padding3, 230, _data, i);
     return i - _offset;
   }
 
