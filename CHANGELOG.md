@@ -1,5 +1,28 @@
 # Changelog
 
+## [25.19.9](https://github.com/sava-software/idl-clients/compare/25.19.8...25.19.9) (2026-10-01)
+
+
+### ⚠ BREAKING CHANGES
+
+* **scope:** the generated V8V10 type is removed. Use V8 for a ChainlinkRWA mapping and ChainlinkXMappingData for a ChainlinkX one: V8 has the shape V8V10 had, while ChainlinkXMappingData adds the u16 dailyAutoApprovalBps and is three bytes long. The hand-written ChainlinkX record gains a trailing component: ChainlinkX(index, oracle, marketStatusBehavior, emaTypes) is now ChainlinkX(index, oracle, marketStatusBehavior, emaTypes, dailyAutoApprovalBps). Code that reads entries through their accessors is unaffected; code that constructs one, or deconstructs it with a record pattern, adds the new component, 0 where the mapping predates it. OracleEntry permits a new ExponentTranching record, so an exhaustive switch over OracleEntry needs an ExponentTranching arm, and a switch over OracleType an ExponentTranching case; the sealed ScopeError permits ExponentTranchingCPIError, so an exhaustive switch over it needs that arm too. ChainlinkXPriceData decodes as before, but code that read activationDateTime on an entry that is not suspended as the activation a report announced now reads the period start, and approvedMultiplierBits is present on every entry that has published.
+* **kamino-vaults:** the factories' return type changed, so code compiled against an earlier release that calls KaminoVaultsClient.createClient must be recompiled. Its source does not need to change.
+* **kamino-vaults:** VaultState's canonical constructor takes permissioningAuthority between rewardInfo and padding3, PADDING_3_LEN is 230 and PADDING_3_OFFSET moved from 58840 to 58872, where PERMISSIONING_AUTHORITY_OFFSET now is 58840. Code that constructs a VaultState must pass the new component.
+* **jupiter:** the instructions `withdraw_token_account_excess_lamports` and `create_idempotent_associated_token_account` were removed from the deployed IDL. Ensure to update any processes relying on these instructions.
+
+### Features
+
+* **jupiter:** implement withdraw excess lamports and idempotent token account creation helpers ([d775ac3](https://github.com/sava-software/idl-clients/commit/d775ac3e2d6834cd6589db2c6b7e947adb0a0533))
+* **scope:** sync Kamino Scope to the 0.43.0 deploy, add the ExponentTranching entry and ChainlinkX's auto approval threshold ([df2c999](https://github.com/sava-software/idl-clients/commit/df2c999891cbb1fcc8f8347987f672b68741a32a))
+* **token-acl:** add generated IDL and program instructions for Token ACL ([6706e9f](https://github.com/sava-software/idl-clients/commit/6706e9fa4f8399970c9285a0f594670ee1a954ec))
+
+
+### Bug Fixes
+
+* **kamino-vaults:** generate Kamino Vaults from the IDL that matches the deployed 2.3.0 program ([781ab7d](https://github.com/sava-software/idl-clients/commit/781ab7dbe6ef141adfcd83427855ab268039d84f))
+* **kamino-vaults:** KaminoVaultsClient.createClient returns KaminoVaultsClient ([42dde98](https://github.com/sava-software/idl-clients/commit/42dde98e9d45d6c6c89487600d5d783d441d58d3))
+* **phoenix-perpetuals:** update deploy slot and program data in sources.json ([55e4ac2](https://github.com/sava-software/idl-clients/commit/55e4ac2a098a74bbd41b588bc228f71b4214e934))
+
 ## [25.19.8](https://github.com/sava-software/idl-clients/compare/25.19.7...25.19.8) (2026-09-28)
 
 
