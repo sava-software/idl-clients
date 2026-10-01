@@ -89,6 +89,17 @@ final class KaminoVaultsClientWiringTests {
     assertEquals(KaminoAccounts.MAIN_NET, KaminoVaultsClient.createClient(SPL_CLIENT).kaminoAccounts());
   }
 
+  /// The implementation is package-private, so a factory declared to return it hands callers
+  /// outside this package a type they cannot name: `var client = createClient(...)` then
+  /// cannot call any of the interface's default overloads.
+  @Test
+  void createClientReturnsThePublicInterface() throws NoSuchMethodException {
+    assertEquals(KaminoVaultsClient.class, KaminoVaultsClient.class
+        .getMethod("createClient", SPLAccountClient.class, KaminoAccounts.class).getReturnType());
+    assertEquals(KaminoVaultsClient.class, KaminoVaultsClient.class
+        .getMethod("createClient", SPLAccountClient.class).getReturnType());
+  }
+
   @Test
   void depositWithdrawAndRedeemBindTheGeneratedBuilders() {
     assertIx(

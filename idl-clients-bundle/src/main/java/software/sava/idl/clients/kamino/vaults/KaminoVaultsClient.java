@@ -10,12 +10,12 @@ import software.sava.idl.clients.spl.SPLAccountClient;
 
 public interface KaminoVaultsClient {
 
-  static KaminoVaultsClientImpl createClient(final SPLAccountClient splAccountClient,
-                                             final KaminoAccounts kaminoAccounts) {
+  static KaminoVaultsClient createClient(final SPLAccountClient splAccountClient,
+                                         final KaminoAccounts kaminoAccounts) {
     return new KaminoVaultsClientImpl(splAccountClient, kaminoAccounts);
   }
 
-  static KaminoVaultsClientImpl createClient(final SPLAccountClient splAccountClient) {
+  static KaminoVaultsClient createClient(final SPLAccountClient splAccountClient) {
     return createClient(splAccountClient, KaminoAccounts.MAIN_NET);
   }
 
