@@ -1724,29 +1724,49 @@ reach. The bounds come from `LbClmmConstants`: `FEE_DENOMINATOR = 10^9` and
 These are guards worth keeping — they are cheap, and they document the domain —
 but no input a caller can construct distinguishes them from their mutants.
 
-### Hash-mixing arithmetic in hand-written hashCode (34 mutants, scope)
+### Hash-mixing arithmetic in hand-written hashCode (30 mutants, scope)
 
 `MathMutator` hits on the `31 * result + component` mixing steps in
 `MostRecentOfEntry`, `CappedMostRecentOf`, `Conditional`, `NotYetSupported`,
-`ScopeEntriesRecord`, and `PriceChainsRecord`. Any deterministic function of
-the compared components satisfies the `hashCode` contract — the tests assert
-equal-objects-equal-hashes and that each component perturbs the hash, and both
-properties hold under any mixing formula. Killing these would mean asserting
-literal hash values, which restates the implementation. Four of the 34 are
-same-coordinate siblings (a `31 * result + c` line holds one multiplication and
-one addition mutant) surfaced by the 21.5.9 multiset comparison — same
-reasoning, annotated `# hash-mixing sibling` in the CSV.
+`ScopeEntriesRecord`, and `PriceChainsRecord`, each turning the step's `+` into
+`-`. Any deterministic function of the compared components satisfies the
+`hashCode` contract — the tests assert equal-objects-equal-hashes and that each
+component perturbs the hash, and both properties hold when a step subtracts its
+component instead of adding it. Killing these would mean asserting literal hash
+values, which restates the implementation.
 
-### Record-pattern deconstruction conditionals (13 mutants, scope)
+Since 2026-10-01 every composite compares and hashes through `EntryGraph`,
+which hashes an input by its slot and type rather than by its subgraph. That
+brings `CappedFloored` and `MultiplicationChain` into the family (4 and 2
+rows) and `EntryGraph.hash` itself (2 rows: the `+` of the input mix and of
+the list mix). One `EntryGraph.hash` mutant is not of the family: the list
+mix's `31 * result` turned into `31 / result` drops every entry but the last
+once the running hash passes 31. The `sources[0]` variants in
+`ScopeEntryEqualityTests`, which change only a list's first entry, kill it.
+
+Nor is a division at the first step of a mix that starts from the slot: there
+`31 * index` turned into `31 / index` throws at slot 0, a valid slot. Four rows
+accepted into this family in 2026-07 were such divisions, in `CappedMostRecentOf`,
+`MostRecentOfEntry`, `Conditional` and `NotYetSupported`. They were the
+multiplication halves of first steps, which the 21.5.9 multiset comparison had
+surfaced as same-coordinate siblings. On 2026-10-01 `anEntryAtSlotZeroHashes`
+killed them, and they were pruned after two matching history-free previews.
+
+### Record-pattern deconstruction conditionals (1 mutant, scope)
 
 `RemoveConditionalMutator_EQUAL_IF` on the `o instanceof Type(...)` record
-deconstruction lines in the same equals methods. The tests cover a matching
-twin, a mismatching variant per component, a null, and a different type; the
-surviving conditionals are the compiler-synthesized component-extraction checks
-inside the pattern, which cannot take their alternate branch once the
-`instanceof` has matched. Three of the 13 are same-coordinate siblings (one per
-synthesized extraction check on the deconstruction line) surfaced by the
-21.5.9 multiset comparison — annotated `# record-pattern sibling` in the CSV.
+deconstruction line in `NotYetSupported.equals`, the one hand-written equals
+whose record pattern leaves a surviving conditional (`PriceChainsRecord.equals`
+deconstructs one too, and its conditionals are killed). The tests cover a
+matching twin, a mismatching variant per component, a null, and a different
+type; the surviving conditional is a compiler-synthesized component-extraction
+check inside the pattern, which cannot take its alternate branch once the
+`instanceof` has matched.
+
+Since 2026-10-01 the composites compare through `EntryGraph`, and no
+deconstruction pattern is left in their `equals`. The six `CappedMostRecentOf`
+and `MostRecentOfEntry` rows were pruned after two matching history-free
+previews; `NotYetSupported`'s row remains.
 
 ### Zero fast paths in front of arithmetic that yields zero anyway (scope + orca)
 
@@ -1760,9 +1780,9 @@ same result the long way). Same principle as idl-clients-spl's `Fee.toRatio`
 acceptances: the guard is a deliberate allocation-avoiding fast path whose
 removal is unobservable.
 
-### Trim-on-exact-fit copies (4 mutants, scope)
+### Trim-on-exact-fit copies (2 mutants, scope)
 
-`ConditionalsBoundary`/`ORDER_IF` on `j < entries.length` in
+`ConditionalsBoundary` on `j < entries.length` in
 `ScopeReaderRecord.parseEntries` and `ScopeEntriesRecord.parseChain`: forcing
 the trim branch when nothing was trimmed copies the full array — a distinct
 array with identical content, indistinguishable through every consumer.

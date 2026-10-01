@@ -55,15 +55,44 @@ record ScopeReaderRecord(ScopeEntry[] entries,
     return i.isPresent() ? entry(i.getAsInt()) : null;
   }
 
-  private ScopeEntry[] parseEntries(final int[] entryIndices) {
+  /// How a composite's refresh reads its source list, and so how the list is resolved. The
+  /// program's sentinel is any index at or past the slot count. A slot the walk cut to break a
+  /// cycle is left out of a list whose sources play no positional role, the rest kept in their
+  /// order (a MostRecentOf tie goes to the first), since the program still reads every source
+  /// after it.
+  private enum SourceList {
+    /// MostRecentOf and CappedMostRecentOf skip an index past the slot count and read on
+    /// (`most_recent_of.rs`). Since Scope 0.35.0 `validate_source_entries` keeps the valid
+    /// indices contiguous from the start, but an entry written before it was validated on its
+    /// first source only, and the mapping is validated only where it is written, so a gap
+    /// between two sources can still be live.
+    SKIP_GAPS,
+    /// MultiplicationChain stops at the first index past the slot count
+    /// (`multiplication_chain.rs`).
+    END_AT_SENTINEL,
+    /// A Conditional's operands are positional: one past the slot count fails the refresh
+    /// (`get_source_price` in `conditional.rs`), and a cut one ends the list rather than moving
+    /// a later operand into its place.
+    POSITIONAL
+  }
+
+  /// Resolves a composite's source list as `rule` says its program reads it.
+  private ScopeEntry[] parseEntries(final int[] entryIndices, final SourceList rule) {
     final var entries = new ScopeEntry[entryIndices.length];
     int j = 0;
-    for (; j < entryIndices.length; ++j) {
-      final var entry = entry(entryIndices[j]);
-      if (entry == null) {
+    for (final int index : entryIndices) {
+      if (index >= priceInfoAccounts.length) {
+        if (rule == SourceList.SKIP_GAPS) {
+          continue;
+        }
         break;
       }
-      entries[j] = entry;
+      final var entry = entry(index);
+      if (entry != null) {
+        entries[j++] = entry;
+      } else if (rule == SourceList.POSITIONAL) {
+        break;
+      }
     }
     if (j < entries.length) {
       final var trimmed = new ScopeEntry[j];
@@ -86,6 +115,20 @@ record ScopeReaderRecord(ScopeEntry[] entries,
     } else {
       return Set.of();
     }
+  }
+
+  /// The reference price a record of slot `i` stores, with its tolerance.
+  private record Band(ScopeEntry refPrice, OptionalInt toleranceBps) {
+  }
+
+  /// Asked only by the types whose records store a band. Resolving one walks into the
+  /// referenced slot while slot `i` is still being built, so a type that would discard the
+  /// answer must not ask: a cycle closing through its band would be broken on some other
+  /// edge, such as a source of the composite the band names. Every slot's band, stored or
+  /// not, is resolved again after the walk by [ScopeEntries#referencePrice(int)].
+  private Band band(final int i) {
+    final var refPrice = entry(this.refPrice[i]);
+    return new Band(refPrice, refPriceToleranceBps(i, refPrice));
   }
 
   /// For non-TWAP types, `twap_source_or_ref_price_tolerance_bps` holds the ref price
@@ -121,7 +164,10 @@ record ScopeReaderRecord(ScopeEntry[] entries,
       // recurse, so the cycle has to be broken here; the back-reference reads as
       // absent rather than overflowing the stack. ScopeEntries.referencePrice(int)
       // resolves a reference price after the walk and is the complete view for that
-      // field; a composite's back-reference has no such second pass.
+      // field; a composite's back-reference has no such second pass, so its source list
+      // omits the cut slot (see parseEntries). Only the types whose records store a band
+      // resolve one during the walk, so a band closes a cycle through a composite's
+      // sources only when the slot carrying it is one of those types.
       return null;
     }
     visiting[i] = true;
@@ -154,14 +200,13 @@ record ScopeReaderRecord(ScopeEntry[] entries,
   private ScopeEntry computeEntry(final int i) {
     final var priceAccount = priceInfoAccounts[i];
     final var emaTypes = emaTypes(this.twapEnabledBitmasks[i].bitmask());
-    final var refPrice = entry(this.refPrice[i]);
-    final var refPriceToleranceBps = refPriceToleranceBps(i, refPrice);
     final var oracleType = ScopeReader.oracleType(oracleTypes, priceTypes[i]);
     if (oracleType == null) {
       // the on-chain program has deployed an oracle type newer than the generated
       // OracleType enum; degrade until the IDL is re-synced instead of failing the
       // whole mappings parse
-      return new NotYetSupported(i, priceAccount, null, emaTypes, refPrice, refPriceToleranceBps, generic[i]);
+      final var band = band(i);
+      return new NotYetSupported(i, priceAccount, null, emaTypes, band.refPrice(), band.toleranceBps(), generic[i]);
     }
     return switch (oracleType) {
       case AdrenaLp -> new AdrenaLp(i, priceAccount, emaTypes);
@@ -175,7 +220,7 @@ record ScopeReaderRecord(ScopeEntry[] entries,
       }
       case CappedMostRecentOf -> {
         final var cappedMostRecentOf = CappedMostRecentOfData.read(generic[i], 0);
-        final var sources = parseEntries(cappedMostRecentOf.sourceEntries());
+        final var sources = parseEntries(cappedMostRecentOf.sourceEntries(), SourceList.SKIP_GAPS);
         final var capEntry = entry(cappedMostRecentOf.capEntry());
         yield new CappedMostRecentOf(i, sources, cappedMostRecentOf.maxDivergenceBps(), cappedMostRecentOf.sourcesMaxAgeS(), capEntry);
       }
@@ -189,7 +234,8 @@ record ScopeReaderRecord(ScopeEntry[] entries,
       }
       case Chainlink -> {
         final var cfg = V3.read(generic[i], 0);
-        yield new Chainlink(i, priceAccount, cfg.confidenceFactor(), emaTypes, refPrice, refPriceToleranceBps);
+        final var band = band(i);
+        yield new Chainlink(i, priceAccount, cfg.confidenceFactor(), emaTypes, band.refPrice(), band.toleranceBps());
       }
       case ChainlinkExchangeRate -> new ChainlinkExchangeRate(i, priceAccount, emaTypes);
       case Conditional -> {
@@ -203,7 +249,7 @@ record ScopeReaderRecord(ScopeEntry[] entries,
         final var sourceIndices = data.sources();
         final var slice = new int[numSources];
         System.arraycopy(sourceIndices, 0, slice, 0, numSources);
-        final var sources = parseEntries(slice);
+        final var sources = parseEntries(slice, SourceList.POSITIONAL);
         yield new Conditional(i, condition, data.toleranceBps(), sources);
       }
       case ChainlinkNAV -> new ChainlinkNAV(i, priceAccount, emaTypes);
@@ -228,19 +274,21 @@ record ScopeReaderRecord(ScopeEntry[] entries,
       case MeteoraDlmmBtoA -> new MeteoraDlmmBtoA(i, priceAccount, emaTypes);
       case MostRecentOf -> {
         final var mostRecentOf = MostRecentOfData.read(generic[i], 0);
-        final var sources = parseEntries(mostRecentOf.sourceEntries());
-        yield new MostRecentOfEntry(i, sources, mostRecentOf.maxDivergenceBps(), mostRecentOf.sourcesMaxAgeS(), refPrice, refPriceToleranceBps);
+        final var band = band(i);
+        final var sources = parseEntries(mostRecentOf.sourceEntries(), SourceList.SKIP_GAPS);
+        yield new MostRecentOfEntry(i, sources, mostRecentOf.maxDivergenceBps(), mostRecentOf.sourcesMaxAgeS(), band.refPrice(), band.toleranceBps());
       }
       case MsolStake -> new MsolStake(i, priceAccount, emaTypes);
       case MultiplicationChain -> {
         final var data = MultiplicationChainData.read(generic[i], 0);
-        final var sources = parseEntries(data.sourceEntries());
+        final var sources = parseEntries(data.sourceEntries(), SourceList.END_AT_SENTINEL);
         yield new MultiplicationChain(i, sources, data.sourcesMaxAgeS());
       }
       case OrcaWhirlpoolAtoB -> new OrcaWhirlpoolAtoB(i, priceAccount, emaTypes);
       case OrcaWhirlpoolBtoA -> new OrcaWhirlpoolBtoA(i, priceAccount, emaTypes);
       case PythLazer -> {
         final var data = PythLazerData.read(generic[i], 0);
+        final var band = band(i);
         yield new PythLazer(
             i,
             priceAccount,
@@ -249,22 +297,28 @@ record ScopeReaderRecord(ScopeEntry[] entries,
             data.bidAskSpreadFactor(),
             data.priceConfidenceFactor(),
             emaTypes,
-            refPrice,
-            refPriceToleranceBps
+            band.refPrice(),
+            band.toleranceBps()
         );
       }
       case PythLazerEMA -> {
         final var data = PythLazerEmaRefData.read(generic[i], 0);
         yield new PythLazerEMA(i, entry(data.sourceEntry()), emaTypes);
       }
-      case PythPull -> new PythPull(i, priceAccount, emaTypes, refPrice, refPriceToleranceBps);
+      case PythPull -> {
+        final var band = band(i);
+        yield new PythPull(i, priceAccount, emaTypes, band.refPrice(), band.toleranceBps());
+      }
       case PythPullEMA -> new PythPullEMA(i, priceAccount, emaTypes);
       case RaydiumAmmV3AtoB -> new RaydiumAmmV3AtoB(i, priceAccount, emaTypes);
       case RaydiumAmmV3BtoA -> new RaydiumAmmV3BtoA(i, priceAccount, emaTypes);
       case RedStone -> new RedStone(i, priceAccount, emaTypes);
       case ScopeTwap1h, ScopeTwap8h, ScopeTwap24h, ScopeTwap7d ->
           new ScopeTwap(i, oracleType, entry(twapSourceOrRefPriceToleranceBps[i]));
-      case Securitize -> new Securitize(i, priceAccount, emaTypes, refPrice, refPriceToleranceBps);
+      case Securitize -> {
+        final var band = band(i);
+        yield new Securitize(i, priceAccount, emaTypes, band.refPrice(), band.toleranceBps());
+      }
       case SplBalance -> new SplBalance(i, priceAccount);
       case SplStake -> new SplStake(i, priceAccount);
       case StakedSolBalance -> new StakedSolBalance(i, priceAccount);
@@ -279,7 +333,8 @@ record ScopeReaderRecord(ScopeEntry[] entries,
         if (oracleType.name().startsWith("Deprecated")) {
           yield new Deprecated(i, oracleType);
         } else {
-          yield new NotYetSupported(i, priceAccount, oracleType, emaTypes, refPrice, refPriceToleranceBps, generic[i]);
+          final var band = band(i);
+          yield new NotYetSupported(i, priceAccount, oracleType, emaTypes, band.refPrice(), band.toleranceBps(), generic[i]);
         }
       }
     };

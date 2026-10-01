@@ -17,16 +17,7 @@ public record Conditional(int index,
 
   @Override
   public boolean equals(final Object o) {
-    if (o instanceof Conditional(
-        final int i, final Condition oCondition, final int oToleranceBps, final ScopeEntry[] oSources
-    )) {
-      return index == i
-          && toleranceBps == oToleranceBps
-          && condition == oCondition
-          && Arrays.equals(sources, oSources);
-    } else {
-      return false;
-    }
+    return o instanceof Conditional other && EntryGraph.equal(this, other);
   }
 
   @Override
@@ -34,17 +25,17 @@ public record Conditional(int index,
     int result = Integer.hashCode(index);
     result = 31 * result + (condition == null ? 0 : condition.hashCode());
     result = 31 * result + toleranceBps;
-    result = 31 * result + Arrays.hashCode(sources);
+    result = 31 * result + EntryGraph.hash(sources);
     return result;
   }
 
   @Override
   public String toString() {
-    return "Conditional{" +
+    return EntryGraph.render(this, () -> "Conditional{" +
         "index=" + index +
         ", condition=" + condition +
         ", toleranceBps=" + toleranceBps +
         ", sources=" + Arrays.toString(sources) +
-        '}';
+        '}');
   }
 }

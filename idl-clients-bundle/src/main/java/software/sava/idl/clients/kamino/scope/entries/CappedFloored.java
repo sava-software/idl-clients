@@ -19,4 +19,31 @@ public record CappedFloored(int index,
   public OracleType oracleType() {
     return OracleType.CappedFloored;
   }
+
+  @Override
+  public boolean equals(final Object o) {
+    return o instanceof CappedFloored other && EntryGraph.equal(this, other);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = Integer.hashCode(index);
+    result = 31 * result + EntryGraph.hash(sourceEntry);
+    result = 31 * result + EntryGraph.hash(capEntry);
+    result = 31 * result + EntryGraph.hash(flooredEntry);
+    result = 31 * result + Long.hashCode(sourcesMaxAgeS);
+    return result;
+  }
+
+  /// The record's own format, with each composite input spelled out once.
+  @Override
+  public String toString() {
+    return EntryGraph.render(this, () -> "CappedFloored[" +
+        "index=" + index +
+        ", sourceEntry=" + sourceEntry +
+        ", capEntry=" + capEntry +
+        ", flooredEntry=" + flooredEntry +
+        ", sourcesMaxAgeS=" + sourcesMaxAgeS +
+        ']');
+  }
 }

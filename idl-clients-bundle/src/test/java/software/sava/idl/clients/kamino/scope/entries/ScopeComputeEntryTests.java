@@ -1166,6 +1166,166 @@ final class ScopeComputeEntryTests {
     assertNull(pythPull.refPrice(), "documented limitation: prefer the mapping-level view");
   }
 
+  /// A band names a slot, and the walk resolves it into an entry only for the types whose
+  /// records store one. Here the band of slot 0, an ExponentTranching, names slot 1, the
+  /// MostRecentOf sourcing slot 0. Resolving that band while slot 0 was still being built
+  /// used to cut the composite's edge back to slot 0, leaving it no sources at all; the band
+  /// itself is still served after the walk.
+  @Test
+  void aBandTheRecordDoesNotStoreLeavesTheCompositeItNamesItsSources() {
+    final var entries = new Mappings()
+        .slot(0, OracleType.ExponentTranching)
+        .refPrice(0, 1)
+        .tolerance(0, 50)
+        .slot(1, OracleType.MostRecentOf)
+        .generic(1, new MostRecentOfData(new int[]{0, NONE, NONE, NONE}, 250, 3_600L))
+        .parse();
+
+    final var mostRecent = assertInstanceOf(MostRecentOfEntry.class, entries.scopeEntry(1));
+    assertArrayEquals(new ScopeEntry[]{entries.scopeEntry(0)}, mostRecent.sources());
+    assertSame(entries.scopeEntry(1), entries.referencePrice(0));
+    assertEquals(OptionalInt.of(50), entries.referenceToleranceBps(0));
+  }
+
+  /// A source the walk cut to break a cycle is left out of the list and the sources after
+  /// it are kept, since the program reads them all. Slot 0, a PythPull, stores its band,
+  /// which names slot 1, a MostRecentOf over slots 2, 0 and 3: building slot 0 builds
+  /// slot 1, whose edge back to slot 0 is the one cut. The list used to end at the cut,
+  /// dropping slot 3 with it.
+  @Test
+  void aCutSourceKeepsTheSourcesAfterIt() {
+    final var entries = new Mappings()
+        .slot(0, OracleType.PythPull)
+        .refPrice(0, 1)
+        .slot(2, OracleType.PythPull)
+        .slot(3, OracleType.PythPull)
+        .slot(1, OracleType.MostRecentOf)
+        .generic(1, new MostRecentOfData(new int[]{2, 0, 3, NONE}, 250, 3_600L))
+        .parse();
+
+    final var mostRecent = assertInstanceOf(MostRecentOfEntry.class, entries.scopeEntry(1));
+    assertArrayEquals(new ScopeEntry[]{entries.scopeEntry(2), entries.scopeEntry(3)}, mostRecent.sources());
+    // the PythPull keeps the band it stores, the same instance the mapping-level view serves
+    assertSame(entries.scopeEntry(1), assertInstanceOf(PythPull.class, entries.scopeEntry(0)).refPrice());
+    assertSame(entries.scopeEntry(1), entries.referencePrice(0));
+  }
+
+  /// A Conditional's operands are positional (`conditional.rs` reads A, B and, for the range
+  /// conditions, C by position), so a cut operand ends the list rather than moving a later
+  /// one into its place. Slot 0, a PythPull, stores its band, which names slot 1, a
+  /// Conditional comparing slot 0 against slot 2: building slot 0 builds slot 1, whose
+  /// operand A is the one cut, and slot 2 must not read as A.
+  @Test
+  void aCutConditionalOperandEndsTheOperandsRatherThanShiftingThem() {
+    final var entries = new Mappings()
+        .slot(0, OracleType.PythPull)
+        .refPrice(0, 1)
+        .slot(2, OracleType.PythPull)
+        .slot(1, OracleType.Conditional)
+        .generic(1, new ConditionalData(Condition.Gt.ordinal(), 50, new int[]{0, 2, NONE}))
+        .parse();
+
+    assertArrayEquals(new ScopeEntry[0], assertInstanceOf(Conditional.class, entries.scopeEntry(1)).sources());
+  }
+
+  /// The operands before a cut keep their positions: with B cut out of a range condition's
+  /// A, B and C, A stays, and C is not read as B.
+  @Test
+  void aCutMiddleOperandKeepsOnlyTheOperandsBeforeIt() {
+    final var entries = new Mappings()
+        .slot(0, OracleType.PythPull)
+        .refPrice(0, 1)
+        .slot(2, OracleType.PythPull)
+        .slot(3, OracleType.PythPull)
+        .slot(1, OracleType.Conditional)
+        .generic(1, new ConditionalData(Condition.WithinRangeAbs.ordinal(), 50, new int[]{2, 0, 3}))
+        .parse();
+
+    final var conditional = assertInstanceOf(Conditional.class, entries.scopeEntry(1));
+    assertArrayEquals(new ScopeEntry[]{entries.scopeEntry(2)}, conditional.sources());
+  }
+
+  /// The sentinel starts at the slot count exactly: 511, the last slot, is a source, and 512
+  /// (`MAX_ENTRIES_U16`) ends the list.
+  @Test
+  void theSlotCountIsTheFirstSentinel() {
+    final var entries = new Mappings()
+        .slot(1, OracleType.PythPull)
+        .slot(2, OracleType.PythPull)
+        .slot(511, OracleType.PythPull)
+        .slot(0, OracleType.MultiplicationChain)
+        .generic(0, new MultiplicationChainData(new int[]{1, 511, SLOTS, 2, NONE, NONE}, 120L))
+        .parse();
+
+    final var chain = assertInstanceOf(MultiplicationChain.class, entries.scopeEntry(0));
+    assertArrayEquals(new ScopeEntry[]{entries.scopeEntry(1), entries.scopeEntry(511)}, chain.sourceEntries());
+  }
+
+  /// The program's sentinel ends a source list: `multiplication_chain.rs` breaks at the
+  /// first index past the slot count, and `validate_source_entries` refuses a valid index
+  /// after one, so a source past it is never read.
+  @Test
+  void aSourceListEndsAtTheFirstSentinel() {
+    final var entries = new Mappings()
+        .slot(1, OracleType.PythPull)
+        .slot(2, OracleType.PythPull)
+        .slot(0, OracleType.MultiplicationChain)
+        .generic(0, new MultiplicationChainData(new int[]{1, NONE, 2, NONE, NONE, NONE}, 120L))
+        .parse();
+
+    final var chain = assertInstanceOf(MultiplicationChain.class, entries.scopeEntry(0));
+    assertArrayEquals(new ScopeEntry[]{entries.scopeEntry(1)}, chain.sourceEntries());
+  }
+
+  /// A MostRecentOf reads on past a gap where a MultiplicationChain stops. `most_recent_of.rs`
+  /// skips an index past the slot count and reads the next one. Before Scope 0.35.0 a
+  /// MostRecentOf was validated on its first source only, and a mapping is validated only where
+  /// it is written, so an entry written then can still hold sources on both sides of a gap.
+  @Test
+  void aMostRecentOfReadsPastAGap() {
+    final var entries = new Mappings()
+        .slot(2, OracleType.PythPull)
+        .slot(3, OracleType.PythPull)
+        .slot(0, OracleType.MostRecentOf)
+        .generic(0, new MostRecentOfData(new int[]{2, NONE, 3, NONE}, 250, 3_600L))
+        .parse();
+
+    final var mostRecentOf = assertInstanceOf(MostRecentOfEntry.class, entries.scopeEntry(0));
+    assertArrayEquals(new ScopeEntry[]{entries.scopeEntry(2), entries.scopeEntry(3)}, mostRecentOf.sources());
+  }
+
+  /// A CappedMostRecentOf reads its sources through the same `get_most_recent_price_from_sources`,
+  /// so it too reads on past a gap.
+  @Test
+  void aCappedMostRecentOfReadsPastAGap() {
+    final var entries = new Mappings()
+        .slot(2, OracleType.PythPull)
+        .slot(3, OracleType.PythPull)
+        .slot(4, OracleType.PythPull)
+        .slot(0, OracleType.CappedMostRecentOf)
+        .generic(0, new CappedMostRecentOfData(new int[]{NONE, 2, NONE, 3}, 100, 60L, 4))
+        .parse();
+
+    final var capped = assertInstanceOf(CappedMostRecentOf.class, entries.scopeEntry(0));
+    assertArrayEquals(new ScopeEntry[]{entries.scopeEntry(2), entries.scopeEntry(3)}, capped.sources());
+    assertSame(entries.scopeEntry(4), capped.capEntry());
+  }
+
+  /// A Conditional's operand past the slot count fails its refresh (`get_source_price`), so the
+  /// operands end there: none after it is moved into its place.
+  @Test
+  void aConditionalsOperandsEndAtTheSentinel() {
+    final var entries = new Mappings()
+        .slot(2, OracleType.PythPull)
+        .slot(3, OracleType.PythPull)
+        .slot(1, OracleType.Conditional)
+        .generic(1, new ConditionalData(Condition.WithinRangeAbs.ordinal(), 50, new int[]{2, NONE, 3}))
+        .parse();
+
+    final var conditional = assertInstanceOf(Conditional.class, entries.scopeEntry(1));
+    assertArrayEquals(new ScopeEntry[]{entries.scopeEntry(2)}, conditional.sources());
+  }
+
   /// For the TWAP types the same field is the source slot index, never a tolerance —
   /// `get_twap_source_or_ref_price_tolerance_bps` branches on `is_twap` first. Reading
   /// it as bps would report a slot number as a divergence bound.
