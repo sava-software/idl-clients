@@ -10,9 +10,11 @@ import software.sava.idl.clients.kamino.scope.gen.types.OracleType;
 import software.sava.idl.clients.kamino.scope.gen.types.TwapEnabledBitmask;
 import software.sava.idl.clients.spl.SPLAccountClient;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -274,6 +276,72 @@ final class ScopeProgramClientTests {
     final var withExtras = CLIENT.refreshPriceList(config, mappings(), tokens);
     final var plain = CLIENT.refreshPriceList(config, tokens);
     assertEquals(plain.accounts().size() + tokens.length, withExtras.accounts().size());
+
+    // and the ExponentTranching-aware one appends what its static form builds
+    final var mappings = mappings();
+    mappings.priceTypes()[1] = (byte) OracleType.ExponentTranching.ordinal();
+    mappings.priceInfoAccounts()[1] = TRANCHING_MARKET;
+    final var markets = Map.of(TRANCHING_MARKET, tranchingAccounts());
+    assertEquals(
+        plain.extraAccounts(ScopeProgramClient.refreshPriceListExtraAccounts(mappings, tokens, markets)),
+        CLIENT.refreshPriceList(config, mappings, tokens, markets));
+  }
+
+  private static final PublicKey TRANCHING_MARKET = key(0x6A);
+
+  /// Stands in for what `ExponentTranchingMarket.refreshAccounts` builds, which its own
+  /// tests pin against live markets: the market first, writable, then the rest.
+  private static List<AccountMeta> tranchingAccounts() {
+    return List.of(
+        AccountMeta.createWrite(TRANCHING_MARKET),
+        AccountMeta.createWrite(key(0x6B)),
+        AccountMeta.createRead(key(0x6C))
+    );
+  }
+
+  /// An ExponentTranching token takes the whole list given for its market in place of its
+  /// one read meta. Scope's authors want such a token refreshed alone, but the program
+  /// accepts it anywhere in a batch and as often as it is named, so the client composes
+  /// that too, and the tokens around it keep their own accounts.
+  @Test
+  void refreshPriceListExtraAccountsTakesAnExponentTranchingTokensAccountsFromItsMarket() {
+    final var mappings = mappings();
+    mappings.priceTypes()[1] = (byte) OracleType.ExponentTranching.ordinal();
+    mappings.priceInfoAccounts()[1] = TRANCHING_MARKET;
+    final var tranching = tranchingAccounts();
+
+    final var expected = new ArrayList<AccountMeta>();
+    expected.add(AccountMeta.createRead(mappings.priceInfoAccounts()[2]));
+    expected.addAll(tranching);
+    expected.add(AccountMeta.createRead(mappings.priceInfoAccounts()[0]));
+    expected.addAll(tranching);
+    assertEquals(expected, ScopeProgramClient.refreshPriceListExtraAccounts(
+        mappings, new int[]{2, 1, 0, 1}, Map.of(TRANCHING_MARKET, tranching)));
+
+    // a market the map does not hold is the same rejection the two-argument form gives,
+    // pointing at the builder
+    final var missing = assertThrows(IllegalStateException.class, () -> ScopeProgramClient.refreshPriceListExtraAccounts(
+        mappings, new int[]{1}, Map.of(key(0x6D), tranching)));
+    assertTrue(missing.getMessage().contains("after market " + TRANCHING_MARKET), missing.getMessage());
+    assertTrue(missing.getMessage().contains("build them with ExponentTranchingMarket.refreshAccounts"), missing.getMessage());
+  }
+
+  /// The only guard against a map keyed wrongly: the list must open with the token's own
+  /// market, writable, as the builder makes it.
+  @Test
+  void refreshPriceListExtraAccountsRefusesAListBuiltForAnotherMarket() {
+    final var mappings = mappings();
+    mappings.priceTypes()[1] = (byte) OracleType.ExponentTranching.ordinal();
+    mappings.priceInfoAccounts()[1] = TRANCHING_MARKET;
+    final var rest = tranchingAccounts().subList(1, 3);
+    for (final var accounts : List.of(
+        List.<AccountMeta>of(),
+        List.of(AccountMeta.createWrite(key(0x6D)), rest.get(0), rest.get(1)),
+        List.of(AccountMeta.createRead(TRANCHING_MARKET), rest.get(0), rest.get(1))
+    )) {
+      assertThrows(IllegalArgumentException.class, () -> ScopeProgramClient.refreshPriceListExtraAccounts(
+          mappings, new int[]{1}, Map.of(TRANCHING_MARKET, accounts)), accounts.toString());
+    }
   }
 
   @Test

@@ -11,8 +11,9 @@ import software.sava.idl.clients.kamino.scope.gen.types.OracleMappings;
 import software.sava.idl.clients.kamino.scope.gen.types.OracleType;
 import software.sava.idl.clients.spl.SPLAccountClient;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public interface ScopeProgramClient {
 
@@ -76,21 +77,47 @@ public interface ScopeProgramClient {
   /// types, the vault's share mint for `Securitize`, the klend program for
   /// `KlendCTokenExchangeRate`, the canary program for `Canary`, or the market's return
   /// model storage for `ExponentTranching` — which fails the whole transaction rather
-  /// than just that entry.
-  ///
-  /// The switch has no `default`, so an oracle type a regeneration adds does not compile
-  /// until it is placed in an arm: how many accounts a refresh consumes is per type and
-  /// invisible to the IDL, and a type falling through to the plain read meta is exactly
-  /// the failure described above.
+  /// than just that entry. An `ExponentTranching` token can be refreshed through
+  /// [#refreshPriceListExtraAccounts(OracleMappings, int\[\], Map)] instead.
   static List<AccountMeta> refreshPriceListExtraAccounts(final OracleMappings oracleMappings, final int[] tokens) {
+    return refreshPriceListExtraAccounts(oracleMappings, tokens, Map.of());
+  }
+
+  /// The accounts `refresh_price_list` consumes for the requested tokens, in request
+  /// order: one read-only meta per token, except that an `ExponentTranching` token takes
+  /// the list `exponentTranchingAccounts` holds for its market, which
+  /// [ExponentTranchingMarket#refreshAccounts] builds from the market and its lookup
+  /// table and which starts with the market itself, writable.
+  ///
+  /// Scope's authors require an entry whose refresh CPIs into another program, as an
+  /// `ExponentTranching` entry's does, to be refreshed in its own single-entry call: a
+  /// failed CPI aborts the whole transaction instead of skipping the entry. So pass such a
+  /// token alone. A batch that names one anyway takes its market's list once per entry,
+  /// as the program consumes it.
+  ///
+  /// The other types that consume extra accounts are rejected, as in
+  /// [#refreshPriceListExtraAccounts(OracleMappings, int\[\])]. The switch has no
+  /// `default`, so an oracle type a regeneration adds does not compile until it is
+  /// placed in an arm: how many accounts a refresh consumes is per type and invisible to
+  /// the IDL, and a type falling through to the plain read meta is exactly that failure.
+  ///
+  /// @param exponentTranchingAccounts keyed by market; may omit any market no requested
+  ///                                  token prices
+  /// @throws IllegalStateException    for a type whose extra accounts this cannot supply,
+  ///                                  including an `ExponentTranching` token whose market
+  ///                                  has no entry
+  /// @throws IllegalArgumentException when the list for a market does not start with that
+  ///                                  market, writable
+  static List<AccountMeta> refreshPriceListExtraAccounts(final OracleMappings oracleMappings,
+                                                        final int[] tokens,
+                                                        final Map<PublicKey, List<AccountMeta>> exponentTranchingAccounts) {
     final var priceInfoAccounts = oracleMappings.priceInfoAccounts();
     final var priceTypes = oracleMappings.priceTypes();
     final var oracleTypeEnums = OracleType.values();
-    final var accountMetas = new AccountMeta[tokens.length];
-    for (int i = 0; i < tokens.length; i++) {
-      final int token = tokens[i];
+    final var accountMetas = new ArrayList<AccountMeta>(tokens.length);
+    for (final int token : tokens) {
       // masked: a frozen entry sets bit 7 in place, and the refresh consumes the same
-      // one account whether or not it is frozen
+      // accounts whether or not it is frozen
       final var oracleType = ScopeReader.oracleType(oracleTypeEnums, priceTypes[token]);
       if (oracleType == null) {
         // the whole byte, frozen flag included, so the report is unambiguous
@@ -98,7 +125,8 @@ public interface ScopeProgramClient {
             + Integer.toHexString(Byte.toUnsignedInt(priceTypes[token]))
             + " at token " + token + "; the deployed program is ahead of this IDL.");
       }
-      accountMetas[i] = switch (oracleType) {
+      final var priceAccount = priceInfoAccounts[token];
+      final List<AccountMeta> consumed = switch (oracleType) {
         case JupiterLpFetch,
              MeteoraDlmmAtoB, MeteoraDlmmBtoA,
              OrcaWhirlpoolAtoB, OrcaWhirlpoolBtoA,
@@ -111,12 +139,7 @@ public interface ScopeProgramClient {
             throw new IllegalStateException(oracleType + " requires the klend program and lending market as well.");
         case Canary -> throw new IllegalStateException(oracleType
             + " requires the canary program (CanarFxHDSnbrPmrE79Qq6hL2p7ZMyyV4ZLTKQ6g7tpK on mainnet) as well.");
-        case ExponentTranching -> throw new IllegalStateException(oracleType
-            + " requires, after the market, its return model storage, address lookup table and SY program,"
-            + " the event authority (3mBi7DRWMdTdDghA1cVLrwDKAgDo7UTDWoeik4GkXCsf), the Exponent tranching"
-            + " program (XPTrnchoawiUc9iYJrpfchS8vgr8Y5X2QGBdHPXukty) and the market's get_sy_state accounts,"
-            + " with the market, its return model storage and each get_sy_state account the market flags"
-            + " writable passed writable.");
+        case ExponentTranching -> exponentTranchingAccounts(token, priceAccount, exponentTranchingAccounts);
         case Unused,
              DeprecatedPlaceholder1, DeprecatedPlaceholder2, DeprecatedPlaceholder3, DeprecatedPlaceholder4,
              DeprecatedPlaceholder5, DeprecatedPlaceholder6, DeprecatedPlaceholder7,
@@ -128,10 +151,31 @@ public interface ScopeProgramClient {
              Chainlink, ChainlinkRWA, ChainlinkNAV, ChainlinkX, ChainlinkExchangeRate,
              FixedPrice, DiscountToMaturity,
              MostRecentOf, CappedMostRecentOf, CappedFloored, MultiplicationChain, Conditional ->
-            AccountMeta.createRead(priceInfoAccounts[token]);
+            List.of(AccountMeta.createRead(priceAccount));
       };
+      accountMetas.addAll(consumed);
     }
-    return Arrays.asList(accountMetas);
+    return accountMetas;
+  }
+
+  private static List<AccountMeta> exponentTranchingAccounts(final int token,
+                                                             final PublicKey market,
+                                                             final Map<PublicKey, List<AccountMeta>> exponentTranchingAccounts) {
+    final var accounts = exponentTranchingAccounts.get(market);
+    if (accounts == null) {
+      throw new IllegalStateException(OracleType.ExponentTranching + " at token " + token + " requires, after market "
+          + market + ", its return model storage, address lookup table and SY program, the event authority ("
+          + ExponentTranchingMarket.EVENT_AUTHORITY + "), the Exponent tranching program ("
+          + ExponentTranchingMarket.PROGRAM_ID + ") and the market's get_sy_state accounts, with the market, its"
+          + " return model storage and each get_sy_state account the market flags writable passed writable;"
+          + " build them with ExponentTranchingMarket.refreshAccounts and pass them keyed by the market.");
+    }
+    final var first = accounts.isEmpty() ? null : accounts.getFirst();
+    if (first == null || !first.write() || !market.equals(first.publicKey())) {
+      throw new IllegalArgumentException("The accounts given for Exponent tranching market " + market
+          + " start with " + first + "; ExponentTranchingMarket.refreshAccounts starts them with the market, writable.");
+    }
+    return accounts;
   }
 
   default Instruction refreshPriceList(final Configuration configuration,
@@ -143,6 +187,21 @@ public interface ScopeProgramClient {
         configuration.oracleTwaps(),
         tokens
     ).extraAccounts(refreshPriceListExtraAccounts(oracleMappings, tokens));
+  }
+
+  /// A refresh whose `ExponentTranching` token takes its accounts from
+  /// `exponentTranchingAccounts`; pass such a token alone, as
+  /// [#refreshPriceListExtraAccounts(OracleMappings, int\[\], Map)] explains.
+  default Instruction refreshPriceList(final Configuration configuration,
+                                       final OracleMappings oracleMappings,
+                                       final int[] tokens,
+                                       final Map<PublicKey, List<AccountMeta>> exponentTranchingAccounts) {
+    return refreshPriceList(
+        configuration.oraclePrices(),
+        configuration.oracleMappings(),
+        configuration.oracleTwaps(),
+        tokens
+    ).extraAccounts(refreshPriceListExtraAccounts(oracleMappings, tokens, exponentTranchingAccounts));
   }
 
   Instruction refreshChainlinkPrice(final PublicKey userKey,
