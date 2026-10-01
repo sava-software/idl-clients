@@ -1125,6 +1125,36 @@ length mismatch rather than truncating. The two `MathMutator` survivors on the
 `size() * 2` capacity hints are the same allocation-size-only family as the
 klend and marginfi rows.
 
+#### kvault: the permissioning authority goes last (2026-10-01)
+
+2.3.0 lets a vault name a `permissioning_authority`. When one is set,
+`check_permissioning_authority_and_strip` takes the **last** remaining account,
+requires it to be that key (`InvalidPermissioningAuthority`, 7065) and a signer
+(`AccountNotSigner`, 3010), and strips it before `refresh_allocation_reserve_accounts`
+reads the two blocks above. It runs in `handler_deposit` (`deposit`,
+`deposit_with_min_shares_out`, `buy`, `buy_with_min_shares_out`), in
+`withdraw_utils::withdraw` (`withdraw`, `sell`, `withdraw_from_available`) and in
+`redeem_in_kind`; `invest` and `invest_with_max_amount` do not take it. For the
+all-zero key the program strips nothing. `appendPermissioningAuthority` appends a
+read-only signer, and nothing for the all-zero key, which is the rule `klend-sdk`
+13.0.1 applies in `getPermissioningAuthorityAccount`.
+
+No mainnet vault sets one yet: on 2026-10-01 all 185 `VaultState` accounts (data size
+62552) held zeros at offset 58840. So the tests write a key into the `67dqmR…`
+fixture at `PERMISSIONING_AUTHORITY_OFFSET` rather than pin a live instance.
+
+The contract was run on the deployed binary instead, on a surfpool fork of mainnet
+whose cloned program data hashed to the same trimmed `b2bb00e4…`. USDC Prime
+(`9E69U4GzWhryRaPe8DYpco6Z9vTZY6gg8w6W2QsBACEj`, three reserves) was given a throwaway
+authority with `surfnet_setAccount`, and deposits were built with `KaminoVaultsClient`
+and both helpers. Without the authority the deposit failed with 7065, the program
+logging the last market as the key it compared. With `appendPermissioningAuthority` it
+minted shares. With the authority last but unsigned it failed with 3010 at
+`permissioning_authority.rs:21`, which is after the key matched. With the authority
+signing but placed before the market block it failed with 7065. `withdrawFromAvailable`
+failed with 7065 without the authority and burned shares with it. The same deposit on
+the vault before the authority was set passed, and the helper appended nothing.
+
 ### Marginfi: a stale on-chain IDL hiding two live client bugs
 
 The diff reported 30 mismatches against `0dotxyz/marginfi-v2`; 27 were extractor

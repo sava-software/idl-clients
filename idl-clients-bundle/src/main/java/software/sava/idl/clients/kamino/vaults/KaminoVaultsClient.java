@@ -36,6 +36,10 @@ public interface KaminoVaultsClient {
   /// `KaminoVaultsRemainingAccounts.appendVaultReserves` — the reserves *and* their
   /// lending markets, as two blocks, in the order
   /// `KaminoVaultsRemainingAccounts.allocatedReserves(vaultState)` returns.
+  ///
+  /// A vault that names a permissioning authority also requires that key as the last
+  /// remaining account, signing the transaction; append it after both blocks with
+  /// `KaminoVaultsRemainingAccounts.appendPermissioningAuthority`.
   Instruction deposit(final PublicKey vaultStateKey,
                       final PublicKey tokenVaultKey,
                       final PublicKey tokenMintKey,
@@ -99,6 +103,10 @@ public interface KaminoVaultsClient {
   /// `KaminoVaultsRemainingAccounts.appendVaultReserves` — the reserves *and* their
   /// lending markets, as two blocks, in the order
   /// `KaminoVaultsRemainingAccounts.allocatedReserves(vaultState)` returns.
+  ///
+  /// A vault that names a permissioning authority also requires that key as the last
+  /// remaining account, signing the transaction; append it after both blocks with
+  /// `KaminoVaultsRemainingAccounts.appendPermissioningAuthority`.
   ///
   /// `vaultStateKey` is passed to both the `WithdrawFromAvailable` and
   /// `WithdrawFromInvested` account groups; the program enforces they refer to
@@ -212,6 +220,10 @@ public interface KaminoVaultsClient {
   /// It still reaches the same reserve refresh as the other withdraw paths, so it takes
   /// the same remaining accounts: the vault's reserves *and* their lending markets, as
   /// two blocks, via `KaminoVaultsRemainingAccounts.appendVaultReserves`.
+  ///
+  /// A vault that names a permissioning authority also requires that key as the last
+  /// remaining account, signing the transaction; append it after both blocks with
+  /// `KaminoVaultsRemainingAccounts.appendPermissioningAuthority`.
   Instruction withdrawFromAvailable(final PublicKey vaultStateKey,
                                     final PublicKey tokenVaultKey,
                                     final PublicKey baseVaultAuthorityKey,
@@ -269,6 +281,10 @@ public interface KaminoVaultsClient {
   /// `KaminoVaultsRemainingAccounts.appendVaultReserves` — the reserves *and* their
   /// lending markets, as two blocks, in the order
   /// `KaminoVaultsRemainingAccounts.allocatedReserves(vaultState)` returns.
+  ///
+  /// A vault that names a permissioning authority also requires that key as the last
+  /// remaining account, signing the transaction; append it after both blocks with
+  /// `KaminoVaultsRemainingAccounts.appendPermissioningAuthority`.
   Instruction redeemInKind(final PublicKey vaultStateKey,
                            final PublicKey baseVaultAuthorityKey,
                            final PublicKey reserveKey,

@@ -212,4 +212,65 @@ final class KaminoVaultsRemainingAccountsTests {
       assertFalse(marketMeta.signer(), "market block, slot " + i);
     }
   }
+
+  /// `67dqmR…` was captured before 2.3.0 carved `permissioning_authority` out of `padding_3`,
+  /// so those 32 bytes are zero and it reads as the all-zero key: a vault without an
+  /// authority, for which the program reads none and nothing is appended.
+  @Test
+  void aVaultWithoutAnAuthorityAppendsNothing() throws Exception {
+    final var vaultState = VaultState.read(GAP_VAULT, gunzip(GAP_VAULT_RESOURCE));
+    assertEquals(PublicKey.NONE, vaultState.permissioningAuthority());
+
+    final var instruction = KaminoVaultsRemainingAccounts
+        .appendVaultReserves(base(), List.of(key(0x21)), List.of(key(0x31)));
+    final var accounts = KaminoVaultsRemainingAccounts
+        .appendPermissioningAuthority(instruction, vaultState)
+        .accounts();
+
+    assertEquals(
+        instruction.accounts().stream().map(AccountMeta::publicKey).toList(),
+        accounts.stream().map(AccountMeta::publicKey).toList());
+  }
+
+  /// No vault on chain names an authority yet (none of the 185 on 2026-10-01), so the key is
+  /// written into that vault's own bytes at the field's offset. It lands after both blocks,
+  /// read-only and signing: `check_permissioning_authority_and_strip` takes the last remaining
+  /// account and requires it to sign.
+  @Test
+  void theAuthorityIsTheFinalAccountAndSigns() throws Exception {
+    final var authority = key(0x44);
+    final byte[] data = gunzip(GAP_VAULT_RESOURCE);
+    authority.write(data, VaultState.PERMISSIONING_AUTHORITY_OFFSET);
+    final var vaultState = VaultState.read(GAP_VAULT, data);
+    assertEquals(authority, vaultState.permissioningAuthority());
+
+    final var instruction = KaminoVaultsRemainingAccounts
+        .appendVaultReserves(base(), List.of(key(0x21), key(0x22)), List.of(key(0x31), key(0x32)));
+    final var accounts = KaminoVaultsRemainingAccounts
+        .appendPermissioningAuthority(instruction, vaultState)
+        .accounts();
+
+    assertEquals(
+        List.of(key(0x11), key(0x21), key(0x22), key(0x31), key(0x32), authority),
+        accounts.stream().map(AccountMeta::publicKey).toList());
+    final var last = accounts.getLast();
+    assertTrue(last.signer());
+    assertFalse(last.write());
+  }
+
+  /// The key-taking overload applies the program's own check: the all-zero key is no authority.
+  @Test
+  void theKeyOverloadSkipsOnlyTheAllZeroKey() {
+    assertEquals(1, KaminoVaultsRemainingAccounts
+        .appendPermissioningAuthority(base(), PublicKey.NONE).accounts().size());
+
+    final var authority = key(0x44);
+    final var accounts = KaminoVaultsRemainingAccounts
+        .appendPermissioningAuthority(base(), authority)
+        .accounts();
+    assertEquals(2, accounts.size());
+    assertEquals(authority, accounts.get(1).publicKey());
+    assertTrue(accounts.get(1).signer());
+    assertFalse(accounts.get(1).write());
+  }
 }

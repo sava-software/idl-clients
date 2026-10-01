@@ -29,6 +29,12 @@ import java.util.SequencedCollection;
 /// They are supplied as two slot-ordered blocks — every reserve, then every lending
 /// market — matching the layout the official kvault interface library builds. Note this
 /// is not the interleaved pair order the CPI itself uses internally.
+///
+/// A vault that names a permissioning authority adds a third element to those four
+/// instructions, and to `depositWithMinSharesOut`, `buy`, `buyWithMinSharesOut` and `sell`,
+/// which share their handlers: the authority itself, as the **last** remaining account and
+/// signing. The program strips it before reading the two blocks; append it with
+/// [#appendPermissioningAuthority(Instruction, VaultState)] after them.
 public final class KaminoVaultsRemainingAccounts {
 
   private KaminoVaultsRemainingAccounts() {
@@ -71,6 +77,34 @@ public final class KaminoVaultsRemainingAccounts {
       metas.add(AccountMeta.createRead(market));
     }
     return instruction.extraAccounts(metas);
+  }
+
+  /// Append the vault's permissioning authority, read-only and signing, as the final remaining
+  /// account, or nothing when the vault has none.
+  ///
+  /// `check_permissioning_authority_and_strip` takes the **last** remaining account and rejects
+  /// it unless it is the vault's `permissioning_authority` (`InvalidPermissioningAuthority`,
+  /// 7065) and a signer (`AccountNotSigner`, 3010), then strips it before the reserve and market
+  /// blocks are read. So call this after [#appendVaultReserves(Instruction, SequencedCollection)],
+  /// append nothing after it, and have the authority sign the transaction: one more signature,
+  /// unless the authority already signs as the user or the fee payer.
+  ///
+  /// The check gates `deposit`, `depositWithMinSharesOut`, `buy`, `buyWithMinSharesOut`,
+  /// `withdraw`, `sell`, `withdrawFromAvailable` and `redeemInKind`, not `invest` or
+  /// `investWithMaxAmount`. A vault without an authority stores the all-zero key, for which the
+  /// program reads no authority at all, so nothing is appended.
+  public static Instruction appendPermissioningAuthority(final Instruction instruction,
+                                                         final VaultState vaultState) {
+    return appendPermissioningAuthority(instruction, vaultState.permissioningAuthority());
+  }
+
+  /// The same, for a caller that already holds the vault's `permissioningAuthority` key.
+  /// `PublicKey.NONE`, the all-zero key a vault without an authority stores, appends nothing.
+  public static Instruction appendPermissioningAuthority(final Instruction instruction,
+                                                         final PublicKey permissioningAuthority) {
+    return PublicKey.NONE.equals(permissioningAuthority)
+        ? instruction
+        : instruction.extraAccount(AccountMeta.createReadOnlySigner(permissioningAuthority));
   }
 
   /// The vault's reserves, in the order the program expects them: `vaultAllocationStrategy`
