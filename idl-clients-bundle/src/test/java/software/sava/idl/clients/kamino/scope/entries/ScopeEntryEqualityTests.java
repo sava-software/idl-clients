@@ -193,6 +193,7 @@ final class ScopeEntryEqualityTests {
     assertEquals(OracleType.Token2022Multiplier, new Token2022Multiplier(0, k, ema, 0).oracleType());
     assertEquals(OracleType.KlendCTokenExchangeRate, new KlendCTokenExchangeRate(0, k, ema).oracleType());
     assertEquals(OracleType.Canary, new Canary(0, k, ema).oracleType());
+    assertEquals(OracleType.ExponentTranching, new ExponentTranching(0, k, null, ema).oracleType());
     assertEquals(OracleType.PythLazer, new PythLazer(0, k, 1, 2, 3L, 4L, ema, null, none).oracleType());
     assertEquals(OracleType.PythLazerEMA, new PythLazerEMA(0, null, ema).oracleType());
     assertEquals(OracleType.MultiplicationChain, new MultiplicationChain(0, new ScopeEntry[0], 0L).oracleType());
@@ -200,7 +201,7 @@ final class ScopeEntryEqualityTests {
     assertEquals(OracleType.Conditional, new Conditional(0, Condition.Gt, 0, new ScopeEntry[0]).oracleType());
     assertEquals(OracleType.Chainlink, new Chainlink(0, k, 1L, ema, null, none).oracleType());
     assertEquals(OracleType.ChainlinkRWA, new ChainlinkRWA(0, k, null, ema).oracleType());
-    assertEquals(OracleType.ChainlinkX, new ChainlinkX(0, k, null, ema).oracleType());
+    assertEquals(OracleType.ChainlinkX, new ChainlinkX(0, k, null, ema, 0).oracleType());
     assertEquals(OracleType.CappedFloored, new CappedFloored(0, null, null, null, 0L).oracleType());
   }
 

@@ -90,7 +90,8 @@ public sealed interface ScopeError extends ProgramError permits
     ScopeError.CanaryPriceCPIError,
     ScopeError.CanaryFeedExpTooLarge,
     ScopeError.InvalidApprovedMultiplier,
-    ScopeError.AutoApprovalBpsOutOfRange {
+    ScopeError.AutoApprovalBpsOutOfRange,
+    ScopeError.ExponentTranchingCPIError {
 
   static ScopeError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -181,6 +182,7 @@ public sealed interface ScopeError extends ProgramError permits
       case 6084 -> CanaryFeedExpTooLarge.INSTANCE;
       case 6085 -> InvalidApprovedMultiplier.INSTANCE;
       case 6086 -> AutoApprovalBpsOutOfRange.INSTANCE;
+      case 6087 -> ExponentTranchingCPIError.INSTANCE;
       default -> null;
     };
   }
@@ -790,7 +792,14 @@ public sealed interface ScopeError extends ProgramError permits
   record AutoApprovalBpsOutOfRange(int code, String msg) implements ScopeError {
 
     public static final AutoApprovalBpsOutOfRange INSTANCE = new AutoApprovalBpsOutOfRange(
-        6086, "Token2022Multiplier auto approval threshold (bps) is greater than the allowed maximum"
+        6086, "The auto approval threshold (bps) is greater than the allowed maximum"
+    );
+  }
+
+  record ExponentTranchingCPIError(int code, String msg) implements ScopeError {
+
+    public static final ExponentTranchingCPIError INSTANCE = new ExponentTranchingCPIError(
+        6087, "Exponent tranching update_market CPI call failed"
     );
   }
 }

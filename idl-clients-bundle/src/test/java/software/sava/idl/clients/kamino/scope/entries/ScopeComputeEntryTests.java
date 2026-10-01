@@ -503,21 +503,136 @@ final class ScopeComputeEntryTests {
     assertEquals(entries.scopeEntry(1), ema.sourceEntry());
   }
 
+  /// Since Scope 0.43.0 the two market-status types read different generic layouts:
+  /// `ChainlinkRWA` the behaviour alone (`V8`), `ChainlinkX` the behaviour followed by a
+  /// `u16` auto approval threshold (`ChainlinkXMappingData`). The threshold here is 25 so
+  /// that a read of the wrong offset cannot produce it: byte 0 is the behaviour's
+  /// ordinal 2, and a little-endian read of bytes 0-1 is 6402.
   @Test
   void chainlinkVariantsReadTheirConfig() {
     final var entries = new Mappings()
         .slot(0, OracleType.Chainlink)
         .generic(0, new V3(77L))
         .slot(1, OracleType.ChainlinkRWA)
-        .generic(1, new V8V10(MarketStatusBehavior.Open))
+        .generic(1, new V8(MarketStatusBehavior.Open))
         .slot(2, OracleType.ChainlinkX)
-        .generic(2, new V8V10(MarketStatusBehavior.OpenAndPrePost))
+        .generic(2, new ChainlinkXMappingData(MarketStatusBehavior.OpenAndPrePost, 25))
         .parse();
 
     final var chainlink = assertInstanceOf(Chainlink.class, entries.scopeEntry(0));
     assertEquals(77L, chainlink.confidenceFactor());
     assertEquals(MarketStatusBehavior.Open, assertInstanceOf(ChainlinkRWA.class, entries.scopeEntry(1)).marketStatusBehavior());
-    assertEquals(MarketStatusBehavior.OpenAndPrePost, assertInstanceOf(ChainlinkX.class, entries.scopeEntry(2)).marketStatusBehavior());
+    final var chainlinkX = assertInstanceOf(ChainlinkX.class, entries.scopeEntry(2));
+    assertEquals(MarketStatusBehavior.OpenAndPrePost, chainlinkX.marketStatusBehavior());
+    assertEquals(25, chainlinkX.dailyAutoApprovalBps());
+  }
+
+  /// `ChainlinkX`'s threshold sits at offsets 1-2 of the mapping's generic data, after the
+  /// market status behaviour. Bytes past it, or a configured ref price the record has no
+  /// field for, must not change how the entry decodes.
+  ///
+  /// A mapping written before Scope 0.43.0 carries whatever its tooling put in bytes 1-2,
+  /// which no earlier program read; zeros read as "every change suspends". Observed
+  /// 2026-10-01: all fourteen ChainlinkX slots on mainnet, every one on the klend feed
+  /// (`4zh6bmb77qX2CL7t5AJYCqa6YqFafbz3QJNeFvZjLowg`), held twenty zero bytes —
+  /// `AllUpdates` and a threshold of zero.
+  @Test
+  void chainlinkXCarriesItsAutoApprovalThreshold() {
+    // a nonzero slot, so the index assertion cannot pass by a constant
+    final var entries = new Mappings()
+        .slot(6, OracleType.ChainlinkX)
+        .generic(6, new ChainlinkXMappingData(MarketStatusBehavior.Open, 100))
+        .bitmask(6, 1) // Ema1h
+        .parse();
+
+    final var chainlinkX = assertInstanceOf(ChainlinkX.class, entries.scopeEntry(6));
+    assertEquals(6, chainlinkX.index());
+    assertEquals(key(7), chainlinkX.oracle());
+    assertEquals(OracleType.ChainlinkX, chainlinkX.oracleType());
+    assertEquals(MarketStatusBehavior.Open, chainlinkX.marketStatusBehavior());
+    assertEquals(Set.of(EmaType.Ema1h), chainlinkX.emaTypes());
+    assertEquals(100, chainlinkX.dailyAutoApprovalBps());
+
+    final var configured = new Mappings()
+        .slot(1, OracleType.PythPull)
+        .slot(6, OracleType.ChainlinkX)
+        .generic(6, new ChainlinkXMappingData(MarketStatusBehavior.Open, 100))
+        .bitmask(6, 1)
+        .refPrice(6, 1)
+        .tolerance(6, 500);
+    Arrays.fill(configured.generic[6], 3, 20, (byte) 0x5A);
+    assertEquals(chainlinkX, configured.parse().scopeEntry(6));
+
+    final var legacy = assertInstanceOf(ChainlinkX.class, new Mappings().slot(6, OracleType.ChainlinkX).parse().scopeEntry(6));
+    assertEquals(MarketStatusBehavior.AllUpdates, legacy.marketStatusBehavior());
+    assertEquals(0, legacy.dailyAutoApprovalBps());
+
+    // the field is a u16 the program caps at 100, on write and again at every refresh,
+    // where a larger stored value fails the refresh; the reader reports what is stored,
+    // unsigned
+    final var wide = new Mappings()
+        .slot(6, OracleType.ChainlinkX)
+        .generic(6, new ChainlinkXMappingData(MarketStatusBehavior.Open, 0xFFFF))
+        .parse();
+    assertEquals(0xFFFF, assertInstanceOf(ChainlinkX.class, wide.scopeEntry(6)).dailyAutoApprovalBps());
+  }
+
+  /// `ExponentTranching` prices one side of an Exponent tranching market: the mapped
+  /// account is the market, and the generic data holds the tranche side, a one-byte enum
+  /// at offset 0 (`ExponentTranchingData`). Both sides are decoded here, so a reader that
+  /// ignored the byte could not pass. Bytes past it, or a configured ref price the record
+  /// has no field for, must not change how the entry decodes.
+  @Test
+  void exponentTranchingCarriesTheMarketAndItsTrancheSide() {
+    final var entries = new Mappings()
+        .slot(11, OracleType.ExponentTranching)
+        .generic(11, new ExponentTranchingData(ExponentTrancheSide.Senior))
+        .slot(12, OracleType.ExponentTranching)
+        .generic(12, new ExponentTranchingData(ExponentTrancheSide.Junior))
+        .bitmask(12, 1) // Ema1h
+        .parse();
+
+    final var senior = assertInstanceOf(ExponentTranching.class, entries.scopeEntry(11));
+    assertEquals(11, senior.index());
+    assertEquals(key(12), senior.oracle());
+    assertEquals(OracleType.ExponentTranching, senior.oracleType());
+    assertEquals(ExponentTrancheSide.Senior, senior.trancheSide());
+    assertEquals(Set.of(), senior.emaTypes());
+    assertFalse(senior.twapEnabled());
+
+    final var junior = assertInstanceOf(ExponentTranching.class, entries.scopeEntry(12));
+    assertEquals(12, junior.index());
+    assertEquals(key(13), junior.oracle());
+    assertEquals(ExponentTrancheSide.Junior, junior.trancheSide());
+    assertEquals(Set.of(EmaType.Ema1h), junior.emaTypes());
+    assertTrue(junior.twapEnabled());
+
+    final var configured = new Mappings()
+        .slot(1, OracleType.PythPull)
+        .slot(12, OracleType.ExponentTranching)
+        .generic(12, new ExponentTranchingData(ExponentTrancheSide.Junior))
+        .bitmask(12, 1)
+        .refPrice(12, 1)
+        .tolerance(12, 300);
+    Arrays.fill(configured.generic[12], 1, 20, (byte) 0x5A);
+    assertEquals(junior, configured.parse().scopeEntry(12));
+  }
+
+  /// The program refuses to write a tranche side it does not know, so a third one could
+  /// only come from a program newer than this IDL. It reads as a null side on an entry
+  /// that is still an `ExponentTranching`, and the rest of the account still parses.
+  @Test
+  void anUnknownTrancheSideReadsAsNull() {
+    final var mappings = new Mappings()
+        .slot(3, OracleType.ExponentTranching)
+        .slot(4, OracleType.PythPull);
+    mappings.generic[3][0] = 2;
+    final var entries = mappings.parse();
+
+    final var unknown = assertInstanceOf(ExponentTranching.class, entries.scopeEntry(3));
+    assertNull(unknown.trancheSide());
+    assertEquals(key(4), unknown.oracle());
+    assertInstanceOf(PythPull.class, entries.scopeEntry(4));
   }
 
   @Test
@@ -891,7 +1006,7 @@ final class ScopeComputeEntryTests {
         OracleType.ChainlinkExchangeRate, OracleType.ChainlinkNAV,
         OracleType.RedStone, OracleType.Securitize, OracleType.SwitchboardOnDemand,
         OracleType.PythPullEMA, OracleType.Token2022Multiplier, OracleType.KlendCTokenExchangeRate,
-        OracleType.Canary
+        OracleType.Canary, OracleType.ExponentTranching
     };
     final var mappings = new Mappings();
     for (int i = 0; i < types.length; ++i) {

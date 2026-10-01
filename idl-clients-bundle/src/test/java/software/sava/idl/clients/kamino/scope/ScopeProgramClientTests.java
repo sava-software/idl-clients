@@ -11,6 +11,7 @@ import software.sava.idl.clients.kamino.scope.gen.types.TwapEnabledBitmask;
 import software.sava.idl.clients.spl.SPLAccountClient;
 
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -85,19 +86,12 @@ final class ScopeProgramClientTests {
   /// takes a mint account, so a token of that type anywhere but last in the batch
   /// makes the handler read the *next* token's base account as its mint and fail
   /// the whole transaction. `KlendCTokenExchangeRate` pulls the klend program and
-  /// lending market the same way, and `Canary` the canary program it CPIs into.
+  /// lending market the same way, `Canary` the canary program it CPIs into, and
+  /// `ExponentTranching` five accounts and then the market's `get_sy_state` list for
+  /// its `update_market` CPI.
   @Test
   void refreshPriceListExtraAccountsRejectsTypesThatConsumeExtraAccounts() {
-    for (final var type : new OracleType[]{
-        OracleType.Canary,
-        OracleType.KToken, OracleType.KTokenToTokenA, OracleType.KTokenToTokenB,
-        OracleType.JupiterLpFetch,
-        OracleType.KlendCTokenExchangeRate,
-        OracleType.MeteoraDlmmAtoB, OracleType.MeteoraDlmmBtoA,
-        OracleType.OrcaWhirlpoolAtoB, OracleType.OrcaWhirlpoolBtoA,
-        OracleType.Securitize,
-        OracleType.SplBalance
-    }) {
+    for (final var type : EXTRA_ACCOUNT_CONSUMERS) {
       final var mappings = mappings();
       mappings.priceTypes()[1] = (byte) type.ordinal();
       assertThrows(IllegalStateException.class,
@@ -111,7 +105,71 @@ final class ScopeProgramClientTests {
     final var ex = assertThrows(IllegalStateException.class,
         () -> ScopeProgramClient.refreshPriceListExtraAccounts(canary, new int[]{1}));
     assertTrue(ex.getMessage().contains("CanarFxHDSnbrPmrE79Qq6hL2p7ZMyyV4ZLTKQ6g7tpK"), ex.getMessage());
+
+    // ExponentTranching's are mostly per market, so the rejection names the two
+    // constants and the writability the CPI needs from the outer instruction, which
+    // reaches past the fixed accounts: on 2026-10-01 all seven tranching markets on
+    // mainnet flagged get_sy_state accounts writable
+    final var tranching = mappings();
+    tranching.priceTypes()[1] = (byte) OracleType.ExponentTranching.ordinal();
+    final var tranchingEx = assertThrows(IllegalStateException.class,
+        () -> ScopeProgramClient.refreshPriceListExtraAccounts(tranching, new int[]{1}));
+    final var message = tranchingEx.getMessage();
+    assertTrue(message.contains("XPTrnchoawiUc9iYJrpfchS8vgr8Y5X2QGBdHPXukty"), message);
+    assertTrue(message.contains("3mBi7DRWMdTdDghA1cVLrwDKAgDo7UTDWoeik4GkXCsf"), message);
+    assertTrue(message.contains("with the market, its return model storage and each get_sy_state account"
+        + " the market flags writable passed writable"), message);
+
+    // the kToken types take no mint at all, and Securitize takes one mint among three
+    for (final var kToken : new OracleType[]{OracleType.KToken, OracleType.KTokenToTokenA, OracleType.KTokenToTokenB}) {
+      final var mappings = mappings();
+      mappings.priceTypes()[1] = (byte) kToken.ordinal();
+      final var kTokenEx = assertThrows(IllegalStateException.class,
+          () -> ScopeProgramClient.refreshPriceListExtraAccounts(mappings, new int[]{1}));
+      assertTrue(kTokenEx.getMessage().contains(
+          "the strategy's global config, collateral infos, pool, position and scope prices"), kTokenEx.getMessage());
+    }
+    final var securitize = mappings();
+    securitize.priceTypes()[1] = (byte) OracleType.Securitize.ordinal();
+    final var securitizeEx = assertThrows(IllegalStateException.class,
+        () -> ScopeProgramClient.refreshPriceListExtraAccounts(securitize, new int[]{1}));
+    assertTrue(securitizeEx.getMessage().contains(
+        "the vault's share mint and asset vault and its RedStone price account"), securitizeEx.getMessage());
   }
+
+  /// The complement of the list above: every other oracle type consumes its base
+  /// account and nothing more, so it gets exactly one read meta for that account. The
+  /// two together classify every type the generated enum declares, so a type moved
+  /// between the arms of the switch fails here.
+  @Test
+  void refreshPriceListExtraAccountsGivesEveryOtherTypeItsOneAccount() {
+    final var consumers = EnumSet.copyOf(Arrays.asList(EXTRA_ACCOUNT_CONSUMERS));
+    final var others = EnumSet.complementOf(consumers);
+    assertEquals(OracleType.values().length - EXTRA_ACCOUNT_CONSUMERS.length, others.size(),
+        "the consumer list names a type twice");
+    for (final var type : others) {
+      final var mappings = mappings();
+      mappings.priceTypes()[5] = (byte) type.ordinal();
+      assertEquals(
+          List.of(AccountMeta.createRead(mappings.priceInfoAccounts()[5])),
+          ScopeProgramClient.refreshPriceListExtraAccounts(mappings, new int[]{5}),
+          type.name());
+    }
+  }
+
+  /// Every arm of the program's `refresh_prices` dispatch (Scope 0.43.0,
+  /// `oracles/mod.rs::get_non_zero_price`) that takes from `extra_accounts`.
+  private static final OracleType[] EXTRA_ACCOUNT_CONSUMERS = {
+      OracleType.Canary,
+      OracleType.ExponentTranching,
+      OracleType.KToken, OracleType.KTokenToTokenA, OracleType.KTokenToTokenB,
+      OracleType.JupiterLpFetch,
+      OracleType.KlendCTokenExchangeRate,
+      OracleType.MeteoraDlmmAtoB, OracleType.MeteoraDlmmBtoA,
+      OracleType.OrcaWhirlpoolAtoB, OracleType.OrcaWhirlpoolBtoA,
+      OracleType.Securitize,
+      OracleType.SplBalance
+  };
 
   /// Bit 7 of a `price_types` byte is the program's frozen flag, not part of the
   /// oracle type. Freezing an entry is a live admin/emergency-council action and

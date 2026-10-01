@@ -71,9 +71,17 @@ public interface ScopeProgramClient {
   ///
   /// The rejected types are every arm of the program's `refresh_prices` dispatch that
   /// pulls an account out of `extra_accounts`: a plain read meta for one of those makes
-  /// the handler consume the following token's base account in its place — as an asset
-  /// mint, for `KlendCTokenExchangeRate` as the klend program, or for `Canary` as the
-  /// canary program — which fails the whole transaction rather than just that entry.
+  /// the handler take the following token's base account as that type's first extra
+  /// account — an asset mint for most, the strategy's global config for the kToken
+  /// types, the vault's share mint for `Securitize`, the klend program for
+  /// `KlendCTokenExchangeRate`, the canary program for `Canary`, or the market's return
+  /// model storage for `ExponentTranching` — which fails the whole transaction rather
+  /// than just that entry.
+  ///
+  /// The switch has no `default`, so an oracle type a regeneration adds does not compile
+  /// until it is placed in an arm: how many accounts a refresh consumes is per type and
+  /// invisible to the IDL, and a type falling through to the plain read meta is exactly
+  /// the failure described above.
   static List<AccountMeta> refreshPriceListExtraAccounts(final OracleMappings oracleMappings, final int[] tokens) {
     final var priceInfoAccounts = oracleMappings.priceInfoAccounts();
     final var priceTypes = oracleMappings.priceTypes();
@@ -90,19 +98,38 @@ public interface ScopeProgramClient {
             + Integer.toHexString(Byte.toUnsignedInt(priceTypes[token]))
             + " at token " + token + "; the deployed program is ahead of this IDL.");
       }
-      switch (oracleType) {
-        case KToken, KTokenToTokenA, KTokenToTokenB,
-             JupiterLpFetch,
+      accountMetas[i] = switch (oracleType) {
+        case JupiterLpFetch,
              MeteoraDlmmAtoB, MeteoraDlmmBtoA,
              OrcaWhirlpoolAtoB, OrcaWhirlpoolBtoA,
-             Securitize,
              SplBalance -> throw new IllegalStateException(oracleType + " requires asset mints as well.");
+        case KToken, KTokenToTokenA, KTokenToTokenB -> throw new IllegalStateException(oracleType
+            + " requires the strategy's global config, collateral infos, pool, position and scope prices as well.");
+        case Securitize -> throw new IllegalStateException(oracleType
+            + " requires the vault's share mint and asset vault and its RedStone price account as well.");
         case KlendCTokenExchangeRate ->
             throw new IllegalStateException(oracleType + " requires the klend program and lending market as well.");
         case Canary -> throw new IllegalStateException(oracleType
             + " requires the canary program (CanarFxHDSnbrPmrE79Qq6hL2p7ZMyyV4ZLTKQ6g7tpK on mainnet) as well.");
-      }
-      accountMetas[i] = AccountMeta.createRead(priceInfoAccounts[token]);
+        case ExponentTranching -> throw new IllegalStateException(oracleType
+            + " requires, after the market, its return model storage, address lookup table and SY program,"
+            + " the event authority (3mBi7DRWMdTdDghA1cVLrwDKAgDo7UTDWoeik4GkXCsf), the Exponent tranching"
+            + " program (XPTrnchoawiUc9iYJrpfchS8vgr8Y5X2QGBdHPXukty) and the market's get_sy_state accounts,"
+            + " with the market, its return model storage and each get_sy_state account the market flags"
+            + " writable passed writable.");
+        case Unused,
+             DeprecatedPlaceholder1, DeprecatedPlaceholder2, DeprecatedPlaceholder3, DeprecatedPlaceholder4,
+             DeprecatedPlaceholder5, DeprecatedPlaceholder6, DeprecatedPlaceholder7,
+             SplStake, MsolStake, StakedSolBalance, TotalMintSupply, Token2022Multiplier,
+             ScopeTwap1h, ScopeTwap8h, ScopeTwap24h, ScopeTwap7d,
+             RaydiumAmmV3AtoB, RaydiumAmmV3BtoA,
+             PythPull, PythPullEMA, PythLazer, PythLazerEMA,
+             SwitchboardOnDemand, RedStone, JitoRestaking, AdrenaLp, FlashtradeLp,
+             Chainlink, ChainlinkRWA, ChainlinkNAV, ChainlinkX, ChainlinkExchangeRate,
+             FixedPrice, DiscountToMaturity,
+             MostRecentOf, CappedMostRecentOf, CappedFloored, MultiplicationChain, Conditional ->
+            AccountMeta.createRead(priceInfoAccounts[token]);
+      };
     }
     return Arrays.asList(accountMetas);
   }

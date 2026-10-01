@@ -13,10 +13,25 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Price data for ChainlinkX type (v10)
 ///
+/// The entry may price a multiplier only while it is *approved*: named by an operator in a
+/// resume, adopted by the entry on its first refresh, or, where an auto approval threshold is
+/// configured, within that threshold of the reference. Anything else suspends the entry.
+///
 /// @param observationsTimestamp: u64
-/// @param activationDateTime: u32 The activation the last report announced, as the `u32` the report carries.
-/// @param approvedMultiplierBits: Option<u64> Raw `f64` bits of the multiplier a resume approved. Set by a resume, cleared by the next
-///                               report: each suspension needs its own.
+/// @param activationDateTime: u32 One timestamp, whose meaning is based on `suspended`:
+///                           - while suspended: the activation the report announced for the switch the entry suspended
+///                           on, as the `u32` the report carries;
+///                           - when not suspended: when the reference was set, which is when its 24h period started.
+///
+///                           `0` when there is neither. A `u32` because the whole record has to fit the entry's 24
+///                           bytes, so a period start past 2106 cannot be recorded and the refresh rejects it.
+/// @param approvedMultiplierBits: Option<u64> Raw `f64` bits of one multiplier, whose meaning is based on `suspended`:
+///                               - while suspended: the value a resume approved, and the price comes back only once a report
+///                               carries it, or one within the threshold of it;
+///                               - when not suspended: the reference auto approval measures a change against.
+///
+///                               `None` on an entry that has published nothing yet, which takes whatever the next report
+///                               carries.
 public record ChainlinkXPriceData(long observationsTimestamp,
                                   boolean suspended,
                                   long activationDateTime,

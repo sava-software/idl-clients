@@ -180,12 +180,12 @@ record ScopeReaderRecord(ScopeEntry[] entries,
         yield new CappedMostRecentOf(i, sources, cappedMostRecentOf.maxDivergenceBps(), cappedMostRecentOf.sourcesMaxAgeS(), capEntry);
       }
       case ChainlinkRWA -> {
-        final var cfg = V8V10.read(generic[i], 0);
+        final var cfg = V8.read(generic[i], 0);
         yield new ChainlinkRWA(i, priceAccount, cfg.marketStatusBehavior(), emaTypes);
       }
       case ChainlinkX -> {
-        final var cfg = V8V10.read(generic[i], 0);
-        yield new ChainlinkX(i, priceAccount, cfg.marketStatusBehavior(), emaTypes);
+        final var cfg = ChainlinkXMappingData.read(generic[i], 0);
+        yield new ChainlinkX(i, priceAccount, cfg.marketStatusBehavior(), emaTypes, cfg.dailyAutoApprovalBps());
       }
       case Chainlink -> {
         final var cfg = V3.read(generic[i], 0);
@@ -210,6 +210,10 @@ record ScopeReaderRecord(ScopeEntry[] entries,
       case DiscountToMaturity -> {
         final var dtm = DiscountToMaturityData.read(generic[i], 0);
         yield new DiscountToMaturity(i, dtm.discountPerYearBps(), dtm.maturityTimestamp());
+      }
+      case ExponentTranching -> {
+        final var data = ExponentTranchingData.read(generic[i], 0);
+        yield new ExponentTranching(i, priceAccount, data.trancheSide(), emaTypes);
       }
       case FixedPrice -> {
         final var price = Price.read(generic[i], 0);

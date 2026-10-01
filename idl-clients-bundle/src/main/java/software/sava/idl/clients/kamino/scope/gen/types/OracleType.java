@@ -57,7 +57,8 @@ public enum OracleType implements RustEnum {
   PythLazerEMA,
   KlendCTokenExchangeRate,
   Token2022Multiplier,
-  Canary;
+  Canary,
+  ExponentTranching;
 
   public static OracleType read(final byte[] _data, final int _offset) {
     return SerDeUtil.read(1, OracleType.values(), _data, _offset);

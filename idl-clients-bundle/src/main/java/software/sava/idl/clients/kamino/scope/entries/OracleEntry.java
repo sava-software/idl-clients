@@ -11,6 +11,7 @@ public sealed interface OracleEntry extends ScopeEntry permits
     ChainlinkExchangeRate,
     ChainlinkNAV,
     ChainlinkStatusEntry,
+    ExponentTranching,
     FlashtradeLp,
     JitoRestaking,
     JupiterLpFetch,

@@ -1250,7 +1250,12 @@
     {
       "code": 6086,
       "name": "AutoApprovalBpsOutOfRange",
-      "msg": "Token2022Multiplier auto approval threshold (bps) is greater than the allowed maximum"
+      "msg": "The auto approval threshold (bps) is greater than the allowed maximum"
+    },
+    {
+      "code": 6087,
+      "name": "ExponentTranchingCPIError",
+      "msg": "Exponent tranching update_market CPI call failed"
     }
   ],
   "types": [
@@ -1349,7 +1354,7 @@
       }
     },
     {
-      "name": "V8V10",
+      "name": "V8",
       "type": {
         "kind": "struct",
         "fields": [
@@ -1382,7 +1387,11 @@
     {
       "name": "ChainlinkXPriceData",
       "docs": [
-        "Price data for ChainlinkX type (v10)"
+        "Price data for ChainlinkX type (v10)",
+        "",
+        "The entry may price a multiplier only while it is *approved*: named by an operator in a",
+        "resume, adopted by the entry on its first refresh, or, where an auto approval threshold is",
+        "configured, within that threshold of the reference. Anything else suspends the entry."
       ],
       "type": {
         "kind": "struct",
@@ -1398,19 +1407,63 @@
           {
             "name": "activation_date_time",
             "docs": [
-              "The activation the last report announced, as the `u32` the report carries."
+              "One timestamp, whose meaning is based on `suspended`:",
+              "- while suspended: the activation the report announced for the switch the entry suspended",
+              "on, as the `u32` the report carries;",
+              "- when not suspended: when the reference was set, which is when its 24h period started.",
+              "",
+              "`0` when there is neither. A `u32` because the whole record has to fit the entry's 24",
+              "bytes, so a period start past 2106 cannot be recorded and the refresh rejects it."
             ],
             "type": "u32"
           },
           {
             "name": "approved_multiplier_bits",
             "docs": [
-              "Raw `f64` bits of the multiplier a resume approved. Set by a resume, cleared by the next",
-              "report: each suspension needs its own."
+              "Raw `f64` bits of one multiplier, whose meaning is based on `suspended`:",
+              "- while suspended: the value a resume approved, and the price comes back only once a report",
+              "carries it, or one within the threshold of it;",
+              "- when not suspended: the reference auto approval measures a change against.",
+              "",
+              "`None` on an entry that has published nothing yet, which takes whatever the next report",
+              "carries."
             ],
             "type": {
               "option": "u64"
             }
+          }
+        ]
+      }
+    },
+    {
+      "name": "ChainlinkXMappingData",
+      "docs": [
+        "Release note: the daily auto approval threshold was added later, and a mapping written before",
+        "it existed is read correctly as threshold zero after the release of the threshold."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "market_status_behavior",
+            "type": {
+              "defined": {
+                "name": "MarketStatusBehavior"
+              }
+            }
+          },
+          {
+            "name": "daily_auto_approval_bps",
+            "docs": [
+              "A multiplier within this many bps of the reference is published without a resume, and an",
+              "announced switch within it triggers no blackout. Zero means every change suspends, except",
+              "one smaller than the tolerance of `APPROVED_MULTIPLIER_TOLERANCE_DENOMINATOR`. The",
+              "reference is replaced on a fixed 24h period: the last value published before the boundary",
+              "can sit this far below the old reference and the first report after it, this far above,",
+              "becomes the new one, so two consecutive published values can be about three times this",
+              "apart."
+            ],
+            "type": "u16"
           }
         ]
       }
@@ -1456,6 +1509,22 @@
           {
             "name": "maturity_timestamp",
             "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ExponentTranchingData",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "tranche_side",
+            "type": {
+              "defined": {
+                "name": "ExponentTrancheSide"
+              }
+            }
           }
         ]
       }
@@ -2388,6 +2457,20 @@
       }
     },
     {
+      "name": "ExponentTrancheSide",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Senior"
+          },
+          {
+            "name": "Junior"
+          }
+        ]
+      }
+    },
+    {
       "name": "TokenTypes",
       "type": {
         "kind": "enum",
@@ -2636,6 +2719,9 @@
           },
           {
             "name": "Canary"
+          },
+          {
+            "name": "ExponentTranching"
           }
         ]
       }
