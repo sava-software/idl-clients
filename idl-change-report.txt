@@ -7,13 +7,6 @@ nobody took. The standing disagreements live beside this file, at its name with 
 before the extension. Ordered by program and channel, and carrying no timestamp, so
 consecutive runs are worth diffing against each other.
 
-== Movement (2) ==
+== Movement (1) ==
 
-Kamino Scope: the anchor IDL at AWUuZ6o4ZJX2fDqjUqDaA1pfHenZ6XEbmuTamMgM911E moved since the last generation, 45b3cf33093c78600961d10384d36cf0fbca864e18c08a39ae9dbf7273b65aa7 -> 35adbb847f8908652b5dfc9bcafe69eb87ca1097a2e6f267df5f71dec7f54eea: types +4 -1 ~2, errors +1 ~1
-  types added (4): ChainlinkXMappingData, ExponentTrancheSide, ExponentTranchingData, V8
-  types removed (1): V8V10
-  types changed (2): ChainlinkXPriceData, OracleType
-  errors added (1): ExponentTranchingCPIError
-  errors changed (1): AutoApprovalBpsOutOfRange
-
-Kamino Scope: the program was redeployed at slot 452308975, up from 451262414; the stored program image changed: 10485715 payload bytes, was 10485715 — review required; last reviewed at slot 451262414: anchor IDL republished after the deploy (account last written at slot 451308451), its version string still 0.41.0, and matches Kamino-Finance/scope 03b3dad (release/v0.42.0, whose Cargo.toml also still says 0.41.0): Canary oracle type 51 refreshes by CPI and consumes the canary program as an extra account, CappedFlooredData gains sources_max_age_s (zero on entries configured earlier), CappedMostRecentOf now age-checks its cap entry as well, Token2022Multiplier reads daily_auto_approval_bps from the mapping, re-lays its stored price data and keeps its price across a mapping update that changes only that value, ChainlinkXPriceData re-laid, a direct self-reference is refused on write (RefPriceSelfReference, TwapSourceSelfReference, composite sources), resume_suspended_price_v2 supersedes resume_suspended_price, which now fails with DeprecatedInstruction as resume_chainlinkx_price already did; GroundTruth compared 12 builders, 12 match
+Stake: the vcs IDL at https://raw.githubusercontent.com/solana-program/stake/refs/heads/main/idl.json moved since the last generation, 48b2d345a9549abeed5186deeacbb3d4fa29212dad82f839d1aff1104ca1f91d -> 2b34c0df27dc35bfa5cf1ce29fb9ec61985b1034055956e691831a83a4b1ca28: program.version 5.1.0 -> 5.1.1
