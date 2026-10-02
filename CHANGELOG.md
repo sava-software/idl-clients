@@ -1,5 +1,12 @@
 # Changelog
 
+## [25.19.10](https://github.com/sava-software/idl-clients/compare/25.19.9...25.19.10) (2026-10-02)
+
+
+### Bug Fixes
+
+* **scope:** keep the sources a band cycle cut, and compare composites by content in bounded time ([96182af](https://github.com/sava-software/idl-clients/commit/96182af56a74c2423f28b547a95855e5131d5546))
+
 ## [25.19.9](https://github.com/sava-software/idl-clients/compare/25.19.8...25.19.9) (2026-10-01)
 
 
