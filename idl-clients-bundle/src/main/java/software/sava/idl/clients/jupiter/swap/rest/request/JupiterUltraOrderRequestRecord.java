@@ -12,6 +12,8 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 // https://dev.jup.ag/api-reference/ultra/order
+/// @deprecated Implements [JupiterUltraOrderRequest]. Use [JupiterSwapOrderRequest].
+@Deprecated
 public record JupiterUltraOrderRequestRecord(PublicKey inputMint,
                                              PublicKey outputMint,
                                              BigInteger amount,

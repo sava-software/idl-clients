@@ -2,6 +2,17 @@ package software.sava.idl.clients.jupiter.swap.rest.request;
 
 import software.sava.core.accounts.PublicKey;
 
+/// @deprecated Builds Metis /swap/v1/swap bodies for the deprecated client. Use [JupiterSwapBuildRequest] to assemble
+/// your own transaction, or [JupiterSwapOrderRequest] for one Jupiter assembles. JupiterSwapBuildRequest is ExactIn
+/// only; for an ExactOut quote either keep this type, or use [JupiterSwapOrderRequest] with
+/// swapMode(SwapMode.ExactOut), which Jupiter answers although its spec documents only ExactIn. userPublicKey becomes
+/// taker. wrapAndUnwrapSol, feeAccount, destinationTokenAccount, nativeDestinationAccount and blockhashSlotsToExpiry
+/// exist on /build only. useSharedAccounts, trackingAccount, asLegacyTransaction, dynamicComputeUnitLimit,
+/// computeUnitPriceMicroLamports and skipUserAccountsRpcCalls have no V2 parameter: on /build, set the compute unit
+/// limit and price yourself, as [software.sava.idl.clients.jupiter.swap.rest.response.JupiterSwapBuild] describes.
+/// Unlike this type, which sends destinationTokenAccount and drops nativeDestinationAccount when both are set, V2
+/// throws IllegalStateException for the two together.
+@Deprecated
 public record JupiterSwapRequest(PublicKey userPublicKey,
                                  PublicKey payer,
                                  boolean wrapAndUnwrapSol,

@@ -10,6 +10,15 @@ import systems.comodal.jsoniter.JsonIterator;
 import java.math.BigInteger;
 import java.util.Set;
 
+/// @deprecated Builds Ultra /ultra/v1/order queries. Use [JupiterSwapOrderRequest]: build() becomes buildRequest(),
+/// amount(BigInteger) becomes amount(long), read as an unsigned u64, referralFeeBps(n) becomes referralFee(n), the
+/// singular excludeRouter/excludeDex setters give way to excludeRouters/excludeDexes, and closeAuthority has no V2
+/// equivalent. Unlike this builder, V2 throws IllegalStateException before sending a receiver equal to the taker
+/// (Ultra's default, which this builder sends), a referralAccount without a referralFee or the reverse, or no amount.
+/// Its setters also throw IllegalArgumentException for a router name or DEX label that is null, blank, padded with
+/// whitespace or contains a comma, which this builder sends as given, and for a negative referralFee, which this
+/// builder drops.
+@Deprecated
 public interface JupiterUltraOrderRequest {
 
   static Builder build() {

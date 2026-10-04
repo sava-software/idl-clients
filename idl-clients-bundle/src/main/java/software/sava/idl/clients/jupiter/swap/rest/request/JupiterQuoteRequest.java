@@ -9,6 +9,21 @@ import java.util.Collection;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
 
+/// @deprecated Builds Metis /swap/v1/quote queries for the deprecated client. Use [JupiterSwapBuildRequest]:
+/// inputTokenMint/outputTokenMint become inputMint/outputMint, create() becomes createRequest(), amount(BigInteger)
+/// becomes amount(long), read as an unsigned u64, and taker is required. slippageBps(0), or `"slippageBps": 0` in a
+/// parseRequest template, changes meaning: this type sends nothing for 0, so Jupiter's default of 50 applies, while V2
+/// sends a 0 bps tolerance. To keep that default with JupiterSwapBuildRequest, leave it unset: call defaultSlippage(),
+/// or use JSON null in a template. JupiterSwapBuildRequest is ExactIn only; for an ExactOut quote either keep this
+/// type, or use [JupiterSwapOrderRequest] with swapMode(SwapMode.ExactOut), which Jupiter answers although its spec
+/// documents only ExactIn. JupiterSwapOrderRequest has no dexes, maxAccounts or platformFeeBps, and no default of 50:
+/// an empty OptionalInt or JSON null sends nothing and Jupiter estimates the slippage itself, so call slippageBps(50)
+/// to keep 50. onlyDirectRoutes, restrictIntermediateTokens, asLegacyTransaction and instructionVersion have no V2
+/// parameter, and JupiterSwapBuildRequest.parseRequest skips their JSON keys without error; a swapMode string other
+/// than ExactIn throws IllegalArgumentException there, so an ExactOut template's amount is never sold. Unlike this
+/// type, V2 throws IllegalStateException for dexes together with excludeDexes, of which this type sends only dexes,
+/// and for a platformFeeBps without a feeAccount, which JupiterSwapRequest held.
+@Deprecated
 public interface JupiterQuoteRequest {
 
   static Builder buildRequest() {
