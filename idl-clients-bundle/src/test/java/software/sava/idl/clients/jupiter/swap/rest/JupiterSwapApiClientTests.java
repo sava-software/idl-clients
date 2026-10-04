@@ -6,6 +6,8 @@ import java.math.BigInteger;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.CompletionException;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.*;
@@ -409,8 +411,9 @@ final class JupiterSwapApiClientTests extends JupiterRestTests {
   }
 
   /// The builder attaches the api key as an `x-api-key` header on every request.
-  /// A client built without it authenticates as nobody and the hosted API answers
-  /// 401, so this is worth asserting rather than assuming.
+  /// Without a key the client is keyless and sends no header at all
+  /// (`keylessAcceptanceOnTheSwapClientBuiltBothWays`); this pins that a
+  /// configured key does reach the wire.
   ///
   /// It also pins `extendRequest`, whose only other caller is a field
   /// initializer — coverage attributed to a field initializer is unstable under
@@ -430,5 +433,62 @@ final class JupiterSwapApiClientTests extends JupiterRestTests {
     assertNotNull(headers, "the server must have recorded the request");
     assertEquals("a-distinct-key", headers.firstValue("x-api-key").orElse(null),
         "the api key must reach the wire");
+  }
+
+  /// A key is optional. The hosted and the local client both build without
+  /// one — or with a blank one — and then send no `x-api-key` header, which
+  /// Jupiter serves as keyless traffic; a configured key is sent as given; and
+  /// a caller's `extendRequest` applies either way.
+  ///
+  /// The client's constructor builds the label request, so building the client
+  /// is itself what runs the request extension: each scenario builds a fresh
+  /// client inside the test and reads the headers of that one request.
+  @Test
+  void keylessAcceptanceOnTheSwapClientBuiltBothWays() {
+    record Scenario(String name,
+                    Consumer<JupiterClientBuilder<?>> configure,
+                    List<String> apiKey,
+                    List<String> caller) {
+    }
+    final var scenarios = List.of(
+        new Scenario("apiKey never called", builder -> {
+        }, List.of(), List.of()),
+        new Scenario("blank apiKey", builder -> builder.apiKey("   "), List.of(), List.of()),
+        new Scenario("apiKey", builder -> builder.apiKey("real-key"), List.of("real-key"), List.of()),
+        new Scenario("extendRequest without a key",
+            builder -> builder.extendRequest(r -> r.header("x-caller", "1")),
+            List.of(), List.of("1")),
+        new Scenario("extendRequest and apiKey", builder -> {
+          builder.extendRequest(r -> r.header("x-caller", "1"));
+          builder.apiKey("real-key");
+        }, List.of("real-key"), List.of("1")));
+
+    record Construction(String name,
+                        Function<JupiterSwapApiClient.Builder, JupiterSwapApiClient> create,
+                        String labelsPath) {
+    }
+    final var constructions = List.of(
+        new Construction("createClient", JupiterSwapApiClient.Builder::createClient, "/swap/v1/program-id-to-label"),
+        new Construction("createLocalClient", JupiterSwapApiClient.Builder::createLocalClient, "/program-id-to-label"));
+
+    for (final var construction : constructions) {
+      for (final var scenario : scenarios) {
+        final var context = construction.name() + ", " + scenario.name();
+        final var builder = JupiterSwapApiClient.build();
+        builder.httpClient(HTTP_CLIENT);
+        builder.endpoint(endpoint);
+        scenario.configure().accept(builder);
+        final var swapClient = assertDoesNotThrow(() -> construction.create().apply(builder), context);
+
+        expectGet(construction.labelsPath(), "{}");
+        lastRequestHeaders = null;
+        assertTrue(swapClient.dexLabelToProgramIdMap().join().isEmpty(), context);
+
+        final var headers = lastRequestHeaders;
+        assertNotNull(headers, context);
+        assertEquals(scenario.apiKey(), headers.allValues("x-api-key"), context);
+        assertEquals(scenario.caller(), headers.allValues("x-caller"), context);
+      }
+    }
   }
 }

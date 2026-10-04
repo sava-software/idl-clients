@@ -3,6 +3,7 @@ package software.sava.idl.clients.jupiter.swap.rest;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -125,5 +126,48 @@ final class JupiterTokenClientTests extends JupiterRestTests {
     // v2TokenPath = endpoint.resolve("/tokens/v2/") anchors every other path
     expectGet("/tokens/v2/search?query=SOL", TOKENS);
     assertEquals(2, fresh.search("SOL").join().size());
+  }
+
+  /// A key is optional. Without one — or with a blank one — the client builds
+  /// and its requests carry no `x-api-key` header, which Jupiter serves as
+  /// keyless traffic; a configured key is sent as given; and a caller's
+  /// `extendRequest` applies either way. Each scenario builds a fresh client
+  /// inside the test and reads the headers of its one request.
+  @Test
+  void keylessAcceptanceOnTheTokenClient() {
+    record Scenario(String name,
+                    Consumer<JupiterClientBuilder<?>> configure,
+                    List<String> apiKey,
+                    List<String> caller) {
+    }
+    final var scenarios = List.of(
+        new Scenario("apiKey never called", builder -> {
+        }, List.of(), List.of()),
+        new Scenario("blank apiKey", builder -> builder.apiKey("   "), List.of(), List.of()),
+        new Scenario("apiKey", builder -> builder.apiKey("real-key"), List.of("real-key"), List.of()),
+        new Scenario("extendRequest without a key",
+            builder -> builder.extendRequest(r -> r.header("x-caller", "1")),
+            List.of(), List.of("1")),
+        new Scenario("extendRequest and apiKey", builder -> {
+          builder.extendRequest(r -> r.header("x-caller", "1"));
+          builder.apiKey("real-key");
+        }, List.of("real-key"), List.of("1")));
+
+    for (final var scenario : scenarios) {
+      final var builder = JupiterTokenClient.build();
+      builder.httpClient(HTTP_CLIENT);
+      builder.endpoint(endpoint);
+      scenario.configure().accept(builder);
+      final var tokenClient = assertDoesNotThrow(builder::createClient, scenario.name());
+
+      expectGet("/tokens/v2/recent", "[]");
+      lastRequestHeaders = null;
+      assertTrue(tokenClient.recentTokens().join().isEmpty(), scenario.name());
+
+      final var headers = lastRequestHeaders;
+      assertNotNull(headers, scenario.name());
+      assertEquals(scenario.apiKey(), headers.allValues("x-api-key"), scenario.name());
+      assertEquals(scenario.caller(), headers.allValues("x-caller"), scenario.name());
+    }
   }
 }

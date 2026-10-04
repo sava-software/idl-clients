@@ -37,11 +37,14 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 /// pass.
 ///
 /// Subclasses build their own client against [#endpoint]. Note that the Jupiter
-/// builders' setters are declared on the shared `HttpClientBuilder` base and
-/// return *that* type, so they have to be called statement-by-statement —
-/// chaining loses the concrete `Builder` that declares `createClient()` /
-/// `createLocalClient()`. Every Jupiter builder also sets an `x-api-key` header
-/// unconditionally, so an api key must be supplied.
+/// builders' setters are declared on the shared base builders and return those
+/// types. A chain ending in `createClient()` still compiles, because
+/// `HttpClientBuilder` declares it; what chaining loses is
+/// `createLocalClient()`, which only the swap API's concrete `Builder`
+/// declares, and a `JupiterClientBuilder` setter such as `apiKey(...)` called
+/// after an `HttpClientBuilder` one, so those calls go statement by statement.
+/// A key is optional: a builder without one builds a keyless client that sends
+/// no `x-api-key` header.
 @Execution(ExecutionMode.SAME_THREAD)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 abstract class JupiterRestTests implements HttpHandler {
