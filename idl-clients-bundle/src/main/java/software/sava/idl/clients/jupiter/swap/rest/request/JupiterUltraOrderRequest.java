@@ -20,10 +20,19 @@ public interface JupiterUltraOrderRequest {
     return prototype == null ? build() : new JupiterUltraOrderRequestRecord.BuilderImpl(prototype);
   }
 
+  /// Reads `amount`, `inputMint`, `outputMint`, `taker`, `receiver`, `payer`, `closeAuthority`, `referralAccount` and
+  /// the referral fee, on top of `prototype` when it is not null. Every other field is skipped, `excludeRouters` and
+  /// `excludeDexes` included; set those through `build(parsed)`.
+  ///
+  /// The referral fee is read from `referralFee`, the name the Ultra API documents and [#serialize()] sends, or from
+  /// `referralFeeBps`, the name of the Java accessor [#referralFeeBps()]. Either name sets the same value; when a
+  /// document carries both, the later one wins.
   static JupiterUltraOrderRequest parseRequest(final JupiterUltraOrderRequest prototype, final JsonIterator ji) {
     return ji.parseObject(JupiterUltraOrderRequestRecord.Parser.FIELDS, new JupiterUltraOrderRequestRecord.Parser(prototype));
   }
 
+  /// Reads a request from a JSON object without a prototype. See
+  /// [#parseRequest(JupiterUltraOrderRequest, JsonIterator)].
   static JupiterUltraOrderRequest parseRequest(final JsonIterator ji) {
     return parseRequest(null, ji);
   }
@@ -38,12 +47,20 @@ public interface JupiterUltraOrderRequest {
 
   PublicKey referralAccount();
 
+  /// The referral fee in basis points. [#serialize()] sends it as `referralFee`, the name the Ultra `/order` API
+  /// documents, and only when it is above 0. Jupiter documents 50 to 255 and takes the fee together with
+  /// [#referralAccount()].
   int referralFeeBps();
 
   Set<String> excludeRouters();
 
   Set<String> excludeDexes();
 
+  /// Serializes this request as the query string of an Ultra `/order` call, without a leading `?`.
+  ///
+  /// The query starts with `inputMint` and `outputMint`. Every other parameter is omitted when it is unset, and an
+  /// `amount` or a referral fee that is not above 0 counts as unset. The referral fee is sent as `referralFee=<n>`,
+  /// after `referralAccount` and before `excludeRouters`. The Java name `referralFeeBps` is never a query parameter.
   default String serialize() {
     final var builder = new StringBuilder(256);
     builder.append("inputMint=").append(inputMint().toBase58());
@@ -68,7 +85,7 @@ public interface JupiterUltraOrderRequest {
       builder.append("&referralAccount=").append(referralAccount().toBase58());
     }
     if (referralFeeBps() > 0) {
-      builder.append("&referralFeeBps=").append(referralFeeBps());
+      builder.append("&referralFee=").append(referralFeeBps());
     }
     final var excludeRouters = excludeRouters();
     if (excludeRouters != null && !excludeRouters.isEmpty()) {
@@ -107,6 +124,7 @@ public interface JupiterUltraOrderRequest {
 
     Builder referralAccount(final PublicKey referralAccount);
 
+    /// Sets the referral fee in basis points, which [#serialize()] sends as `referralFee`. See [#referralFeeBps()].
     Builder referralFeeBps(final int referralFeeBps);
 
     Builder excludeRouters(final Set<String> excludeRouters);

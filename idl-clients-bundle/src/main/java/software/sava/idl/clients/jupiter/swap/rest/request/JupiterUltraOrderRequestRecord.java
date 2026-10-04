@@ -37,6 +37,8 @@ public record JupiterUltraOrderRequestRecord(PublicKey inputMint,
       return builder.createRequest();
     }
 
+    // The referral fee answers to two names: "referralFee" is the one the Ultra API documents and serialize() sends,
+    // "referralFeeBps" is the Java accessor's. It is the last entry so the indices of the other names stay put.
     static final FieldMatcher FIELDS = FieldMatcher.of(
         "amount",
         "inputMint",
@@ -46,7 +48,8 @@ public record JupiterUltraOrderRequestRecord(PublicKey inputMint,
         "payer",
         "closeAuthority",
         "referralAccount",
-        "referralFeeBps"
+        "referralFeeBps",
+        "referralFee"
     );
 
     @Override
@@ -60,7 +63,7 @@ public record JupiterUltraOrderRequestRecord(PublicKey inputMint,
         case 5 -> builder.payer(PublicKeyEncoding.parseBase58Encoded(ji));
         case 6 -> builder.closeAuthority(PublicKeyEncoding.parseBase58Encoded(ji));
         case 7 -> builder.referralAccount(PublicKeyEncoding.parseBase58Encoded(ji));
-        case 8 -> builder.referralFeeBps(ji.readInt());
+        case 8, 9 -> builder.referralFeeBps(ji.readInt());
         default -> ji.skip();
       }
       return true;

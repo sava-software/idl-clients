@@ -48,6 +48,14 @@ final class JupiterUltraOrderRequestTests {
     return Arrays.asList(query.split("&"));
   }
 
+  /// The parameter names of a query, in order: what precedes the first `=` of each `&`-separated pair. Names are
+  /// compared whole, so `referralFee` and `referralFeeBps` are told apart by equality and never by a prefix.
+  private static List<String> names(final String query) {
+    return params(query).stream()
+        .map(pair -> pair.substring(0, pair.indexOf('=')))
+        .toList();
+  }
+
   @Test
   void mintsAreAlwaysEmitted() {
     assertEquals(
@@ -58,11 +66,12 @@ final class JupiterUltraOrderRequestTests {
   @Test
   void unsetOptionalsAreOmitted() {
     final var query = minimal().createRequest().serialize();
+    final var sent = names(query);
     for (final var name : new String[]{
         "amount", "taker", "receiver", "payer", "closeAuthority",
-        "referralAccount", "referralFeeBps", "excludeRouters", "excludeDexes"
+        "referralAccount", "referralFee", "excludeRouters", "excludeDexes"
     }) {
-      assertFalse(query.contains(name + "="), name + " must be omitted when unset: " + query);
+      assertFalse(sent.contains(name), name + " must be omitted when unset: " + query);
     }
   }
 
@@ -116,14 +125,48 @@ final class JupiterUltraOrderRequestTests {
   @Test
   void amountAndReferralFeeAreOmittedAtZero() {
     assertFalse(minimal().amount(BigInteger.ZERO).createRequest().serialize().contains("amount="));
-    assertFalse(minimal().referralFeeBps(0).createRequest().serialize().contains("referralFeeBps="));
+    final var zeroFee = minimal().referralFeeBps(0).createRequest().serialize();
+    assertFalse(names(zeroFee).contains("referralFee"), zeroFee);
+    assertFalse(names(zeroFee).contains("referralFeeBps"), zeroFee);
 
     assertTrue(minimal().amount(BigInteger.ONE).createRequest().serialize().contains("amount=1"));
-    assertTrue(minimal().referralFeeBps(1).createRequest().serialize().contains("referralFeeBps=1"));
+    final var oneFee = minimal().referralFeeBps(1).createRequest().serialize();
+    assertTrue(params(oneFee).contains("referralFee=1"), oneFee);
+    assertFalse(names(oneFee).contains("referralFeeBps"), oneFee);
 
     // the amount is a BigInteger so a full u64 survives
     assertTrue(minimal().amount(new BigInteger("18446744073709551615")).createRequest().serialize()
         .contains("amount=18446744073709551615"));
+  }
+
+  /// The Ultra `/order` API names the referral fee `referralFee`, while the accessor and the setter keep the Java
+  /// name `referralFeeBps`. The whole query is compared pair by pair, so the name, the value and the position —
+  /// after `referralAccount` and before the exclusion lists — are pinned together, and the fee goes out exactly
+  /// once, never again under the accessor's name. The expected pairs are written out by hand.
+  @Test
+  void referralFeeIsSentUnderTheApiName() {
+    final var request = minimal()
+        .referralAccount(REFERRAL)
+        .referralFeeBps(50)
+        .excludeRouters(Set.of("metis"))
+        .excludeDexes(Set.of("Orca"))
+        .createRequest();
+
+    assertEquals(50, request.referralFeeBps(), "the Java name is unchanged");
+    assertEquals(
+        List.of(
+            "inputMint=So11111111111111111111111111111111111111112",
+            "outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "referralAccount=2RJD1KnDRGEkvuFfAGrJ7PD28LRE9LRDjZznDywagzmr",
+            "referralFee=50",
+            "excludeRouters=metis",
+            "excludeDexes=Orca"
+        ),
+        params(request.serialize())
+    );
+
+    // the upper end of the documented 50-255 range goes out as typed
+    assertTrue(params(minimal().referralFeeBps(255).createRequest().serialize()).contains("referralFee=255"));
   }
 
   /// The exclusion sets are comma joined, and the singular setters accumulate
@@ -226,13 +269,9 @@ final class JupiterUltraOrderRequestTests {
         parsed.serialize());
   }
 
-  /// Every parseable field lands from its API name, and unknown fields —
-  /// leading, mid-object, and trailing; scalar and structured — are skipped
-  /// without shifting the fields after them. Five fields are bare public keys
-  /// carrying distinct fill bytes, so a setter dropped (they return their
-  /// receiver) or a mis-slotted key is visible by identity.
-  @Test
-  void parsedRequestReadsEveryFieldPastUnknownNeighbors() {
+  /// Parses a document that carries every parseable field between unknown neighbors. `referralFeeEntry` is the
+  /// referral fee's complete JSON member, such as `"referralFee": 7`.
+  private static JupiterUltraOrderRequest parseEveryField(final String referralFeeEntry) {
     final var json = """
         {
           "unknownLeading": {"nested": [1, {"deep": true}]},
@@ -245,13 +284,15 @@ final class JupiterUltraOrderRequestTests {
           "payer": "%s",
           "closeAuthority": "%s",
           "referralAccount": "%s",
-          "referralFeeBps": 42,
+          %s,
           "unknownTrailing": "ignored"
         }""".formatted(INPUT_MINT.toBase58(), OUTPUT_MINT.toBase58(), TAKER.toBase58(),
-        RECEIVER.toBase58(), PAYER.toBase58(), CLOSE_AUTHORITY.toBase58(), REFERRAL.toBase58());
+        RECEIVER.toBase58(), PAYER.toBase58(), CLOSE_AUTHORITY.toBase58(), REFERRAL.toBase58(),
+        referralFeeEntry);
+    return JupiterUltraOrderRequest.parseRequest(JsonIterator.parse(json.getBytes(UTF_8)));
+  }
 
-    final var parsed = JupiterUltraOrderRequest.parseRequest(JsonIterator.parse(json.getBytes(UTF_8)));
-
+  private static void assertEveryFieldRead(final JupiterUltraOrderRequest parsed, final int referralFeeBps) {
     assertEquals(new BigInteger("98765432109876543210"), parsed.amount(),
         "amount is a BigInteger read, wider than long");
     assertEquals(INPUT_MINT, parsed.inputMint());
@@ -261,7 +302,23 @@ final class JupiterUltraOrderRequestTests {
     assertEquals(PAYER, parsed.payer());
     assertEquals(CLOSE_AUTHORITY, parsed.closeAuthority());
     assertEquals(REFERRAL, parsed.referralAccount());
-    assertEquals(42, parsed.referralFeeBps());
+    assertEquals(referralFeeBps, parsed.referralFeeBps());
+  }
+
+  /// Every parseable field lands from its API name, and unknown fields —
+  /// leading, mid-object, and trailing; scalar and structured — are skipped
+  /// without shifting the fields after them. Five fields are bare public keys
+  /// carrying distinct fill bytes, so a setter dropped (they return their
+  /// receiver) or a mis-slotted key is visible by identity.
+  ///
+  /// The referral fee answers to two names, `referralFee` and `referralFeeBps`,
+  /// so it is read from two documents, one per name, with a different value
+  /// each. In one document holding both, whichever came last would hide a
+  /// missing mapping for the other.
+  @Test
+  void parsedRequestReadsEveryFieldPastUnknownNeighbors() {
+    assertEveryFieldRead(parseEveryField("\"referralFee\": 77"), 77);
+    assertEveryFieldRead(parseEveryField("\"referralFeeBps\": 42"), 42);
   }
 
   /// The builder's own accessors report what was set — read from inside the
