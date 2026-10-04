@@ -1,0 +1,12 @@
+{"mode": "ultra", "inputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v", "outputMint": "So11111111111111111111111111111111111111112",
+ "inAmount": "100000000", "outAmount": "460250418", "otherAmountThreshold": "460250418", "swapMode": "ExactIn", "slippageBps": 0,
+ "routePlan": [{"swapInfo": {"ammKey": "CDg3bPoM21fSXEzrXWHWyJR33JHX6xaYboq5p7s4uo48", "label": "JupiterZ",
+   "inputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v", "outputMint": "So11111111111111111111111111111111111111112",
+   "inAmount": "100000000", "outAmount": "460250418"}, "percent": 100, "bps": 10000}],
+ "feeBps": 2.5, "platformFee": {"amount": "92050", "feeBps": 0.5}, "gasless": true,
+ "signatureFeeLamports": 0, "prioritizationFeeLamports": 0, "rentFeeLamports": 0,
+ "swapType": "rfq", "router": "jupiterz", "transaction": "", "lastValidBlockHeight": "",
+ "requestId": "ff63982b-9140-9b0e-e525-44f7246a79b2", "quoteId": "5852f88e-525b-5400-ab97-abe5e409ebfd",
+ "maker": "CDg3bPoM21fSXEzrXWHWyJR33JHX6xaYboq5p7s4uo48", "taker": "GkwFnmMDvn3HGMpJpWBg8tgJxr3NxNvg3AXxvXVPbRGJ",
+ "expireAt": "1758598698", "totalTime": 489.5, "errorCode": 3,
+ "errorMessage": "Quote could not be built into a transaction", "error": "Quote could not be built into a transaction"}

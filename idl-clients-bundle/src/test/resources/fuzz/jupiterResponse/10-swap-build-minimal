@@ -1,0 +1,12 @@
+
+{"inputMint": "So11111111111111111111111111111111111111112", "outputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+ "inAmount": "1000000", "outAmount": "4612089", "otherAmountThreshold": "4589028", "swapMode": "ExactIn", "slippageBps": 50,
+ "routePlan": [{"percent": 100, "bps": 10000, "swapInfo": {"ammKey": "3EKkiwNLWqoUbzFkPrmKbtUB4EweE6f4STzevYUmezeL",
+   "label": "Meteora DLMM", "inputMint": "So11111111111111111111111111111111111111112",
+   "outputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v", "inAmount": "1000000", "outAmount": "4612089"}}],
+ "computeBudgetInstructions": [], "setupInstructions": [],
+ "swapInstruction": {"programId": "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4",
+   "accounts": [{"pubkey": "GkwFnmMDvn3HGMpJpWBg8tgJxr3NxNvg3AXxvXVPbRGJ", "isSigner": true, "isWritable": false}], "data": "u2T6zDHErxQ="},
+ "cleanupInstruction": null, "otherInstructions": [], "tipInstruction": null, "addressesByLookupTableAddress": null,
+ "blockhashWithMetadata": {"blockhash": [1,8,15,22,29,36,43,50,57,64,71,78,85,92,99,106,113,120,127,134,141,148,155,162,169,176,183,190,197,204,211,218],
+   "lastValidBlockHeight": 279000150}}

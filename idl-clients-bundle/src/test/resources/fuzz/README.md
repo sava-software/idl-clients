@@ -29,14 +29,77 @@ mutator, so every seed is either a real account or a minimized finding:
 
 ## `jupiterResponse/`
 
-The harness reads `data[0]` as a parser selector and the rest as the JSON
-body, so every seed leads with its selector byte. Each seed is the test-fixture
-body for one parser family (quote, full swap-instructions response with a
-present cleanup, the two field-scan orderings, the swap-ix wrapper, swap-tx,
-ultra order, price/token maps, the ASR claim envelope, and the request
-records), assembled 2026-07-23 from the fixtures in
-`JupiterSwapApiClientTests` / `JupiterSwapInstructionsTests` /
+The harness reads the first byte, unsigned, modulo 14 (`(data[0] & 0xFF) % 14`)
+as a parser selector and the rest as the JSON body, so every seed leads with
+its selector byte:
+
+- `0` quote, `1` swap-instructions response, `2` swap instruction, `3` lookup
+  tables, `4` swap-ix wrapper, `5` swap-tx, `6` Ultra order, `7` price and
+  token maps, `8` ASR claim envelope, `9` the v1 request records;
+- `10` `/swap/v2/build` response, `11` `/swap/v2/order` response, `12` the two
+  V2 request parsers, `13` the `/execute` request body round trip and the
+  `/execute` result parser.
+
+The modulus went from 10 to 14 when the Swap API V2 parsers joined
+(2026-10-03). The seeds `00`–`09` lead with `0x00`–`0x09`, so each keeps its
+parser.
+
+`00`–`09` are the test-fixture bodies for the v1 parser families (quote, full
+swap-instructions response with a present cleanup, the two field-scan
+orderings, the swap-ix wrapper, swap-tx, ultra order, price/token maps, the ASR
+claim envelope, and the request records), assembled 2026-07-23 from the
+fixtures in `JupiterSwapApiClientTests` / `JupiterSwapInstructionsTests` /
 `ClaimProofTests` — structured JSON is slow to reach from a scratch mutator.
+
+The Swap API V2 seeds were copied 2026-10-03, byte for byte, from the text
+block named in brackets in `JupiterSwapV2TestFixtures`, except `10-swap-build`,
+re-copied 2026-10-04 when `BUILD`'s tip instruction moved from a Jito tip
+account to one of Jupiter's tip receivers; the two `12-*` seeds and
+`13-execute-escapes` have no fixture and were written by hand. Each is a
+bootstrap unless marked as a regression:
+
+- `10-swap-build` (`BUILD`) — every instruction slot filled except
+  `otherInstructions`, which is empty; a 1234567 micro-lamport price, a
+  two-step route with fractional percentages, one lookup table and a blockhash
+  with `fetchedAt`: the body the filter, price and account-count differentials
+  all run on.
+- `10-swap-build-minimal` (`BUILD_MINIMAL`) — the docs' TypeScript shape: no
+  compute budget, and explicit nulls for cleanup, tip and the lookup tables.
+- `10-swap-build-stray-compute-budget` (`BUILD_STRAY_COMPUTE_BUDGET`) — a memo
+  inside `computeBudgetInstructions` and a SetComputeUnitLimit in
+  `setupInstructions`: the filter keeps the first and drops the second, and
+  only the SetComputeUnitPrice is a price.
+- `11-swap-order` (`ORDER_METIS`) — a Metis order with a transaction, a quoted
+  `lastValidBlockHeight`, and the deprecated `swapType` and `priceImpactPct`.
+- `11-swap-order-build-failed` (`ORDER_RFQ_BUILD_FAILED`) — an RFQ order whose
+  `transaction` is `""`, with fractional `feeBps` and `totalTime`. It also
+  carries `"lastValidBlockHeight": ""`, which must read as 0 without costing
+  the caller `errorCode`.
+- `11-swap-order-quote-only` (`ORDER_QUOTE_ONLY`) — no taker, so `transaction`
+  and the fee payers are null.
+- `11-swap-order-exponent-bomb` — regression: `ORDER_METIS` with
+  `"lastValidBlockHeight":1e999999999`, a bare number in place of the string.
+  That field is still read by the strict integral reader, which must reject the
+  exponent at once rather than expand it; the lamport fees are `BigDecimal` and
+  keep `1e999999999` unexpanded, so a bomb there would test nothing. Pinned by
+  `SwapV2JsonTests.integralReadersRejectExponentBombsWithoutExpanding`.
+- `12-swap-requests` — one object both request parsers accept and serialize:
+  six of the seven keys both endpoints take (all but `payer`), `inputMint`,
+  `outputMint`, `amount` `"18446744073709551615"`, `taker`, `slippageBps` 30
+  and `excludeDexes`, which both parsers read; `/build`'s own
+  `computeUnitPricePercentile` `veryHigh` and `maxAccounts` 40; and `/order`'s
+  own `receiver`, `referralAccount` with `referralFee` 50, `broadcastFeeType`
+  `maxCap` and `excludeRouters`. Each parser skips only the keys the other
+  alone takes.
+- `12-swap-build-request-rtse` — a `/build` request with `slippageBps`
+  `"rtse"` and `mode` `fast`, which the `/order` parser rejects because it reads
+  a numeric `slippageBps` with `readInt`.
+- `13-execute-escapes` — the bytes of `a"b\c`, `0x01`, `0x1f`, a space and `é`:
+  a requestId that needs every escape the `/execute` body writes, and a result
+  body that is not JSON.
+- `13-execute-success` (`EXECUTE_SUCCESS`) — a successful `/execute` result,
+  which parses; as a requestId it carries quotes and newlines through the
+  escape.
 
 ## `dlmmPrice/`
 

@@ -1,0 +1,6 @@
+{"inputMint": "So11111111111111111111111111111111111111112", "outputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+ "amount": "18446744073709551615", "taker": "GkwFnmMDvn3HGMpJpWBg8tgJxr3NxNvg3AXxvXVPbRGJ", "slippageBps": 30,
+ "computeUnitPricePercentile": "veryHigh", "excludeDexes": ["SolFi"], "maxAccounts": 40,
+ "receiver": "9ahYBF9J6simiVmTPwRgxB1t1AiZY5C8xpeLQGh5tJxn",
+ "referralAccount": "3S5e9qmNHjhA2G1Ghkk5UWnTniaFFHiX7gzd6gcZtzcT", "referralFee": 50,
+ "broadcastFeeType": "maxCap", "excludeRouters": ["jupiterz"]}

@@ -1,0 +1,4 @@
+{"status": "Success", "signature": "transaction-signature", "slot": "323598314", "code": 0,
+ "totalInputAmount": "10000000", "totalOutputAmount": "1274698", "inputAmountResult": "9995000", "outputAmountResult": "1274698",
+ "swapEvents": [{"inputMint": "So11111111111111111111111111111111111111112", "inputAmount": "9995000",
+   "outputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v", "outputAmount": "1274698"}]}

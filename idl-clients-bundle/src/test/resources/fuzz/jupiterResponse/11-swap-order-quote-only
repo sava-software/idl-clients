@@ -1,0 +1,7 @@
+{"mode": "ultra", "inputMint": "So11111111111111111111111111111111111111112", "outputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+ "inAmount": "1000000", "outAmount": "4612089", "otherAmountThreshold": "4600559", "swapMode": "ExactIn", "slippageBps": 25,
+ "routePlan": [], "feeMint": "So11111111111111111111111111111111111111112", "feeBps": 2,
+ "platformFee": {"feeBps": 2, "feeMint": "So11111111111111111111111111111111111111112"},
+ "signatureFeeLamports": 5000, "signatureFeePayer": null, "prioritizationFeeLamports": 0, "prioritizationFeePayer": null,
+ "rentFeeLamports": 0, "rentFeePayer": null, "router": "metis", "transaction": null, "gasless": false,
+ "requestId": "01997500-0000-7000-8000-000000000001", "totalTime": 120, "taker": null}

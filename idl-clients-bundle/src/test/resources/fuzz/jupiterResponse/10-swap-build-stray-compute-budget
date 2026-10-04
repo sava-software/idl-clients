@@ -1,0 +1,11 @@
+
+{"inputMint": "So11111111111111111111111111111111111111112", "outputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+ "inAmount": "1000000", "outAmount": "4612089", "otherAmountThreshold": "4589028", "swapMode": "ExactIn", "slippageBps": 50,
+ "routePlan": [],
+ "computeBudgetInstructions": [
+   {"programId": "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr", "accounts": [], "data": "aGk="},
+   {"programId": "ComputeBudget111111111111111111111111111111", "accounts": [], "data": "A0BCDwAAAAAA"}],
+ "setupInstructions": [{"programId": "ComputeBudget111111111111111111111111111111", "accounts": [], "data": "AkANAwA="}],
+ "swapInstruction": {"programId": "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4",
+   "accounts": [{"pubkey": "GkwFnmMDvn3HGMpJpWBg8tgJxr3NxNvg3AXxvXVPbRGJ", "isSigner": true, "isWritable": false}], "data": "u2T6zDHErxQ="},
+ "cleanupInstruction": null, "otherInstructions": [], "tipInstruction": null}

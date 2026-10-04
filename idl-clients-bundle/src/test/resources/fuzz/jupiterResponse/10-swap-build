@@ -1,0 +1,64 @@
+
+{
+  "inputMint": "So11111111111111111111111111111111111111112",
+  "outputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+  "inAmount": "100000000",
+  "outAmount": "461208958",
+  "otherAmountThreshold": "460024271",
+  "swapMode": "ExactIn",
+  "slippageBps": 50,
+  "priceImpactPct": "0.0001",
+  "routePlan": [
+    {"swapInfo": {"ammKey": "3EKkiwNLWqoUbzFkPrmKbtUB4EweE6f4STzevYUmezeL", "label": "Meteora DLMM",
+      "inputMint": "So11111111111111111111111111111111111111112", "outputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "inAmount": "66670000", "outAmount": "307498012"}, "percent": 66.67, "bps": 6667, "usdValue": 133.36},
+    {"swapInfo": {"ammKey": "675kPX9MHTjS2zt1qfr1NYHuzeLXfQM9H24wFSUt1Mp8", "label": "Raydium",
+      "inputMint": "So11111111111111111111111111111111111111112", "outputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "inAmount": "33330000", "outAmount": "153710946"}, "percent": 33.33, "bps": 3333}
+  ],
+  "computeBudgetInstructions": [
+    {"programId": "ComputeBudget111111111111111111111111111111", "accounts": [], "data": "A4fWEgAAAAAA"}
+  ],
+  "setupInstructions": [
+    {"programId": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL", "accounts": [
+      {"pubkey": "GkwFnmMDvn3HGMpJpWBg8tgJxr3NxNvg3AXxvXVPbRGJ", "isSigner": true, "isWritable": true},
+      {"pubkey": "HTvjzsfX3yU6BUodCjZ5vZkUrAxMDTrBs3CJaq43ashR", "isSigner": false, "isWritable": true},
+      {"pubkey": "GkwFnmMDvn3HGMpJpWBg8tgJxr3NxNvg3AXxvXVPbRGJ", "isSigner": false, "isWritable": false},
+      {"pubkey": "So11111111111111111111111111111111111111112", "isSigner": false, "isWritable": false},
+      {"pubkey": "11111111111111111111111111111111", "isSigner": false, "isWritable": false},
+      {"pubkey": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA", "isSigner": false, "isWritable": false}
+    ], "data": "AQ=="},
+    {"programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA", "accounts": [
+      {"pubkey": "HTvjzsfX3yU6BUodCjZ5vZkUrAxMDTrBs3CJaq43ashR", "isSigner": false, "isWritable": true}
+    ], "data": "EQ=="}
+  ],
+  "swapInstruction": {"programId": "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4", "accounts": [
+    {"pubkey": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA", "isSigner": false, "isWritable": false},
+    {"pubkey": "GkwFnmMDvn3HGMpJpWBg8tgJxr3NxNvg3AXxvXVPbRGJ", "isSigner": true, "isWritable": false},
+    {"pubkey": "HTvjzsfX3yU6BUodCjZ5vZkUrAxMDTrBs3CJaq43ashR", "isSigner": false, "isWritable": true},
+    {"pubkey": "CDg3bPoM21fSXEzrXWHWyJR33JHX6xaYboq5p7s4uo48", "isSigner": false, "isWritable": true},
+    {"pubkey": "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4", "isSigner": false, "isWritable": false},
+    {"pubkey": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v", "isSigner": false, "isWritable": false},
+    {"pubkey": "D8cy77BBepLMngZx6ZukaTff5hCt1HrWyKk3Hnd9oitf", "isSigner": false, "isWritable": false},
+    {"pubkey": "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4", "isSigner": false, "isWritable": false},
+    {"pubkey": "3EKkiwNLWqoUbzFkPrmKbtUB4EweE6f4STzevYUmezeL", "isSigner": false, "isWritable": true},
+    {"pubkey": "3JF3sEqM796hk5WFqA6EtmEwJQ9quALszsfJyvXNQKy3", "isSigner": false, "isWritable": true},
+    {"pubkey": "3NAM1YJMhSPvtAkmGTRABe1hYZN3aE2hZHKy3JZy9fHk", "isSigner": false, "isWritable": true}
+  ], "data": "u2T6zDHErxQA4fUFAAAAAH59fRsAAAAAMgAAAAAAAAAAAA=="},
+  "cleanupInstruction": {"programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA", "accounts": [
+    {"pubkey": "HTvjzsfX3yU6BUodCjZ5vZkUrAxMDTrBs3CJaq43ashR", "isSigner": false, "isWritable": true},
+    {"pubkey": "GkwFnmMDvn3HGMpJpWBg8tgJxr3NxNvg3AXxvXVPbRGJ", "isSigner": false, "isWritable": true},
+    {"pubkey": "GkwFnmMDvn3HGMpJpWBg8tgJxr3NxNvg3AXxvXVPbRGJ", "isSigner": true, "isWritable": false}
+  ], "data": "CQ=="},
+  "otherInstructions": [],
+  "tipInstruction": {"programId": "11111111111111111111111111111111", "accounts": [
+    {"pubkey": "GkwFnmMDvn3HGMpJpWBg8tgJxr3NxNvg3AXxvXVPbRGJ", "isSigner": true, "isWritable": true},
+    {"pubkey": "GGztQqQ6pCPaJQnNpXBgELr5cs3WwDakRbh1iEMzjgSJ", "isSigner": false, "isWritable": true}
+  ], "data": "AgAAAEBCDwAAAAAA"},
+  "addressesByLookupTableAddress": {"3S5e9qmNHjhA2G1Ghkk5UWnTniaFFHiX7gzd6gcZtzcT": [
+    "3JF3sEqM796hk5WFqA6EtmEwJQ9quALszsfJyvXNQKy3", "3NAM1YJMhSPvtAkmGTRABe1hYZN3aE2hZHKy3JZy9fHk",
+    "D8cy77BBepLMngZx6ZukaTff5hCt1HrWyKk3Hnd9oitf"]},
+  "blockhashWithMetadata": {"blockhash": [1,8,15,22,29,36,43,50,57,64,71,78,85,92,99,106,113,120,127,134,141,148,155,162,169,176,183,190,197,204,211,218],
+    "lastValidBlockHeight": 279000150,
+    "fetchedAt": {"secs_since_epoch": 1759480000, "nanos_since_epoch": 123456789}}
+}

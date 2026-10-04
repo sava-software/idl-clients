@@ -7,7 +7,9 @@ import software.sava.core.accounts.PublicKey;
 /// from Jupiter's `swap.yaml` with real base58 keys.
 ///
 /// The bodies are hand-written, never captured from the network, and every expectation a test
-/// asserts against them is written out as a literal.
+/// asserts against them is written out as a literal. `BUILD`, `BUILD_MINIMAL`,
+/// `BUILD_STRAY_COMPUTE_BUDGET`, `ORDER_METIS`, `ORDER_RFQ_BUILD_FAILED`, `ORDER_QUOTE_ONLY` and
+/// `EXECUTE_SUCCESS` are also the bodies of the `jupiterResponse` fuzz seeds.
 ///
 /// The class name carries `Test` so that the mutation suites treat it as test code.
 public final class JupiterSwapV2TestFixtures {
