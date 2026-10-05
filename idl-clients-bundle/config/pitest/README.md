@@ -19,14 +19,16 @@ A new unkilled mutant has exactly three legal outcomes:
    lists which does what) and record the reason under "Triaged equivalent
    mutants" below. Acceptance is for mutants *equivalent with respect to
    observable behavior*, not for "hard to test". Never hand-edit record
-   structure or provenance stamps, and run `-PnoMutationHistory` before any
-   record decision.
+   structure, `# line` tags or provenance stamps, and run `-PnoMutationHistory`
+   before any record decision.
 
 Baseline keys are **line-less**, so editing above a mutated method churns
-nothing and the `# line` tags are review metadata rather than anchors; source
-movement alone never warns or requires re-anchoring. Rows are compared as a
-**multiset**, so sibling mutants of one compound condition each count — never
-hand-dedupe the file.
+nothing and the `# line` tags are review metadata rather than anchors. A tag
+still belongs to its row: moved source draws a line-drift advisory,
+`pitest<Suite>BaselineRetag` refreshes the tag once the argument below has been
+re-read and still covers the advisory's lines, and a hand-edited tag is a
+hand-edited row. Rows are compared as a **multiset**, so sibling mutants of one
+compound condition each count — never hand-dedupe the file.
 
 ## Suites
 
@@ -35,11 +37,11 @@ class is mutated by default rather than silently skipped. `build.gradle.kts` is
 the authoritative definition; the split exists for inner-loop speed, not for
 coverage.
 
-| Suite | Covers | Runtime |
-|---|---|---|
-| `pitestOrca` | `orca.*` — quote math, tick/sqrt-price conversion, PDA derivation | ~20s |
-| `pitestScope` | `kamino.scope.*` — the oracle price readers | ~5s |
-| `pitestClients` | everything else hand-written in the module | ~12s |
+| Suite | Covers |
+|---|---|
+| `pitestOrca` | `orca.*` — quote math, tick/sqrt-price conversion, PDA derivation |
+| `pitestScope` | `kamino.scope.*` — the oracle price readers |
+| `pitestClients` | everything else hand-written in the module |
 
 Generated `**.gen.*` code is excluded from all three: its correctness belongs to
 idl-src-gen, and mutating ~1590 classes of boilerplate would bury the
@@ -686,13 +688,12 @@ A wandering kill count is worth chasing rather than re-ratcheting past: the
 baseline records whichever run wrote it, so a lucky run bakes in a row that
 later runs fail on.
 
-### Fuzz corpus replay (open item)
+### Fuzz corpus replay
 
-The shared doc now expects committed seed corpora to be replayed inside
-`check`. `stakePoolState`'s seed is loaded by `StakePoolStateTests` already;
-the `scopeReader` corpus (2 seeds) is read only by the fuzz harness, so it can
-rot between fuzz runs. A small replay test in the scope suite would close it —
-see json-iterator's `TestFuzzCorpusReplay` for the pattern.
+Committed seed corpora are replayed inside `check` by the plugin's generated
+`<Harness>SeedReplayTest`, one for every fuzz target with a `seedCorpus`,
+`scopeReader` included, so no hand-written replay test is needed. What each
+seed pins is recorded in `src/test/resources/fuzz/README.md`.
 
 ### Shank programs: Metaplex and SAS (2026-07-20)
 

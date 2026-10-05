@@ -605,9 +605,9 @@ copy here. List the generated tasks with:
 ./gradlew :<module>:tasks --all | grep -iE '^(fuzz|pitest)'
 ```
 
-These tasks are **not** part of `check`; run the relevant one when you change a
-targeted class — a fuzzer with `./gradlew :<module>:fuzz<Name> -PmaxFuzzTime=<seconds>`,
-a PIT suite with `./gradlew :<module>:pitest<Name>`.
+These tasks are **not** part of `check`; the rules below say when one is owed. Run a
+fuzzer with `./gradlew :<module>:fuzz<Name> -PmaxFuzzTime=<seconds>`, a PIT suite with
+`./gradlew :<module>:pitest<Name>`.
 
 ### Quality gate & mutation ratchet
 
@@ -623,14 +623,24 @@ The generated operator rules follow verbatim; the repo-specific facts are in
 "This repository" below them.
 
 <!-- hardening-template block:start -->
-- Iterate with the module's `test` task. Before handoff, run each `pitest<Suite>`
-  whose mutated code the change can reach, including suites in dependent modules,
-  and `mutationOwnershipAudit` when production classes or target/exclusion rules
-  change. `hardeningCertify` (or `:hardeningCertifyAll`) is the pre-release check
-  this repo's notes assign an owner to, not the inner loop.
-- Iterate on one cluster with `-PmutateOnly=<class-glob>`. Before any record
-  decision, re-run unscoped with `-PnoMutationHistory`: a `[history]` report cannot
-  support adding, removing, or relabelling records.
+- Work with the module's `test` task. The mutation suites are a final gate, run once
+  per unpushed range when the work is complete and reviewed, before the push: each
+  `pitest<Suite>` whose mutated code the range can reach, including suites in
+  dependent modules, plus `mutationOwnershipAudit` when production classes or
+  target/exclusion rules changed. Never per commit, amend or review round; a change
+  the gate forces goes back through review as a delta. `hardeningCertify` (or
+  `:hardeningCertifyAll`) and `fuzzAll` are the pre-release checks this repo's notes
+  assign an owner to.
+- Doc and comment edits owe no suite; a build-script edit only when it changes what
+  PIT is given. A change the gate forced owes it again by the same reachability rule
+  once reviewed. `pitest<Suite>Verify` answers one way: it keeps its report while only
+  recompiled Java sources changed and every recompiled class is byte-identical, which
+  proves that suite is owed nothing; a refusal (a moved line, a resource, a build
+  script, an ArcMutate suite) names its cause and proves nothing by itself.
+- When the gate reports unkilled mutants, iterate on one cluster with
+  `-PmutateOnly=<class-glob>`. Before any record decision, re-run unscoped with
+  `-PnoMutationHistory`: a `[history]` report cannot support adding, removing, or
+  relabelling records.
 - An unkilled mutant has three outcomes: kill it with a test that asserts the
   property it breaks, refactor it out of existence, or accept it with a written
   reason in `config/pitest/README.md` and a family label on the row. Refreshes seed
@@ -648,8 +658,13 @@ The generated operator rules follow verbatim; the repo-specific facts are in
   Never hand-edit baseline
   rows or provenance stamps.
 - Baseline keys are line-less (`class,method,mutator,STATUS`); `# line` tags are
-  review metadata. Identical rows are sibling mutants and the comparison is a
-  multiset: never hand-dedupe.
+  review metadata that belong to their row: `BaselineRetag` refreshes them, a hand
+  edit is a hand-edited row. Identical rows are sibling mutants and the comparison
+  is a multiset: never hand-dedupe.
+- `config/pitest/README.md` holds the arguments in force, each updated in place and
+  never appended to as a pass report: a family's members, reason, oracle and the
+  condition that invalidates it; an audited timeout's cause. The totals the build prints
+  are not restated there; the measurements it cannot reconstruct are kept.
 - A new `TIMED_OUT` mutant is a reviewer stop, never detection. Record it in
   `config/pitest/<suite>-timeouts.csv` with a cause and argue it in the README; only
   `cause:liveness` certifies. A member whose coordinate has left the population is
@@ -659,8 +674,8 @@ The generated operator rules follow verbatim; the repo-specific facts are in
   stubs that return distinguishable non-default values, and the subject built inside
   the test body. Exclusions must cover the test source set, not a naming convention.
 - Verify by the absence of failures: trust the exit code and the `.running`
-  sentinel, not a summary. `MINION_DIED` and `RUN_ERROR` are not results; re-run. A
-  suite that got faster without getting narrower is a bug report.
+  sentinel, not a summary. `MINION_DIED` and `RUN_ERROR` are not results; re-run once
+  on a quiet machine. A suite that got faster without getting narrower is a bug report.
 - Fuzz findings become a committed seed input and a named regression test. Run
   `fuzzAll` locally with an explicit `-PmaxFuzzTime` and `-PmaxParallelFuzzTargets`
   before a release. Where one thing has two representations, fuzz the differential.
@@ -678,36 +693,16 @@ policy, and `hardeningHelp` is the task reference.
 exclusion, so a new hand-written class lands in some suite by default rather
 than being silently skipped. Reachability decides which to run, not file paths:
 editing an API also owes any suite — including one in a dependent module —
-whose mutated code calls it. Doc and build-script changes owe no suite.
+whose mutated code calls it. Doc and comment changes owe no suite. A
+build-script change owes one only when it changes what PIT is given: here, a
+`hardening {}` block, a dependency or the Java version (`gradle/sava.properties`
+pins the BOM and the Java version), or the sava-build pin in
+`settings.gradle.kts`.
 
-**Measured 2026-09-06 on sava-build 21.5.32** (PIT 1.30.0, ArcMutate base
-1.7.2) by the four history-free `pitest<Suite> -PnoMutationHistory` observations
-that preceded the rebases, one suite per invocation; re-measure rather than trust
-this line, and treat the engine column as that run's sample:
-
-| suite | detected | survived | timed out | accepted rows | engine |
-|---|---|---|---|---|---|
-| `spl` | 831/835 (99%) | 4 | 0 | 4 | 17s |
-| `orca` | 598/635 (94%) | 37 | 1 (audited) | 37 | 19s |
-| `scope` | 302/339 (89%) | 37 | 0 | 37 | 20s |
-| `clients` | 1586/1621 (97%) | 35 | 0 | 35 | 57s |
-
-Re-measured 2026-09-23 on sava-build 21.6.0 by `:hardeningCertifyAll` (the same
-PIT, ArcMutate and Jazzer versions): every population and kill count above is
-unchanged, no suite reported a new gated row, and `orca`'s one audited timeout
-still times out. That run is a certification, not a solo history-free
-observation, and the machine carried a load average near 50 from other work, so
-its engine times are not a sample.
-
-Against the 2026-08-07 table the populations read 835/635/339/1621 rather than
-830/634/337/1621. That difference cannot be split between the engine and the
-hand-written sources that changed in between — no PIT 1.25.9 observation of the
-current code was retained — so read it as a re-measurement, not as the engine's
-effect. What the transition itself established is narrower and exact: the
-survived count of every suite is unchanged, no suite reported a new gated row,
-and no suite printed an unmatched-row preview, so the toolchain move neither
-added debt nor retired an accepted mutant. Every accepted row matches a mutant
-in the current population — the baselines carry no stale rows.
+**Suite totals are the build's to print**, not this file's: every
+`pitest<Suite>` run ends by printing what the suite detected and what survived,
+and the accepted rows under each family label, and `pitest<Suite>Debt` reads
+the latest full report without running PIT.
 
 **Who owns certification.** CI runs `check`, which includes no mutation suite.
 `:hardeningCertifyAll` (the root manifest over both modules' receipts) and a
@@ -721,9 +716,11 @@ git-ignored files under a source root included — so run them from a clean
 nothing gates it: `check` no longer runs `agentsTemplateInSync`,
 `hardeningAgentTemplateDiff` is gone, and the old digest marker did nothing, so
 the 21.6.0 adoption replaced the 267-line body with
-`./gradlew -q :idl-clients-spl:hardeningAgentTemplate` (45 lines) and dropped the
-marker. On a plugin bump, paste that task's output between the boundary comments
-and keep everything under "This repository" outside them. Inspect the loaded
+`./gradlew -q :idl-clients-spl:hardeningAgentTemplate` and dropped the
+marker. On a plugin bump, replace the block with that task's output, which
+prints the boundary comments too, keep everything under "This repository"
+outside it, and re-read these notes against each bullet that changed: nothing
+else finds a local sentence the new block contradicts. Inspect the loaded
 plugin's coordinates, JAR path and SHA-256 with `:idl-clients-spl:savaBuildIdentity`;
 `-PsavaBuildLocalRepo=<sava-build>/build/sava-test-repo` builds against an
 unpublished plugin, and a blank value clears an inherited override.
@@ -846,8 +843,9 @@ Conventions when adding a target:
 - **Seed structured parsers.** A fixed/large account layout (e.g. a ~29KB Scope
   mapping, a ~600B stake pool) is unreachable from a scratch mutator, so commit real
   account dumps under `src/test/resources/fuzz/<name>/` and point the target's
-  `seedCorpus` at that directory. Skip seeding only when every input prefix is already
-  valid (a small count-prefixed record parser reaches its whole space from scratch).
+  `seedCorpus` at that directory. A parser whose every input prefix is already valid
+  (a small count-prefixed record parser) needs no such bootstrap seeds, but its target
+  keeps a `seedCorpus` all the same: that is where a finding's reproducer is committed.
 - Record what each seed pins in the README **next to** the corpus directory
   (`src/test/resources/fuzz/README.md`), never inside it, where the file would be
   fed to the harness as a seed. Replay tests are generated, not hand-written.

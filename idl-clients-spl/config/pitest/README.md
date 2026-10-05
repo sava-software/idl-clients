@@ -18,18 +18,21 @@ A new unkilled mutant has exactly three legal outcomes:
    (`pitestSplBaselineUpdate`/`Union`/`Prune`/`Rebase`; `hardeningHelp` lists
    which does what) and record the reason under "Triaged equivalent mutants"
    below. Acceptance is for mutants *equivalent with respect to observable
-   behavior*, not for "hard to test". Never hand-edit record structure or
-   provenance stamps, and run `-PnoMutationHistory` before any record decision.
+   behavior*, not for "hard to test". Never hand-edit record structure, `# line`
+   tags or provenance stamps, and run `-PnoMutationHistory` before any record
+   decision.
 
 Baseline keys are **line-less**, so editing above a mutated method churns
-nothing and the `# line` tags are review metadata rather than anchors; source
-movement alone never warns or requires re-anchoring. Duplicate rows are sibling
-mutants of one compound condition and the comparison is a **multiset** — never
-hand-dedupe the file.
+nothing and the `# line` tags are review metadata rather than anchors. A tag
+still belongs to its row: moved source draws a line-drift advisory,
+`pitestSplBaselineRetag` refreshes the tag once the argument below has been
+re-read and still covers the advisory's lines, and a hand-edited tag is a
+hand-edited row. Duplicate rows are sibling mutants of one compound condition
+and the comparison is a **multiset** — never hand-dedupe the file.
 
 ## Suite
 
-One catch-all suite, `pitestSpl` (~10s), targeting
+One catch-all suite, `pitestSpl`, targeting
 `software.sava.idl.clients.spl.*` by wildcard with exclusions rather than an
 allowlist, so a new hand-written class is mutated by default rather than
 silently skipped. The whole module is account encode/decode and instruction
