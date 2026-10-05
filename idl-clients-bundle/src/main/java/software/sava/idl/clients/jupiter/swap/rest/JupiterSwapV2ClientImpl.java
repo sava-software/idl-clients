@@ -67,7 +67,7 @@ final class JupiterSwapV2ClientImpl extends JsonHttpClient implements JupiterSwa
   /// (`Map#put`), and a JSON null body reads as an empty map.
   static Map<PublicKey, String> parseProgramIdToLabel(final JsonIterator ji) {
     return Collections.unmodifiableMap(
-        ji.readMap(new LinkedHashMap<PublicKey, String>(), PARSE_BASE58_PUBLIC_KEY, (programId, j) -> j.readString())
+        ji.readMap(new LinkedHashMap<>(), PARSE_BASE58_PUBLIC_KEY, (_, j) -> j.readString())
     );
   }
 
