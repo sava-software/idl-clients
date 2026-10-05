@@ -53,6 +53,20 @@ final class KaminoLendingRemainingAccountsTests {
     assertEquals(List.of(deposit, borrowA), keys(noReferrer.accounts(), 1));
   }
 
+  /// An obligation borrowing against fewer deposits than it has borrows is ordinary; every
+  /// account is still appended. The list is sized from the two counts added together, and
+  /// this shape is what tells that sum from their difference, which an `ArrayList` rejects.
+  @Test
+  void moreBorrowsThanDepositsAppendEveryReserve() {
+    final var deposit = key(0x21);
+    final var borrowA = key(0x22);
+    final var borrowB = key(0x23);
+
+    final var appended = KaminoLendingRemainingAccounts.appendObligationRefreshAccounts(
+        ix(), List.of(deposit), List.of(borrowA, borrowB), null);
+    assertEquals(List.of(deposit, borrowA, borrowB), keys(appended.accounts(), 1));
+  }
+
   @Test
   void depositReservesAppendWritableAndThePermissionAccountSigns() {
     final var reserveA = key(0x31);

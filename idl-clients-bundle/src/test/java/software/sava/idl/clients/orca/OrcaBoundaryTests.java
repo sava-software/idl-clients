@@ -229,6 +229,37 @@ final class OrcaBoundaryTests {
         remaining.accounts());
   }
 
+  /// A transfer hook may resolve several extra accounts; they follow the hook
+  /// program and the extra-account-metas PDA in the order the resolver gave
+  /// them. Three of them is enough to tell a slice sized `2 + n` from one sized
+  /// `2 - n`, which an `ArrayList` rejects.
+  @Test
+  void transferHookExtraAccountsFollowTheProgramAndMetasPdaInOrder() {
+    final var hookProgram = key(1);
+    final var metasPda = key(2);
+    final var extra1 = key(3);
+    final var extra2 = key(4);
+    final var extra3 = key(5);
+
+    final var remaining = WhirlpoolRemainingAccounts.builder()
+        .addTransferHook(AccountsType.TransferHookB, hookProgram, metasPda, List.of(extra1, extra2, extra3))
+        .build();
+
+    final var slices = remaining.info().slices();
+    assertEquals(1, slices.length);
+    assertEquals(AccountsType.TransferHookB, slices[0].accountsType());
+    assertEquals(5, slices[0].length());
+    assertEquals(
+        List.of(
+            AccountMeta.createRead(hookProgram),
+            AccountMeta.createRead(metasPda),
+            AccountMeta.createRead(extra1),
+            AccountMeta.createRead(extra2),
+            AccountMeta.createRead(extra3)
+        ),
+        remaining.accounts());
+  }
+
   /// The program loads every tick array it merges into a swap's sequence
   /// through `load_tick_array_mut`, which rejects a non-writable account before
   /// any other check (`AccountNotMutable`), and Orca's SDK appends supplemental

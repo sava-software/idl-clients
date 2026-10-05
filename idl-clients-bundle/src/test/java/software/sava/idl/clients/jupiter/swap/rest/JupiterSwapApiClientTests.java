@@ -44,7 +44,8 @@ final class JupiterSwapApiClientTests extends JupiterRestTests {
 
   /// The success range is `200 <= status < 300`, checked by hand so the raw body
   /// can be returned unparsed. The boundaries are what the mutants move, so all
-  /// four are asserted: 199 and 300 must fail, 200 and 299 must succeed.
+  /// four are asserted, here and in the two tests below: 199 and 300 must fail,
+  /// 200 and 299 must succeed.
   @Test
   void swapInstructionsAcceptsExactlyTheTwoHundredRange() {
     final String body = """
@@ -68,13 +69,8 @@ final class JupiterSwapApiClientTests extends JupiterRestTests {
   void swapInstructionsRejectsAnythingOutsideTheTwoHundredRange() {
     // 300 is the exclusive high end, and the boundary worth pinning: a `>= 300`
     // relaxed to `> 300` accepts an HTTP 300 as instruction data, and only a
-    // test at exactly 300 catches it.
-    //
-    // The low boundary (199) cannot be exercised through a real socket — the
-    // JDK's HttpClient treats 1xx as interim responses and never surfaces one as
-    // a final status, so the server hangs up and the exchange fails with an
-    // EOFException before the client's own check runs. The `< 200` half of the
-    // guard is therefore unreachable here by construction, not untested.
+    // test at exactly 300 catches it. The low boundary needs a request of its
+    // own: swapInstructionsRejectsAStatusBelowTwoHundred.
     for (final int status : new int[]{300, 400, 429, 500}) {
       expectPost("/swap-instructions", null, status, "{\"error\":\"nope\"}");
       final var failure = assertThrows(CompletionException.class,
@@ -84,6 +80,28 @@ final class JupiterSwapApiClientTests extends JupiterRestTests {
           "the status code must reach the caller, got: " + message);
       assertTrue(message.contains("nope"), "the response body must reach the caller: " + message);
     }
+  }
+
+  /// 199 is the exclusive low end. On an ordinary request the JDK client treats
+  /// a 1xx as interim and waits for the response that follows it, so a 199
+  /// reaches the client's own check as the final status only on a request sent
+  /// with `Expect: 100-continue` (JDK 25). The builder's `extendRequest` hook
+  /// sets that here, on a client built inside the test so the hook is this
+  /// test's alone; the server closes the connection after the status, since a
+  /// 1xx carries no length.
+  @Test
+  void swapInstructionsRejectsAStatusBelowTwoHundred() {
+    final var builder = JupiterSwapApiClient.build();
+    builder.httpClient(HTTP_CLIENT);
+    builder.endpoint(endpoint);
+    builder.extendRequest(request -> request.expectContinue(true));
+    final var expectContinue = builder.createLocalClient();
+
+    expectPost("/swap-instructions", null, 199, "");
+    final var failure = assertThrows(CompletionException.class,
+        () -> expectContinue.swapInstructions("{\"userPublicKey\":\"x\",", new byte[]{'{', '}'}).join());
+    final var message = failure.getCause().getMessage();
+    assertTrue(message.contains("httpCode:199"), "the status code must reach the caller, got: " + message);
   }
 
   /// The body is assembled as `prefix + quoteJson + '}'`, so the quote is

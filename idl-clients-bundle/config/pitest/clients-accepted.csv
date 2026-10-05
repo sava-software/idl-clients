@@ -1,12 +1,9 @@
-software.sava.idl.clients.jupiter.swap.rest.JupiterSwapApiClientImpl,lambda$static$0,RemoveConditionalMutator_ORDER_IF,SURVIVED # http-1xx-unreachable family # line 37
 software.sava.idl.clients.jupiter.swap.rest.JupiterSwapApiClientImpl,quote,NakedReceiverMutator,SURVIVED # redundant-GET family # line 115
 software.sava.idl.clients.jupiter.swap.rest.JupiterSwapApiClientImpl,quote,NakedReceiverMutator,SURVIVED # redundant-GET family # line 121
 software.sava.idl.clients.jupiter.swap.rest.JupiterSwapApiClientImpl,ultraOrder,NakedReceiverMutator,SURVIVED # redundant-GET family # line 237
 software.sava.idl.clients.jupiter.swap.rest.JupiterSwapApiClientImpl,ultraOrder,NakedReceiverMutator,SURVIVED # redundant-GET family # line 244
-software.sava.idl.clients.kamino.lend.KaminoLendingRemainingAccounts,appendObligationRefreshAccounts,MathMutator,SURVIVED # capacity-hint family # line 54
 software.sava.idl.clients.kamino.lend.KaminoLendingRemainingAccounts,appendObligationRefreshAccounts,MathMutator,SURVIVED # capacity-hint family # line 55
 software.sava.idl.clients.kamino.lend.KaminoLendingRemainingAccounts,appendObligationRefreshAccounts,RemoveConditionalMutator_EQUAL_IF,SURVIVED # capacity-hint family # line 55
-software.sava.idl.clients.marginfi.v2.MarginfiRemainingAccounts$Builder,build,MathMutator,SURVIVED # capacity-hint family # line 162
 software.sava.idl.clients.marginfi.v2.MarginfiRemainingAccounts$Builder,build,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # capacity-hint family # line 162
 software.sava.idl.clients.marginfi.v2.MarginfiRemainingAccounts$Builder,build,RemoveConditionalMutator_EQUAL_IF,SURVIVED # capacity-hint family # line 162
 software.sava.idl.clients.meteora.MeteoraPDAs,customizablePermissionlessLbPairPDA,ConditionalsBoundaryMutator,SURVIVED # equal-operands family # line 55

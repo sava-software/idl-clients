@@ -213,6 +213,24 @@ final class MarginfiRemainingAccountsTests {
     assertEquals(List.of(mint, bank, oracle, hookProgram, hookExtra), keys(accounts));
   }
 
+  /// A Token-2022 payload with no risk-engine group, a first deposit for instance, is the
+  /// mint followed by the hook accounts. With more hook accounts than everything before
+  /// them, this is what tells the payload's size from the difference of its parts, which an
+  /// `ArrayList` rejects.
+  @Test
+  void aTokenTwentyTwoPayloadWithoutGroupsIsTheMintThenItsHooks() {
+    final var mint = key(0x31);
+    final var hookProgram = key(0x32);
+    final var hookExtra = key(0x33);
+
+    final var accounts = MarginfiRemainingAccounts.builder()
+        .bankMint(mint)
+        .transferHookAccounts(List.of(AccountMeta.createRead(hookProgram), AccountMeta.createRead(hookExtra)))
+        .build();
+
+    assertEquals(List.of(mint, hookProgram, hookExtra), keys(accounts));
+  }
+
   /// A miscounted group is rejected at build time rather than on chain, and the
   /// message names the bank and the expected count.
   @Test

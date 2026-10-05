@@ -397,17 +397,7 @@ by its receiver.
 
 ### Declined and untriaged debt
 
-The rows below have no argument in force: each still carries the family label it was accepted
-under, and that label's argument does not hold for it.
-
-- `WhirlpoolRemainingAccounts$Builder.addTransferHook`, labelled `# capacity-hint family`: the meta
-  list's initial capacity `2 + resolvedExtraAccounts.size()` with the addition turned into a
-  subtraction. Not an equivalence: the capacity is negative once three extra accounts are resolved,
-  which an ordinary transfer hook can ask for, and `new ArrayList<>` then throws
-  `IllegalArgumentException` where the unmutated builder adds the slice. It survives because the one
-  test that calls the method, `OrcaBoundaryTests.remainingAccountsBuilderAssemblesSlicesInOrder`,
-  resolves a single extra account. Paid by a case that resolves three and asserts the hook program,
-  the extra-account-metas PDA and the three accounts in order.
+None: every accepted row of this suite is covered by a bullet under "Families".
 
 ## scope (`pitestScope`)
 
@@ -727,43 +717,7 @@ mutant in this suite is a reviewer stop.
 
 ### Declined and untriaged debt
 
-The rows below have no argument in force: each still carries the family label it was accepted
-under, and that label's argument does not hold for it. None is an equivalence.
-
-- `JupiterSwapApiClientImpl.lambda$static$0`, labelled `# http-1xx-unreachable family`: the raw
-  `swap-instructions` handler (`SWAP_INSTRUCTIONS_TX`) hands back the response body only for
-  `200 <= status < 300`, so that an error page is never mistaken for instruction data, and the
-  mutant forces its `statusCode < 200` test false, so a final status below 200 falls through to the
-  `>= 300` test and has its body returned. The label's premise, that the JDK client never surfaces
-  such a status, does not hold: with `expectContinue(true)` set on the request through the builder's
-  public `extendRequest` hook, a 199 that an in-JVM `HttpServer` answers with `Connection: close`
-  reaches the handler as the final status (JDK 25.0.2), where the unmutated check fails with its own
-  `HTTP request failed with [httpCode:199]`. It survives because no test sends such a request:
-  `JupiterSwapApiClientTests.swapInstructionsRejectsAnythingOutsideTheTwoHundredRange` answers 300
-  and above, and `swapInstructionsAcceptsExactlyTheTwoHundredRange` 200 and 299. Paid by a test that
-  builds the client with that hook inside its body, has `JupiterRestTests`' server answer the POST
-  with a 199 and asserts the failure, once that server's `write`, which today sends a status and a
-  length only, sends `Connection: close` with a status below 200; without the header the client
-  waits out the connection.
-- `KaminoLendingRemainingAccounts.appendObligationRefreshAccounts`, labelled
-  `# capacity-hint family`: of the capacity hint's two additions, the first, of the borrow count to
-  the deposit count, turned into a subtraction. The hint is negative whenever the borrows outnumber
-  the deposits and referrers together, as for an obligation with one deposit and two borrows and no
-  referrer, and `new ArrayList<>` then throws `IllegalArgumentException` where the unmutated method
-  returns the instruction with its three extra accounts. It survives because the two calls in
-  `KaminoLendingRemainingAccountsTests.obligationRefreshOrdersDepositsBorrowsThenReferrers` (one
-  deposit, two borrows and two referrers; one deposit and one borrow) keep the mutated hint at or
-  above zero. Paid by a call with one deposit reserve, two borrow reserves and no referrers,
-  asserting the three accounts in order after the instruction's own.
-- `MarginfiRemainingAccounts$Builder.build`, labelled `# capacity-hint family`: of the capacity
-  hint's two additions, the second, of the transfer-hook count, turned into a subtraction. The hint
-  is negative once the transfer-hook accounts outnumber the mint and the risk-engine accounts
-  together, as for a Token-2022 payload of the mint and two hook accounts with no risk-engine group,
-  and `new ArrayList<>` then throws `IllegalArgumentException` where the unmutated builder returns
-  the payload. It survives because `MarginfiRemainingAccountsTests.transferHookAccountsComeLast`
-  builds the mint, a two-account group and two hook accounts, which leaves the mutated hint
-  positive. Paid by a build of the mint and two hook accounts alone, asserting the three accounts in
-  order.
+None: every accepted row of this suite is covered by a bullet under "Families".
 
 ## Ground-truthing account order against the programs' Rust
 

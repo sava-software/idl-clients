@@ -113,8 +113,16 @@ abstract class JupiterRestTests implements HttpHandler {
   }
 
   private static void write(final HttpExchange exchange, final int code, final String body) {
-    final byte[] bytes = body.getBytes(UTF_8);
     try {
+      if (code < 200) {
+        // An interim status carries neither a body nor a length, so the client reads until the
+        // server hangs up; closing the connection here is what lets a test see the status at all.
+        exchange.getResponseHeaders().set("Connection", "close");
+        exchange.sendResponseHeaders(code, -1);
+        exchange.close();
+        return;
+      }
+      final byte[] bytes = body.getBytes(UTF_8);
       exchange.sendResponseHeaders(code, bytes.length);
       try (final var os = exchange.getResponseBody()) {
         os.write(bytes);
