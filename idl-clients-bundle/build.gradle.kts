@@ -101,11 +101,12 @@ hardening {
   // but must not enter the PIT/Jazzer recompile or its production-class audit.
   recompileExcludes = listOf("Integ.java")
 
-  // Suites are split for inner-loop speed, not for coverage: 'clients' is a
-  // catch-all by exclusion, so a new hand-written class lands in some suite by
-  // default. The shared exclusions drop generated code (owned by idl-src-gen),
-  // test/fuzz sources sharing the recompiled root, and Integ classes; the
-  // recompile exclusion above keeps ignored Integ sources out of that root.
+  // Suites are split so the mutation gate owed before a push runs only the
+  // suites a range can reach, not for coverage: 'clients' is a catch-all by
+  // exclusion, so a new hand-written class lands in some suite by default. The
+  // shared exclusions drop generated code (owned by idl-src-gen), test/fuzz
+  // sources sharing the recompiled root, and Integ classes; the recompile
+  // exclusion above keeps ignored Integ sources out of that root.
   val notMutated = listOf(
     "software.sava.idl.clients.*.gen.*",
     "software.sava.idl.clients.*Test*",

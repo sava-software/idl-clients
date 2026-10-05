@@ -64,8 +64,8 @@ hardening {
     // instead of silently skipped — the whole module is account encode/decode
     // and instruction building, which is exactly the money-critical shape.
     // NAKED_RECEIVER makes dropped fluent calls (receiver-returning
-    // expressions) expressible; BIG_INTEGER reaches the u64/u128
-    // reinterpretation math in core.math.SafeMath, which is method calls that
+    // expressions) expressible; BIG_INTEGER reaches the full-width and u128
+    // arithmetic in core.math.SafeMath, which is BigInteger method calls that
     // MathMutator (primitive bytecode ops) cannot see — trial numbers in
     // config/pitest/README.md.
     mutators = "STRONGER,EXPERIMENTAL_BIG_INTEGER,EXPERIMENTAL_NAKED_RECEIVER"

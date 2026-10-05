@@ -11,14 +11,14 @@ program's Rust, and `stake-vectors.mjs`, `token2022-vectors.mjs` and
 resolve against. A check that needs nothing
 outside the repo is a test, and lives with
 the code it reasons about — `tick_margin_sweep.py` was here until 2026-08-15 and is
-now `OrcaTickMarginSweep` in `idl-clients-bundle`'s test sources, beside the
+now `OrcaTickMarginSweepTests` in `idl-clients-bundle`'s test sources, beside the
 `OrcaUtil` whose accepted mutants it clears.
 
 `GroundTruth.java` runs straight from source on the JDK the build already requires —
 `java tools/GroundTruth.java`, no build step — and is deliberately **not** a Gradle
 module: a module would join the publish and would owe `mutationOwnershipAudit` either
 a mutation suite or an argued decline, which is a lot of ceremony for a diff tool.
-The two `*-vectors.mjs` scripts install nothing here — each borrows its checkout's
+The `*-vectors.mjs` scripts install nothing here — each borrows its checkout's
 `node_modules` rather than adding a package manifest to this repository.
 
 These were Python until 2026-08-14. The port was verified byte-for-byte against the
@@ -29,7 +29,7 @@ under `GroundTruth.java`.
 
 They are **investigative aids, not gates** — with one exception, noted below: the
 `*-vectors.mjs` scripts write test fixtures, so what they produce *is* checked by
-`qualityGate`, even though running them is not.
+`check`, even though running them is not.
 
 `idl_probe.py` was removed on 2026-08-14. It simulated declared instructions to
 find ones the deployed program no longer dispatches; that failure reports itself,
@@ -159,7 +159,7 @@ from a common pipeline, and the only evidence that input matches the deployed
 program is the mainnet fixture in `StakeOnChainInstructionTests` — which records one
 instruction's `data` and nothing else, so it ties the wire format to chain and is
 silent on the account lists declared beside it in the same file. And it is not a
-check you run — the bytes are committed and `qualityGate` compares against them on
+check you run — the bytes are committed and `check` compares against them on
 every build.
 
 **Do not re-run this on a schedule.** Not because the program cannot move — it can —

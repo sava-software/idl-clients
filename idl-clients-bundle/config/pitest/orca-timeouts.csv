@@ -1,4 +1,4 @@
 # Audited timeout-detected mutants for the 'orca' suite — line-less
 # class,method,mutator keys with a reviewed cause category. Structural cause per
-# member: README.md, 'Audited timeout-detected mutants'.
+# member: README.md, the orca section's 'Audited timeout-detected mutants'.
 software.sava.idl.clients.orca.OrcaUtil,sqrtFloor,ConditionalsBoundaryMutator # cause:liveness # line 463

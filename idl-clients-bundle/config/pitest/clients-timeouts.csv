@@ -2,6 +2,6 @@
 # class,method,mutator keys with a reviewed cause category. Currently empty:
 # the suite has no timeout-detected mutants. DlmmUtils.pow's binary-expansion
 # loop exit was the one member and was retired after the plugin's quiet-run
-# counter reached its threshold (README.md, 'Audited timeout-detected mutants').
+# counter reached its threshold (HISTORY.md, 'Audited timeout-detected mutants').
 # The file exists to arm the verify's audit — a first timed-out mutant here
 # should warn (reviewer-stop), not pass as an unaudited count.
