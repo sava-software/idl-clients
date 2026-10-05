@@ -6,9 +6,15 @@ import software.sava.core.encoding.ByteUtil;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.meteora.dlmm.gen.LbClmmPDAs;
 
+import java.util.Arrays;
 import java.util.List;
 
 public final class MeteoraPDAs {
+
+  // Every LbPair flavour seeds its two mints as min then max, and the program orders them as Rust
+  // orders `Pubkey`: by unsigned bytes (`min`/`max` in dlmm-sdk's commons/src/pda.rs). So the
+  // mints are compared unsigned here. `PublicKey.compareTo` compares signed bytes, which swaps
+  // the seeds whenever the mints first differ on opposite sides of 0x80, as wSOL and USDC do.
 
   private static final byte[] ILM_BASE_KEY = PublicKey.fromBase58Encoded("MFGQxwAmB91SwuYX36okv2Qmdc9aMuHTwWGUrp4AtB1").toByteArray();
 
@@ -19,7 +25,7 @@ public final class MeteoraPDAs {
                                                 final PublicKey programId) {
     final PublicKey minKey;
     final PublicKey maxKey;
-    if (xMint.compareTo(yMint) < 0) {
+    if (Arrays.compareUnsigned(xMint.toByteArray(), yMint.toByteArray()) < 0) {
       minKey = xMint;
       maxKey = yMint;
     } else {
@@ -46,7 +52,7 @@ public final class MeteoraPDAs {
                                                                           final PublicKey programId) {
     final PublicKey minKey;
     final PublicKey maxKey;
-    if (xMint.compareTo(yMint) < 0) {
+    if (Arrays.compareUnsigned(xMint.toByteArray(), yMint.toByteArray()) < 0) {
       minKey = xMint;
       maxKey = yMint;
     } else {
@@ -69,7 +75,7 @@ public final class MeteoraPDAs {
                                                           final PublicKey programId) {
     final PublicKey minKey;
     final PublicKey maxKey;
-    if (xMint.compareTo(yMint) < 0) {
+    if (Arrays.compareUnsigned(xMint.toByteArray(), yMint.toByteArray()) < 0) {
       minKey = xMint;
       maxKey = yMint;
     } else {
@@ -138,7 +144,7 @@ public final class MeteoraPDAs {
                                                                final PublicKey programId) {
     final PublicKey minKey;
     final PublicKey maxKey;
-    if (xMint.compareTo(yMint) < 0) {
+    if (Arrays.compareUnsigned(xMint.toByteArray(), yMint.toByteArray()) < 0) {
       minKey = xMint;
       maxKey = yMint;
     } else {
