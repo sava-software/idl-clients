@@ -214,7 +214,11 @@ their trials".
   already excludes the equality: `OrcaUtil.firstUnoccupiedPositionInBundle` scans the bits of a byte
   only when it is not 0xFF, so a clear bit among bits 0 to 7 returns before the scan's bound could
   admit 8; `OrcaUtil.isValidStartTickIndex` reaches its `startTickIndex > MIN_TICK_INDEX` test only
-  for a start index outside `MIN_TICK_INDEX` to `MAX_TICK_INDEX`, which `MIN_TICK_INDEX` is not;
+  for a start index outside `MIN_TICK_INDEX` to `MAX_TICK_INDEX`, which `MIN_TICK_INDEX` is not,
+  and with that test's early `return false` removed, a start index above `MAX_TICK_INDEX` falls
+  through to the comparison with the left-edge array start, which lies below `MIN_TICK_INDEX` for
+  every span `ticksPerArray` admits (it rejects a spacing whose span would overflow an `int`
+  rather than wrapping it), so the comparison answers false as the return did;
   `OrcaUtil.positionStatus` has returned `INVALID` for equal bounds before its `cmp < 0` ordering
   test; and the xor in `OrcaUtil.startTickIndex`'s floor-division sign test
   `(tickIndex ^ ticksInArray) < 0` is zero only at `tickIndex == ticksInArray`, whose remainder is
@@ -232,11 +236,13 @@ their trials".
   hand the ladder such a tick: `tickIndexToSqrtPriceX64`, which does not check its argument, and
   `sqrtPriceX64ToTickIndex`, whose refinement converts a `tickHigh` estimate that can carry bit 19
   for a sqrt price outside `MIN_SQRT_PRICE_X64` to `MAX_SQRT_PRICE_X64`. Escape: the earlier check
-  moving after the mutated test or going away; a caller that uses `requireU128`'s return value; for
-  the factor loops, a test passing a tick with bit 19 set, which kills them, or the tick range
+  moving after the mutated test or going away; `ticksPerArray` letting an overflowing span through,
+  which can wrap the left-edge start above `MAX_TICK_INDEX`; a caller that uses `requireU128`'s
+  return value; for the factor loops, a test passing a tick with bit 19 set, which kills them, or the tick range
   reaching bit 19. Covers: `OrcaUtil.firstUnoccupiedPositionInBundle`, the bit scan's `bit < 8`
   widened to `<= 8`; `OrcaUtil.isValidStartTickIndex`, the out-of-bounds branch's
-  `startTickIndex > MIN_TICK_INDEX` widened to `>=`; `OrcaUtil.positionStatus`, the bound-ordering
+  `startTickIndex > MIN_TICK_INDEX` widened to `>=`, and the same branch's early `return false`
+  removed; `OrcaUtil.positionStatus`, the bound-ordering
   test `cmp < 0` widened to `<= 0`; `OrcaUtil.startTickIndex`, the correction's
   `(tickIndex ^ ticksInArray) < 0` widened to `<= 0`; `OrcaUtil.requireU128`, its return value
   replaced with null; `OrcaUtil.sqrtPriceFromPositiveTick` and `OrcaUtil.sqrtPriceFromNegativeTick`,
@@ -402,20 +408,6 @@ under, and that label's argument does not hold for it.
   test that calls the method, `OrcaBoundaryTests.remainingAccountsBuilderAssemblesSlicesInOrder`,
   resolves a single extra account. Paid by a case that resolves three and asserts the hook program,
   the extra-account-metas PDA and the three accounts in order.
-- `OrcaUtil.isValidStartTickIndex`, labelled `# defensive-guard family`: the out-of-bounds branch's
-  early `return false` for a start index above `MIN_TICK_INDEX`, removed, so that such an index
-  falls through to the comparison with the left-edge array start. No earlier check excludes it,
-  which is what the label claims, since every start index above `MAX_TICK_INDEX` reaches the removed
-  return. It is an equivalence candidate under a premise nothing here states yet: for a tick spacing
-  whose array span `TICK_ARRAY_SIZE * tickSpacing` does not overflow an `int`, the left-edge start
-  lies below `MIN_TICK_INDEX`, so no start index above `MAX_TICK_INDEX` equals it and the
-  fall-through answers false as the return does. `ticksPerArray` rejects a non-positive spacing but
-  does not check the multiplication, and for a spacing that overflows it the two differ: a span that
-  wraps to zero makes the fall-through's remainder throw `ArithmeticException` where the original
-  answers false, and one that wraps negative can put the left-edge start above `MAX_TICK_INDEX`,
-  where the fall-through answers true for it. A Whirlpool's tick spacing is a `u16`, for which no
-  span overflows. Owed: that argument written under "Families" with the overflow as its escape, or
-  an overflow check in `ticksPerArray`, after which the premise holds for every input.
 
 ## scope (`pitestScope`)
 

@@ -92,12 +92,14 @@ public final class OrcaUtil {
   }
 
   /// Number of ticks covered by a single tick array at the given
-  /// `tickSpacing` (`TICK_ARRAY_SIZE * tickSpacing`).
+  /// `tickSpacing` (`TICK_ARRAY_SIZE * tickSpacing`). A spacing whose span would
+  /// overflow an `int` is rejected rather than wrapped; a Whirlpool's spacing is
+  /// a `u16`, far below that.
   public static int ticksPerArray(final int tickSpacing) {
     if (tickSpacing <= 0) {
       throw new IllegalArgumentException("tickSpacing must be positive");
     }
-    return TICK_ARRAY_SIZE * tickSpacing;
+    return Math.multiplyExact(TICK_ARRAY_SIZE, tickSpacing);
   }
 
   /// Returns the `start_tick_index` of the tick array that contains

@@ -603,6 +603,9 @@ final class OrcaUtilTests {
   void startTickIndex() {
     assertEquals(704, OrcaUtil.ticksPerArray(8));
     assertThrows(IllegalArgumentException.class, () -> OrcaUtil.ticksPerArray(0));
+    // The span is checked, not wrapped: 88 * 24_403_223 is the largest that fits an int.
+    assertEquals(2_147_483_624, OrcaUtil.ticksPerArray(24_403_223));
+    assertThrows(ArithmeticException.class, () -> OrcaUtil.ticksPerArray(24_403_224));
     assertEquals(0, OrcaUtil.startTickIndex(0, 8));
     assertEquals(704, OrcaUtil.startTickIndex(740, 8));
     assertEquals(337_920, OrcaUtil.startTickIndex(338_433, 128));
@@ -638,6 +641,9 @@ final class OrcaUtilTests {
     // Out of bounds above MIN_TICK_INDEX is always invalid.
     assertFalse(OrcaUtil.isValidStartTickIndex(450_560, 8));
     assertFalse(OrcaUtil.isValidStartTickIndex(2_353_573, 8));
+    // A spacing whose span overflows is rejected before any start index is judged;
+    // with the span wrapped, this start index would have equalled the left-edge array.
+    assertThrows(ArithmeticException.class, () -> OrcaUtil.isValidStartTickIndex(2_147_483_584, 24_403_224));
     // Far below any left-edge candidate.
     assertFalse(OrcaUtil.isValidStartTickIndex(-2_353_573, 128));
     // Left-edge arrays extending below MIN_TICK_INDEX, per the on-chain
