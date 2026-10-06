@@ -196,6 +196,26 @@ final class LiquidityQuoteTests {
         WhirlpoolQuote.increaseLiquidityQuoteB(0L, 100, IN, -10, 10, null, null));
   }
 
+  /// The current sqrt price is checked on entry, before any shortcut, so a quote
+  /// never answers a caller that passed none, not even the zero quote.
+  @Test
+  void aNullCurrentSqrtPriceIsRejectedBeforeTheZeroShortcut() {
+    assertThrows(NullPointerException.class,
+        () -> WhirlpoolQuote.decreaseLiquidityQuote(BigInteger.ZERO, 100, null, -10, 10, null, null));
+    assertThrows(NullPointerException.class,
+        () -> WhirlpoolQuote.increaseLiquidityQuote(BigInteger.ZERO, 100, null, -10, 10, null, null));
+    assertThrows(NullPointerException.class,
+        () -> WhirlpoolQuote.decreaseLiquidityQuoteA(0L, 100, null, -10, 10, null, null));
+    assertThrows(NullPointerException.class,
+        () -> WhirlpoolQuote.decreaseLiquidityQuoteB(0L, 100, null, -10, 10, null, null));
+    assertThrows(NullPointerException.class,
+        () -> WhirlpoolQuote.increaseLiquidityQuoteA(0L, 100, null, -10, 10, null, null));
+    assertThrows(NullPointerException.class,
+        () -> WhirlpoolQuote.increaseLiquidityQuoteB(0L, 100, null, -10, 10, null, null));
+    assertThrows(NullPointerException.class,
+        () -> WhirlpoolQuote.tryGetTokenEstimatesFromLiquidity(BigInteger.ZERO, null, -10, 10, false));
+  }
+
   /// The tick arguments are order-insensitive: every quote sorts them before
   /// deriving prices. An unsorted range would put the larger sqrt price in the
   /// lower slot and blow up the estimates.

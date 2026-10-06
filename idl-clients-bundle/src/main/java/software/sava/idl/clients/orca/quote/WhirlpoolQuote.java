@@ -10,6 +10,7 @@ import software.sava.idl.clients.orca.whirlpools.gen.types.Whirlpool;
 import software.sava.idl.clients.orca.whirlpools.gen.types.WhirlpoolRewardInfo;
 
 import java.math.BigInteger;
+import java.util.Objects;
 
 /// Whirlpool quote helpers — mirrors `rust-sdk/core/src/quote/{fees,rewards,
 /// liquidity}.rs` byte-exactly. Consumes the generated `Whirlpool`, `Position`,
@@ -176,6 +177,7 @@ public final class WhirlpoolQuote {
                                                          final int tickLowerIndex,
                                                          final int tickUpperIndex,
                                                          final boolean roundUp) {
+    Objects.requireNonNull(currentSqrtPrice, "currentSqrtPrice");
     if (liquidityDelta.signum() == 0) {
       return new long[]{0L, 0L};
     }
@@ -261,6 +263,7 @@ public final class WhirlpoolQuote {
                                                               final int tickIndex2,
                                                               final TransferFee transferFeeA,
                                                               final TransferFee transferFeeB) {
+    Objects.requireNonNull(currentSqrtPrice, "currentSqrtPrice");
     if (liquidityDelta.signum() == 0) {
       return DecreaseLiquidityQuote.ZERO;
     }
@@ -282,6 +285,7 @@ public final class WhirlpoolQuote {
                                                                final int tickIndex2,
                                                                final TransferFee transferFeeA,
                                                                final TransferFee transferFeeB) {
+    Objects.requireNonNull(currentSqrtPrice, "currentSqrtPrice");
     final int[] range = orderTicks(tickIndex1, tickIndex2);
     final long tokenDeltaA = reverseTransferFee(tokenAmountA, transferFeeA);
     if (tokenDeltaA == 0L) {
@@ -308,6 +312,7 @@ public final class WhirlpoolQuote {
                                                                final int tickIndex2,
                                                                final TransferFee transferFeeA,
                                                                final TransferFee transferFeeB) {
+    Objects.requireNonNull(currentSqrtPrice, "currentSqrtPrice");
     final int[] range = orderTicks(tickIndex1, tickIndex2);
     final long tokenDeltaB = reverseTransferFee(tokenAmountB, transferFeeB);
     if (tokenDeltaB == 0L) {
@@ -334,6 +339,7 @@ public final class WhirlpoolQuote {
                                                               final int tickIndex2,
                                                               final TransferFee transferFeeA,
                                                               final TransferFee transferFeeB) {
+    Objects.requireNonNull(currentSqrtPrice, "currentSqrtPrice");
     if (liquidityDelta.signum() == 0) {
       return IncreaseLiquidityQuote.ZERO;
     }
@@ -355,6 +361,7 @@ public final class WhirlpoolQuote {
                                                                final int tickIndex2,
                                                                final TransferFee transferFeeA,
                                                                final TransferFee transferFeeB) {
+    Objects.requireNonNull(currentSqrtPrice, "currentSqrtPrice");
     final int[] range = orderTicks(tickIndex1, tickIndex2);
     final long tokenDeltaA = transferFee(tokenAmountA, transferFeeA);
     if (tokenDeltaA == 0L) {
@@ -381,6 +388,7 @@ public final class WhirlpoolQuote {
                                                                final int tickIndex2,
                                                                final TransferFee transferFeeA,
                                                                final TransferFee transferFeeB) {
+    Objects.requireNonNull(currentSqrtPrice, "currentSqrtPrice");
     final int[] range = orderTicks(tickIndex1, tickIndex2);
     final long tokenDeltaB = transferFee(tokenAmountB, transferFeeB);
     if (tokenDeltaB == 0L) {

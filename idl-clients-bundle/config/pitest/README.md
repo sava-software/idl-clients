@@ -152,8 +152,7 @@ their trials".
 - `# zero-fast-path family` — a redundant short-circuit forced not to take its shortcut: the general
   path runs on the input the shortcut would have answered and computes the identical result the long
   way. Each is a deliberate fast path that saves allocation or work, and its removal is
-  unobservable; for the members that read a current sqrt price, the liquidity quotes by token amount
-  and `WhirlpoolQuote.tryGetTokenEstimatesFromLiquidity`, that holds for a non-null one.
+  unobservable.
   `OrcaUtil.applyTransferFee` with a non-zero rate takes a zero amount the long way: a fee of ceil(0
   × feeBps / `BPS_DENOMINATOR`), which is 0 under any cap, and 0 − 0 returned.
   `OrcaUtil.reverseApplyTransferFee` with a zero rate returns 0 for a zero amount at the next test,
@@ -169,17 +168,17 @@ their trials".
   `increaseLiquidityQuote` answer zero liquidity with the same shared `DecreaseLiquidityQuote.ZERO`
   and `IncreaseLiquidityQuote.ZERO` the shortcuts return;
   `WhirlpoolQuote.tryGetTokenEstimatesFromLiquidity` turns zero liquidity into zero token amounts in
-  every branch, a fresh `{0, 0}` array either way. Only the long paths of those quote members read
-  the current sqrt price, in `OrcaUtil.positionStatus`, which dereferences it whenever the ticks'
-  sqrt prices differ. Their neighbours are killed: `applyTransferFee`'s zero-rate leg forced always
+  every branch, a fresh `{0, 0}` array either way. Each quote member rejects a null current sqrt
+  price on entry, before its shortcut, so the long path's reading of it in `OrcaUtil.positionStatus`
+  never meets an input the shortcut would have accepted. Their neighbours are killed: `applyTransferFee`'s zero-rate leg forced always
   to fire, returning every amount unchanged (`OrcaUtilTests.applyTransferFeeBoundaries`);
   `collectRewardsQuote`'s zero-growth leg forced always to fire, zeroing every owed delta
   (`CollectRewardsQuoteTests.productAtExactlyU128MaxIsNotAnOverflow`); and
   `reverseApplyTransferFee`'s zero-amount return, which is no fast path, since at a full rate the
   long path answers the max fee (`OrcaUtilTests.reverseApplyTransferFeeBoundaries`). Escape: a long
-  path that stops being exact at the shortcut's input; for the members that read a current sqrt
-  price, a test passing a null one with ticks whose sqrt prices differ, which makes the long path
-  throw `NullPointerException` and kills them. Covers: `OrcaUtil.applyTransferFee`, the zero-amount
+  path that stops being exact at the shortcut's input, or the quote members' null check moving
+  behind the shortcut, which would let a null current sqrt price through it and make the long path
+  throw. Covers: `OrcaUtil.applyTransferFee`, the zero-amount
   leg of its `feeBps == 0 || amount == 0L` return, forced never to fire;
   `OrcaUtil.reverseApplyTransferFee`, its zero-rate return (`feeBps == 0`), forced never to fire;
   `OrcaUtil.firstUnoccupiedPositionInBundle`, the full-byte skip (`b != 0xFF`), forced to scan every
