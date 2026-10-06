@@ -65,7 +65,7 @@ jobs:
 
       # sava-build's composite setup checks out the dispatch ref, which can be
       # main. Set up the JDKs here so the selected tag stays checked out.
-      - uses: gradle/actions/setup-gradle@9c971963bec38e04b3d30dcc455b5382be2fdbfb
+      - uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6
 
       - name: Set up Gradle JDK
         uses: oracle-actions/setup-java@fff43251af9936a0e6a4d5d0946e14f1680e9b6b
