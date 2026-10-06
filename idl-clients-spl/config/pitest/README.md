@@ -86,26 +86,23 @@ tests / unkilled.
 ### Families
 
 - `# zero-fast-path family` — a zero short-circuit in front of a division with one clause
-  forced false, so the input it answered falls through to the division, which for a positive
-  denominator computes the same zero the long way.
-  `SafeMath.mulDivU64(long, BigInteger, BigInteger, boolean)` first throws for a zero
-  `denominator`, so the fall-through never divides by zero, and then returns `0L` when
+  forced false, so the input it answered falls through to the division, which computes the same
+  zero the long way.
+  `SafeMath.mulDivU64(long, BigInteger, BigInteger, boolean)` first throws for a `denominator`
+  that is not positive, so the fall-through divides by a positive one, and then returns `0L` when
   `amount == 0L || numeratorFactor.signum() == 0`. With the second clause forced false, a zero
-  factor beside a non-zero amount takes the general path, which for a positive `denominator`
-  returns the short-circuit's own answer: the product is zero, the quotient is zero, the
+  factor beside a non-zero amount takes the general path, which returns the short-circuit's own
+  answer: the product is zero, the quotient is zero, the
   remainder is zero so `roundUp` adds nothing, and `toU64` returns `0L`. The comment above the
   clause makes the same claim, that the fall-through computes this zero the long way and the
-  short-circuit only skips the allocation; it holds for a positive `denominator`.
+  short-circuit only skips the allocation.
   `SafeMathTests.mulDivRoundsAwayFromZeroOnlyWhenAsked` runs a zero factor against a positive
   denominator with `roundUp` and asserts `0L`, which the mutant also returns. The sibling
   mutant on the `amount == 0L` clause always takes that clause's jump, so the method returns
   zero whatever the amount and factor; `SafeMathTests.mulDivComputesTheProductAtFullWidth`
-  kills it. Escape: a negative `denominator` with `roundUp`, an input the method accepts today.
-  The method's up-front check rejects only zero, and its javadoc's "Both operands are unsigned"
-  does not say which of the three parameters it means. On that input the long way's
-  `BigInteger.mod` throws for a non-positive modulus where the short-circuit returned `0L`, so
-  a test passing one separates the two; without `roundUp` the long way never calls `mod`, and
-  `BigInteger.divide` by a negative divisor returns the same zero. Covers:
+  kills it. Escape: the up-front check admitting a negative `denominator` again, on which the long
+  way's `BigInteger.mod` throws for a non-positive modulus under `roundUp` where the short-circuit
+  returned `0L`. Covers:
   `SafeMath.mulDivU64(long, BigInteger, BigInteger, boolean)`, the
   `numeratorFactor.signum() == 0` clause of the zero short-circuit forced false, which is the
   second of the short-circuit's two conditional jumps.

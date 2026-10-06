@@ -151,7 +151,7 @@ final class SafeMathTests {
     // guard is here for the diagnosis, and only the message pins it
     final var zeroDenominator = assertThrows(ArithmeticException.class,
         () -> SafeMath.mulDivU64(10L, 20L, 0L));
-    assertTrue(zeroDenominator.getMessage().contains("denominator is zero"), zeroDenominator.getMessage());
+    assertTrue(zeroDenominator.getMessage().contains("must be positive"), zeroDenominator.getMessage());
     // a quotient past u64 is an error, not a truncation
     assertThrows(ArithmeticException.class, () -> SafeMath.mulDivU64(-1L, 4L, 1L));
   }
@@ -179,7 +179,16 @@ final class SafeMathTests {
     // denominator is an error even when the amount would have returned early
     final var zeroDenominator = assertThrows(ArithmeticException.class,
         () -> SafeMath.mulDivU64(0L, factor, BigInteger.ZERO, false));
-    assertTrue(zeroDenominator.getMessage().contains("denominator is zero"), zeroDenominator.getMessage());
+    assertTrue(zeroDenominator.getMessage().contains("must be positive"), zeroDenominator.getMessage());
+    // and so is a negative one, whichever way the division would have rounded
+    // and whether or not the amount would have returned early
+    for (final boolean roundUp : new boolean[]{false, true}) {
+      final var negativeDenominator = assertThrows(ArithmeticException.class,
+          () -> SafeMath.mulDivU64(100L, factor, BigInteger.valueOf(-7L), roundUp));
+      assertTrue(negativeDenominator.getMessage().contains("must be positive"), negativeDenominator.getMessage());
+      assertThrows(ArithmeticException.class,
+          () -> SafeMath.mulDivU64(0L, factor, BigInteger.valueOf(-7L), roundUp));
+    }
   }
 
   /// BigInteger reads shiftRight(-n) as shiftLeft(n), so an unguarded negative

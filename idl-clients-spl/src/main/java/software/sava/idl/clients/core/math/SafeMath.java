@@ -174,17 +174,19 @@ public final class SafeMath {
   ///
   /// `roundUp` rounds away from zero whenever the division leaves a remainder,
   /// which is how a program charges a fee it must not under-collect; the
-  /// truncating direction is the one that must not over-credit. Both operands
-  /// are unsigned, and the quotient still has to fit `u64`.
+  /// truncating direction is the one that must not over-credit. The amount is
+  /// unsigned, the factor and the denominator are the non-negative values an
+  /// unsigned rate and its scale decode to, a denominator that is not positive
+  /// is an error, and the quotient still has to fit `u64`.
   public static long mulDivU64(final long amount,
                                final BigInteger numeratorFactor,
                                final BigInteger denominator,
                                final boolean roundUp) {
-    if (denominator.signum() == 0) {
-      throw new ArithmeticException("mulDiv denominator is zero");
+    if (denominator.signum() <= 0) {
+      throw new ArithmeticException("mulDiv denominator must be positive: " + denominator);
     }
-    // the fall-through computes this same zero the long way; the short-circuit
-    // only skips the allocation
+    // the fall-through computes this same zero the long way for the positive
+    // denominator the check above leaves; the short-circuit only skips the allocation
     if (amount == 0L || numeratorFactor.signum() == 0) {
       return 0L;
     }
