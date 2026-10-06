@@ -1,10 +1,10 @@
 {
   "program": "KvauGMspG5k6rtzrqqn7WNn3oZdyKqLKwK2XWQ8FLjd",
   "deployed": "vcs",
-  "lastDeploySlot": 452240450,
+  "lastDeploySlot": 453889209,
   "programDataState": "upgradeable",
   "programDataStateSlot": 440077852,
-  "programDataPayloadSha256": "5d3e1faaa1e06417197b5e15980a47b90d24f4217217940677de32ab9d8763f4",
+  "programDataPayloadSha256": "3a2a25950c2b22780b67ec139c6adfd890c6c4aee4f6ab4b8029397e71d8873c",
   "programDataPayloadLength": 10485715,
   "channels": {
     "anchor": {
