@@ -544,20 +544,20 @@ The trials behind the set are under "Mutator sets and their trials".
   local to the call: `ArrayList` exposes no capacity, and each list is copied out before the method
   returns (sava-core's `InstructionRecord.extraAccounts` copies the metas into the new instruction,
   and `MarginfiRemainingAccounts$Builder.build` returns `List.copyOf`). That holds while the mutated
-  hint stays non-negative, which it does in every covered member for any input its method's
-  documented contract allows. `KaminoVaultsRemainingAccounts.appendVaultReserves` halves the reserve
+  hint stays non-negative, which it does in every covered member for every input its method
+  accepts. `KaminoVaultsRemainingAccounts.appendVaultReserves` halves the reserve
   count where it doubled it. `MarginfiRemainingAccounts$Builder.build` counts the Token-2022 mint
   whether or not `bankMint` is set, or never counts it.
   `KaminoLendingRemainingAccounts.appendObligationRefreshAccounts` leaves the referrer count out, or
-  subtracts it; its contract is a referrer list that is either absent or one `ReferrerTokenState`
+  subtracts it; the method rejects a referrer list that is neither empty nor one `ReferrerTokenState`
   per borrow reserve, so the difference is at least the deposit count. The tests that pin each
   payload's contents and order cannot tell
   (`KaminoVaultsRemainingAccountsTests.reservesThenTheirMarkets`,
   `MarginfiRemainingAccountsTests.theTokenTwentyTwoMintLeadsTheWholePayload`,
   `KaminoLendingRemainingAccountsTests.obligationRefreshOrdersDepositsBorrowsThenReferrers`).
-  Escape: a reader of the capacity; for the referrer subtraction, also a referrer list longer than
-  the deposits and borrows together, which the method does not reject and which makes the hint
-  negative, so that the `ArrayList` constructor throws. Covers:
+  Escape: a reader of the capacity; for the referrer subtraction, also the referrer-count check
+  going away, after which a referrer list longer than the deposits and borrows together makes the
+  hint negative, so that the `ArrayList` constructor throws. Covers:
   `KaminoVaultsRemainingAccounts.appendVaultReserves`, the `reserves.size() * 2` hint turned into a
   division, in both overloads, the `Reserve`-taking one and the key-taking one;
   `MarginfiRemainingAccounts$Builder.build`, the hint's mint term `bankMint == null ? 0 : 1` forced

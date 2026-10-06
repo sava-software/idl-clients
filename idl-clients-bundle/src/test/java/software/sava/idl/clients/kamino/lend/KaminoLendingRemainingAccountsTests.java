@@ -67,6 +67,30 @@ final class KaminoLendingRemainingAccountsTests {
     assertEquals(List.of(deposit, borrowA, borrowB), keys(appended.accounts(), 1));
   }
 
+  /// A referrer list is one `ReferrerTokenState` per borrow, in the borrows' order, or
+  /// nothing at all; an empty list is the same as none. Anything else would be rejected
+  /// by the program, so it is rejected here, before the instruction is built.
+  @Test
+  void aReferrerListIsEmptyOrOnePerBorrow() {
+    final var deposit = key(0x21);
+    final var borrowA = key(0x22);
+    final var borrowB = key(0x23);
+    final var referrerA = key(0x24);
+
+    final var noReferrers = KaminoLendingRemainingAccounts.appendObligationRefreshAccounts(
+        ix(), List.of(deposit), List.of(borrowA, borrowB), List.of());
+    assertEquals(List.of(deposit, borrowA, borrowB), keys(noReferrers.accounts(), 1));
+
+    final var tooFew = assertThrows(IllegalArgumentException.class, () ->
+        KaminoLendingRemainingAccounts.appendObligationRefreshAccounts(
+            ix(), List.of(deposit), List.of(borrowA, borrowB), List.of(referrerA)));
+    assertTrue(tooFew.getMessage().contains("1 referrer(s) for 2 borrow(s)"), tooFew.getMessage());
+
+    assertThrows(IllegalArgumentException.class, () ->
+        KaminoLendingRemainingAccounts.appendObligationRefreshAccounts(
+            ix(), List.of(deposit), List.of(borrowA), List.of(referrerA, key(0x25), key(0x26))));
+  }
+
   @Test
   void depositReservesAppendWritableAndThePermissionAccountSigns() {
     final var reserveA = key(0x31);

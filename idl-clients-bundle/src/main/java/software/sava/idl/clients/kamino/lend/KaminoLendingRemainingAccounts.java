@@ -45,11 +45,19 @@ public final class KaminoLendingRemainingAccounts {
   ///
   /// The order is strict: all deposit reserves, then all borrow reserves, then (only when
   /// the obligation has a referrer) one `ReferrerTokenState` per borrow reserve in the
-  /// same order as the borrows.
+  /// same order as the borrows. A null or empty referrer list means no referrer; any other
+  /// length than the borrows' is rejected here rather than by the program.
   public static Instruction appendObligationRefreshAccounts(final Instruction instruction,
                                                             final List<PublicKey> depositReserves,
                                                             final List<PublicKey> borrowReserves,
                                                             final List<PublicKey> referrerTokenStates) {
+    if (referrerTokenStates != null
+        && !referrerTokenStates.isEmpty()
+        && referrerTokenStates.size() != borrowReserves.size()) {
+      throw new IllegalArgumentException(String.format(
+          "one referrer token state per borrow reserve: %d referrer(s) for %d borrow(s)",
+          referrerTokenStates.size(), borrowReserves.size()));
+    }
     final int n = depositReserves.size()
         + borrowReserves.size()
         + (referrerTokenStates == null ? 0 : referrerTokenStates.size());
