@@ -1313,6 +1313,12 @@ instructions, so byte-level searching is too noisy to rely on. And the live
 `pause_delegate_admin` is carved from the old `reserved1` and is currently zero,
 which both layouts predict.
 
+**Superseded on 2026-08-26.** The `p0-ts-sdk` pin above is gone: the program-metadata
+PDA was republished for the deployed build and `marginfi.v2` has declared
+`"deployed": "metadata"` since `591de130`; 0.1.10 and then 0.1.11 (slot 444313123)
+deployed, and the client follows the metadata channel. The section stands as the
+record of how the 0.1.9 gap was found and closed, not of the configuration in force.
+
 ### Bundle-wide staleness sweep (2026-07-19)
 
 Marginfi's `clearEmissions` was a *dead* method — not wrong, but incapable of

@@ -71,13 +71,15 @@ hardening {
     mutators = "STRONGER,EXPERIMENTAL_BIG_INTEGER,EXPERIMENTAL_NAKED_RECEIVER"
     declineMutator(
       "EXPERIMENTAL_BIG_DECIMAL",
-      "trialed 2026-07-25: generated 0 against 4 call sites. It rewrites only " +
-          "(BigDecimal)BigDecimal arithmetic, and every BigDecimal operation here is a " +
+      "trialed 2026-07-25: generated 0 against 4 call sites. It rewrites only the " +
+          "BigDecimal calls that take one BigDecimal or nothing and return one (add, subtract, " +
+          "multiply, divide, remainder, max, min; negate, plus, abs), and every BigDecimal " +
+          "operation here is a " +
           "divide(BigDecimal, MathContext) / divide(BigDecimal, int, RoundingMode) " +
           "overload in StakePoolState.calculateSolPrice and Fee.toRatio, which it does " +
-          "not rewrite. Those four sites are covered instead by NAKED_RECEIVER (the " +
-          "dropped stripTrailingZeros family) and by StakePoolStateTests' exact-value " +
-          "assertions.",
+          "not rewrite. Those four sites are covered instead by NAKED_RECEIVER, whose " +
+          "dropped-divide and dropped-stripTrailingZeros mutants there are killed, and by " +
+          "StakePoolStateTests' exact-value assertions.",
     )
     targetClasses = listOf("software.sava.idl.clients.spl.*", "software.sava.idl.clients.core.*")
     excludedClasses = listOf(
@@ -119,8 +121,9 @@ hardening {
           "Stake instruction's data against solana-program/stake's own generated JS client, so " +
           "that program's generated encoder is pinned to an implementation neither this " +
           "repository nor its generator produced. The hand-written " +
-          "layer stays mutated: core.math.SafeMath and the stake/stake-pool parsers are this " +
-          "suite's own baseline rows, and four of the six fuzz harnesses target them. The " +
+          "layer stays mutated: core.math.SafeMath and the stake, stake-pool, nonce and " +
+          "precompile parsers are this suite's targets (every accepted row today is in " +
+          "SafeMath), and four of the six fuzz harnesses target them. The " +
           "other two point straight at gen: Token2022IxDataFuzz drives all 99 generated " +
           "Token-2022 instruction-data readers over arbitrary bytes and asserts the write/read " +
           "round trip, and Token2022AccountFuzz drives the generated Mint and Token account " +

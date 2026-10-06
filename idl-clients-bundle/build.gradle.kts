@@ -193,8 +193,9 @@ hardening {
       // owned by the suites above
       "software.sava.idl.clients.orca.*",
       "software.sava.idl.clients.kamino.scope.*",
-      // owned by idl-clients-spl's own suite; it reaches this classpath as a
-      // project dependency, so a bare wildcard would mutate it twice
+      // owned by idl-clients-spl's own suite. It is on this class path as a
+      // dependency, but PIT mutates only this module's classes (core.* is not
+      // excluded and is never mutated here), so this records the ownership
       "software.sava.idl.clients.spl.*"
     )
     // every bundled program's gen.* (the orca and kamino.scope ones included, since
