@@ -1,5 +1,33 @@
 # Changelog
 
+## [25.19.10](https://github.com/sava-software/idl-clients/compare/25.19.9...25.19.10) (2026-10-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* **kamino:** The updated IDL introduces a `permissioning_authority` field, necessitating client updates for certain instructions that now require this authority to be signed.
+
+### Features
+
+* **jupiter:** add JupiterSwapV2Client for Swap API V2 ([3e205be](https://github.com/sava-software/idl-clients/commit/3e205be4c805c66d66b7a0b0d71c1b534835cff6))
+* **jupiter:** deprecate the Metis v1 and Ultra client in favour of JupiterSwapV2Client ([0f7d568](https://github.com/sava-software/idl-clients/commit/0f7d568f6af801be0172a7471640e875c7c29fa7))
+
+
+### Bug Fixes
+
+* **jupiter:** build and call every Jupiter REST client without an API key ([ff029fa](https://github.com/sava-software/idl-clients/commit/ff029fa4a440ab3d162ff3ac0a76ad56c6f2e4b1))
+* **jupiter:** read /execute results with large, null or empty amounts ([d47f058](https://github.com/sava-software/idl-clients/commit/d47f058fd444b781c537bbfb7b8f83304f732b02))
+* **jupiter:** send the Ultra order referral fee as referralFee ([9e33e4d](https://github.com/sava-software/idl-clients/commit/9e33e4d8753f5ad9b779fed4c2703d4cfefbb607))
+* **kamino:** check an obligation's referrer list against its borrows ([082ae21](https://github.com/sava-software/idl-clients/commit/082ae21131b31895066d67612c9ada49bc1bbd89))
+* **kamino:** update IDL to reflect deployed binary at slot 453889209 ([e813053](https://github.com/sava-software/idl-clients/commit/e813053540d80a322f56741f223df7b310c95c3d))
+* **meteora:** derive LbPair addresses with the program's unsigned mint order ([a5882d0](https://github.com/sava-software/idl-clients/commit/a5882d0bc463b70c191ba6483182d0ba3f8c6d17))
+* **orca:** reject a null current sqrt price in every liquidity quote ([8cb64af](https://github.com/sava-software/idl-clients/commit/8cb64af2a1da2e678afdab9b831ac3f097a6154b))
+* **orca:** reject a tick spacing whose array span overflows an int ([5ac70da](https://github.com/sava-software/idl-clients/commit/5ac70da1112d103b8807257d3d6c9963a6e5f3c5))
+* **scope:** hand out an unmodifiable EMA type set ([95f0438](https://github.com/sava-software/idl-clients/commit/95f04381b7107e6f543e013d2bf0dd226460249d))
+* **scope:** keep the sources a band cycle cut, and compare composites by content in bounded time ([96182af](https://github.com/sava-software/idl-clients/commit/96182af56a74c2423f28b547a95855e5131d5546))
+* **spl:** reject a negative mulDivU64 denominator like a zero one ([7a47a07](https://github.com/sava-software/idl-clients/commit/7a47a07e64b846d8dd577ab28cb504869a8b1825))
+* **spl:** sync Stake IDL to version 5.1.1 ([4b35b05](https://github.com/sava-software/idl-clients/commit/4b35b05f90f807c914f8fa70220fd58800f6bf6f))
+
 ## [25.19.9](https://github.com/sava-software/idl-clients/compare/25.19.8...25.19.9) (2026-10-01)
 
 
