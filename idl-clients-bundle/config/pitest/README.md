@@ -479,19 +479,16 @@ trials".
   price or TWAP chain.
 - `# zero-fast-path family` — `ScopeReaderRecord.emaTypes`'s `bitmask != 0` short-circuit forced
   true, so a zero bitmask also runs the decoding loop, which sets no type and returns an empty
-  `EnumSet` instead of `Set.of()`. The two are equal, hash to the same zero and print as the same
-  `[]`, so every entry built from either compares, hashes and prints the same, and the library's
-  one other reader of the set, `OracleEntry.twapEnabled()`, asks only whether it is empty. The
-  guard is a deliberate allocation-avoiding fast path whose removal no reader in the library
-  observes. The short-circuit forced false, which reads every bitmask as empty, is killed by
-  `ScopeComputeEntryTests.emaBitmaskDecodesEachBitToItsType`, which also asserts the zero
-  bitmask's set by equality. Escape: a reader that asks more of the set than its contents, such as
-  whether it accepts `add` (`Set.of()` refuses, an `EnumSet` accepts) or its class. `emaTypes()` is
-  a public accessor and the entry records store the set as decoded, so a caller can ask either of
-  a parsed entry today; the acceptance rests on the set being read as a value, and a non-zero
-  bitmask's set is a mutable `EnumSet` in the original too, so the accessor never promised an
-  unmodifiable one. Covers:
-  `ScopeReaderRecord.emaTypes`, the `bitmask != 0` short-circuit forced true.
+  `EnumSet` wrapped unmodifiable instead of `Set.of()`. The two are equal, hash to the same zero,
+  print as the same `[]` and both refuse `add`, so every entry built from either compares, hashes
+  and prints the same, and the library's one other reader of the set, `OracleEntry.twapEnabled()`,
+  asks only whether it is empty. The guard is a deliberate allocation-avoiding fast path whose
+  removal nothing short of the set's class can observe. The short-circuit forced false, which reads
+  every bitmask as empty, is killed by `ScopeComputeEntryTests.emaBitmaskDecodesEachBitToItsType`,
+  which also asserts the zero bitmask's set by equality and that neither set accepts `add`. Escape:
+  a reader of the returned set's class, or the wrapping dropped, which would hand the mutant's set
+  out mutable where `Set.of()` is not. Covers: `ScopeReaderRecord.emaTypes`, the `bitmask != 0`
+  short-circuit forced true.
 - `# defensive-guard family` — `ScopeReaderRecord.entry`'s bounds check,
   `i < 0 || i >= priceInfoAccounts.length`, with the `i < 0` leg's jump removed: a negative index
   would pass the length test and read `entries[i]`, throwing `ArrayIndexOutOfBoundsException`

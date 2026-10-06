@@ -443,7 +443,12 @@ final class ScopeComputeEntryTests {
         assertInstanceOf(PythPull.class, all.parse().scopeEntry(0)).emaTypes());
 
     final var none = new Mappings().slot(0, OracleType.PythPull);
-    assertEquals(Set.of(), assertInstanceOf(PythPull.class, none.parse().scopeEntry(0)).emaTypes());
+    final var emptyTypes = assertInstanceOf(PythPull.class, none.parse().scopeEntry(0)).emaTypes();
+    assertEquals(Set.of(), emptyTypes);
+
+    // The entries are immutable, so neither set can be changed under them.
+    assertThrows(UnsupportedOperationException.class, () -> pyth.emaTypes().add(EmaType.Ema8h));
+    assertThrows(UnsupportedOperationException.class, () -> emptyTypes.add(EmaType.Ema8h));
   }
 
   // ---------------------------------------------------------------------------

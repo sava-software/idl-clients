@@ -3,6 +3,7 @@ package software.sava.idl.clients.kamino.scope.entries;
 import software.sava.core.accounts.PublicKey;
 import software.sava.idl.clients.kamino.scope.gen.types.*;
 
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.OptionalInt;
 import java.util.Set;
@@ -103,6 +104,8 @@ record ScopeReaderRecord(ScopeEntry[] entries,
     }
   }
 
+  /// The entry records are immutable, so the set they are handed is too: a caller cannot change an
+  /// entry's equality or hash by adding to it. The empty case skips the allocation.
   private static Set<EmaType> emaTypes(final int bitmask) {
     if (bitmask != 0) {
       final var types = EnumSet.noneOf(EmaType.class);
@@ -111,7 +114,7 @@ record ScopeReaderRecord(ScopeEntry[] entries,
           types.add(type);
         }
       }
-      return types;
+      return Collections.unmodifiableSet(types);
     } else {
       return Set.of();
     }
