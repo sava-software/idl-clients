@@ -542,24 +542,6 @@ The trials behind the set are under "Mutator sets and their trials".
 
 ### Families
 
-- `# redundant-GET family` — an explicit `.GET()` on a request builder replaced by the builder
-  itself. sava-rpc's `JsonHttpClient.newRequest` (25.11.2), given a path or URI and a timeout,
-  returns a builder from `HttpRequest.newBuilder` with the JSON content type and the timeout set and
-  the client's `extendRequest` hook applied; it sets no method, and an `HttpRequest.Builder`
-  defaults to GET, so the request is the same GET with or without the call. The hook
-  `JupiterClientBuilder` composes sets no method either: it adds the `x-api-key` header when the
-  client has a key, then applies the caller's own hook. `JupiterRestTests` matches each exchange on
-  method and path, and the quote and Ultra-order tests in `JupiterSwapApiClientTests` expect a GET
-  at each path and pass either way. Escape: a method set before the `.GET()`, by `newRequest`
-  itself or by a caller's `extendRequest` hook that sets one, which the explicit call overrides and
-  the mutant leaves in place. Such a hook is outside the builder's working use, which is what the
-  acceptance rests on: sava-rpc applies the hook after it has set a POST's method, and the client's
-  program-labels request relies on the default GET with no explicit call, so the hook re-methods
-  those requests in the unmutated client too. Covers: `JupiterSwapApiClientImpl.quote`, the
-  `.GET()` in both of its request-building overloads, `quote(BigInteger, String, Duration)` and
-  `quote(String, Duration)`;
-  `JupiterSwapApiClientImpl.ultraOrder`, the `.GET()` in both of its overloads,
-  `ultraOrder(BigInteger, String, Duration)` and `ultraOrder(String, Duration)`.
 - `# capacity-hint family` — the arithmetic of an `ArrayList`'s initial capacity mutated, never a
   value the list holds. A list grows from whatever non-negative capacity it is handed, so its
   contents and order are the same and the cost is extra growth copies, or unused slots, in a list

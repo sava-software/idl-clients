@@ -112,13 +112,13 @@ final class JupiterSwapApiClientImpl extends JsonHttpClient implements JupiterSw
                                                final String query,
                                                final Duration requestTimeout) {
     final var pathAndQuery = String.format(quotePathFormat, amount, query);
-    final var request = newRequest(pathAndQuery, requestTimeout).GET().build();
+    final var request = newRequest(pathAndQuery, requestTimeout).build();
     return this.httpClient.sendAsync(request, ofByteArray()).thenApply(quoteParser);
   }
 
   @Override
   public CompletableFuture<JupiterQuote> quote(final String query, final Duration requestTimeout) {
-    final var request = newRequest(quotePath + query, requestTimeout).GET().build();
+    final var request = newRequest(quotePath + query, requestTimeout).build();
     return this.httpClient.sendAsync(request, ofByteArray()).thenApply(quoteParser);
   }
 
@@ -234,14 +234,14 @@ final class JupiterSwapApiClientImpl extends JsonHttpClient implements JupiterSw
                                                          final String query,
                                                          final Duration requestTimeout) {
     final var pathAndQuery = String.format(ultraAmountOrderPathFormat, amount, query);
-    final var request = newRequest(endpoint.resolve(pathAndQuery), requireNonNullElse(requestTimeout, this.requestTimeout)).GET().build();
+    final var request = newRequest(endpoint.resolve(pathAndQuery), requireNonNullElse(requestTimeout, this.requestTimeout)).build();
     return this.httpClient.sendAsync(request, ofByteArray()).thenApply(ultraOrderParser);
   }
 
   @Override
   public CompletableFuture<JupiterUltraOrder> ultraOrder(final String query, final Duration requestTimeout) {
     final var url = endpoint.resolve("/ultra/v1/order?" + query);
-    final var request = newRequest(url, requireNonNullElse(requestTimeout, this.requestTimeout)).GET().build();
+    final var request = newRequest(url, requireNonNullElse(requestTimeout, this.requestTimeout)).build();
     return this.httpClient.sendAsync(request, ofByteArray()).thenApply(ultraOrderParser);
   }
 
