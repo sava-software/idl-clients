@@ -368,9 +368,9 @@ behavioural. It mirrors the forward ladder, the oracle the refinement consults, 
 `theMirrorStillMatchesTheProduction` holds that mirror to `OrcaUtil.tickIndexToSqrtPriceX64` at
 every tick of the domain and to `MIN_SQRT_PRICE_X64` and `MAX_SQRT_PRICE_X64` at its ends. The tick
 selection that `onlyTheNakedReceiverVariantAgreesAtEveryBoundary` compares is also a
-re-implementation, of `sqrtPriceX64ToTickIndex`'s bracketing and refinement, and no assertion holds
-it to production. The class is excluded from the suite, so it can report a divergence but never kill
-a mutant. `OrcaTickMathFuzz`, the `orcaTickMath` fuzz target, independently drives the bracketing
+re-implementation, of `sqrtPriceX64ToTickIndex`'s bracketing and refinement, and the same test holds
+its original seed to `sqrtPriceX64ToTickIndex` at every boundary. The class is excluded from the
+suite, so it can report a divergence but never kill a mutant. `OrcaTickMathFuzz`, the `orcaTickMath` fuzz target, independently drives the bracketing
 contract on the unmutated code over in-range prices.
 
 The equivalence clears by little: at the tightest boundary the headroom is less than one
