@@ -604,7 +604,7 @@ public final class OrcaUtil {
 
   // log_b(2) in Q32.32 form (one bit per 2^32). Source: `LOG_B_2_X32`.
   private static final BigInteger LOG_B_2_X32 = BigInteger.valueOf(59543866431248L);
-  // Package-private so OrcaTickMarginSweep seeds its variants from the shipped margins.
+  // Package-private so OrcaTickMarginSweepTests seeds its variants from the shipped margins.
   static final BigInteger LOG_B_P_ERR_MARGIN_LOWER_X64 =
       BigInteger.valueOf(184467440737095516L);
   // 15793534762490258745 > Long.MAX_VALUE, declare as unsigned via String.
@@ -634,7 +634,7 @@ public final class OrcaUtil {
   /// `log_1.0001(sqrtPriceX64)` in Q64.64, via a 14-bit base-2 log approximation.
   ///
   /// Extracted from [#sqrtPriceX64ToTickIndex] rather than inlined so that
-  /// `OrcaTickMarginSweep` can seed the accepted-mutant equivalence argument from *this*
+  /// `OrcaTickMarginSweepTests` can seed the accepted-mutant equivalence argument from *this*
   /// value instead of from a copy. A copy is only evidence while it still matches: biasing
   /// this approximation by one `LOG_B_2_X32` quantum leaves `sqrtPriceX64ToTickIndex`
   /// returning the right tick — the refinement below absorbs it — while making the accepted

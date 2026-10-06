@@ -16,8 +16,8 @@ import java.util.Arrays;
 /// The hand-written tests sweep exact tick boundaries and a few fixed offsets
 /// between them; this harness searches the full u128 sqrt-price domain for a
 /// price the approximation mis-brackets — which is exactly the failure the
-/// baseline's accepted-as-untriaged lower-margin mutant would cause, and the
-/// input that would settle that acceptance.
+/// accepted lower-margin mutant (`# log-margin family` in orca-accepted.csv)
+/// would cause, and the input that would retire that acceptance.
 ///
 /// The fuzzer's bytes are folded into a price in
 /// `[MIN_SQRT_PRICE_X64, MAX_SQRT_PRICE_X64]`; a leading zero byte instead

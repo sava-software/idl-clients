@@ -28,7 +28,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /// `sqrtPriceX64ToTickIndex` keeps returning the right tick while the naked mutant quietly becomes
 /// behavioural, and a sweep reading its own copy reports zero divergences throughout. The *forward*
 /// ladder below stays an independent mirror, because it is the oracle the refinement consults, and
-/// [#theMirrorStillMatchesTheProduction] holds it to `tickIndexToSqrtPriceX64`.
+/// [#theMirrorStillMatchesTheProduction] holds it to `tickIndexToSqrtPriceX64`. The bracketing and
+/// refinement in [#variants] are a re-implementation as well, and
+/// [#onlyTheNakedReceiverVariantAgreesAtEveryBoundary] holds their original seed to
+/// `sqrtPriceX64ToTickIndex` at every boundary.
 ///
 /// This now follows the `*Tests` naming convention and runs under the normal test task. The
 /// `orca` mutation suite uses a reason-bearing `excludeTestClass` record to keep this
@@ -118,7 +121,7 @@ final class OrcaTickMarginSweepTests {
   ///
   /// **How close this is.** "Zero overshoots" is a bit; the margin behind it is the number worth
   /// watching, and it is thin. The tightest boundary clears by **34,045,085,876,224** in Q64.64 —
-  /// 0.0000018 ticks — at k=283,388, measured 2026-08-15. That is one thirty-fourth of the log
+  /// 0.0000018 ticks — at k=283,388, measured 2026-08-15. That is about 0.57 of the log
   /// approximation's own quantum (`LOG_B_2_X32`, 59,543,866,431,248): biasing `logbpX64` up by a
   /// single unit of that quantum puts two boundaries over the line. The headroom is reported on
   /// every run so a shrinking margin is visible before it reaches zero rather than after.
@@ -182,7 +185,10 @@ final class OrcaTickMarginSweepTests {
     int nakedDiverges = 0;
     int addDiverges = 0;
     for (int k = OrcaUtil.MIN_TICK_INDEX + 1; k <= OrcaUtil.MAX_TICK_INDEX; ++k) {
-      final var resolved = variants(sqrtPrice(k).subtract(BigInteger.ONE));
+      final var p = sqrtPrice(k).subtract(BigInteger.ONE);
+      final var resolved = variants(p);
+      assertEquals(OrcaUtil.sqrtPriceX64ToTickIndex(p), resolved[0].intValueExact(),
+          "the sweep's own bracketing must resolve the tick production resolves, or it sweeps a copy");
       if (!resolved[0].equals(resolved[1])) {
         ++nakedDiverges;
       }
@@ -201,8 +207,8 @@ final class OrcaTickMarginSweepTests {
 
   /// The mirror above is only evidence while it is still a mirror.
   ///
-  /// This is the one assertion that reaches into `OrcaUtil`, and it reaches for the *forward*
-  /// function, not the one under analysis. If the factor tables or the Q64.64 scaling move, the
+  /// This assertion reaches into `OrcaUtil` for the *forward* function, not the one under
+  /// analysis. If the factor tables or the Q64.64 scaling move, the
   /// sweep must move with them or it is answering a question about code that no longer ships.
   @Test
   void theMirrorStillMatchesTheProduction() {
