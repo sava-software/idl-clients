@@ -665,16 +665,12 @@ mutants.
   2^19, so bit 19 of the exponent is never set; one more iteration only squares `squaredBase`, which
   nothing reads after the loop, and never reaches `result`. Escape: `Q64X64_MAX_EXPONENTIAL` raised
   above 2^19.
-- `pow`'s result update with its `.and(U128_MASK)` dropped, and its overflow guard
-  `result.bitLength() > 128` with the boundary moved to `>= 128` and forced false. After the
-  inversion step `squaredBase` is at most 2^64, and each update is `(result x squaredBase) >> 64`,
-  so `result` stays within 65 bits: the mask is the identity, and the result is far below both the
-  guard and its boundary. The initial mask on `base` is different: it is the Rust `u128` parameter
-  boundary, observable to a Java caller passing a base with bit 128 set, and
+- `pow`'s result update with its `.and(U128_MASK)` dropped. After the inversion step `squaredBase`
+  is at most 2^64, and each update is `(result x squaredBase) >> 64`, so `result` stays within 65
+  bits and the mask is the identity. The initial mask on `base` is different: it is the Rust `u128`
+  parameter boundary, observable to a Java caller passing a base with bit 128 set, and
   `DlmmUtilsTests.powExactValues` kills it by asserting that `pow(base)` equals `pow(base + 2^128)`.
-  Escape: for the dropped mask and the `>= 128` boundary, a squared base above 2^64 reaching the
-  loop, which the inversion step prevents; the guard forced false has none while the mask precedes
-  it, since a value masked to 128 bits never exceeds 128 bits.
+  Escape: a squared base above 2^64 reaching the loop, which the inversion step prevents.
 - `binIdToArrayIndex`'s floor adjustment, `binId < 0`, widened to `<= 0`. At `binId == 0` the second
   conjunct, `binId % MAX_BIN_PER_ARRAY != 0`, is false, so both spellings return the truncated
   quotient. Escape: none.
@@ -682,11 +678,10 @@ mutants.
 Covers: `DlmmUtils.computeFee`, both of its boundary sites, the underflow guard's `<= 0` and the
 overflow guard's `> 63`, and the overflow guard forced false; `DlmmUtils.computeFeeFromAmount`, the
 overflow guard's boundary and the guard forced false; `DlmmUtils.computeVariableFee`, the
-zero-control shortcut's boundary; `DlmmUtils.pow`, its three boundary sites, the invert flag, the
-loop bound and the result overflow guard, its two equality tests forced false, the
-`Integer.MIN_VALUE` special case and the inversion step's zero test, the result update's dropped
-mask, and the result overflow guard forced false; `DlmmUtils.binIdToArrayIndex`, the negative-id
-adjustment's boundary.
+zero-control shortcut's boundary; `DlmmUtils.pow`, its two boundary sites, the invert flag and the
+loop bound, its two equality tests forced false, the `Integer.MIN_VALUE` special case and the
+inversion step's zero test, and the result update's dropped mask; `DlmmUtils.binIdToArrayIndex`,
+the negative-id adjustment's boundary.
 
 ### Audited timeout-detected mutants
 

@@ -217,9 +217,6 @@ public final class DlmmUtils {
       }
       if ((e & (1 << bit)) != 0) {
         result = result.multiply(squaredBase).shiftRight(Q64X64_SCALE_OFFSET).and(U128_MASK);
-        if (result.bitLength() > 128) {
-          return null;
-        }
       }
     }
 
