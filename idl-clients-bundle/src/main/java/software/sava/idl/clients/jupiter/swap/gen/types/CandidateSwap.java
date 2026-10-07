@@ -25,7 +25,8 @@ public sealed interface CandidateSwap extends RustEnum permits
   CandidateSwap.TesseraVV2,
   CandidateSwap.HumidiFiRouter,
   CandidateSwap.HumidiFiRouterV2,
-  CandidateSwap.HumidiFiRouterV3 {
+  CandidateSwap.HumidiFiRouterV3,
+  CandidateSwap.ZeroFiSwapV3 {
 
   static CandidateSwap read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -49,6 +50,7 @@ public sealed interface CandidateSwap extends RustEnum permits
       case 15 -> HumidiFiRouter.read(_data, i);
       case 16 -> HumidiFiRouterV2.read(_data, i);
       case 17 -> HumidiFiRouterV3.read(_data, i);
+      case 18 -> ZeroFiSwapV3.INSTANCE;
       default -> null;
     };
   }
@@ -521,6 +523,16 @@ public sealed interface CandidateSwap extends RustEnum permits
     @Override
     public int ordinal() {
       return 17;
+    }
+  }
+
+  record ZeroFiSwapV3() implements EnumNone, CandidateSwap {
+
+    public static final ZeroFiSwapV3 INSTANCE = new ZeroFiSwapV3();
+
+    @Override
+    public int ordinal() {
+      return 18;
     }
   }
 }

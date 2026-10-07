@@ -7,8 +7,8 @@ nobody took. The standing disagreements live beside this file, at its name with 
 before the extension. Ordered by program and channel, and carrying no timestamp, so
 consecutive runs are worth diffing against each other.
 
-== Movement (2) ==
+== Movement (1) ==
 
-Jupiter Lend: the program was redeployed at slot 453954884, up from 430476341, and no IDL channel moved with it; the stored program image changed: 660660 payload bytes, was 650420 — review required
-
-Phoenix Perpetuals: the program was redeployed at slot 453957507, up from 451718798, and no IDL channel moved with it (the metadata IDL was last written at slot 447674939, before the previous deploy); the stored program image changed: 3624048 payload bytes, was 3624048 — review required; last reviewed at slot 447323692: metadata IDL republished at slot 447589572 names exactly the 113 dispatched instructions; still stale upstream: Trader.maxPositions is a u64 over u32 max_positions + u32 trader_preference_bits, and GlobalConfiguration padding1 hides the native SOL collateral config
+Jupiter Swap: the anchor IDL at C88XWfp26heEmDkmfSzeXP7Fd7GQJ2j9dDTUsyiZbUTa moved since the last generation, 0536651ec211d59ecb068da7a9308cbcfdbb970874bf64a8ec7c045479b5017c -> 50641c5d234c4a38b9e71ff1c608ad06f088ae8e80467b659b93340ba827b76b: instructions ~1, types ~2
+  instructions changed (1): create_idempotent_associated_token_account
+  types changed (2): every one type changed

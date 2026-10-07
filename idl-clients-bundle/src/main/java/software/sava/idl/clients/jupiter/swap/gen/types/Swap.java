@@ -205,7 +205,13 @@ public sealed interface Swap extends RustEnum permits
   Swap.PumpWrappedBuyV6,
   Swap.HyloRouter,
   Swap.Memefun,
-  Swap.HumidiFiRouterV3 {
+  Swap.HumidiFiRouterV3,
+  Swap.PumpWrappedBuyV7,
+  Swap.PumpWrappedSellV6,
+  Swap.PumpSwapBuyV4,
+  Swap.PumpSwapSellV4,
+  Swap.ZeroFiSwapV3,
+  Swap.DenaliV2 {
 
   static Swap read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -402,6 +408,12 @@ public sealed interface Swap extends RustEnum permits
       case 188 -> HyloRouter.INSTANCE;
       case 189 -> Memefun.read(_data, i);
       case 190 -> HumidiFiRouterV3.read(_data, i);
+      case 191 -> PumpWrappedBuyV7.read(_data, i);
+      case 192 -> PumpWrappedSellV6.read(_data, i);
+      case 193 -> PumpSwapBuyV4.read(_data, i);
+      case 194 -> PumpSwapSellV4.read(_data, i);
+      case 195 -> ZeroFiSwapV3.INSTANCE;
+      case 196 -> DenaliV2.read(_data, i);
       default -> null;
     };
   }
@@ -3451,6 +3463,115 @@ public sealed interface Swap extends RustEnum permits
     @Override
     public int ordinal() {
       return 190;
+    }
+  }
+
+  record PumpWrappedBuyV7(boolean allowPartialFill, boolean closeUserVolumeAccumulator) implements Swap {
+
+    public static final int BYTES = 2;
+
+    public static final int ALLOW_PARTIAL_FILL_OFFSET = 0;
+    public static final int CLOSE_USER_VOLUME_ACCUMULATOR_OFFSET = 1;
+
+    public static PumpWrappedBuyV7 read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var allowPartialFill = _data[i] == 1;
+      ++i;
+      final var closeUserVolumeAccumulator = _data[i] == 1;
+      return new PumpWrappedBuyV7(allowPartialFill, closeUserVolumeAccumulator);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + writeOrdinal(_data, _offset);
+      _data[i] = (byte) (allowPartialFill ? 1 : 0);
+      ++i;
+      _data[i] = (byte) (closeUserVolumeAccumulator ? 1 : 0);
+      ++i;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return ordinalBytes() + BYTES;
+    }
+
+    @Override
+    public int ordinal() {
+      return 191;
+    }
+  }
+
+  record PumpWrappedSellV6(boolean val) implements EnumBool, Swap {
+
+    public static final PumpWrappedSellV6 TRUE = new PumpWrappedSellV6(true);
+    public static final PumpWrappedSellV6 FALSE = new PumpWrappedSellV6(false);
+
+    public static PumpWrappedSellV6 read(final byte[] _data, int i) {
+      return _data[i] == 1 ? PumpWrappedSellV6.TRUE : PumpWrappedSellV6.FALSE;
+    }
+
+    @Override
+    public int ordinal() {
+      return 192;
+    }
+  }
+
+  record PumpSwapBuyV4(boolean val) implements EnumBool, Swap {
+
+    public static final PumpSwapBuyV4 TRUE = new PumpSwapBuyV4(true);
+    public static final PumpSwapBuyV4 FALSE = new PumpSwapBuyV4(false);
+
+    public static PumpSwapBuyV4 read(final byte[] _data, int i) {
+      return _data[i] == 1 ? PumpSwapBuyV4.TRUE : PumpSwapBuyV4.FALSE;
+    }
+
+    @Override
+    public int ordinal() {
+      return 193;
+    }
+  }
+
+  record PumpSwapSellV4(boolean val) implements EnumBool, Swap {
+
+    public static final PumpSwapSellV4 TRUE = new PumpSwapSellV4(true);
+    public static final PumpSwapSellV4 FALSE = new PumpSwapSellV4(false);
+
+    public static PumpSwapSellV4 read(final byte[] _data, int i) {
+      return _data[i] == 1 ? PumpSwapSellV4.TRUE : PumpSwapSellV4.FALSE;
+    }
+
+    @Override
+    public int ordinal() {
+      return 194;
+    }
+  }
+
+  record ZeroFiSwapV3() implements EnumNone, Swap {
+
+    public static final ZeroFiSwapV3 INSTANCE = new ZeroFiSwapV3();
+
+    @Override
+    public int ordinal() {
+      return 195;
+    }
+  }
+
+  record DenaliV2(boolean val) implements EnumBool, Swap {
+
+    public static final DenaliV2 TRUE = new DenaliV2(true);
+    public static final DenaliV2 FALSE = new DenaliV2(false);
+
+    public static DenaliV2 read(final byte[] _data, int i) {
+      return _data[i] == 1 ? DenaliV2.TRUE : DenaliV2.FALSE;
+    }
+
+    @Override
+    public int ordinal() {
+      return 196;
     }
   }
 }

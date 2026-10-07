@@ -368,6 +368,7 @@ public final class JupiterProgram {
                                                                              final PublicKey associatedTokenAccountKey,
                                                                              final PublicKey ownerKey,
                                                                              final PublicKey mintKey,
+                                                                             final PublicKey associatedTokenProgramKey,
                                                                              final PublicKey systemProgramKey,
                                                                              final PublicKey tokenProgramKey,
                                                                              final PublicKey closeAuthorityKey) {
@@ -376,6 +377,7 @@ public final class JupiterProgram {
       createWrite(associatedTokenAccountKey),
       createReadOnlySigner(ownerKey),
       createRead(mintKey),
+      createRead(associatedTokenProgramKey),
       createRead(systemProgramKey),
       createRead(tokenProgramKey),
       createRead(closeAuthorityKey)
@@ -387,6 +389,7 @@ public final class JupiterProgram {
                                                                    final PublicKey associatedTokenAccountKey,
                                                                    final PublicKey ownerKey,
                                                                    final PublicKey mintKey,
+                                                                   final PublicKey associatedTokenProgramKey,
                                                                    final PublicKey systemProgramKey,
                                                                    final PublicKey tokenProgramKey,
                                                                    final PublicKey closeAuthorityKey) {
@@ -395,6 +398,7 @@ public final class JupiterProgram {
       associatedTokenAccountKey,
       ownerKey,
       mintKey,
+      associatedTokenProgramKey,
       systemProgramKey,
       tokenProgramKey,
       closeAuthorityKey
