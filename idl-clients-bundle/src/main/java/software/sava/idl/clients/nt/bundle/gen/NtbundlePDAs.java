@@ -59,6 +59,14 @@ public final class NtbundlePDAs {
     ), program);
   }
 
+  public static ProgramDerivedAddress mintPDA(final PublicKey program,
+                                              final PublicKey bundleAccountAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      "TOKENIZED_BUNDLE_MINT".getBytes(US_ASCII),
+      bundleAccountAccount.toByteArray()
+    ), program);
+  }
+
   public static ProgramDerivedAddress oracleDataPDA(final PublicKey program,
                                                     final PublicKey bundleAccountAccount) {
     return PublicKey.findProgramAddress(List.of(
@@ -233,6 +241,22 @@ public final class NtbundlePDAs {
       "USER_BUNDLE".getBytes(US_ASCII),
       withdrawalRequestUserAccount.toByteArray(),
       targetBundleAccountAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress tokenAuthorityPDA(final PublicKey program,
+                                                        final PublicKey bundleAccountAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      "TOKENIZED_BUNDLE_TOKEN_AUTHORITY".getBytes(US_ASCII),
+      bundleAccountAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress tokenizedBundleDepositorPDA(final PublicKey program,
+                                                                  final PublicKey bundleAccountAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      "TOKENIZED_BUNDLE_DEPOSITOR".getBytes(US_ASCII),
+      bundleAccountAccount.toByteArray()
     ), program);
   }
 

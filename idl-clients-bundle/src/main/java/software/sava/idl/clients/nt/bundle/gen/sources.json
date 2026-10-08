@@ -16,7 +16,7 @@
     },
     "vcs": {
       "origin": "github:neutral-trade/sdk@main/src/idl/ntbundle.json",
-      "hash": "3ad23f628aaddc4d54edbb3f30e35332e773ca640257456b2bd87df8dcd2f8d7",
+      "hash": "ac0fd75496f74546b9b7d732d5fe400cdf905a55cdaee912f9a26234c1ff49fd",
       "matchesDeployed": true,
       "verbatim": "idl.json"
     }

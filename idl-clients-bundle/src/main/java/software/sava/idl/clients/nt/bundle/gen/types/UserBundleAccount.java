@@ -35,6 +35,8 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param feeOverrideFlags: u8
 /// @param customWithdrawalDelay: u64
 /// @param withdrawalTimingOverrideFlags: u8
+/// @param performanceFeeVersion: u64
+/// @param managementFeeVersion: u64
 public record UserBundleAccount(PublicKey _address,
                                 Discriminator discriminator,
                                 PublicKey owner,
@@ -64,10 +66,13 @@ public record UserBundleAccount(PublicKey _address,
                                 PublicKey switchTargetBundle,
                                 long switchCreatedAt,
                                 PublicKey referrer,
+                                long performanceFeeVersion,
+                                boolean performanceFeeResetPending,
+                                long managementFeeVersion,
                                 byte[] padding) implements SerDe {
 
   public static final int BYTES = 440;
-  public static final int PADDING_LEN = 145;
+  public static final int PADDING_LEN = 128;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(32, 181, 106, 26, 67, 130, 185, 241);
@@ -100,7 +105,10 @@ public record UserBundleAccount(PublicKey _address,
   public static final int SWITCH_TARGET_BUNDLE_OFFSET = 223;
   public static final int SWITCH_CREATED_AT_OFFSET = 255;
   public static final int REFERRER_OFFSET = 263;
-  public static final int PADDING_OFFSET = 295;
+  public static final int PERFORMANCE_FEE_VERSION_OFFSET = 295;
+  public static final int PERFORMANCE_FEE_RESET_PENDING_OFFSET = 303;
+  public static final int MANAGEMENT_FEE_VERSION_OFFSET = 304;
+  public static final int PADDING_OFFSET = 312;
 
   public static Filter createOwnerFilter(final PublicKey owner) {
     return Filter.createMemCompFilter(OWNER_OFFSET, owner);
@@ -252,6 +260,22 @@ public record UserBundleAccount(PublicKey _address,
     return Filter.createMemCompFilter(REFERRER_OFFSET, referrer);
   }
 
+  public static Filter createPerformanceFeeVersionFilter(final long performanceFeeVersion) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, performanceFeeVersion);
+    return Filter.createMemCompFilter(PERFORMANCE_FEE_VERSION_OFFSET, _data);
+  }
+
+  public static Filter createPerformanceFeeResetPendingFilter(final boolean performanceFeeResetPending) {
+    return Filter.createMemCompFilter(PERFORMANCE_FEE_RESET_PENDING_OFFSET, new byte[]{(byte) (performanceFeeResetPending ? 1 : 0)});
+  }
+
+  public static Filter createManagementFeeVersionFilter(final long managementFeeVersion) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, managementFeeVersion);
+    return Filter.createMemCompFilter(MANAGEMENT_FEE_VERSION_OFFSET, _data);
+  }
+
   public static UserBundleAccount read(final byte[] _data, final int _offset) {
     return read(null, _data, _offset);
   }
@@ -340,7 +364,13 @@ public record UserBundleAccount(PublicKey _address,
     i += 8;
     final var referrer = readPubKey(_data, i);
     i += 32;
-    final var padding = new byte[145];
+    final var performanceFeeVersion = getInt64LE(_data, i);
+    i += 8;
+    final var performanceFeeResetPending = _data[i] == 1;
+    ++i;
+    final var managementFeeVersion = getInt64LE(_data, i);
+    i += 8;
+    final var padding = new byte[128];
     SerDeUtil.readArray(padding, _data, i);
     return new UserBundleAccount(_address,
                                  discriminator,
@@ -371,6 +401,9 @@ public record UserBundleAccount(PublicKey _address,
                                  switchTargetBundle,
                                  switchCreatedAt,
                                  referrer,
+                                 performanceFeeVersion,
+                                 performanceFeeResetPending,
+                                 managementFeeVersion,
                                  padding);
   }
 
@@ -431,7 +464,13 @@ public record UserBundleAccount(PublicKey _address,
     i += 8;
     referrer.write(_data, i);
     i += 32;
-    i += SerDeUtil.writeArrayChecked(padding, 145, _data, i);
+    putInt64LE(_data, i, performanceFeeVersion);
+    i += 8;
+    _data[i] = (byte) (performanceFeeResetPending ? 1 : 0);
+    ++i;
+    putInt64LE(_data, i, managementFeeVersion);
+    i += 8;
+    i += SerDeUtil.writeArrayChecked(padding, 128, _data, i);
     return i - _offset;
   }
 

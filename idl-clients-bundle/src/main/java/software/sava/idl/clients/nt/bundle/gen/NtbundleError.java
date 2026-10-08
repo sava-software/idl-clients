@@ -97,7 +97,19 @@ public sealed interface NtbundleError extends ProgramError permits
     NtbundleError.ReferrerSharesZero,
     NtbundleError.UnauthorizedReferrerAction,
     NtbundleError.ReferrerDepositTooLow,
-    NtbundleError.InvalidReferralTierConfig {
+    NtbundleError.InvalidReferralTierConfig,
+    NtbundleError.InvalidTokenizedBundleDepositor,
+    NtbundleError.InvalidTokenizedBundleMint,
+    NtbundleError.InvalidTokenizedBundleTokenAuthority,
+    NtbundleError.TokenAmountZero,
+    NtbundleError.TokenAmountTooSmall,
+    NtbundleError.PermissionedBundleTokenizationUnsupported,
+    NtbundleError.PendingStateActive,
+    NtbundleError.TokenizedBundleStateInvalid,
+    NtbundleError.MinimumTokensOutNotMet,
+    NtbundleError.ExcessiveIssuanceFee,
+    NtbundleError.MinimumSharesOutNotMet,
+    NtbundleError.InstantMintCapExceeded {
 
   static NtbundleError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -195,6 +207,18 @@ public sealed interface NtbundleError extends ProgramError permits
       case 6091 -> UnauthorizedReferrerAction.INSTANCE;
       case 6092 -> ReferrerDepositTooLow.INSTANCE;
       case 6093 -> InvalidReferralTierConfig.INSTANCE;
+      case 6094 -> InvalidTokenizedBundleDepositor.INSTANCE;
+      case 6095 -> InvalidTokenizedBundleMint.INSTANCE;
+      case 6096 -> InvalidTokenizedBundleTokenAuthority.INSTANCE;
+      case 6097 -> TokenAmountZero.INSTANCE;
+      case 6098 -> TokenAmountTooSmall.INSTANCE;
+      case 6099 -> PermissionedBundleTokenizationUnsupported.INSTANCE;
+      case 6100 -> PendingStateActive.INSTANCE;
+      case 6101 -> TokenizedBundleStateInvalid.INSTANCE;
+      case 6102 -> MinimumTokensOutNotMet.INSTANCE;
+      case 6103 -> ExcessiveIssuanceFee.INSTANCE;
+      case 6104 -> MinimumSharesOutNotMet.INSTANCE;
+      case 6105 -> InstantMintCapExceeded.INSTANCE;
       default -> null;
     };
   }
@@ -854,6 +878,90 @@ public sealed interface NtbundleError extends ProgramError permits
 
     public static final InvalidReferralTierConfig INSTANCE = new InvalidReferralTierConfig(
         6093, "Invalid referral tier configuration"
+    );
+  }
+
+  record InvalidTokenizedBundleDepositor(int code, String msg) implements NtbundleError {
+
+    public static final InvalidTokenizedBundleDepositor INSTANCE = new InvalidTokenizedBundleDepositor(
+        6094, "Invalid tokenized bundle depositor"
+    );
+  }
+
+  record InvalidTokenizedBundleMint(int code, String msg) implements NtbundleError {
+
+    public static final InvalidTokenizedBundleMint INSTANCE = new InvalidTokenizedBundleMint(
+        6095, "Invalid tokenized bundle mint"
+    );
+  }
+
+  record InvalidTokenizedBundleTokenAuthority(int code, String msg) implements NtbundleError {
+
+    public static final InvalidTokenizedBundleTokenAuthority INSTANCE = new InvalidTokenizedBundleTokenAuthority(
+        6096, "Invalid tokenized bundle token authority"
+    );
+  }
+
+  record TokenAmountZero(int code, String msg) implements NtbundleError {
+
+    public static final TokenAmountZero INSTANCE = new TokenAmountZero(
+        6097, "Token amount must be greater than zero"
+    );
+  }
+
+  record TokenAmountTooSmall(int code, String msg) implements NtbundleError {
+
+    public static final TokenAmountTooSmall INSTANCE = new TokenAmountTooSmall(
+        6098, "Token amount is too small"
+    );
+  }
+
+  record PermissionedBundleTokenizationUnsupported(int code, String msg) implements NtbundleError {
+
+    public static final PermissionedBundleTokenizationUnsupported INSTANCE = new PermissionedBundleTokenizationUnsupported(
+        6099, "Permissioned bundle tokenization is not supported"
+    );
+  }
+
+  record PendingStateActive(int code, String msg) implements NtbundleError {
+
+    public static final PendingStateActive INSTANCE = new PendingStateActive(
+        6100, "Pending deposit, withdrawal, or switch state is active"
+    );
+  }
+
+  record TokenizedBundleStateInvalid(int code, String msg) implements NtbundleError {
+
+    public static final TokenizedBundleStateInvalid INSTANCE = new TokenizedBundleStateInvalid(
+        6101, "Tokenized bundle state is invalid"
+    );
+  }
+
+  record MinimumTokensOutNotMet(int code, String msg) implements NtbundleError {
+
+    public static final MinimumTokensOutNotMet INSTANCE = new MinimumTokensOutNotMet(
+        6102, "Minimum share tokens out was not met"
+    );
+  }
+
+  record ExcessiveIssuanceFee(int code, String msg) implements NtbundleError {
+
+    public static final ExcessiveIssuanceFee INSTANCE = new ExcessiveIssuanceFee(
+        6103, "Excessive issuance fee"
+    );
+  }
+
+  record MinimumSharesOutNotMet(int code, String msg) implements NtbundleError {
+
+    public static final MinimumSharesOutNotMet INSTANCE = new MinimumSharesOutNotMet(
+        6104, "Minimum bundle shares out was not met"
+    );
+  }
+
+  record InstantMintCapExceeded(int code, String msg) implements NtbundleError {
+
+    public static final InstantMintCapExceeded INSTANCE = new InstantMintCapExceeded(
+        6105, "Instant mint cap per cycle exceeded"
     );
   }
 }
