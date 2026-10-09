@@ -87,7 +87,7 @@ Orca Whirlpools: the vcs IDL at https://cdn.jsdelivr.net/npm/@orca-so/whirlpools
 
 Phoenix Ember: generates WithdrawParams.amount as {"option":"u64"}, where idl.json declares "u64" ("fieldTypes")
 
-Phoenix Perpetuals: the review at slot 447323692 predates the deploy at slot 453957507 — metadata IDL republished at slot 447589572 names exactly the 113 dispatched instructions; still stale upstream: Trader.maxPositions is a u64 over u32 max_positions + u32 trader_preference_bits, and GlobalConfiguration padding1 hides the native SOL collateral config
+Phoenix Perpetuals: the review at slot 447323692 predates the deploy at slot 454907814 — metadata IDL republished at slot 447589572 names exactly the 113 dispatched instructions; still stale upstream: Trader.maxPositions is a u64 over u32 max_positions + u32 trader_preference_bits, and GlobalConfiguration padding1 hides the native SOL collateral config
 
 Pyth Lazer: the anchor IDL at AUuHVnggr2prrwaNdZhCHXucvD8QJEmfMKXRAhBTFfF4 differs from the deployed idl.json
   instructions removed (2): update_ecdsa_signer, verify_ecdsa_message
