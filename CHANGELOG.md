@@ -1,5 +1,15 @@
 # Changelog
 
+## [25.19.11](https://github.com/sava-software/idl-clients/compare/25.19.10...25.19.11) (2026-10-10)
+
+
+### Features
+
+* **idl:** Sync Jupiter Lend and Borrow IDLs to align with on-chain changes ([a6e0180](https://github.com/sava-software/idl-clients/commit/a6e0180c736f69f4ac80c21ca932692cfac544a2))
+* **idl:** Sync Jupiter Swap IDL to include new ZeroFiSwapV3 and associated account programs ([2e3589f](https://github.com/sava-software/idl-clients/commit/2e3589fe7cce4a075dde04ff6bb74b6d4846d689))
+* **idl:** Sync NT Bundle IDL to include new events and types ([74ab019](https://github.com/sava-software/idl-clients/commit/74ab0191bea5b6b9bfd7aa96189702550ecfc551))
+* **idl:** Sync Phoenix Perpetuals and Jupiter Lend IDLs to deployed binaries ([92635dd](https://github.com/sava-software/idl-clients/commit/92635dd33ed01be5e575068947170debec7a477c))
+
 ## [25.19.10](https://github.com/sava-software/idl-clients/compare/25.19.9...25.19.10) (2026-10-06)
 
 
