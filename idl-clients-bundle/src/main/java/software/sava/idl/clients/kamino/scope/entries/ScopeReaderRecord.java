@@ -271,7 +271,6 @@ record ScopeReaderRecord(ScopeEntry[] entries,
       case FlashtradeLp -> new FlashtradeLp(i, priceAccount, emaTypes);
       case JitoRestaking -> new JitoRestaking(i, priceAccount, emaTypes);
       case JupiterLpFetch -> new JupiterLpFetch(i, priceAccount, emaTypes);
-      case KToken -> new KToken(i, priceAccount, emaTypes);
       case KlendCTokenExchangeRate -> new KlendCTokenExchangeRate(i, priceAccount, emaTypes);
       case MeteoraDlmmAtoB -> new MeteoraDlmmAtoB(i, priceAccount, emaTypes);
       case MeteoraDlmmBtoA -> new MeteoraDlmmBtoA(i, priceAccount, emaTypes);
@@ -308,11 +307,6 @@ record ScopeReaderRecord(ScopeEntry[] entries,
         final var data = PythLazerEmaRefData.read(generic[i], 0);
         yield new PythLazerEMA(i, entry(data.sourceEntry()), emaTypes);
       }
-      case PythPull -> {
-        final var band = band(i);
-        yield new PythPull(i, priceAccount, emaTypes, band.refPrice(), band.toleranceBps());
-      }
-      case PythPullEMA -> new PythPullEMA(i, priceAccount, emaTypes);
       case RaydiumAmmV3AtoB -> new RaydiumAmmV3AtoB(i, priceAccount, emaTypes);
       case RaydiumAmmV3BtoA -> new RaydiumAmmV3BtoA(i, priceAccount, emaTypes);
       case RedStone -> new RedStone(i, priceAccount, emaTypes);
@@ -330,7 +324,6 @@ record ScopeReaderRecord(ScopeEntry[] entries,
         yield new Token2022Multiplier(i, priceAccount, emaTypes, mappingData.dailyAutoApprovalBps());
       }
       case TotalMintSupply -> new TotalMintSupply(i, priceAccount, emaTypes);
-      case SwitchboardOnDemand -> new SwitchboardOnDemand(i, priceAccount, emaTypes);
       case Unused -> new Unused(i);
       default -> {
         if (oracleType.name().startsWith("Deprecated")) {

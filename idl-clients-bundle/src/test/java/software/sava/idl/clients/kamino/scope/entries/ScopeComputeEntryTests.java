@@ -138,8 +138,8 @@ final class ScopeComputeEntryTests {
   @Test
   void mostRecentOfResolvesItsSources() {
     final var entries = new Mappings()
-        .slot(1, OracleType.PythPull)
-        .slot(2, OracleType.PythPull)
+        .slot(1, OracleType.Securitize)
+        .slot(2, OracleType.Securitize)
         .slot(0, OracleType.MostRecentOf)
         .generic(0, new MostRecentOfData(new int[]{1, 2, NONE, NONE}, 250, 3_600L))
         .parse();
@@ -159,7 +159,7 @@ final class ScopeComputeEntryTests {
   @Test
   void cappedMostRecentOfResolvesSourcesAndCap() {
     final var entries = new Mappings()
-        .slot(1, OracleType.PythPull)
+        .slot(1, OracleType.Securitize)
         .slot(2, OracleType.FixedPrice)
         .generic(2, new Price(5L, 0L))
         .slot(0, OracleType.CappedMostRecentOf)
@@ -178,9 +178,9 @@ final class ScopeComputeEntryTests {
   @Test
   void multiplicationChainResolvesItsSources() {
     final var entries = new Mappings()
-        .slot(1, OracleType.PythPull)
-        .slot(2, OracleType.PythPull)
-        .slot(3, OracleType.PythPull)
+        .slot(1, OracleType.Securitize)
+        .slot(2, OracleType.Securitize)
+        .slot(3, OracleType.Securitize)
         .slot(0, OracleType.MultiplicationChain)
         .generic(0, new MultiplicationChainData(new int[]{1, 2, 3, NONE, NONE, NONE}, 120L))
         .parse();
@@ -194,7 +194,7 @@ final class ScopeComputeEntryTests {
   @Test
   void cappedFlooredResolvesAllThreeReferences() {
     final var entries = new Mappings()
-        .slot(1, OracleType.PythPull)
+        .slot(1, OracleType.Securitize)
         .slot(2, OracleType.FixedPrice)
         .generic(2, new Price(9L, 0L))
         .slot(3, OracleType.FixedPrice)
@@ -212,7 +212,7 @@ final class ScopeComputeEntryTests {
     // absent cap/floor stay null rather than resolving slot 0; the max age sits after
     // the two absent tags, so it must still be read from the right offset
     final var bare = new Mappings()
-        .slot(1, OracleType.PythPull)
+        .slot(1, OracleType.Securitize)
         .slot(0, OracleType.CappedFloored)
         .generic(0, new CappedFlooredData(1, OptionalInt.empty(), OptionalInt.empty(), 120L))
         .parse();
@@ -231,7 +231,7 @@ final class ScopeComputeEntryTests {
   @Test
   void cappedFlooredConfiguredBeforeTheMaxAgeReadsZero() {
     final var mappings = new Mappings()
-        .slot(1, OracleType.PythPull)
+        .slot(1, OracleType.Securitize)
         .slot(2, OracleType.FixedPrice)
         .generic(2, new Price(9L, 0L))
         .slot(0, OracleType.CappedFloored);
@@ -260,7 +260,7 @@ final class ScopeComputeEntryTests {
   void cappedFlooredMaxAgeIsReadFromWhereTheOptionalBoundsLeaveIt() {
     // cap present, floor absent: 2 + 3 + 1 = offset 6
     final var oneBound = new Mappings()
-        .slot(1, OracleType.PythPull)
+        .slot(1, OracleType.Securitize)
         .slot(2, OracleType.FixedPrice)
         .generic(2, new Price(9L, 0L))
         .slot(0, OracleType.CappedFloored);
@@ -277,7 +277,7 @@ final class ScopeComputeEntryTests {
 
     // both absent: 2 + 1 + 1 = offset 4
     final var noBounds = new Mappings()
-        .slot(1, OracleType.PythPull)
+        .slot(1, OracleType.Securitize)
         .slot(0, OracleType.CappedFloored);
     final byte[] four = noBounds.generic[0];
     four[0] = 1;
@@ -290,7 +290,7 @@ final class ScopeComputeEntryTests {
 
     // both present: 2 + 3 + 3 = offset 8
     final var twoBounds = new Mappings()
-        .slot(1, OracleType.PythPull)
+        .slot(1, OracleType.Securitize)
         .slot(2, OracleType.FixedPrice)
         .generic(2, new Price(9L, 0L))
         .slot(3, OracleType.FixedPrice)
@@ -317,9 +317,9 @@ final class ScopeComputeEntryTests {
   void conditionalSourceCountDependsOnTheCondition() {
     // NonZero reads one source
     final var nonZero = new Mappings()
-        .slot(1, OracleType.PythPull)
-        .slot(2, OracleType.PythPull)
-        .slot(3, OracleType.PythPull)
+        .slot(1, OracleType.Securitize)
+        .slot(2, OracleType.Securitize)
+        .slot(3, OracleType.Securitize)
         .slot(0, OracleType.Conditional)
         .generic(0, new ConditionalData(Condition.NonZero.ordinal(), 50, new int[]{1, 2, 3}))
         .parse();
@@ -330,18 +330,18 @@ final class ScopeComputeEntryTests {
 
     // WithinRangeAbs reads three
     final var within = new Mappings()
-        .slot(1, OracleType.PythPull)
-        .slot(2, OracleType.PythPull)
-        .slot(3, OracleType.PythPull)
+        .slot(1, OracleType.Securitize)
+        .slot(2, OracleType.Securitize)
+        .slot(3, OracleType.Securitize)
         .slot(0, OracleType.Conditional)
         .generic(0, new ConditionalData(Condition.WithinRangeAbs.ordinal(), 50, new int[]{1, 2, 3}))
         .parse();
     assertEquals(3, assertInstanceOf(Conditional.class, within.scopeEntry(0)).sources().length);
 
     final var outside = new Mappings()
-        .slot(1, OracleType.PythPull)
-        .slot(2, OracleType.PythPull)
-        .slot(3, OracleType.PythPull)
+        .slot(1, OracleType.Securitize)
+        .slot(2, OracleType.Securitize)
+        .slot(3, OracleType.Securitize)
         .slot(0, OracleType.Conditional)
         .generic(0, new ConditionalData(Condition.OutsideRangeAbs.ordinal(), 50, new int[]{1, 2, 3}))
         .parse();
@@ -349,9 +349,9 @@ final class ScopeComputeEntryTests {
 
     // every comparison condition reads two
     final var gt = new Mappings()
-        .slot(1, OracleType.PythPull)
-        .slot(2, OracleType.PythPull)
-        .slot(3, OracleType.PythPull)
+        .slot(1, OracleType.Securitize)
+        .slot(2, OracleType.Securitize)
+        .slot(3, OracleType.Securitize)
         .slot(0, OracleType.Conditional)
         .generic(0, new ConditionalData(Condition.Gt.ordinal(), 50, new int[]{1, 2, 3}))
         .parse();
@@ -364,7 +364,7 @@ final class ScopeComputeEntryTests {
   @Test
   void conditionalResolvesItsSourcesWithARefPriceSet() {
     final var mappings = new Mappings()
-        .slot(1, OracleType.PythPull)
+        .slot(1, OracleType.Securitize)
         .slot(0, OracleType.Conditional)
         .generic(0, new ConditionalData(Condition.NonZero.ordinal(), 0, new int[]{1, NONE, NONE}))
         .refPrice(0, 1);
@@ -383,7 +383,7 @@ final class ScopeComputeEntryTests {
         OracleType.ScopeTwap1h, OracleType.ScopeTwap8h, OracleType.ScopeTwap24h, OracleType.ScopeTwap7d
     }) {
       final var mappings = new Mappings()
-          .slot(1, OracleType.PythPull)
+          .slot(1, OracleType.Securitize)
           .slot(0, twapType);
       mappings.tolerance[0] = 1; // for TWAP types this field is the source entry index
       final var entries = mappings.parse();
@@ -401,53 +401,53 @@ final class ScopeComputeEntryTests {
   @Test
   void refPriceAndToleranceAreResolvedTogether() {
     final var mappings = new Mappings()
-        .slot(1, OracleType.PythPull)
-        .slot(0, OracleType.PythPull);
+        .slot(1, OracleType.Securitize)
+        .slot(0, OracleType.Securitize);
     mappings.refPrice[0] = 1;
     mappings.tolerance[0] = 500;
     final var entries = mappings.parse();
 
-    final var pyth = assertInstanceOf(PythPull.class, entries.scopeEntry(0));
-    assertEquals(entries.scopeEntry(1), pyth.refPrice());
-    assertEquals(OptionalInt.of(500), pyth.refPriceToleranceBps());
+    final var securitize = assertInstanceOf(Securitize.class, entries.scopeEntry(0));
+    assertEquals(entries.scopeEntry(1), securitize.refPrice());
+    assertEquals(OptionalInt.of(500), securitize.refPriceToleranceBps());
 
     // u16::MAX means "no tolerance configured", even with a ref price present
     final var noTolerance = new Mappings()
-        .slot(1, OracleType.PythPull)
-        .slot(0, OracleType.PythPull);
+        .slot(1, OracleType.Securitize)
+        .slot(0, OracleType.Securitize);
     noTolerance.refPrice[0] = 1;
     noTolerance.tolerance[0] = NONE;
-    final var atMax = assertInstanceOf(PythPull.class, noTolerance.parse().scopeEntry(0));
+    final var atMax = assertInstanceOf(Securitize.class, noTolerance.parse().scopeEntry(0));
     assertNotNull(atMax.refPrice());
     assertTrue(atMax.refPriceToleranceBps().isEmpty());
 
     // and without a ref price there is no tolerance either, whatever the field holds
-    final var noRef = new Mappings().slot(0, OracleType.PythPull);
+    final var noRef = new Mappings().slot(0, OracleType.Securitize);
     noRef.tolerance[0] = 500;
-    final var without = assertInstanceOf(PythPull.class, noRef.parse().scopeEntry(0));
+    final var without = assertInstanceOf(Securitize.class, noRef.parse().scopeEntry(0));
     assertNull(without.refPrice());
     assertTrue(without.refPriceToleranceBps().isEmpty());
   }
 
   @Test
   void emaBitmaskDecodesEachBitToItsType() {
-    final var mappings = new Mappings().slot(0, OracleType.PythPull);
+    final var mappings = new Mappings().slot(0, OracleType.Securitize);
     mappings.twapBitmasks[0] = new TwapEnabledBitmask(0b0101); // Ema1h | Ema24h
-    final var pyth = assertInstanceOf(PythPull.class, mappings.parse().scopeEntry(0));
-    assertEquals(Set.of(EmaType.Ema1h, EmaType.Ema24h), pyth.emaTypes());
+    final var securitize = assertInstanceOf(Securitize.class, mappings.parse().scopeEntry(0));
+    assertEquals(Set.of(EmaType.Ema1h, EmaType.Ema24h), securitize.emaTypes());
 
-    final var all = new Mappings().slot(0, OracleType.PythPull);
+    final var all = new Mappings().slot(0, OracleType.Securitize);
     all.twapBitmasks[0] = new TwapEnabledBitmask(0b1111);
     assertEquals(
         Set.of(EmaType.Ema1h, EmaType.Ema8h, EmaType.Ema24h, EmaType.Ema7d),
-        assertInstanceOf(PythPull.class, all.parse().scopeEntry(0)).emaTypes());
+        assertInstanceOf(Securitize.class, all.parse().scopeEntry(0)).emaTypes());
 
-    final var none = new Mappings().slot(0, OracleType.PythPull);
-    final var emptyTypes = assertInstanceOf(PythPull.class, none.parse().scopeEntry(0)).emaTypes();
+    final var none = new Mappings().slot(0, OracleType.Securitize);
+    final var emptyTypes = assertInstanceOf(Securitize.class, none.parse().scopeEntry(0)).emaTypes();
     assertEquals(Set.of(), emptyTypes);
 
     // The entries are immutable, so neither set can be changed under them.
-    assertThrows(UnsupportedOperationException.class, () -> pyth.emaTypes().add(EmaType.Ema8h));
+    assertThrows(UnsupportedOperationException.class, () -> securitize.emaTypes().add(EmaType.Ema8h));
     assertThrows(UnsupportedOperationException.class, () -> emptyTypes.add(EmaType.Ema8h));
   }
 
@@ -458,16 +458,16 @@ final class ScopeComputeEntryTests {
   /// Bit 7 of the price type is a frozen flag; the oracle type lives in bits 0-6.
   @Test
   void frozenFlagBitIsMaskedOffTheOracleType() {
-    final var mappings = new Mappings().slot(0, OracleType.PythPull);
-    mappings.priceTypes[0] = (byte) (OracleType.PythPull.ordinal() | 0x80);
-    assertInstanceOf(PythPull.class, mappings.parse().scopeEntry(0));
+    final var mappings = new Mappings().slot(0, OracleType.Securitize);
+    mappings.priceTypes[0] = (byte) (OracleType.Securitize.ordinal() | 0x80);
+    assertInstanceOf(Securitize.class, mappings.parse().scopeEntry(0));
   }
 
   /// An ordinal beyond the generated enum degrades to NotYetSupported with a
   /// null type instead of failing the whole mappings parse.
   @Test
   void ordinalBeyondTheEnumDegradesToNotYetSupported() {
-    final var mappings = new Mappings().slot(0, OracleType.PythPull);
+    final var mappings = new Mappings().slot(0, OracleType.Securitize);
     mappings.priceTypes[0] = (byte) 0x7F; // 127, far past the enum
     final var notYet = assertInstanceOf(NotYetSupported.class, mappings.parse().scopeEntry(0));
     assertNull(notYet.oracleType());
@@ -476,9 +476,19 @@ final class ScopeComputeEntryTests {
 
   @Test
   void deprecatedTypesParseAsDeprecated() {
-    final var entries = new Mappings().slot(0, OracleType.DeprecatedPlaceholder1).parse();
-    final var deprecated = assertInstanceOf(Deprecated.class, entries.scopeEntry(0));
-    assertEquals(OracleType.DeprecatedPlaceholder1, deprecated.oracleType());
+    // Persisted wire values from Scope 0.44.0's states/oracle_type.rs, in
+    // DeprecatedPlaceholder1..13 order. A rename must not shift their ordinals.
+    final int[] ordinals = {1, 2, 3, 4, 7, 17, 20, 6, 9, 10, 24, 21, 22};
+    for (int i = 0; i < ordinals.length; ++i) {
+      for (final int frozenFlag : new int[]{0, 0x80}) {
+        final var mappings = new Mappings();
+        mappings.priceTypes[0] = (byte) (ordinals[i] | frozenFlag);
+        final var deprecated = assertInstanceOf(Deprecated.class, mappings.parse().scopeEntry(0));
+        assertEquals(0, deprecated.index());
+        assertEquals("DeprecatedPlaceholder" + (i + 1), deprecated.oracleType().name());
+        assertEquals(ordinals[i], deprecated.oracleType().ordinal());
+      }
+    }
   }
 
   @Test
@@ -559,7 +569,7 @@ final class ScopeComputeEntryTests {
     assertEquals(100, chainlinkX.dailyAutoApprovalBps());
 
     final var configured = new Mappings()
-        .slot(1, OracleType.PythPull)
+        .slot(1, OracleType.Securitize)
         .slot(6, OracleType.ChainlinkX)
         .generic(6, new ChainlinkXMappingData(MarketStatusBehavior.Open, 100))
         .bitmask(6, 1)
@@ -613,7 +623,7 @@ final class ScopeComputeEntryTests {
     assertTrue(junior.twapEnabled());
 
     final var configured = new Mappings()
-        .slot(1, OracleType.PythPull)
+        .slot(1, OracleType.Securitize)
         .slot(12, OracleType.ExponentTranching)
         .generic(12, new ExponentTranchingData(ExponentTrancheSide.Junior))
         .bitmask(12, 1)
@@ -630,14 +640,14 @@ final class ScopeComputeEntryTests {
   void anUnknownTrancheSideReadsAsNull() {
     final var mappings = new Mappings()
         .slot(3, OracleType.ExponentTranching)
-        .slot(4, OracleType.PythPull);
+        .slot(4, OracleType.Securitize);
     mappings.generic[3][0] = 2;
     final var entries = mappings.parse();
 
     final var unknown = assertInstanceOf(ExponentTranching.class, entries.scopeEntry(3));
     assertNull(unknown.trancheSide());
     assertEquals(key(4), unknown.oracle());
-    assertInstanceOf(PythPull.class, entries.scopeEntry(4));
+    assertInstanceOf(Securitize.class, entries.scopeEntry(4));
   }
 
   @Test
@@ -663,12 +673,12 @@ final class ScopeComputeEntryTests {
         OracleType.TotalMintSupply, OracleType.SplStake
     }) {
       final var withRef = new Mappings()
-          .slot(1, OracleType.PythPull)
+          .slot(1, OracleType.Securitize)
           .slot(0, type)
           .refPrice(0, 1)
           .parse();
       final var without = new Mappings()
-          .slot(1, OracleType.PythPull)
+          .slot(1, OracleType.Securitize)
           .slot(0, type)
           .parse();
       // these four hold no arrays, so record equality is value equality here
@@ -718,7 +728,7 @@ final class ScopeComputeEntryTests {
     assertEquals(25, multiplier.dailyAutoApprovalBps());
 
     final var configured = new Mappings()
-        .slot(1, OracleType.PythPull)
+        .slot(1, OracleType.Securitize)
         .slot(7, OracleType.Token2022Multiplier)
         .generic(7, new Token2022MultiplierMappingData(25))
         .bitmask(7, 1)
@@ -762,7 +772,7 @@ final class ScopeComputeEntryTests {
     assertTrue(canary.twapEnabled());
 
     final var configured = new Mappings()
-        .slot(1, OracleType.PythPull)
+        .slot(1, OracleType.Securitize)
         .slot(9, OracleType.Canary)
         .bitmask(9, 1)
         .refPrice(9, 1)
@@ -791,7 +801,7 @@ final class ScopeComputeEntryTests {
     assertTrue(exchangeRate.twapEnabled());
 
     final var configured = new Mappings()
-        .slot(1, OracleType.PythPull)
+        .slot(1, OracleType.Securitize)
         .slot(5, OracleType.KlendCTokenExchangeRate)
         .bitmask(5, 1)
         .refPrice(5, 1)
@@ -836,7 +846,7 @@ final class ScopeComputeEntryTests {
   @Test
   void backwardReferencesResolveToTheMemoizedInstance() {
     final var entries = new Mappings()
-        .slot(1, OracleType.PythPull)
+        .slot(1, OracleType.Securitize)
         .slot(5, OracleType.MostRecentOf)
         .generic(5, new MostRecentOfData(new int[]{1, NONE, NONE, NONE}, 0, 0L))
         .parse();
@@ -851,7 +861,7 @@ final class ScopeComputeEntryTests {
   @Test
   void slotZeroIsReferenceable() {
     final var entries = new Mappings()
-        .slot(0, OracleType.PythPull)
+        .slot(0, OracleType.Securitize)
         .slot(5, OracleType.MostRecentOf)
         .generic(5, new MostRecentOfData(new int[]{0, NONE, NONE, NONE}, 0, 0L))
         .parse();
@@ -865,7 +875,7 @@ final class ScopeComputeEntryTests {
   /// through to the parsed entries.
   @Test
   void parseEntriesFromAccountInfo() {
-    final var mappings = new Mappings().slot(0, OracleType.PythPull);
+    final var mappings = new Mappings().slot(0, OracleType.Securitize);
     final byte[] data = new byte[software.sava.idl.clients.kamino.scope.gen.types.OracleMappings.BYTES];
     new software.sava.idl.clients.kamino.scope.gen.types.OracleMappings(
         key(0x77),
@@ -882,7 +892,7 @@ final class ScopeComputeEntryTests {
     final var entries = ScopeReader.parseEntries(accountInfo);
     assertEquals(99L, ((ScopeEntriesRecord) entries).slot());
     assertEquals(key(0x77), ((ScopeEntriesRecord) entries).pubKey());
-    assertInstanceOf(PythPull.class, entries.scopeEntry(0));
+    assertInstanceOf(Securitize.class, entries.scopeEntry(0));
   }
 
   /// Both configuration-bound entry points record the feed's prices account, which is
@@ -890,7 +900,7 @@ final class ScopeComputeEntryTests {
   /// overloads without one parse identically but leave it unbound.
   @Test
   void parseEntriesBindsTheFeedFromTheConfiguration() {
-    final var mappings = new Mappings().slot(0, OracleType.PythPull);
+    final var mappings = new Mappings().slot(0, OracleType.Securitize);
     final var oracleMappings = new OracleMappings(
         key(0x77), OracleMappings.DISCRIMINATOR,
         mappings.priceInfoAccounts, mappings.priceTypes, mappings.tolerance,
@@ -906,7 +916,7 @@ final class ScopeComputeEntryTests {
     final var fromMappings = ScopeReader.parseEntries(7L, oracleMappings, configuration);
     assertEquals(prices, fromMappings.oraclePrices());
     assertEquals(7L, fromMappings.slot());
-    assertInstanceOf(PythPull.class, fromMappings.scopeEntry(0));
+    assertInstanceOf(Securitize.class, fromMappings.scopeEntry(0));
 
     final byte[] data = new byte[OracleMappings.BYTES];
     oracleMappings.write(data, 0);
@@ -918,7 +928,7 @@ final class ScopeComputeEntryTests {
     final var fromAccount = ScopeReader.parseEntries(accountInfo, configuration);
     assertEquals(prices, fromAccount.oraclePrices());
     assertEquals(99L, fromAccount.slot());
-    assertInstanceOf(PythPull.class, fromAccount.scopeEntry(0));
+    assertInstanceOf(Securitize.class, fromAccount.scopeEntry(0));
 
     // unbound without a configuration
     assertNull(ScopeReader.parseEntries(7L, oracleMappings).oraclePrices());
@@ -932,7 +942,7 @@ final class ScopeComputeEntryTests {
   /// silent-wrong-price the binding exists to prevent.
   @Test
   void parseEntriesRejectsAConfigurationForADifferentMappingsAccount() {
-    final var mappings = new Mappings().slot(0, OracleType.PythPull);
+    final var mappings = new Mappings().slot(0, OracleType.Securitize);
     final var oracleMappings = new OracleMappings(
         key(0x77), OracleMappings.DISCRIMINATOR,
         mappings.priceInfoAccounts, mappings.priceTypes, mappings.tolerance,
@@ -970,7 +980,7 @@ final class ScopeComputeEntryTests {
   @Test
   void aReferencePriceIndexAtTheSlotCountIsAbsent() {
     final var entries = new Mappings()
-        .slot(0, OracleType.PythPull)
+        .slot(0, OracleType.Securitize)
         .refPrice(0, SLOTS)   // == PRICE_INFO_ACCOUNTS_LEN: one past the last slot
         .tolerance(0, 300)
         .parse();
@@ -980,8 +990,8 @@ final class ScopeComputeEntryTests {
 
     // one below the bound is a real slot, and then the tolerance counts
     final var inRange = new Mappings()
-        .slot(0, OracleType.PythPull)
-        .slot(SLOTS - 1, OracleType.PythPull)
+        .slot(0, OracleType.Securitize)
+        .slot(SLOTS - 1, OracleType.Securitize)
         .refPrice(0, SLOTS - 1)
         .tolerance(0, 300)
         .parse();
@@ -989,28 +999,19 @@ final class ScopeComputeEntryTests {
     assertEquals(OptionalInt.of(300), inRange.referenceToleranceBps(0));
   }
 
-  /// A named enum value with no dedicated branch degrades to NotYetSupported
-  /// carrying that type — only Deprecated* names map to Deprecated.
-  @Test
-  void namedButUnhandledTypeDegradesToNotYetSupported() {
-    final var entries = new Mappings().slot(0, OracleType.KTokenToTokenA).parse();
-    final var notYet = assertInstanceOf(NotYetSupported.class, entries.scopeEntry(0));
-    assertEquals(OracleType.KTokenToTokenA, notYet.oracleType(), "the type is preserved, not nulled");
-  }
-
   /// Sweep of the single-account oracle types: each must report its own type
   /// and carry its price account, and twapEnabled() must follow the bitmask.
   @Test
   void everyOracleEntryTypeReportsItsType() {
     final var types = new OracleType[]{
-        OracleType.KToken, OracleType.MsolStake, OracleType.JupiterLpFetch,
+        OracleType.MsolStake, OracleType.JupiterLpFetch,
         OracleType.OrcaWhirlpoolAtoB, OracleType.OrcaWhirlpoolBtoA,
         OracleType.RaydiumAmmV3AtoB, OracleType.RaydiumAmmV3BtoA,
         OracleType.MeteoraDlmmAtoB, OracleType.MeteoraDlmmBtoA,
         OracleType.JitoRestaking, OracleType.FlashtradeLp, OracleType.AdrenaLp,
         OracleType.ChainlinkExchangeRate, OracleType.ChainlinkNAV,
-        OracleType.RedStone, OracleType.Securitize, OracleType.SwitchboardOnDemand,
-        OracleType.PythPullEMA, OracleType.Token2022Multiplier, OracleType.KlendCTokenExchangeRate,
+        OracleType.RedStone, OracleType.Securitize,
+        OracleType.Token2022Multiplier, OracleType.KlendCTokenExchangeRate,
         OracleType.Canary, OracleType.ExponentTranching
     };
     final var mappings = new Mappings();
@@ -1041,7 +1042,7 @@ final class ScopeComputeEntryTests {
   @Test
   void entriesAreMemoizedAndComplete() {
     final var entries = new Mappings()
-        .slot(1, OracleType.PythPull)
+        .slot(1, OracleType.Securitize)
         .slot(0, OracleType.MostRecentOf)
         .generic(0, new MostRecentOfData(new int[]{1, NONE, NONE, NONE}, 0, 0L))
         .slot(2, OracleType.ScopeTwap1h)
@@ -1065,7 +1066,7 @@ final class ScopeComputeEntryTests {
   @Test
   void aTwapBitmaskOnAnyOracleTypeStillParses() {
     final var entries = new Mappings()
-        .slot(3, OracleType.PythPull)
+        .slot(3, OracleType.Securitize)
         .slot(0, OracleType.MostRecentOf)
         .generic(0, new MostRecentOfData(new int[]{3, NONE, NONE, NONE}, 0, 0L))
         .slot(1, OracleType.CappedFloored)
@@ -1082,7 +1083,7 @@ final class ScopeComputeEntryTests {
     assertInstanceOf(CappedFloored.class, entries.scopeEntry(1));
     assertInstanceOf(FixedPrice.class, entries.scopeEntry(2));
     // and the rest of the account survives
-    assertInstanceOf(PythPull.class, entries.scopeEntry(3));
+    assertInstanceOf(Securitize.class, entries.scopeEntry(3));
     assertInstanceOf(Unused.class, entries.scopeEntry(SLOTS - 1));
   }
 
@@ -1093,8 +1094,8 @@ final class ScopeComputeEntryTests {
   @Test
   void everySlotExposesItsReferencePriceAndTolerance() {
     final var entries = new Mappings()
-        .slot(4, OracleType.PythPull)
-        .slot(0, OracleType.PythPull)      // a ReferencesEntry: models it on the entry too
+        .slot(4, OracleType.Securitize)
+        .slot(0, OracleType.Securitize)      // a ReferencesEntry: models it on the entry too
         .slot(1, OracleType.TotalMintSupply) // no field of its own
         .slot(2, OracleType.SplBalance)      // likewise
         .refPrice(0, 4).tolerance(0, 150)
@@ -1114,9 +1115,9 @@ final class ScopeComputeEntryTests {
 
     // the entry that models it agrees with the mapping-level view, for the acyclic
     // reference graphs that are the only ones the entry-level field can resolve
-    final var pythPull = assertInstanceOf(PythPull.class, entries.scopeEntry(0));
-    assertSame(entries.referencePrice(0), pythPull.refPrice());
-    assertEquals(entries.referenceToleranceBps(0), pythPull.refPriceToleranceBps());
+    final var securitize = assertInstanceOf(Securitize.class, entries.scopeEntry(0));
+    assertSame(entries.referencePrice(0), securitize.refPrice());
+    assertEquals(entries.referenceToleranceBps(0), securitize.refPriceToleranceBps());
 
     // a slot with none configured reports none — the only case with no bound at all
     assertNull(entries.referencePrice(4));
@@ -1130,7 +1131,7 @@ final class ScopeComputeEntryTests {
   @Test
   void anUnknownOracleTypeFallsBackToTheDefaultBound() {
     final var mappings = new Mappings()
-        .slot(4, OracleType.PythPull)
+        .slot(4, OracleType.Securitize)
         .refPrice(0, 4)
         .tolerance(0, 7);
     mappings.priceTypes[0] = (byte) OracleType.values().length; // one past the enum
@@ -1158,7 +1159,7 @@ final class ScopeComputeEntryTests {
   @Test
   void aCyclicReferencePriceIsResolvedAtTheMappingLevel() {
     final var entries = new Mappings()
-        .slot(0, OracleType.PythPull)
+        .slot(0, OracleType.Securitize)
         .refPrice(0, 0)      // its own reference price
         .tolerance(0, 300)
         .parse();
@@ -1167,8 +1168,8 @@ final class ScopeComputeEntryTests {
     assertEquals(OptionalInt.of(300), entries.referenceToleranceBps(0));
 
     // the entry-level field cannot see itself while it is being built
-    final var pythPull = assertInstanceOf(PythPull.class, entries.scopeEntry(0));
-    assertNull(pythPull.refPrice(), "documented limitation: prefer the mapping-level view");
+    final var securitize = assertInstanceOf(Securitize.class, entries.scopeEntry(0));
+    assertNull(securitize.refPrice(), "documented limitation: prefer the mapping-level view");
   }
 
   /// A band names a slot, and the walk resolves it into an entry only for the types whose
@@ -1193,39 +1194,39 @@ final class ScopeComputeEntryTests {
   }
 
   /// A source the walk cut to break a cycle is left out of the list and the sources after
-  /// it are kept, since the program reads them all. Slot 0, a PythPull, stores its band,
+  /// it are kept, since the program reads them all. Slot 0, a Securitize, stores its band,
   /// which names slot 1, a MostRecentOf over slots 2, 0 and 3: building slot 0 builds
   /// slot 1, whose edge back to slot 0 is the one cut. The list used to end at the cut,
   /// dropping slot 3 with it.
   @Test
   void aCutSourceKeepsTheSourcesAfterIt() {
     final var entries = new Mappings()
-        .slot(0, OracleType.PythPull)
+        .slot(0, OracleType.Securitize)
         .refPrice(0, 1)
-        .slot(2, OracleType.PythPull)
-        .slot(3, OracleType.PythPull)
+        .slot(2, OracleType.Securitize)
+        .slot(3, OracleType.Securitize)
         .slot(1, OracleType.MostRecentOf)
         .generic(1, new MostRecentOfData(new int[]{2, 0, 3, NONE}, 250, 3_600L))
         .parse();
 
     final var mostRecent = assertInstanceOf(MostRecentOfEntry.class, entries.scopeEntry(1));
     assertArrayEquals(new ScopeEntry[]{entries.scopeEntry(2), entries.scopeEntry(3)}, mostRecent.sources());
-    // the PythPull keeps the band it stores, the same instance the mapping-level view serves
-    assertSame(entries.scopeEntry(1), assertInstanceOf(PythPull.class, entries.scopeEntry(0)).refPrice());
+    // the Securitize keeps the band it stores, the same instance the mapping-level view serves
+    assertSame(entries.scopeEntry(1), assertInstanceOf(Securitize.class, entries.scopeEntry(0)).refPrice());
     assertSame(entries.scopeEntry(1), entries.referencePrice(0));
   }
 
   /// A Conditional's operands are positional (`conditional.rs` reads A, B and, for the range
   /// conditions, C by position), so a cut operand ends the list rather than moving a later
-  /// one into its place. Slot 0, a PythPull, stores its band, which names slot 1, a
+  /// one into its place. Slot 0, a Securitize, stores its band, which names slot 1, a
   /// Conditional comparing slot 0 against slot 2: building slot 0 builds slot 1, whose
   /// operand A is the one cut, and slot 2 must not read as A.
   @Test
   void aCutConditionalOperandEndsTheOperandsRatherThanShiftingThem() {
     final var entries = new Mappings()
-        .slot(0, OracleType.PythPull)
+        .slot(0, OracleType.Securitize)
         .refPrice(0, 1)
-        .slot(2, OracleType.PythPull)
+        .slot(2, OracleType.Securitize)
         .slot(1, OracleType.Conditional)
         .generic(1, new ConditionalData(Condition.Gt.ordinal(), 50, new int[]{0, 2, NONE}))
         .parse();
@@ -1238,10 +1239,10 @@ final class ScopeComputeEntryTests {
   @Test
   void aCutMiddleOperandKeepsOnlyTheOperandsBeforeIt() {
     final var entries = new Mappings()
-        .slot(0, OracleType.PythPull)
+        .slot(0, OracleType.Securitize)
         .refPrice(0, 1)
-        .slot(2, OracleType.PythPull)
-        .slot(3, OracleType.PythPull)
+        .slot(2, OracleType.Securitize)
+        .slot(3, OracleType.Securitize)
         .slot(1, OracleType.Conditional)
         .generic(1, new ConditionalData(Condition.WithinRangeAbs.ordinal(), 50, new int[]{2, 0, 3}))
         .parse();
@@ -1255,9 +1256,9 @@ final class ScopeComputeEntryTests {
   @Test
   void theSlotCountIsTheFirstSentinel() {
     final var entries = new Mappings()
-        .slot(1, OracleType.PythPull)
-        .slot(2, OracleType.PythPull)
-        .slot(511, OracleType.PythPull)
+        .slot(1, OracleType.Securitize)
+        .slot(2, OracleType.Securitize)
+        .slot(511, OracleType.Securitize)
         .slot(0, OracleType.MultiplicationChain)
         .generic(0, new MultiplicationChainData(new int[]{1, 511, SLOTS, 2, NONE, NONE}, 120L))
         .parse();
@@ -1272,8 +1273,8 @@ final class ScopeComputeEntryTests {
   @Test
   void aSourceListEndsAtTheFirstSentinel() {
     final var entries = new Mappings()
-        .slot(1, OracleType.PythPull)
-        .slot(2, OracleType.PythPull)
+        .slot(1, OracleType.Securitize)
+        .slot(2, OracleType.Securitize)
         .slot(0, OracleType.MultiplicationChain)
         .generic(0, new MultiplicationChainData(new int[]{1, NONE, 2, NONE, NONE, NONE}, 120L))
         .parse();
@@ -1289,8 +1290,8 @@ final class ScopeComputeEntryTests {
   @Test
   void aMostRecentOfReadsPastAGap() {
     final var entries = new Mappings()
-        .slot(2, OracleType.PythPull)
-        .slot(3, OracleType.PythPull)
+        .slot(2, OracleType.Securitize)
+        .slot(3, OracleType.Securitize)
         .slot(0, OracleType.MostRecentOf)
         .generic(0, new MostRecentOfData(new int[]{2, NONE, 3, NONE}, 250, 3_600L))
         .parse();
@@ -1304,9 +1305,9 @@ final class ScopeComputeEntryTests {
   @Test
   void aCappedMostRecentOfReadsPastAGap() {
     final var entries = new Mappings()
-        .slot(2, OracleType.PythPull)
-        .slot(3, OracleType.PythPull)
-        .slot(4, OracleType.PythPull)
+        .slot(2, OracleType.Securitize)
+        .slot(3, OracleType.Securitize)
+        .slot(4, OracleType.Securitize)
         .slot(0, OracleType.CappedMostRecentOf)
         .generic(0, new CappedMostRecentOfData(new int[]{NONE, 2, NONE, 3}, 100, 60L, 4))
         .parse();
@@ -1321,8 +1322,8 @@ final class ScopeComputeEntryTests {
   @Test
   void aConditionalsOperandsEndAtTheSentinel() {
     final var entries = new Mappings()
-        .slot(2, OracleType.PythPull)
-        .slot(3, OracleType.PythPull)
+        .slot(2, OracleType.Securitize)
+        .slot(3, OracleType.Securitize)
         .slot(1, OracleType.Conditional)
         .generic(1, new ConditionalData(Condition.WithinRangeAbs.ordinal(), 50, new int[]{2, NONE, 3}))
         .parse();
@@ -1341,7 +1342,7 @@ final class ScopeComputeEntryTests {
         OracleType.ScopeTwap24h, OracleType.ScopeTwap7d
     }) {
       final var entries = new Mappings()
-          .slot(1, OracleType.PythPull)
+          .slot(1, OracleType.Securitize)
           .slot(0, twapType)
           .tolerance(0, 1) // for these types: the source slot, not 1 bps
           .refPrice(0, 1)
@@ -1360,14 +1361,14 @@ final class ScopeComputeEntryTests {
   @Test
   void frozenSlotsAreVisibleAndDecodeLikeLiveOnes() {
     final var mappings = new Mappings()
-        .slot(0, OracleType.PythPull)
-        .slot(1, OracleType.PythPull);
+        .slot(0, OracleType.Securitize)
+        .slot(1, OracleType.Securitize);
     mappings.priceTypes[1] |= (byte) 0x80;
     final var entries = mappings.parse();
 
     assertFalse(entries.frozen(0));
     assertTrue(entries.frozen(1));
-    assertEquals(OracleType.PythPull, ((OracleEntry) entries.scopeEntry(1)).oracleType(),
+    assertEquals(OracleType.Securitize, ((OracleEntry) entries.scopeEntry(1)).oracleType(),
         "a frozen slot keeps its type");
   }
 
@@ -1377,7 +1378,7 @@ final class ScopeComputeEntryTests {
   @Test
   void aReferencePriceOnAnyOracleTypeStillParses() {
     final var entries = new Mappings()
-        .slot(5, OracleType.PythPull)
+        .slot(5, OracleType.Securitize)
         .slot(0, OracleType.Conditional)
         .generic(0, new ConditionalData(Condition.NonZero.ordinal(), 0, new int[]{5, NONE, NONE}))
         .slot(1, OracleType.SplBalance)
@@ -1391,6 +1392,6 @@ final class ScopeComputeEntryTests {
     assertInstanceOf(Conditional.class, entries.scopeEntry(0));
     assertInstanceOf(SplBalance.class, entries.scopeEntry(1));
     assertInstanceOf(TotalMintSupply.class, entries.scopeEntry(2));
-    assertInstanceOf(PythPull.class, entries.scopeEntry(5));
+    assertInstanceOf(Securitize.class, entries.scopeEntry(5));
   }
 }

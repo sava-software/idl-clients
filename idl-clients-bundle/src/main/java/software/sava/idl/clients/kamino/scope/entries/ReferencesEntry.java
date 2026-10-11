@@ -4,7 +4,7 @@ import java.util.OptionalInt;
 
 public sealed interface ReferencesEntry
     extends OracleEntry
-    permits PythLazer, Chainlink, PythPull, Securitize {
+    permits PythLazer, Chainlink, Securitize {
 
   /// The slot whose last stored price bounds this one on refresh.
   ///

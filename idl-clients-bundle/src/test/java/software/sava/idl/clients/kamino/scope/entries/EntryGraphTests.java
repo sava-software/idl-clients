@@ -131,8 +131,8 @@ final class EntryGraphTests {
   void aCompositeReachedThroughARecordJoinsTheRunningComparison() {
     final var band = new MultiplicationChain(5, new ScopeEntry[]{new Unused(7)}, 0L);
     final var otherBand = new MultiplicationChain(5, new ScopeEntry[]{new Unused(9)}, 0L);
-    final var capped = new CappedFloored(2, new PythPull(3, PublicKey.NONE, Set.of(), band, OptionalInt.empty()), null, new Unused(8), 60L);
-    final var otherCapped = new CappedFloored(2, new PythPull(3, PublicKey.NONE, Set.of(), otherBand, OptionalInt.empty()), null, new Unused(8), 60L);
+    final var capped = new CappedFloored(2, new Securitize(3, PublicKey.NONE, Set.of(), band, OptionalInt.empty()), null, new Unused(8), 60L);
+    final var otherCapped = new CappedFloored(2, new Securitize(3, PublicKey.NONE, Set.of(), otherBand, OptionalInt.empty()), null, new Unused(8), 60L);
     assertNotEquals(capped, otherCapped);
 
     final Map<ScopeEntry, Set<ScopeEntry>> seeded = new IdentityHashMap<>();

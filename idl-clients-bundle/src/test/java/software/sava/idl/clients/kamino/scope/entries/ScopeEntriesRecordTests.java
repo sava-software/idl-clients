@@ -133,22 +133,22 @@ final class ScopeEntriesRecordTests {
   void oracleEntriesFiltersByTypeAndAccount() {
     final var oracle = key(5);
     final var scopeEntries = new ScopeEntry[]{
-        new PythPull(0, oracle, java.util.Set.of(), null, java.util.OptionalInt.empty()),
-        new PythPull(1, key(6), java.util.Set.of(), null, java.util.OptionalInt.empty()),
-        new PythPullEMA(2, oracle, java.util.Set.of()),
+        new Securitize(0, oracle, java.util.Set.of(), null, java.util.OptionalInt.empty()),
+        new Securitize(1, key(6), java.util.Set.of(), null, java.util.OptionalInt.empty()),
+        new RedStone(2, oracle, java.util.Set.of()),
         // not an OracleEntry at all: must be filtered, not crash the stream
         new Unused(3),
-        new PythPull(4, oracle, java.util.Set.of(), null, java.util.OptionalInt.empty())
+        new Securitize(4, oracle, java.util.Set.of(), null, java.util.OptionalInt.empty())
     };
     final var record = entriesRecord(key(1), 42L, scopeEntries);
 
-    final var matches = record.oracleEntries(oracle, OracleType.PythPull);
+    final var matches = record.oracleEntries(oracle, OracleType.Securitize);
     assertEquals(
         List.of(scopeEntries[0], scopeEntries[4]),
         matches,
         "same oracle AND same type only");
-    assertEquals(List.of(scopeEntries[2]), record.oracleEntries(oracle, OracleType.PythPullEMA));
-    assertEquals(List.of(), record.oracleEntries(key(7), OracleType.PythPull));
+    assertEquals(List.of(scopeEntries[2]), record.oracleEntries(oracle, OracleType.RedStone));
+    assertEquals(List.of(), record.oracleEntries(key(7), OracleType.Securitize));
 
     assertEquals(5, record.numEntries());
     assertSame(scopeEntries[3], record.scopeEntry(3));

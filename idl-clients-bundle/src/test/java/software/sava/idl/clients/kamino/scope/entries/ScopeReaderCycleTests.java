@@ -46,13 +46,13 @@ final class ScopeReaderCycleTests {
   void selfReferentialRefPriceResolvesToNull() {
     final int[] refPrice = new int[SLOTS];
     refPrice[0] = 0; // entry 0's ref price is itself
-    final var entries = ScopeReader.parseEntries(-1L, mappings(refPrice, (byte) OracleType.PythPull.ordinal()));
+    final var entries = ScopeReader.parseEntries(-1L, mappings(refPrice, (byte) OracleType.Securitize.ordinal()));
 
     assertEquals(SLOTS, entries.numEntries());
     final var entry = entries.scopeEntry(0);
     assertNotNull(entry);
-    // PythPull is a ReferencesEntry: its refPrice back-reference is broken to null
-    assertNull(((PythPull) entry).refPrice());
+    // Securitize is a ReferencesEntry: its refPrice back-reference is broken to null
+    assertNull(((Securitize) entry).refPrice());
   }
 
   @Test
@@ -60,7 +60,7 @@ final class ScopeReaderCycleTests {
     final int[] refPrice = new int[SLOTS];
     refPrice[3] = 7;
     refPrice[7] = 3;
-    final var entries = ScopeReader.parseEntries(-1L, mappings(refPrice, (byte) OracleType.PythPull.ordinal()));
+    final var entries = ScopeReader.parseEntries(-1L, mappings(refPrice, (byte) OracleType.Securitize.ordinal()));
 
     assertEquals(SLOTS, entries.numEntries());
     // whichever of the pair is resolved first breaks the cycle by returning null for the

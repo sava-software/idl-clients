@@ -198,13 +198,13 @@ final class ScopeReaderHostileInputTests {
   }
 
   /// A band reaches the slot it references through the banded record's own equals, and the
-  /// reader shares that slot as well. Here each CappedFloored has two PythPull inputs, both banded
+  /// reader shares that slot as well. Here each CappedFloored has two Securitize inputs, both banded
   /// to the next level's CappedFloored, so a comparison that started over at each composite a band
   /// reaches would double its work per level, 2^170 times over at full size. The rungs come
   /// first, at eight levels, as in the tests above.
   @Test
   void bandsBetweenCompositesStayLinear() {
-    // The rung's comparison meets each level's CappedFloored and its two PythPulls first: 3 pairs
+    // The rung's comparison meets each level's CappedFloored and its two Securitize records first: 3 pairs
     // a level, 24 in all, each remembered by this one comparison, the composites a band reaches
     // included. Lookups: those 3 meetings, 3 more as computeIfAbsent looks each pair up again,
     // and 1 as the second band meets the next CappedFloored again. That is 7 a level, less 1 for
@@ -215,7 +215,7 @@ final class ScopeReaderHostileInputTests {
     assertTrue(EntryGraph.equal(rung, ScopeReader.parseEntries(-1L, bandedChain(8)).scopeEntry(0), memo));
     assertEquals(24, memo.size());
     assertTrue(memo.lookups <= 56, () -> memo.lookups + " memo lookups");
-    // Each composite is spelled out once: under 90 characters of its own and two PythPulls of
+    // Each composite is spelled out once: under 90 characters of its own and two Securitize records of
     // about 125 each, the second band naming the next composite as CappedFloored#n, so under 400
     // a level. Path by path the rendering spells out those 255 composites.
     assertTrue(rung.toString().length() < 5_000, () -> rung.toString().length() + " characters");
@@ -229,7 +229,7 @@ final class ScopeReaderHostileInputTests {
     });
   }
 
-  /// `levels` CappedFloored slots at 3k, each with the PythPull at 3k + 1 as its source and the one
+  /// `levels` CappedFloored slots at 3k, each with the Securitize at 3k + 1 as its source and the one
   /// at 3k + 2 as its cap, both banded to the next level's CappedFloored at 3k + 3. The last
   /// level's bands reference the Unused slot after it, as every later slot is.
   private static OracleMappings bandedChain(final int levels) {
@@ -243,8 +243,8 @@ final class ScopeReaderHostileInputTests {
       ByteUtil.putInt16LE(generic[slot], 0, slot + 1); // sourceEntry
       generic[slot][2] = 1;                             // capEntry present
       ByteUtil.putInt16LE(generic[slot], 3, slot + 2);  // capEntry; byte 5, the floorEntry tag, stays 0
-      priceTypes[slot + 1] = (byte) OracleType.PythPull.ordinal();
-      priceTypes[slot + 2] = (byte) OracleType.PythPull.ordinal();
+      priceTypes[slot + 1] = (byte) OracleType.Securitize.ordinal();
+      priceTypes[slot + 2] = (byte) OracleType.Securitize.ordinal();
       refPrice[slot + 1] = slot + 3;
       refPrice[slot + 2] = slot + 3;
     }

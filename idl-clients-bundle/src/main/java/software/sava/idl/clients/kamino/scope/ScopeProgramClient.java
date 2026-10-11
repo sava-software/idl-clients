@@ -73,12 +73,13 @@ public interface ScopeProgramClient {
   /// The rejected types are every arm of the program's `refresh_prices` dispatch that
   /// pulls an account out of `extra_accounts`: a plain read meta for one of those makes
   /// the handler take the following token's base account as that type's first extra
-  /// account — an asset mint for most, the strategy's global config for the kToken
-  /// types, the vault's share mint for `Securitize`, the klend program for
-  /// `KlendCTokenExchangeRate`, the canary program for `Canary`, or the market's return
+  /// account — an asset mint for most, the vault's share mint for `Securitize`, the
+  /// klend program for `KlendCTokenExchangeRate`, the canary program for `Canary`, or the market's return
   /// model storage for `ExponentTranching` — which fails the whole transaction rather
   /// than just that entry. An `ExponentTranching` token can be refreshed through
   /// [#refreshPriceListExtraAccounts(OracleMappings, int\[\], Map)] instead.
+  /// Deprecated types still consume their base account before the program rejects
+  /// their price, so they also receive one read-only meta.
   static List<AccountMeta> refreshPriceListExtraAccounts(final OracleMappings oracleMappings, final int[] tokens) {
     return refreshPriceListExtraAccounts(oracleMappings, tokens, Map.of());
   }
@@ -131,8 +132,6 @@ public interface ScopeProgramClient {
              MeteoraDlmmAtoB, MeteoraDlmmBtoA,
              OrcaWhirlpoolAtoB, OrcaWhirlpoolBtoA,
              SplBalance -> throw new IllegalStateException(oracleType + " requires asset mints as well.");
-        case KToken, KTokenToTokenA, KTokenToTokenB -> throw new IllegalStateException(oracleType
-            + " requires the strategy's global config, collateral infos, pool, position and scope prices as well.");
         case Securitize -> throw new IllegalStateException(oracleType
             + " requires the vault's share mint and asset vault and its RedStone price account as well.");
         case KlendCTokenExchangeRate ->
@@ -143,11 +142,13 @@ public interface ScopeProgramClient {
         case Unused,
              DeprecatedPlaceholder1, DeprecatedPlaceholder2, DeprecatedPlaceholder3, DeprecatedPlaceholder4,
              DeprecatedPlaceholder5, DeprecatedPlaceholder6, DeprecatedPlaceholder7,
+             DeprecatedPlaceholder8, DeprecatedPlaceholder9, DeprecatedPlaceholder10,
+             DeprecatedPlaceholder11, DeprecatedPlaceholder12, DeprecatedPlaceholder13,
              SplStake, MsolStake, StakedSolBalance, TotalMintSupply, Token2022Multiplier,
              ScopeTwap1h, ScopeTwap8h, ScopeTwap24h, ScopeTwap7d,
              RaydiumAmmV3AtoB, RaydiumAmmV3BtoA,
-             PythPull, PythPullEMA, PythLazer, PythLazerEMA,
-             SwitchboardOnDemand, RedStone, JitoRestaking, AdrenaLp, FlashtradeLp,
+             PythLazer, PythLazerEMA,
+             RedStone, JitoRestaking, AdrenaLp, FlashtradeLp,
              Chainlink, ChainlinkRWA, ChainlinkNAV, ChainlinkX, ChainlinkExchangeRate,
              FixedPrice, DiscountToMaturity,
              MostRecentOf, CappedMostRecentOf, CappedFloored, MultiplicationChain, Conditional ->

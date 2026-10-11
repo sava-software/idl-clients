@@ -186,8 +186,8 @@ final class ScopeEntryEqualityTests {
         new MultiplicationChain(0, sources(), 120L).hashCode(),
         new MultiplicationChain(0, sources(), 120L).hashCode());
     assertEquals(
-        new NotYetSupported(0, key(3), OracleType.PythPull, Set.of(EmaType.Ema1h), new Unused(9), OptionalInt.of(50), new byte[]{1, 2, 3}).hashCode(),
-        new NotYetSupported(0, key(3), OracleType.PythPull, Set.of(EmaType.Ema1h), new Unused(9), OptionalInt.of(50), new byte[]{1, 2, 3}).hashCode());
+        new NotYetSupported(0, key(3), OracleType.Securitize, Set.of(EmaType.Ema1h), new Unused(9), OptionalInt.of(50), new byte[]{1, 2, 3}).hashCode(),
+        new NotYetSupported(0, key(3), OracleType.Securitize, Set.of(EmaType.Ema1h), new Unused(9), OptionalInt.of(50), new byte[]{1, 2, 3}).hashCode());
   }
 
   @Test
@@ -195,8 +195,8 @@ final class ScopeEntryEqualityTests {
     final var account = key(3);
     final var refPrice = new Unused(9);
     final byte[] generic = {1, 2, 3};
-    final var base = new NotYetSupported(1, account, OracleType.PythPull, Set.of(EmaType.Ema1h), refPrice, OptionalInt.of(50), generic);
-    final var twin = new NotYetSupported(1, key(3), OracleType.PythPull, Set.of(EmaType.Ema1h), new Unused(9), OptionalInt.of(50), new byte[]{1, 2, 3});
+    final var base = new NotYetSupported(1, account, OracleType.Securitize, Set.of(EmaType.Ema1h), refPrice, OptionalInt.of(50), generic);
+    final var twin = new NotYetSupported(1, key(3), OracleType.Securitize, Set.of(EmaType.Ema1h), new Unused(9), OptionalInt.of(50), new byte[]{1, 2, 3});
 
     assertEquals(base, twin);
     assertEquals(twin, base);
@@ -204,13 +204,13 @@ final class ScopeEntryEqualityTests {
     assertNotEquals(base, null);
     assertNotEquals(base, new Unused(1));
 
-    assertBothDiffer(base, new NotYetSupported(2, account, OracleType.PythPull, Set.of(EmaType.Ema1h), refPrice, OptionalInt.of(50), generic), "index");
-    assertBothDiffer(base, new NotYetSupported(1, key(4), OracleType.PythPull, Set.of(EmaType.Ema1h), refPrice, OptionalInt.of(50), generic), "priceAccount");
-    assertBothDiffer(base, new NotYetSupported(1, account, OracleType.PythPullEMA, Set.of(EmaType.Ema1h), refPrice, OptionalInt.of(50), generic), "oracleType");
-    assertBothDiffer(base, new NotYetSupported(1, account, OracleType.PythPull, Set.of(EmaType.Ema8h), refPrice, OptionalInt.of(50), generic), "emaTypes");
-    assertBothDiffer(base, new NotYetSupported(1, account, OracleType.PythPull, Set.of(EmaType.Ema1h), new Unused(10), OptionalInt.of(50), generic), "refPrice");
-    assertBothDiffer(base, new NotYetSupported(1, account, OracleType.PythPull, Set.of(EmaType.Ema1h), refPrice, OptionalInt.of(51), generic), "refPriceToleranceBps");
-    assertBothDiffer(base, new NotYetSupported(1, account, OracleType.PythPull, Set.of(EmaType.Ema1h), refPrice, OptionalInt.of(50), new byte[]{9}), "generic");
+    assertBothDiffer(base, new NotYetSupported(2, account, OracleType.Securitize, Set.of(EmaType.Ema1h), refPrice, OptionalInt.of(50), generic), "index");
+    assertBothDiffer(base, new NotYetSupported(1, key(4), OracleType.Securitize, Set.of(EmaType.Ema1h), refPrice, OptionalInt.of(50), generic), "priceAccount");
+    assertBothDiffer(base, new NotYetSupported(1, account, OracleType.RedStone, Set.of(EmaType.Ema1h), refPrice, OptionalInt.of(50), generic), "oracleType");
+    assertBothDiffer(base, new NotYetSupported(1, account, OracleType.Securitize, Set.of(EmaType.Ema8h), refPrice, OptionalInt.of(50), generic), "emaTypes");
+    assertBothDiffer(base, new NotYetSupported(1, account, OracleType.Securitize, Set.of(EmaType.Ema1h), new Unused(10), OptionalInt.of(50), generic), "refPrice");
+    assertBothDiffer(base, new NotYetSupported(1, account, OracleType.Securitize, Set.of(EmaType.Ema1h), refPrice, OptionalInt.of(51), generic), "refPriceToleranceBps");
+    assertBothDiffer(base, new NotYetSupported(1, account, OracleType.Securitize, Set.of(EmaType.Ema1h), refPrice, OptionalInt.of(50), new byte[]{9}), "generic");
 
     // the null oracle type produced for beyond-enum ordinals is comparable
     final var nullType = new NotYetSupported(1, account, null, Set.of(), null, OptionalInt.empty(), generic);

@@ -122,15 +122,7 @@ final class ScopeProgramClientTests {
     assertTrue(message.contains("with the market, its return model storage and each get_sy_state account"
         + " the market flags writable passed writable"), message);
 
-    // the kToken types take no mint at all, and Securitize takes one mint among three
-    for (final var kToken : new OracleType[]{OracleType.KToken, OracleType.KTokenToTokenA, OracleType.KTokenToTokenB}) {
-      final var mappings = mappings();
-      mappings.priceTypes()[1] = (byte) kToken.ordinal();
-      final var kTokenEx = assertThrows(IllegalStateException.class,
-          () -> ScopeProgramClient.refreshPriceListExtraAccounts(mappings, new int[]{1}));
-      assertTrue(kTokenEx.getMessage().contains(
-          "the strategy's global config, collateral infos, pool, position and scope prices"), kTokenEx.getMessage());
-    }
+    // Securitize takes one mint among three extra accounts
     final var securitize = mappings();
     securitize.priceTypes()[1] = (byte) OracleType.Securitize.ordinal();
     final var securitizeEx = assertThrows(IllegalStateException.class,
@@ -159,12 +151,11 @@ final class ScopeProgramClientTests {
     }
   }
 
-  /// Every arm of the program's `refresh_prices` dispatch (Scope 0.43.0,
+  /// Every arm of the program's `refresh_prices` dispatch (Scope 0.44.0,
   /// `oracles/mod.rs::get_non_zero_price`) that takes from `extra_accounts`.
   private static final OracleType[] EXTRA_ACCOUNT_CONSUMERS = {
       OracleType.Canary,
       OracleType.ExponentTranching,
-      OracleType.KToken, OracleType.KTokenToTokenA, OracleType.KTokenToTokenB,
       OracleType.JupiterLpFetch,
       OracleType.KlendCTokenExchangeRate,
       OracleType.MeteoraDlmmAtoB, OracleType.MeteoraDlmmBtoA,
@@ -191,7 +182,7 @@ final class ScopeProgramClientTests {
         ScopeProgramClient.refreshPriceListExtraAccounts(mappings, new int[]{1}));
 
     // and the frozen flag does not smuggle a mint-dependent type past the guard
-    mappings.priceTypes()[1] = (byte) (OracleType.KToken.ordinal() | 0x80);
+    mappings.priceTypes()[1] = (byte) (OracleType.JupiterLpFetch.ordinal() | 0x80);
     assertThrows(IllegalStateException.class,
         () -> ScopeProgramClient.refreshPriceListExtraAccounts(mappings, new int[]{1}));
   }
@@ -458,7 +449,7 @@ final class ScopeProgramClientTests {
     final var generic = new byte[slots][20];
     for (int i = 0; i < slots; ++i) {
       priceInfoAccounts[i] = key(0x30 + (i & 0x0F));
-      priceTypes[i] = (byte) OracleType.PythPull.ordinal();
+      priceTypes[i] = (byte) OracleType.RedStone.ordinal();
       tolerance[i] = 0xFFFF;
       twapBitmasks[i] = new TwapEnabledBitmask(0);
       refPrice[i] = 0xFFFF;

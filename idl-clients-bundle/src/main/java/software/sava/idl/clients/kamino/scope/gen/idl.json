@@ -2,7 +2,7 @@
   "address": "HFn8GnPADiny6XqUoWE8uRPPxb29ikn4yTuPa9MF2fWJ",
   "metadata": {
     "name": "scope",
-    "version": "0.41.0",
+    "version": "0.44.0",
     "spec": "0.1.0"
   },
   "instructions": [
@@ -2471,20 +2471,6 @@
       }
     },
     {
-      "name": "TokenTypes",
-      "type": {
-        "kind": "enum",
-        "variants": [
-          {
-            "name": "TokenA"
-          },
-          {
-            "name": "TokenB"
-          }
-        ]
-      }
-    },
-    {
       "name": "PriceRefreshOutcome",
       "docs": [
         "Outcome of computing an entry's price."
@@ -2583,7 +2569,7 @@
             "name": "SplStake"
           },
           {
-            "name": "KToken"
+            "name": "DeprecatedPlaceholder8"
           },
           {
             "name": "DeprecatedPlaceholder5"
@@ -2592,10 +2578,10 @@
             "name": "MsolStake"
           },
           {
-            "name": "KTokenToTokenA"
+            "name": "DeprecatedPlaceholder9"
           },
           {
-            "name": "KTokenToTokenB"
+            "name": "DeprecatedPlaceholder10"
           },
           {
             "name": "JupiterLpFetch"
@@ -2628,16 +2614,16 @@
             "name": "DeprecatedPlaceholder7"
           },
           {
-            "name": "PythPull"
+            "name": "DeprecatedPlaceholder12"
           },
           {
-            "name": "PythPullEMA"
+            "name": "DeprecatedPlaceholder13"
           },
           {
             "name": "FixedPrice"
           },
           {
-            "name": "SwitchboardOnDemand"
+            "name": "DeprecatedPlaceholder11"
           },
           {
             "name": "JitoRestaking"

@@ -35,7 +35,7 @@ Kamino Scope: reviewed at slot 452308975 — anchor IDL republished after the de
 Kamino Scope: the vcs IDL at github:Kamino-Finance/scope-sdk@master/src/idl/scope.json differs from the deployed idl.json
   instructions removed (2): resume_suspended_price, resume_suspended_price_v2
   instructions changed (5): refresh_chainlink_price, refresh_price_list, refresh_pyth_lazer_price, resume_chainlinkx_price, update_mapping_and_metadata
-  types added (1): V8V10
+  types added (2): TokenTypes, V8V10
   types removed (7): ChainlinkXMappingData, ExponentTrancheSide, ExponentTranchingData, PriceRefreshOutcome, Token2022MultiplierMappingData, Token2022MultiplierStoredData, V8
   types changed (18): CappedFlooredData, ChainlinkStandardPriceData, ChainlinkXPriceData, ConditionalData, EmaTwap, LiqPool, MintsToScopeChains, OracleType, PythLazerData, PythLazerEmaRefData, PythLazerStoredData, ReportDataV9RipcordFlag, ScopeChainError, StakeSystem, State, TokenMetadata, UpdateOracleMappingAndMetadataEntry, ValidatorSystem
   errors removed (11): AutoApprovalBpsOutOfRange, CanaryFeedExpTooLarge, CanaryPriceCPIError, DeprecatedInstruction, EagerEvalBpsOutOfRange, ExponentTranchingCPIError, InvalidApprovedMultiplier, PriceNotSuspended, RefPriceSelfReference, ResumeStateMismatch, TwapSourceSelfReference
