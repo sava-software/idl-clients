@@ -15,75 +15,133 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Minimal representation of Drift's SpotMarket account
 /// Only includes the fields we actually need for marginfi integration
-/// https://github.com/drift-labs/protocol-v2/tree/master/programs/drift/src/state/spot_market.rs#L35
+/// https://github.com/drift-labs/protocol-v2/blob/master/programs/drift/src/state/spot_market.rs#L33-L211
 ///
 /// @param pubkey The address of the spot market. It is a pda of the market index
 /// @param oracle The oracle used to price the markets deposits/borrows
 /// @param mint The token mint of the market
 /// @param vault The vault used to store the market's deposits
-/// @param padding1: u64[][]
+/// @param name SpotMarket fields between `vault` and `insurance_fund`; unused by marginfi, sized to match
+///             upstream.
+/// @param historicalOracleData: u64[]
+/// @param historicalIndexData: u64[]
+/// @param revenuePool: u64[]
+/// @param spotFeePool: u64[]
+/// @param totalSpotFee: u64[]
 /// @param depositBalance All the fields we need for testing (stored as raw bytes for simplicity)
-/// @param padding3: u64[]
+/// @param padding1: u64[]
+/// @param maxTokenDeposits: u64 Deposit ceiling in native mint precision; `0` is uncapped.
+/// @param padding2: u64[]
 /// @param lastInterestTs: u64 Last time the cumulative deposit and borrow interest was updated
 ///                       Offset: 568 bytes from start of struct (including discriminator)
-/// @param padding4: u64[]
+/// @param padding3: u64[]
+/// @param optimalUtilization: u32 Drift spot interest-rate curve params (`SpotMarket`), precision 1e6.
+/// @param optimalBorrowRate: u32
+/// @param maxBorrowRate: u32
 /// @param decimals: u32
 /// @param marketIndex: u16
 /// @param padding5: u16[]
+/// @param status: u8 `MarketStatus`; `0` is `Initialized`, the warm-up state that rejects deposits, and `1` is
+///               `Active`.
+/// @param pausedOperations: u8 `SpotOperation` pause bitmask; bit 0 (`UpdateCumulativeInterest`) stops interest accrual.
+/// @param minBorrowRate: u8 Borrow-rate floor, in units of `PERCENTAGE_PRECISION / 200`.
 /// @param poolId: u8
-/// @param padding7: u64[] Padding to reach 776 bytes total (including discriminator)
+/// @param padding10: u64[] Padding to reach 776 bytes total (including discriminator)
 public record MinimalSpotMarket(PublicKey pubkey,
                                 PublicKey oracle,
                                 PublicKey mint,
                                 PublicKey vault,
-                                long[][] padding1,
-                                byte[] padding2,
+                                byte[] name,
+                                long[] historicalOracleData,
+                                long[] historicalIndexData,
+                                long[] revenuePool,
+                                long[] spotFeePool,
+                                InsuranceFund insuranceFund,
+                                long[] totalSpotFee,
                                 byte[] depositBalance,
                                 byte[] borrowBalance,
                                 byte[] cumulativeDepositInterest,
                                 byte[] cumulativeBorrowInterest,
-                                long[] padding3,
+                                long[] padding1,
+                                long maxTokenDeposits,
+                                long[] padding2,
                                 long lastInterestTs,
-                                long[] padding4,
+                                long[] padding3,
+                                byte[] padding4,
+                                long optimalUtilization,
+                                long optimalBorrowRate,
+                                long maxBorrowRate,
                                 long decimals,
                                 int marketIndex,
                                 int[] padding5,
+                                int status,
                                 byte[] padding6,
+                                int pausedOperations,
+                                byte[] padding7,
+                                byte[] padding8,
+                                int minBorrowRate,
+                                byte[] padding9,
                                 int poolId,
-                                long[] padding7) implements SerDe {
+                                long[] padding10) implements SerDe {
 
   public static final int BYTES = 768;
-  public static final int PADDING_1_LEN = 9;
-  public static final int PADDING_2_LEN = 8;
+  public static final int NAME_LEN = 32;
+  public static final int HISTORICAL_ORACLE_DATA_LEN = 6;
+  public static final int HISTORICAL_INDEX_DATA_LEN = 5;
+  public static final int REVENUE_POOL_LEN = 3;
+  public static final int SPOT_FEE_POOL_LEN = 3;
+  public static final int TOTAL_SPOT_FEE_LEN = 2;
   public static final int DEPOSIT_BALANCE_LEN = 16;
   public static final int BORROW_BALANCE_LEN = 16;
   public static final int CUMULATIVE_DEPOSIT_INTEREST_LEN = 16;
   public static final int CUMULATIVE_BORROW_INTEREST_LEN = 16;
-  public static final int PADDING_3_LEN = 9;
-  public static final int PADDING_4_LEN = 13;
-  public static final int PADDING_5_LEN = 24;
+  public static final int PADDING_1_LEN = 5;
+  public static final int PADDING_2_LEN = 3;
+  public static final int PADDING_3_LEN = 11;
+  public static final int PADDING_4_LEN = 4;
+  public static final int PADDING_5_LEN = 1;
   public static final int PADDING_6_LEN = 1;
-  public static final int PADDING_7_LEN = 5;
+  public static final int PADDING_7_LEN = 30;
+  public static final int PADDING_8_LEN = 7;
+  public static final int PADDING_9_LEN = 6;
+  public static final int PADDING_10_LEN = 5;
 
   public static final int PUBKEY_OFFSET = 0;
   public static final int ORACLE_OFFSET = 32;
   public static final int MINT_OFFSET = 64;
   public static final int VAULT_OFFSET = 96;
-  public static final int PADDING_1_OFFSET = 128;
-  public static final int PADDING_2_OFFSET = 416;
+  public static final int NAME_OFFSET = 128;
+  public static final int HISTORICAL_ORACLE_DATA_OFFSET = 160;
+  public static final int HISTORICAL_INDEX_DATA_OFFSET = 208;
+  public static final int REVENUE_POOL_OFFSET = 248;
+  public static final int SPOT_FEE_POOL_OFFSET = 272;
+  public static final int INSURANCE_FUND_OFFSET = 296;
+  public static final int TOTAL_SPOT_FEE_OFFSET = 408;
   public static final int DEPOSIT_BALANCE_OFFSET = 424;
   public static final int BORROW_BALANCE_OFFSET = 440;
   public static final int CUMULATIVE_DEPOSIT_INTEREST_OFFSET = 456;
   public static final int CUMULATIVE_BORROW_INTEREST_OFFSET = 472;
-  public static final int PADDING_3_OFFSET = 488;
+  public static final int PADDING_1_OFFSET = 488;
+  public static final int MAX_TOKEN_DEPOSITS_OFFSET = 528;
+  public static final int PADDING_2_OFFSET = 536;
   public static final int LAST_INTEREST_TS_OFFSET = 560;
-  public static final int PADDING_4_OFFSET = 568;
+  public static final int PADDING_3_OFFSET = 568;
+  public static final int PADDING_4_OFFSET = 656;
+  public static final int OPTIMAL_UTILIZATION_OFFSET = 660;
+  public static final int OPTIMAL_BORROW_RATE_OFFSET = 664;
+  public static final int MAX_BORROW_RATE_OFFSET = 668;
   public static final int DECIMALS_OFFSET = 672;
   public static final int MARKET_INDEX_OFFSET = 676;
   public static final int PADDING_5_OFFSET = 678;
-  public static final int PADDING_6_OFFSET = 726;
+  public static final int STATUS_OFFSET = 680;
+  public static final int PADDING_6_OFFSET = 681;
+  public static final int PAUSED_OPERATIONS_OFFSET = 682;
+  public static final int PADDING_7_OFFSET = 683;
+  public static final int PADDING_8_OFFSET = 713;
+  public static final int MIN_BORROW_RATE_OFFSET = 720;
+  public static final int PADDING_9_OFFSET = 721;
   public static final int POOL_ID_OFFSET = 727;
-  public static final int PADDING_7_OFFSET = 728;
+  public static final int PADDING_10_OFFSET = 728;
 
   public static MinimalSpotMarket read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -98,10 +156,20 @@ public record MinimalSpotMarket(PublicKey pubkey,
     i += 32;
     final var vault = readPubKey(_data, i);
     i += 32;
-    final var padding1 = new long[9][4];
-    i += SerDeUtil.readArray(padding1, _data, i);
-    final var padding2 = new byte[8];
-    i += SerDeUtil.readArray(padding2, _data, i);
+    final var name = new byte[32];
+    i += SerDeUtil.readArray(name, _data, i);
+    final var historicalOracleData = new long[6];
+    i += SerDeUtil.readArray(historicalOracleData, _data, i);
+    final var historicalIndexData = new long[5];
+    i += SerDeUtil.readArray(historicalIndexData, _data, i);
+    final var revenuePool = new long[3];
+    i += SerDeUtil.readArray(revenuePool, _data, i);
+    final var spotFeePool = new long[3];
+    i += SerDeUtil.readArray(spotFeePool, _data, i);
+    final var insuranceFund = InsuranceFund.read(_data, i);
+    i += 112;
+    final var totalSpotFee = new long[2];
+    i += SerDeUtil.readArray(totalSpotFee, _data, i);
     final var depositBalance = new byte[16];
     i += SerDeUtil.readArray(depositBalance, _data, i);
     final var borrowBalance = new byte[16];
@@ -110,43 +178,84 @@ public record MinimalSpotMarket(PublicKey pubkey,
     i += SerDeUtil.readArray(cumulativeDepositInterest, _data, i);
     final var cumulativeBorrowInterest = new byte[16];
     i += SerDeUtil.readArray(cumulativeBorrowInterest, _data, i);
-    final var padding3 = new long[9];
-    i += SerDeUtil.readArray(padding3, _data, i);
+    final var padding1 = new long[5];
+    i += SerDeUtil.readArray(padding1, _data, i);
+    final var maxTokenDeposits = getInt64LE(_data, i);
+    i += 8;
+    final var padding2 = new long[3];
+    i += SerDeUtil.readArray(padding2, _data, i);
     final var lastInterestTs = getInt64LE(_data, i);
     i += 8;
-    final var padding4 = new long[13];
+    final var padding3 = new long[11];
+    i += SerDeUtil.readArray(padding3, _data, i);
+    final var padding4 = new byte[4];
     i += SerDeUtil.readArray(padding4, _data, i);
+    final var optimalUtilization = Integer.toUnsignedLong(getInt32LE(_data, i));
+    i += 4;
+    final var optimalBorrowRate = Integer.toUnsignedLong(getInt32LE(_data, i));
+    i += 4;
+    final var maxBorrowRate = Integer.toUnsignedLong(getInt32LE(_data, i));
+    i += 4;
     final var decimals = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var marketIndex = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var padding5 = new int[24];
+    final var padding5 = new int[1];
     i += SerDeUtil.readUnsignedShortArray(padding5, _data, i);
+    final var status = _data[i] & 0xFF;
+    ++i;
     final var padding6 = new byte[1];
     i += SerDeUtil.readArray(padding6, _data, i);
+    final var pausedOperations = _data[i] & 0xFF;
+    ++i;
+    final var padding7 = new byte[30];
+    i += SerDeUtil.readArray(padding7, _data, i);
+    final var padding8 = new byte[7];
+    i += SerDeUtil.readArray(padding8, _data, i);
+    final var minBorrowRate = _data[i] & 0xFF;
+    ++i;
+    final var padding9 = new byte[6];
+    i += SerDeUtil.readArray(padding9, _data, i);
     final var poolId = _data[i] & 0xFF;
     ++i;
-    final var padding7 = new long[5];
-    SerDeUtil.readArray(padding7, _data, i);
+    final var padding10 = new long[5];
+    SerDeUtil.readArray(padding10, _data, i);
     return new MinimalSpotMarket(pubkey,
                                  oracle,
                                  mint,
                                  vault,
-                                 padding1,
-                                 padding2,
+                                 name,
+                                 historicalOracleData,
+                                 historicalIndexData,
+                                 revenuePool,
+                                 spotFeePool,
+                                 insuranceFund,
+                                 totalSpotFee,
                                  depositBalance,
                                  borrowBalance,
                                  cumulativeDepositInterest,
                                  cumulativeBorrowInterest,
-                                 padding3,
+                                 padding1,
+                                 maxTokenDeposits,
+                                 padding2,
                                  lastInterestTs,
+                                 padding3,
                                  padding4,
+                                 optimalUtilization,
+                                 optimalBorrowRate,
+                                 maxBorrowRate,
                                  decimals,
                                  marketIndex,
                                  padding5,
+                                 status,
                                  padding6,
+                                 pausedOperations,
+                                 padding7,
+                                 padding8,
+                                 minBorrowRate,
+                                 padding9,
                                  poolId,
-                                 padding7);
+                                 padding10);
   }
 
   @Override
@@ -160,25 +269,49 @@ public record MinimalSpotMarket(PublicKey pubkey,
     i += 32;
     vault.write(_data, i);
     i += 32;
-    i += SerDeUtil.writeArrayChecked(padding1, 9, 4, _data, i);
-    i += SerDeUtil.writeArrayChecked(padding2, 8, _data, i);
+    i += SerDeUtil.writeArrayChecked(name, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(historicalOracleData, 6, _data, i);
+    i += SerDeUtil.writeArrayChecked(historicalIndexData, 5, _data, i);
+    i += SerDeUtil.writeArrayChecked(revenuePool, 3, _data, i);
+    i += SerDeUtil.writeArrayChecked(spotFeePool, 3, _data, i);
+    i += insuranceFund.write(_data, i);
+    i += SerDeUtil.writeArrayChecked(totalSpotFee, 2, _data, i);
     i += SerDeUtil.writeArrayChecked(depositBalance, 16, _data, i);
     i += SerDeUtil.writeArrayChecked(borrowBalance, 16, _data, i);
     i += SerDeUtil.writeArrayChecked(cumulativeDepositInterest, 16, _data, i);
     i += SerDeUtil.writeArrayChecked(cumulativeBorrowInterest, 16, _data, i);
-    i += SerDeUtil.writeArrayChecked(padding3, 9, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding1, 5, _data, i);
+    putInt64LE(_data, i, maxTokenDeposits);
+    i += 8;
+    i += SerDeUtil.writeArrayChecked(padding2, 3, _data, i);
     putInt64LE(_data, i, lastInterestTs);
     i += 8;
-    i += SerDeUtil.writeArrayChecked(padding4, 13, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding3, 11, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding4, 4, _data, i);
+    putInt32LE(_data, i, (int) optimalUtilization);
+    i += 4;
+    putInt32LE(_data, i, (int) optimalBorrowRate);
+    i += 4;
+    putInt32LE(_data, i, (int) maxBorrowRate);
+    i += 4;
     putInt32LE(_data, i, (int) decimals);
     i += 4;
     putInt16LE(_data, i, marketIndex);
     i += 2;
-    i += SerDeUtil.writeUnsignedShortArrayChecked(padding5, 24, _data, i);
+    i += SerDeUtil.writeUnsignedShortArrayChecked(padding5, 1, _data, i);
+    _data[i] = (byte) status;
+    ++i;
     i += SerDeUtil.writeArrayChecked(padding6, 1, _data, i);
+    _data[i] = (byte) pausedOperations;
+    ++i;
+    i += SerDeUtil.writeArrayChecked(padding7, 30, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding8, 7, _data, i);
+    _data[i] = (byte) minBorrowRate;
+    ++i;
+    i += SerDeUtil.writeArrayChecked(padding9, 6, _data, i);
     _data[i] = (byte) poolId;
     ++i;
-    i += SerDeUtil.writeArrayChecked(padding7, 5, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding10, 5, _data, i);
     return i - _offset;
   }
 

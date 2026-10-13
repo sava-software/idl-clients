@@ -44,4 +44,10 @@ public interface MarginfiAccounts {
   default ProgramDerivedAddress bankLiquidityVaultAuthorityPDA(final PublicKey bank) {
     return MarginfiPDAs.bankLiquidityVaultAuthorityPDA(marginfiProgram(), bank);
   }
+
+  /// The system-owned account holding a marginfi account's auto-rebalance fees,
+  /// `["rebalance_fee_pool", marginfi_account]`. Closing the marginfi account requires it.
+  default ProgramDerivedAddress rebalanceFeePoolPDA(final PublicKey marginfiAccount) {
+    return MarginfiPDAs.rebalanceFeePoolPDA(marginfiProgram(), marginfiAccount);
+  }
 }

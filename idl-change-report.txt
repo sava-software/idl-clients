@@ -7,10 +7,6 @@ nobody took. The standing disagreements live beside this file, at its name with 
 before the extension. Ordered by program and channel, and carrying no timestamp, so
 consecutive runs are worth diffing against each other.
 
-== Movement (1) ==
+== Movement (0) ==
 
-Exponent: the vcs IDL at github:exponent-finance/exponent-core@main#8a429680adfae32d74b4e4a3757730d0727b3a1a/target/idl/exponent_core.json moved since the last generation, 74d944dcba74ef73e7d933757dd6bf7f271d2e9005f1a15cfdb6f2f13e950c85 -> 360a92a18a29dcb7c52296e99db095945a95d2aea68f9dd4d21eb97f77b466c4: types ~4, errors +2 -1 ~6
-  types changed (4): Number, Principles, StripEvent, Vault
-  errors added (2): MarketTwoNegativeYieldUnsupported, MissingVaultForPyIndex
-  errors removed (1): VaultInEmergencyMode
-  errors changed (6): every one code changed
+Nothing moved since the last generation.

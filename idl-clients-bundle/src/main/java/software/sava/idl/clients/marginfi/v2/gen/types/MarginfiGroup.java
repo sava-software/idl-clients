@@ -21,6 +21,10 @@ import static software.sava.core.programs.Discriminator.createAnchorDiscriminato
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param admin Broadly able to modify anything, and can set/remove other admins at will.
+///
+///              Subsequent to the release of the `governance_admin`, this role can be considered the "fast" admin,
+///              it can perform various tasks that do not require timelock sensitivity. High-risk activities
+///              like changing oracles or bank weights are now under the control of the "slow" governance admin.
 /// @param groupFlags: u64 Bitmask for group settings flags.
 ///                   * Bit 0 (1): `PROGRAM_FEES_ENABLED` — If set, program-level fees are enabled.
 ///                   * Bits 1-63: Reserved for future use.
@@ -45,14 +49,17 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param riskAdmin Can run bankruptcy and forced deleverage ixes to e.g. sunset risky/illiquid assets
 /// @param metadataAdmin Can modify a Bank's metadata, and nothing else.
 /// @param emodeMaxInitLeverage: u32 Maximum leverage allowed for emode positions (initial margin), stored as u32 basis.
-///                             Use `u32_to_basis` to convert to I80F48. Range: 1-100.
+///                             Use `u32_to_basis` to convert to I80F48. Range: 1-100; 0 is unset and bounds nothing.
 /// @param emodeMaxMaintLeverage: u32 Maximum leverage allowed for emode positions (maintenance margin), stored as u32 basis.
-///                              Must be > emode_max_init_leverage. Range: 1-100.
+///                              Must be > emode_max_init_leverage. Range: 1-100; 0 is unset and bounds nothing.
 /// @param sameAssetEmodeInitLeverage: u32 Encoded same-asset automatic emode leverage for initial margin.
 ///                                   Decode with `u32_to_basis`. Same-asset treatment is disabled when the decoded leverage is
 ///                                   less than or equal to 1 and also requires each participating bank to opt in.
 /// @param sameAssetEmodeMaintLeverage: u32 Encoded same-asset automatic emode leverage for maintenance margin.
 ///                                    Decode with `u32_to_basis`. Ordering is validated in decoded space.
+///                                    Eligible banks have their liquidation fees checked against this value only when they opt in
+///                                    while it is enabled or when they change fees. Enabling or raising it does not re-check them,
+///                                    so verify every eligible bank off-chain first.
 /// @param rateLimiter Rate limiter for controlling aggregate withdraw/borrow outflow across all banks.
 ///                    Tracks net outflow in USD.
 /// @param rateLimiterLastAdminUpdateSlot: u64 Last slot covered by an admin group rate limiter aggregation update.
@@ -65,9 +72,20 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                          information from banks. Typically this is a hot wallet that lives in e.g. some cron job. If
 ///                          compromised, flow control can be effectively disabled until the admin is restored, which
 ///                          does not itself compromise any funds, and is merely annoying.
-/// @param padding0: u64[][]
-/// @param padding1: u64[][]
+/// @param premiumSettings Header for the pairwise variable-borrow premium matrix stored in `premium_entries`.
+///                        Occupies the former `_padding_0`/`_padding_1` region of the v1 layout, so v1 accounts
+///                        resize to a zeroed header (matrix off).
+/// @param premiumEntries Pairwise variable-borrow premium rates, keyed by (collateral `premium_tag`, liability
+///                       `premium_tag`). Live entries occupy the first `premium_settings.entry_count` slots.
+///                       Read only via `find_premium_rate`. Future capacity growth carves from `_padding_2`.
+/// @param governanceAdmin Also called the "slow" admin. Dedicated authority for time-locked configuration. Legacy
+///                        groups have this field zeroed after resize and must be bootstrapped by the fast admin with
+///                        `marginfi_group_set_governance_admin` before slow-authority operations are available.
+///
+///                        This is the first 32 bytes of post-v1 reserved space; renaming the field does not alter
+///                        any serialized account bytes.
 /// @param padding2: u64[][]
+/// @param padding3: u64[]
 public record MarginfiGroup(PublicKey _address,
                             Discriminator discriminator,
                             PublicKey admin,
@@ -93,15 +111,17 @@ public record MarginfiGroup(PublicKey _address,
                             long deleverageWithdrawLastAdminUpdateSlot,
                             long deleverageWithdrawLastAdminUpdateSeq,
                             PublicKey delegateFlowAdmin,
-                            long[][] padding0,
-                            long[][] padding1,
-                            long[][] padding2) implements SerDe {
+                            PremiumSettings premiumSettings,
+                            PremiumEntry[] premiumEntries,
+                            PublicKey governanceAdmin,
+                            long[][] padding2,
+                            long[] padding3) implements SerDe {
 
   public static final int BYTES = 9256;
   public static final int PAD_0_LEN = 6;
-  public static final int PADDING_0_LEN = 2;
-  public static final int PADDING_1_LEN = 32;
-  public static final int PADDING_2_LEN = 32;
+  public static final int PREMIUM_ENTRIES_LEN = 64;
+  public static final int PADDING_2_LEN = 31;
+  public static final int PADDING_3_LEN = 28;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(182, 23, 173, 240, 151, 206, 182, 67);
@@ -130,9 +150,11 @@ public record MarginfiGroup(PublicKey _address,
   public static final int DELEVERAGE_WITHDRAW_LAST_ADMIN_UPDATE_SLOT_OFFSET = 472;
   public static final int DELEVERAGE_WITHDRAW_LAST_ADMIN_UPDATE_SEQ_OFFSET = 480;
   public static final int DELEGATE_FLOW_ADMIN_OFFSET = 488;
-  public static final int PADDING_0_OFFSET = 520;
-  public static final int PADDING_1_OFFSET = 552;
-  public static final int PADDING_2_OFFSET = 1064;
+  public static final int PREMIUM_SETTINGS_OFFSET = 520;
+  public static final int PREMIUM_ENTRIES_OFFSET = 552;
+  public static final int GOVERNANCE_ADMIN_OFFSET = 1064;
+  public static final int PADDING_2_OFFSET = 1096;
+  public static final int PADDING_3_OFFSET = 9032;
 
   public static Filter createAdminFilter(final PublicKey admin) {
     return Filter.createMemCompFilter(ADMIN_OFFSET, admin);
@@ -242,6 +264,14 @@ public record MarginfiGroup(PublicKey _address,
     return Filter.createMemCompFilter(DELEGATE_FLOW_ADMIN_OFFSET, delegateFlowAdmin);
   }
 
+  public static Filter createPremiumSettingsFilter(final PremiumSettings premiumSettings) {
+    return Filter.createMemCompFilter(PREMIUM_SETTINGS_OFFSET, premiumSettings.write());
+  }
+
+  public static Filter createGovernanceAdminFilter(final PublicKey governanceAdmin) {
+    return Filter.createMemCompFilter(GOVERNANCE_ADMIN_OFFSET, governanceAdmin);
+  }
+
   public static MarginfiGroup read(final byte[] _data, final int _offset) {
     return read(null, _data, _offset);
   }
@@ -322,12 +352,16 @@ public record MarginfiGroup(PublicKey _address,
     i += 8;
     final var delegateFlowAdmin = readPubKey(_data, i);
     i += 32;
-    final var padding0 = new long[2][2];
-    i += SerDeUtil.readArray(padding0, _data, i);
-    final var padding1 = new long[32][2];
-    i += SerDeUtil.readArray(padding1, _data, i);
-    final var padding2 = new long[32][32];
-    SerDeUtil.readArray(padding2, _data, i);
+    final var premiumSettings = PremiumSettings.read(_data, i);
+    i += 32;
+    final var premiumEntries = new PremiumEntry[64];
+    i += SerDeUtil.readArray(premiumEntries, PremiumEntry::read, _data, i);
+    final var governanceAdmin = readPubKey(_data, i);
+    i += 32;
+    final var padding2 = new long[31][32];
+    i += SerDeUtil.readArray(padding2, _data, i);
+    final var padding3 = new long[28];
+    SerDeUtil.readArray(padding3, _data, i);
     return new MarginfiGroup(_address,
                              discriminator,
                              admin,
@@ -353,9 +387,11 @@ public record MarginfiGroup(PublicKey _address,
                              deleverageWithdrawLastAdminUpdateSlot,
                              deleverageWithdrawLastAdminUpdateSeq,
                              delegateFlowAdmin,
-                             padding0,
-                             padding1,
-                             padding2);
+                             premiumSettings,
+                             premiumEntries,
+                             governanceAdmin,
+                             padding2,
+                             padding3);
   }
 
   @Override
@@ -402,9 +438,12 @@ public record MarginfiGroup(PublicKey _address,
     i += 8;
     delegateFlowAdmin.write(_data, i);
     i += 32;
-    i += SerDeUtil.writeArrayChecked(padding0, 2, 2, _data, i);
-    i += SerDeUtil.writeArrayChecked(padding1, 32, 2, _data, i);
-    i += SerDeUtil.writeArrayChecked(padding2, 32, 32, _data, i);
+    i += premiumSettings.write(_data, i);
+    i += SerDeUtil.writeArrayChecked(premiumEntries, 64, _data, i);
+    governanceAdmin.write(_data, i);
+    i += 32;
+    i += SerDeUtil.writeArrayChecked(padding2, 31, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding3, 28, _data, i);
     return i - _offset;
   }
 

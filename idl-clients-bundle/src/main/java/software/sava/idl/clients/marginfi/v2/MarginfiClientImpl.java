@@ -73,7 +73,8 @@ final class MarginfiClientImpl implements MarginfiClient {
         accounts.invokedMarginfiProgram(),
         marginfiAccount,
         authority,
-        feePayer
+        feePayer,
+        accounts.rebalanceFeePoolPDA(marginfiAccount).publicKey()
     );
   }
 

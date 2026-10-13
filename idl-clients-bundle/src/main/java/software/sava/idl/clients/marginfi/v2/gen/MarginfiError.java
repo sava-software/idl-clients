@@ -58,7 +58,7 @@ public sealed interface MarginfiError extends ProgramError permits
     MarginfiError.WrongNumberOfOracleAccounts,
     MarginfiError.WrongOracleAccountKeys,
     MarginfiError.StakeOraclesDisabled,
-    MarginfiError.Vacated3,
+    MarginfiError.AccountAlreadyTagged,
     MarginfiError.OracleMaxConfidenceExceeded,
     MarginfiError.PythPushInsufficientVerificationLevel,
     MarginfiError.ZeroAssetPrice,
@@ -77,7 +77,7 @@ public sealed interface MarginfiError extends ProgramError permits
     MarginfiError.TooSeverePayoff,
     MarginfiError.TooSevereLiquidation,
     MarginfiError.WorseHealthPostLiquidation,
-    MarginfiError.IntegrationPositionLimitExceeded,
+    MarginfiError.CostlyPositionLimitExceeded,
     MarginfiError.MaxInitLeverageExceeded,
     MarginfiError.BadEmodeConfig,
     MarginfiError.PythPushInvalidWindowSize,
@@ -144,6 +144,11 @@ public sealed interface MarginfiError extends ProgramError permits
     MarginfiError.ExponentVaultValidationFailed,
     MarginfiError.InvalidPtStartPrice,
     MarginfiError.StakePoolStale,
+    MarginfiError.MixedBankConfigAuthority,
+    MarginfiError.InvalidGovernanceAdmin,
+    MarginfiError.MixedGroupConfigAuthority,
+    MarginfiError.InvalidFastBankOperationalState,
+    MarginfiError.InvalidGovernanceBankOperationalState,
     MarginfiError.WrongAssetTagForStandardInstructions,
     MarginfiError.WrongAssetTagForKaminoInstructions,
     MarginfiError.CantAddPool,
@@ -222,6 +227,34 @@ public sealed interface MarginfiError extends ProgramError permits
     MarginfiError.CircuitBreakerInvalidConfig,
     MarginfiError.CircuitBreakerRequiresWarmCache,
     MarginfiError.CircuitBreakerPriceJump,
+    MarginfiError.DurableNonceNotAllowed,
+    MarginfiError.PremiumEntryInvalid,
+    MarginfiError.PremiumMatrixFull,
+    MarginfiError.InvalidPremiumAta,
+    MarginfiError.PremiumWalletNotSet,
+    MarginfiError.PremiumEntryNotFound,
+    MarginfiError.PremiumSnapshotUnavailable,
+    MarginfiError.RebalanceVenueUnsupported,
+    MarginfiError.RebalanceCooldown,
+    MarginfiError.RebalanceIncompleteMove,
+    MarginfiError.RebalanceNotImproving,
+    MarginfiError.RebalanceOvershoot,
+    MarginfiError.RebalanceValueLeak,
+    MarginfiError.RebalanceMintMismatch,
+    MarginfiError.RebalanceBankNotAllowed,
+    MarginfiError.RebalanceInvalidMinImprovement,
+    MarginfiError.RebalanceExceedsAmount,
+    MarginfiError.RebalanceMalformedSandwich,
+    MarginfiError.RebalanceSettleTooEarly,
+    MarginfiError.RebalanceForeignAccountLeg,
+    MarginfiError.RebalanceNoAllowlistPosition,
+    MarginfiError.RebalanceUntrackedBalance,
+    MarginfiError.RebalanceNotBestVenue,
+    MarginfiError.RebalanceStaleExecutionSeq,
+    MarginfiError.RebalanceAllowlistLiability,
+    MarginfiError.RebalanceBankSourceAndDestination,
+    MarginfiError.RebalanceForeignBankLeg,
+    MarginfiError.RebalanceTaggedBalanceSplit,
     MarginfiError.ScopeInvalidAccount,
     MarginfiError.ScopeInvalidEntry,
     MarginfiError.ScopeStalePrice,
@@ -283,7 +316,7 @@ public sealed interface MarginfiError extends ProgramError permits
       case 6051 -> WrongNumberOfOracleAccounts.INSTANCE;
       case 6052 -> WrongOracleAccountKeys.INSTANCE;
       case 6053 -> StakeOraclesDisabled.INSTANCE;
-      case 6054 -> Vacated3.INSTANCE;
+      case 6054 -> AccountAlreadyTagged.INSTANCE;
       case 6055 -> OracleMaxConfidenceExceeded.INSTANCE;
       case 6056 -> PythPushInsufficientVerificationLevel.INSTANCE;
       case 6057 -> ZeroAssetPrice.INSTANCE;
@@ -302,7 +335,7 @@ public sealed interface MarginfiError extends ProgramError permits
       case 6070 -> TooSeverePayoff.INSTANCE;
       case 6071 -> TooSevereLiquidation.INSTANCE;
       case 6072 -> WorseHealthPostLiquidation.INSTANCE;
-      case 6073 -> IntegrationPositionLimitExceeded.INSTANCE;
+      case 6073 -> CostlyPositionLimitExceeded.INSTANCE;
       case 6074 -> MaxInitLeverageExceeded.INSTANCE;
       case 6075 -> BadEmodeConfig.INSTANCE;
       case 6076 -> PythPushInvalidWindowSize.INSTANCE;
@@ -369,6 +402,11 @@ public sealed interface MarginfiError extends ProgramError permits
       case 6137 -> ExponentVaultValidationFailed.INSTANCE;
       case 6138 -> InvalidPtStartPrice.INSTANCE;
       case 6139 -> StakePoolStale.INSTANCE;
+      case 6140 -> MixedBankConfigAuthority.INSTANCE;
+      case 6141 -> InvalidGovernanceAdmin.INSTANCE;
+      case 6142 -> MixedGroupConfigAuthority.INSTANCE;
+      case 6143 -> InvalidFastBankOperationalState.INSTANCE;
+      case 6144 -> InvalidGovernanceBankOperationalState.INSTANCE;
       case 6200 -> WrongAssetTagForStandardInstructions.INSTANCE;
       case 6201 -> WrongAssetTagForKaminoInstructions.INSTANCE;
       case 6202 -> CantAddPool.INSTANCE;
@@ -447,6 +485,34 @@ public sealed interface MarginfiError extends ProgramError permits
       case 6602 -> CircuitBreakerInvalidConfig.INSTANCE;
       case 6603 -> CircuitBreakerRequiresWarmCache.INSTANCE;
       case 6604 -> CircuitBreakerPriceJump.INSTANCE;
+      case 6605 -> DurableNonceNotAllowed.INSTANCE;
+      case 6610 -> PremiumEntryInvalid.INSTANCE;
+      case 6611 -> PremiumMatrixFull.INSTANCE;
+      case 6612 -> InvalidPremiumAta.INSTANCE;
+      case 6613 -> PremiumWalletNotSet.INSTANCE;
+      case 6614 -> PremiumEntryNotFound.INSTANCE;
+      case 6615 -> PremiumSnapshotUnavailable.INSTANCE;
+      case 6700 -> RebalanceVenueUnsupported.INSTANCE;
+      case 6701 -> RebalanceCooldown.INSTANCE;
+      case 6702 -> RebalanceIncompleteMove.INSTANCE;
+      case 6703 -> RebalanceNotImproving.INSTANCE;
+      case 6704 -> RebalanceOvershoot.INSTANCE;
+      case 6705 -> RebalanceValueLeak.INSTANCE;
+      case 6706 -> RebalanceMintMismatch.INSTANCE;
+      case 6707 -> RebalanceBankNotAllowed.INSTANCE;
+      case 6708 -> RebalanceInvalidMinImprovement.INSTANCE;
+      case 6709 -> RebalanceExceedsAmount.INSTANCE;
+      case 6710 -> RebalanceMalformedSandwich.INSTANCE;
+      case 6711 -> RebalanceSettleTooEarly.INSTANCE;
+      case 6712 -> RebalanceForeignAccountLeg.INSTANCE;
+      case 6713 -> RebalanceNoAllowlistPosition.INSTANCE;
+      case 6714 -> RebalanceUntrackedBalance.INSTANCE;
+      case 6715 -> RebalanceNotBestVenue.INSTANCE;
+      case 6716 -> RebalanceStaleExecutionSeq.INSTANCE;
+      case 6717 -> RebalanceAllowlistLiability.INSTANCE;
+      case 6718 -> RebalanceBankSourceAndDestination.INSTANCE;
+      case 6719 -> RebalanceForeignBankLeg.INSTANCE;
+      case 6720 -> RebalanceTaggedBalanceSplit.INSTANCE;
       case 6800 -> ScopeInvalidAccount.INSTANCE;
       case 6801 -> ScopeInvalidEntry.INSTANCE;
       case 6802 -> ScopeStalePrice.INSTANCE;
@@ -833,10 +899,10 @@ public sealed interface MarginfiError extends ProgramError permits
     );
   }
 
-  record Vacated3(int code, String msg) implements MarginfiError {
+  record AccountAlreadyTagged(int code, String msg) implements MarginfiError {
 
-    public static final Vacated3 INSTANCE = new Vacated3(
-        6054, "Vacated3"
+    public static final AccountAlreadyTagged INSTANCE = new AccountAlreadyTagged(
+        6054, "Account is already tagged for liquidation"
     );
   }
 
@@ -966,10 +1032,10 @@ public sealed interface MarginfiError extends ProgramError permits
     );
   }
 
-  record IntegrationPositionLimitExceeded(int code, String msg) implements MarginfiError {
+  record CostlyPositionLimitExceeded(int code, String msg) implements MarginfiError {
 
-    public static final IntegrationPositionLimitExceeded INSTANCE = new IntegrationPositionLimitExceeded(
-        6073, "Exceeded the maximum allowed integration positions"
+    public static final CostlyPositionLimitExceeded INSTANCE = new CostlyPositionLimitExceeded(
+        6073, "Exceeded the maximum allowed integration or staked positions"
     );
   }
 
@@ -1432,6 +1498,41 @@ public sealed interface MarginfiError extends ProgramError permits
 
     public static final StakePoolStale INSTANCE = new StakePoolStale(
         6139, "Stake pool balance has not been updated recently enough"
+    );
+  }
+
+  record MixedBankConfigAuthority(int code, String msg) implements MarginfiError {
+
+    public static final MixedBankConfigAuthority INSTANCE = new MixedBankConfigAuthority(
+        6140, "Deprecated: bank configuration now uses explicit fast and governance instructions"
+    );
+  }
+
+  record InvalidGovernanceAdmin(int code, String msg) implements MarginfiError {
+
+    public static final InvalidGovernanceAdmin INSTANCE = new InvalidGovernanceAdmin(
+        6141, "Governance admin cannot be set to the default pubkey (all zeros); this would disable slow-authority operations"
+    );
+  }
+
+  record MixedGroupConfigAuthority(int code, String msg) implements MarginfiError {
+
+    public static final MixedGroupConfigAuthority INSTANCE = new MixedGroupConfigAuthority(
+        6142, "Deprecated: group configuration now uses explicit fast and governance instructions"
+    );
+  }
+
+  record InvalidFastBankOperationalState(int code, String msg) implements MarginfiError {
+
+    public static final InvalidFastBankOperationalState INSTANCE = new InvalidFastBankOperationalState(
+        6143, "Fast bank configuration may only make a risk-reducing operational-state transition"
+    );
+  }
+
+  record InvalidGovernanceBankOperationalState(int code, String msg) implements MarginfiError {
+
+    public static final InvalidGovernanceBankOperationalState INSTANCE = new InvalidGovernanceBankOperationalState(
+        6144, "Governance bank configuration may only transition a bank to Operational"
     );
   }
 
@@ -1978,6 +2079,202 @@ public sealed interface MarginfiError extends ProgramError permits
 
     public static final CircuitBreakerPriceJump INSTANCE = new CircuitBreakerPriceJump(
         6604, "Oracle price deviates too far from the circuit breaker reference; action rejected"
+    );
+  }
+
+  record DurableNonceNotAllowed(int code, String msg) implements MarginfiError {
+
+    public static final DurableNonceNotAllowed INSTANCE = new DurableNonceNotAllowed(
+        6605, "Durable nonce cannot be used for this instruction"
+    );
+  }
+
+  record PremiumEntryInvalid(int code, String msg) implements MarginfiError {
+
+    public static final PremiumEntryInvalid INSTANCE = new PremiumEntryInvalid(
+        6610, "Premium entry has a zero collateral or liability tag"
+    );
+  }
+
+  record PremiumMatrixFull(int code, String msg) implements MarginfiError {
+
+    public static final PremiumMatrixFull INSTANCE = new PremiumMatrixFull(
+        6611, "Too many premium entries for the group's capacity"
+    );
+  }
+
+  record InvalidPremiumAta(int code, String msg) implements MarginfiError {
+
+    public static final InvalidPremiumAta INSTANCE = new InvalidPremiumAta(
+        6612, "Premium ATA does not match the canonical ATA of the premium wallet"
+    );
+  }
+
+  record PremiumWalletNotSet(int code, String msg) implements MarginfiError {
+
+    public static final PremiumWalletNotSet INSTANCE = new PremiumWalletNotSet(
+        6613, "Premium wallet is not configured on the fee state"
+    );
+  }
+
+  record PremiumEntryNotFound(int code, String msg) implements MarginfiError {
+
+    public static final PremiumEntryNotFound INSTANCE = new PremiumEntryNotFound(
+        6614, "Premium (collateral, liability) pair is not in the matrix"
+    );
+  }
+
+  record PremiumSnapshotUnavailable(int code, String msg) implements MarginfiError {
+
+    public static final PremiumSnapshotUnavailable INSTANCE = new PremiumSnapshotUnavailable(
+        6615, "Premium rate cannot be computed (a collateral oracle failed); retry with valid oracles"
+    );
+  }
+
+  record RebalanceVenueUnsupported(int code, String msg) implements MarginfiError {
+
+    public static final RebalanceVenueUnsupported INSTANCE = new RebalanceVenueUnsupported(
+        6700, "Rebalance venue not supported for on-chain rate verification"
+    );
+  }
+
+  record RebalanceCooldown(int code, String msg) implements MarginfiError {
+
+    public static final RebalanceCooldown INSTANCE = new RebalanceCooldown(
+        6701, "Rebalance cooldown has not elapsed"
+    );
+  }
+
+  record RebalanceIncompleteMove(int code, String msg) implements MarginfiError {
+
+    public static final RebalanceIncompleteMove INSTANCE = new RebalanceIncompleteMove(
+        6702, "Rebalance moved no value"
+    );
+  }
+
+  record RebalanceNotImproving(int code, String msg) implements MarginfiError {
+
+    public static final RebalanceNotImproving INSTANCE = new RebalanceNotImproving(
+        6703, "Rebalance destination rate not better than source by the required margin"
+    );
+  }
+
+  record RebalanceOvershoot(int code, String msg) implements MarginfiError {
+
+    public static final RebalanceOvershoot INSTANCE = new RebalanceOvershoot(
+        6704, "Rebalance improvement did not survive the move's own market impact"
+    );
+  }
+
+  record RebalanceValueLeak(int code, String msg) implements MarginfiError {
+
+    public static final RebalanceValueLeak INSTANCE = new RebalanceValueLeak(
+        6705, "Rebalance leaked value beyond the allowed dust tolerance"
+    );
+  }
+
+  record RebalanceMintMismatch(int code, String msg) implements MarginfiError {
+
+    public static final RebalanceMintMismatch INSTANCE = new RebalanceMintMismatch(
+        6706, "Rebalance bank mint does not match the order mint"
+    );
+  }
+
+  record RebalanceBankNotAllowed(int code, String msg) implements MarginfiError {
+
+    public static final RebalanceBankNotAllowed INSTANCE = new RebalanceBankNotAllowed(
+        6707, "Rebalance bank not in the order's allowed venue set"
+    );
+  }
+
+  record RebalanceInvalidMinImprovement(int code, String msg) implements MarginfiError {
+
+    public static final RebalanceInvalidMinImprovement INSTANCE = new RebalanceInvalidMinImprovement(
+        6708, "Rebalance min improvement must be non-negative"
+    );
+  }
+
+  record RebalanceExceedsAmount(int code, String msg) implements MarginfiError {
+
+    public static final RebalanceExceedsAmount INSTANCE = new RebalanceExceedsAmount(
+        6709, "Rebalance moved more than the order's amount"
+    );
+  }
+
+  record RebalanceMalformedSandwich(int code, String msg) implements MarginfiError {
+
+    public static final RebalanceMalformedSandwich INSTANCE = new RebalanceMalformedSandwich(
+        6710, "Rebalance sandwich must contain exactly one start and one end instruction"
+    );
+  }
+
+  record RebalanceSettleTooEarly(int code, String msg) implements MarginfiError {
+
+    public static final RebalanceSettleTooEarly INSTANCE = new RebalanceSettleTooEarly(
+        6711, "Rebalance tip cannot be settled until the settlement delay has elapsed"
+    );
+  }
+
+  record RebalanceForeignAccountLeg(int code, String msg) implements MarginfiError {
+
+    public static final RebalanceForeignAccountLeg INSTANCE = new RebalanceForeignAccountLeg(
+        6712, "Rebalance deposit/withdraw legs must all act on the rebalanced marginfi account"
+    );
+  }
+
+  record RebalanceNoAllowlistPosition(int code, String msg) implements MarginfiError {
+
+    public static final RebalanceNoAllowlistPosition INSTANCE = new RebalanceNoAllowlistPosition(
+        6713, "Rebalance order requires a deposit in at least one allowed bank"
+    );
+  }
+
+  record RebalanceUntrackedBalance(int code, String msg) implements MarginfiError {
+
+    public static final RebalanceUntrackedBalance INSTANCE = new RebalanceUntrackedBalance(
+        6714, "Rebalance opened a balance outside the referenced bank set"
+    );
+  }
+
+  record RebalanceNotBestVenue(int code, String msg) implements MarginfiError {
+
+    public static final RebalanceNotBestVenue INSTANCE = new RebalanceNotBestVenue(
+        6715, "Rebalance passed over a higher-rate bank that still has deposit capacity"
+    );
+  }
+
+  record RebalanceStaleExecutionSeq(int code, String msg) implements MarginfiError {
+
+    public static final RebalanceStaleExecutionSeq INSTANCE = new RebalanceStaleExecutionSeq(
+        6716, "Rebalance execution sequence does not match the account's next value"
+    );
+  }
+
+  record RebalanceAllowlistLiability(int code, String msg) implements MarginfiError {
+
+    public static final RebalanceAllowlistLiability INSTANCE = new RebalanceAllowlistLiability(
+        6717, "Rebalance allowlist contains a bank the account owes into"
+    );
+  }
+
+  record RebalanceBankSourceAndDestination(int code, String msg) implements MarginfiError {
+
+    public static final RebalanceBankSourceAndDestination INSTANCE = new RebalanceBankSourceAndDestination(
+        6718, "Rebalance moves use a bank as both a source and a destination"
+    );
+  }
+
+  record RebalanceForeignBankLeg(int code, String msg) implements MarginfiError {
+
+    public static final RebalanceForeignBankLeg INSTANCE = new RebalanceForeignBankLeg(
+        6719, "Rebalance deposit/withdraw legs must all act on a bank the order allows"
+    );
+  }
+
+  record RebalanceTaggedBalanceSplit(int code, String msg) implements MarginfiError {
+
+    public static final RebalanceTaggedBalanceSplit INSTANCE = new RebalanceTaggedBalanceSplit(
+        6720, "Rebalance must move an order-tagged balance whole, alone, into an empty bank"
     );
   }
 

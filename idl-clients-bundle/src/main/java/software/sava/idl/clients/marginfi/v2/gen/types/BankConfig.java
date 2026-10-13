@@ -54,8 +54,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///
 ///                                 Value is UI USD value, for example value 100 -> $100
 /// @param oracleMaxAge: u16 Time window in seconds for the oracle price feed to be considered live.
-/// @param scopeEntryIndex: u16 Entry index into the Scope `OraclePrices` price list. Only read when
-///                        `oracle_setup == OracleSetup::Scope`; ignored (and zero) for every other setup.
+/// @param scopeEntryIndex: u16 Entry index into the Scope `OraclePrices` price list. Only read by the Scope setups
+///                        (`Scope`, `ScopeKamino`, `ScopeJuplend`); ignored (and zero) for every other setup.
 ///                        Occupies what was previously `_padding0`, so the layout is unchanged.
 /// @param oracleMaxConfidence: u32 A %, as u32, e.g. 100% = u32::MAX, 50% = u32::MAX/2, etc.
 ///

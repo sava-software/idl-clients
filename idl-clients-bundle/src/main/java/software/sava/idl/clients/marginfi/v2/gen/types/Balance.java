@@ -7,8 +7,10 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
+import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// @param active: u8 Whether this balance slot is in use (nonzero = active)
@@ -17,36 +19,42 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///                     Note that all balances created before the addition of this feature use `ASSET_TAG_DEFAULT`
 /// @param tag: u16 Tag used by orders to reference this balance (0 means unused/unassigned).
 ///            A tag may also have a non-zero value while having no orders.
+/// @param premiumRateSnapshot: u32 Collateral-weighted variable-borrow premium APR snapshot for this liability position,
+///                            encoded like interest-curve points via `milli_to_u32` (0-1000%). Recomputed by every
+///                            oracle-carrying ix (borrow, withdraw, liquidation, order end, `pulse_health`) but not
+///                            deposit/repay, which carry no oracles. 0 = no premium.
 /// @param assetShares The user's asset (deposit) shares in the bank. Multiply by `bank.asset_share_value` for
 ///                    the token amount.
 /// @param liabilityShares The user's liability (borrow) shares in the bank. Multiply by `bank.liability_share_value`
 ///                        for the token amount.
-/// @param emissionsOutstanding Unclaimed emissions rewards for this position
-/// @param lastUpdate: u64 Unix timestamp (u64) of the last emissions calculation for this position
+/// @param premiumOutstanding Accrued (materialized) variable-borrow premium owed on this liability position, in native
+///                           token units. Settled (with real tokens) only on repay; written off on bankruptcy,
+///                           tokenless repayment, or a liability→asset flip.
+/// @param lastUpdate: u64 Unix timestamp (u64) of the last premium accrual (claim) for this position. Set at
+///                   balance creation and bumped on every `claim_premium`.
 /// @param padding: u64[] Reserved for future use
 public record Balance(int active,
                       PublicKey bankPk,
                       int bankAssetTag,
                       int tag,
-                      byte[] pad0,
+                      long premiumRateSnapshot,
                       WrappedI80F48 assetShares,
                       WrappedI80F48 liabilityShares,
-                      WrappedI80F48 emissionsOutstanding,
+                      WrappedI80F48 premiumOutstanding,
                       long lastUpdate,
                       long[] padding) implements SerDe {
 
   public static final int BYTES = 104;
-  public static final int PAD_0_LEN = 4;
   public static final int PADDING_LEN = 1;
 
   public static final int ACTIVE_OFFSET = 0;
   public static final int BANK_PK_OFFSET = 1;
   public static final int BANK_ASSET_TAG_OFFSET = 33;
   public static final int TAG_OFFSET = 34;
-  public static final int PAD_0_OFFSET = 36;
+  public static final int PREMIUM_RATE_SNAPSHOT_OFFSET = 36;
   public static final int ASSET_SHARES_OFFSET = 40;
   public static final int LIABILITY_SHARES_OFFSET = 56;
-  public static final int EMISSIONS_OUTSTANDING_OFFSET = 72;
+  public static final int PREMIUM_OUTSTANDING_OFFSET = 72;
   public static final int LAST_UPDATE_OFFSET = 88;
   public static final int PADDING_OFFSET = 96;
 
@@ -63,13 +71,13 @@ public record Balance(int active,
     ++i;
     final var tag = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var pad0 = new byte[4];
-    i += SerDeUtil.readArray(pad0, _data, i);
+    final var premiumRateSnapshot = Integer.toUnsignedLong(getInt32LE(_data, i));
+    i += 4;
     final var assetShares = WrappedI80F48.read(_data, i);
     i += 16;
     final var liabilityShares = WrappedI80F48.read(_data, i);
     i += 16;
-    final var emissionsOutstanding = WrappedI80F48.read(_data, i);
+    final var premiumOutstanding = WrappedI80F48.read(_data, i);
     i += 16;
     final var lastUpdate = getInt64LE(_data, i);
     i += 8;
@@ -79,10 +87,10 @@ public record Balance(int active,
                        bankPk,
                        bankAssetTag,
                        tag,
-                       pad0,
+                       premiumRateSnapshot,
                        assetShares,
                        liabilityShares,
-                       emissionsOutstanding,
+                       premiumOutstanding,
                        lastUpdate,
                        padding);
   }
@@ -98,10 +106,11 @@ public record Balance(int active,
     ++i;
     putInt16LE(_data, i, tag);
     i += 2;
-    i += SerDeUtil.writeArrayChecked(pad0, 4, _data, i);
+    putInt32LE(_data, i, (int) premiumRateSnapshot);
+    i += 4;
     i += assetShares.write(_data, i);
     i += liabilityShares.write(_data, i);
-    i += emissionsOutstanding.write(_data, i);
+    i += premiumOutstanding.write(_data, i);
     putInt64LE(_data, i, lastUpdate);
     i += 8;
     i += SerDeUtil.writeArrayChecked(padding, 1, _data, i);

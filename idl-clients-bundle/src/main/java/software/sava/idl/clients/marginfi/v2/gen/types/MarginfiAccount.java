@@ -58,6 +58,12 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                          * Typically pubkey default if this account has never been liquidated or close to liquidation
 ///                          * Opening this account is permissionless. Typically the liquidator pays, but e.g. we may
 ///                          also charge the user if they are opening a risky position on the front end.
+/// @param rebalanceExecutionSeq: u64 Monotonic counter. seeding each rebalance execution's `RebalanceRecord`.
+/// @param liquidationTaggedAt Unix timestamp when this account was tagged as unhealthy, growing the allowed liquidation
+///                            premium over time. Cleared once an instruction proves the account healthy again (deposit
+///                            and repay do not), restarted when a liquidation erases a material share of the health
+///                            deficit or repays a material share of the debt.
+///                            * 0 if not tagged
 /// @param padding0: u64[]
 public record MarginfiAccount(PublicKey _address,
                               Discriminator discriminator,
@@ -77,11 +83,13 @@ public record MarginfiAccount(PublicKey _address,
                               byte[] pad0,
                               PublicKey liquidationRecord,
                               IndexerFlags indexerFlags,
+                              long rebalanceExecutionSeq,
+                              long liquidationTaggedAt,
                               long[] padding0) implements SerDe {
 
   public static final int BYTES = 2312;
   public static final int PAD_0_LEN = 2;
-  public static final int PADDING_0_LEN = 4;
+  public static final int PADDING_0_LEN = 2;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(67, 178, 130, 109, 126, 114, 28, 42);
@@ -103,7 +111,9 @@ public record MarginfiAccount(PublicKey _address,
   public static final int PAD_0_OFFSET = 2222;
   public static final int LIQUIDATION_RECORD_OFFSET = 2224;
   public static final int INDEXER_FLAGS_OFFSET = 2256;
-  public static final int PADDING_0_OFFSET = 2280;
+  public static final int REBALANCE_EXECUTION_SEQ_OFFSET = 2280;
+  public static final int LIQUIDATION_TAGGED_AT_OFFSET = 2288;
+  public static final int PADDING_0_OFFSET = 2296;
 
   public static Filter createGroupFilter(final PublicKey group) {
     return Filter.createMemCompFilter(GROUP_OFFSET, group);
@@ -163,6 +173,18 @@ public record MarginfiAccount(PublicKey _address,
 
   public static Filter createIndexerFlagsFilter(final IndexerFlags indexerFlags) {
     return Filter.createMemCompFilter(INDEXER_FLAGS_OFFSET, indexerFlags.write());
+  }
+
+  public static Filter createRebalanceExecutionSeqFilter(final long rebalanceExecutionSeq) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, rebalanceExecutionSeq);
+    return Filter.createMemCompFilter(REBALANCE_EXECUTION_SEQ_OFFSET, _data);
+  }
+
+  public static Filter createLiquidationTaggedAtFilter(final long liquidationTaggedAt) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, liquidationTaggedAt);
+    return Filter.createMemCompFilter(LIQUIDATION_TAGGED_AT_OFFSET, _data);
   }
 
   public static MarginfiAccount read(final byte[] _data, final int _offset) {
@@ -231,7 +253,11 @@ public record MarginfiAccount(PublicKey _address,
     i += 32;
     final var indexerFlags = IndexerFlags.read(_data, i);
     i += 24;
-    final var padding0 = new long[4];
+    final var rebalanceExecutionSeq = getInt64LE(_data, i);
+    i += 8;
+    final var liquidationTaggedAt = getInt64LE(_data, i);
+    i += 8;
+    final var padding0 = new long[2];
     SerDeUtil.readArray(padding0, _data, i);
     return new MarginfiAccount(_address,
                                discriminator,
@@ -251,6 +277,8 @@ public record MarginfiAccount(PublicKey _address,
                                pad0,
                                liquidationRecord,
                                indexerFlags,
+                               rebalanceExecutionSeq,
+                               liquidationTaggedAt,
                                padding0);
   }
 
@@ -285,7 +313,11 @@ public record MarginfiAccount(PublicKey _address,
     liquidationRecord.write(_data, i);
     i += 32;
     i += indexerFlags.write(_data, i);
-    i += SerDeUtil.writeArrayChecked(padding0, 4, _data, i);
+    putInt64LE(_data, i, rebalanceExecutionSeq);
+    i += 8;
+    putInt64LE(_data, i, liquidationTaggedAt);
+    i += 8;
+    i += SerDeUtil.writeArrayChecked(padding0, 2, _data, i);
     return i - _offset;
   }
 

@@ -49,10 +49,13 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                             pun intended) e.g. (1 + this) * amount repaid >= asset seized
 ///                             * A percentage
 /// @param pauseDelegateAdmin Can pause (not unpause) the protocol, but cannot modify any fee configuration.
-/// @param reserved0: u64[] Reserved for future use (e.g. the variable-borrow premium settings). Accounts created
-///                  before the struct grew to this size are v1-sized (`8 + V1_LEN` bytes) and must be
-///                  grown via `resize_global_fee_state` before this program version can load them; the new
-///                  bytes are zero-filled.
+/// @param premiumWallet Destination wallet for swept variable-borrow premium fees. Premium collected by banks is
+///                      swept (permissionlessly) to the canonical ATA of this wallet for the bank's mint.
+///                      * `Pubkey::default()` = unset (sweeps are rejected until the fee admin configures it),
+///                      which is what v1-sized accounts hold after `resize_global_fee_state` zero-fills them.
+/// @param reserved0: u64[] Reserved for future use. Accounts created before the struct grew to this size are
+///                  v1-sized (`8 + V1_LEN` bytes) and must be grown via `resize_global_fee_state` before
+///                  this program version can load them; the new bytes are zero-filled.
 public record FeeState(PublicKey _address,
                        Discriminator discriminator,
                        PublicKey key,
@@ -72,12 +75,13 @@ public record FeeState(PublicKey _address,
                        long orderInitFlatSolFee,
                        WrappedI80F48 orderExecutionMaxFee,
                        PublicKey pauseDelegateAdmin,
+                       PublicKey premiumWallet,
                        long[] reserved0) implements SerDe {
 
   public static final int BYTES = 520;
   public static final int PLACEHOLDER_0_LEN = 4;
   public static final int PADDING_0_LEN = 3;
-  public static final int RESERVED_0_LEN = 32;
+  public static final int RESERVED_0_LEN = 28;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(63, 224, 16, 85, 193, 36, 235, 220);
@@ -100,7 +104,8 @@ public record FeeState(PublicKey _address,
   public static final int ORDER_INIT_FLAT_SOL_FEE_OFFSET = 212;
   public static final int ORDER_EXECUTION_MAX_FEE_OFFSET = 216;
   public static final int PAUSE_DELEGATE_ADMIN_OFFSET = 232;
-  public static final int RESERVED_0_OFFSET = 264;
+  public static final int PREMIUM_WALLET_OFFSET = 264;
+  public static final int RESERVED_0_OFFSET = 296;
 
   public static Filter createKeyFilter(final PublicKey key) {
     return Filter.createMemCompFilter(KEY_OFFSET, key);
@@ -172,6 +177,10 @@ public record FeeState(PublicKey _address,
     return Filter.createMemCompFilter(PAUSE_DELEGATE_ADMIN_OFFSET, pauseDelegateAdmin);
   }
 
+  public static Filter createPremiumWalletFilter(final PublicKey premiumWallet) {
+    return Filter.createMemCompFilter(PREMIUM_WALLET_OFFSET, premiumWallet);
+  }
+
   public static FeeState read(final byte[] _data, final int _offset) {
     return read(null, _data, _offset);
   }
@@ -240,7 +249,9 @@ public record FeeState(PublicKey _address,
     i += 16;
     final var pauseDelegateAdmin = readPubKey(_data, i);
     i += 32;
-    final var reserved0 = new long[32];
+    final var premiumWallet = readPubKey(_data, i);
+    i += 32;
+    final var reserved0 = new long[28];
     SerDeUtil.readArray(reserved0, _data, i);
     return new FeeState(_address,
                         discriminator,
@@ -261,6 +272,7 @@ public record FeeState(PublicKey _address,
                         orderInitFlatSolFee,
                         orderExecutionMaxFee,
                         pauseDelegateAdmin,
+                        premiumWallet,
                         reserved0);
   }
 
@@ -294,7 +306,9 @@ public record FeeState(PublicKey _address,
     i += orderExecutionMaxFee.write(_data, i);
     pauseDelegateAdmin.write(_data, i);
     i += 32;
-    i += SerDeUtil.writeArrayChecked(reserved0, 32, _data, i);
+    premiumWallet.write(_data, i);
+    i += 32;
+    i += SerDeUtil.writeArrayChecked(reserved0, 28, _data, i);
     return i - _offset;
   }
 

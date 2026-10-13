@@ -38,6 +38,7 @@ import java.util.List;
 ///    | `PythMSOL` | 3 | bank, Pyth feed, Marinade state |
 ///    | `PythLST` | 3 | bank, Pyth feed, SPL stake pool |
 ///    | `PTPyth` | 3 | bank, Pyth feed, Exponent vault |
+///    | `ScopeKamino` / `ScopeJuplend` | 3 | bank, Scope `OraclePrices`, Kamino reserve / JupLend lending |
 ///    | `KaminoMSOL` / `JuplendMSOL` | 4 | bank, Pyth feed, venue state, Marinade state |
 ///    | `KaminoLST` / `JuplendLST` | 4 | bank, Pyth feed, venue state, SPL stake pool |
 ///    | asset tag `DEFAULT` (0) or `SOL` (1) | 2 | bank, oracle |
@@ -48,6 +49,12 @@ import java.util.List;
 ///    asset tag. `Scope` is one such — its group is the ordinary `<bank, oracle>`
 ///    pair, where the oracle is the feed's `OraclePrices` account and
 ///    `BankConfig.scopeEntryIndex` picks the entry within it.
+///
+///    `ScopeKamino` and `ScopeJuplend` read the same `OraclePrices` account
+///    (`oracle_keys[0]`) and then the venue account whose exchange rate scales
+///    that price (`oracle_keys[1]`), which must be fresh: a Kamino reserve
+///    refreshed in the current slot, a JupLend lending account updated in the
+///    current second (`state/price.rs`).
 ///
 ///    The staked row's "sol pool" is `oracle_keys[2]` — the single-pool program's
 ///    *stake* account, which the program reads for the pool's NAV, not the pool
@@ -81,7 +88,7 @@ public final class MarginfiRemainingAccounts {
     return switch (oracleSetup) {
       case Fixed -> 1;
       case FixedKamino, FixedDrift, FixedJuplend, PTFixed -> 2;
-      case PythMSOL, PythLST, PTPyth -> 3;
+      case PythMSOL, PythLST, PTPyth, ScopeKamino, ScopeJuplend -> 3;
       case KaminoMSOL, JuplendMSOL, KaminoLST, JuplendLST -> 4;
       default -> switch (assetTag) {
         case ASSET_TAG_STAKED -> 5;

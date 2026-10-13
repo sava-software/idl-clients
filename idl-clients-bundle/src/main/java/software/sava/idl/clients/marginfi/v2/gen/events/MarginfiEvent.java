@@ -14,9 +14,11 @@ public sealed interface MarginfiEvent extends SerDe permits
     EditStakedSettingsEvent,
     HealthPulseEvent,
     KeeperCloseOrderEvent,
+    KeeperCloseRebalanceOrderEvent,
     LendingAccountBorrowEvent,
     LendingAccountDepositEvent,
     LendingAccountLiquidateEvent,
+    LendingAccountPremiumSettledEvent,
     LendingAccountRepayEvent,
     LendingAccountWithdrawEvent,
     LendingPoolBankAccrueInterestEvent,
@@ -26,19 +28,31 @@ public sealed interface MarginfiEvent extends SerDe permits
     LendingPoolBankConfigureOracleEvent,
     LendingPoolBankCreateEvent,
     LendingPoolBankHandleBankruptcyEvent,
+    LendingPoolBankPremiumConfigureEvent,
     LendingPoolBankSetOraclePriceEvent,
     LendingPoolBankSetSameAssetEmodeEligibilityEvent,
+    LendingPoolGroupPremiumConfigureEvent,
+    LendingPoolPremiumFeesCollectedEvent,
     LendingPoolSuperAdminDepositEvent,
     LendingPoolSuperAdminWithdrawEvent,
     LiquidationReceiverEvent,
+    LiquidationTagEvent,
     MarginfiAccountCloseOrderEvent,
+    MarginfiAccountCloseRebalanceOrderEvent,
     MarginfiAccountCreateEvent,
     MarginfiAccountFreezeEvent,
     MarginfiAccountPlaceOrderEvent,
+    MarginfiAccountPlaceRebalanceOrderEvent,
     MarginfiAccountTransferToNewAccount,
+    MarginfiAccountUpdateRebalanceOrderEvent,
     MarginfiGroupConfigureEvent,
     MarginfiGroupCreateEvent,
     RateLimitFlowEvent,
+    RebalanceExecutedEvent,
+    RebalanceFeePoolTopUpEvent,
+    RebalanceFeePoolWithdrawEvent,
+    RebalanceTipSettledEvent,
+    SetGovernanceAdminEvent,
     SetKeeperCloseFlagsEvent {
 
   static MarginfiEvent read(final byte[] _data, final int _offset) {
@@ -62,12 +76,16 @@ public sealed interface MarginfiEvent extends SerDe permits
       return HealthPulseEvent.read(_data, _offset);
     } else if (KeeperCloseOrderEvent.DISCRIMINATOR.equals(_data, _offset)) {
       return KeeperCloseOrderEvent.read(_data, _offset);
+    } else if (KeeperCloseRebalanceOrderEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return KeeperCloseRebalanceOrderEvent.read(_data, _offset);
     } else if (LendingAccountBorrowEvent.DISCRIMINATOR.equals(_data, _offset)) {
       return LendingAccountBorrowEvent.read(_data, _offset);
     } else if (LendingAccountDepositEvent.DISCRIMINATOR.equals(_data, _offset)) {
       return LendingAccountDepositEvent.read(_data, _offset);
     } else if (LendingAccountLiquidateEvent.DISCRIMINATOR.equals(_data, _offset)) {
       return LendingAccountLiquidateEvent.read(_data, _offset);
+    } else if (LendingAccountPremiumSettledEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return LendingAccountPremiumSettledEvent.read(_data, _offset);
     } else if (LendingAccountRepayEvent.DISCRIMINATOR.equals(_data, _offset)) {
       return LendingAccountRepayEvent.read(_data, _offset);
     } else if (LendingAccountWithdrawEvent.DISCRIMINATOR.equals(_data, _offset)) {
@@ -86,32 +104,56 @@ public sealed interface MarginfiEvent extends SerDe permits
       return LendingPoolBankCreateEvent.read(_data, _offset);
     } else if (LendingPoolBankHandleBankruptcyEvent.DISCRIMINATOR.equals(_data, _offset)) {
       return LendingPoolBankHandleBankruptcyEvent.read(_data, _offset);
+    } else if (LendingPoolBankPremiumConfigureEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return LendingPoolBankPremiumConfigureEvent.read(_data, _offset);
     } else if (LendingPoolBankSetOraclePriceEvent.DISCRIMINATOR.equals(_data, _offset)) {
       return LendingPoolBankSetOraclePriceEvent.read(_data, _offset);
     } else if (LendingPoolBankSetSameAssetEmodeEligibilityEvent.DISCRIMINATOR.equals(_data, _offset)) {
       return LendingPoolBankSetSameAssetEmodeEligibilityEvent.read(_data, _offset);
+    } else if (LendingPoolGroupPremiumConfigureEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return LendingPoolGroupPremiumConfigureEvent.read(_data, _offset);
+    } else if (LendingPoolPremiumFeesCollectedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return LendingPoolPremiumFeesCollectedEvent.read(_data, _offset);
     } else if (LendingPoolSuperAdminDepositEvent.DISCRIMINATOR.equals(_data, _offset)) {
       return LendingPoolSuperAdminDepositEvent.read(_data, _offset);
     } else if (LendingPoolSuperAdminWithdrawEvent.DISCRIMINATOR.equals(_data, _offset)) {
       return LendingPoolSuperAdminWithdrawEvent.read(_data, _offset);
     } else if (LiquidationReceiverEvent.DISCRIMINATOR.equals(_data, _offset)) {
       return LiquidationReceiverEvent.read(_data, _offset);
+    } else if (LiquidationTagEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return LiquidationTagEvent.read(_data, _offset);
     } else if (MarginfiAccountCloseOrderEvent.DISCRIMINATOR.equals(_data, _offset)) {
       return MarginfiAccountCloseOrderEvent.read(_data, _offset);
+    } else if (MarginfiAccountCloseRebalanceOrderEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return MarginfiAccountCloseRebalanceOrderEvent.read(_data, _offset);
     } else if (MarginfiAccountCreateEvent.DISCRIMINATOR.equals(_data, _offset)) {
       return MarginfiAccountCreateEvent.read(_data, _offset);
     } else if (MarginfiAccountFreezeEvent.DISCRIMINATOR.equals(_data, _offset)) {
       return MarginfiAccountFreezeEvent.read(_data, _offset);
     } else if (MarginfiAccountPlaceOrderEvent.DISCRIMINATOR.equals(_data, _offset)) {
       return MarginfiAccountPlaceOrderEvent.read(_data, _offset);
+    } else if (MarginfiAccountPlaceRebalanceOrderEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return MarginfiAccountPlaceRebalanceOrderEvent.read(_data, _offset);
     } else if (MarginfiAccountTransferToNewAccount.DISCRIMINATOR.equals(_data, _offset)) {
       return MarginfiAccountTransferToNewAccount.read(_data, _offset);
+    } else if (MarginfiAccountUpdateRebalanceOrderEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return MarginfiAccountUpdateRebalanceOrderEvent.read(_data, _offset);
     } else if (MarginfiGroupConfigureEvent.DISCRIMINATOR.equals(_data, _offset)) {
       return MarginfiGroupConfigureEvent.read(_data, _offset);
     } else if (MarginfiGroupCreateEvent.DISCRIMINATOR.equals(_data, _offset)) {
       return MarginfiGroupCreateEvent.read(_data, _offset);
     } else if (RateLimitFlowEvent.DISCRIMINATOR.equals(_data, _offset)) {
       return RateLimitFlowEvent.read(_data, _offset);
+    } else if (RebalanceExecutedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return RebalanceExecutedEvent.read(_data, _offset);
+    } else if (RebalanceFeePoolTopUpEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return RebalanceFeePoolTopUpEvent.read(_data, _offset);
+    } else if (RebalanceFeePoolWithdrawEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return RebalanceFeePoolWithdrawEvent.read(_data, _offset);
+    } else if (RebalanceTipSettledEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return RebalanceTipSettledEvent.read(_data, _offset);
+    } else if (SetGovernanceAdminEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return SetGovernanceAdminEvent.read(_data, _offset);
     } else if (SetKeeperCloseFlagsEvent.DISCRIMINATOR.equals(_data, _offset)) {
       return SetKeeperCloseFlagsEvent.read(_data, _offset);
     } else {

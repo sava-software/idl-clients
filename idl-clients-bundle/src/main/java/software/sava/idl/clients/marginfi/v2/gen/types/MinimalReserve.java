@@ -46,6 +46,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param absoluteReferralRateSf * In token, with `mint_decimals`
 ///                               * Actually an I68F60, stored as a u128 (i.e. BN) in Kamino.
 /// @param tokenProgram Token or Token22. If token22, note that Kamino does not support all Token22 extensions.
+/// @param rewardsAmountAvailable: u64 Undistributed reward tokens, native mint units. `distribute_rewards` moves these into
+///                               `available_amount`, raising the cToken exchange rate.
 /// @param collateralMintPubkey Mints collateral tokens
 ///                             * A PDA
 ///                             * technically 6 decimals, but uses `mint_decimals` regardless for all purposes
@@ -77,25 +79,25 @@ public record MinimalReserve(long version,
                              byte[] pendingReferrerFeesSf,
                              byte[] absoluteReferralRateSf,
                              PublicKey tokenProgram,
-                             byte[] padding2Part1,
-                             byte[] padding2Part2,
-                             byte[] padding2Part3,
+                             long rewardsAmountAvailable,
+                             byte[] padding1,
+                             byte[] padding2,
                              byte[] padding3,
-                             byte[] paddingPart1,
-                             byte[] paddingPart2,
-                             byte[] paddingPart3,
-                             byte[] paddingPart4,
+                             byte[] padding4,
+                             byte[] padding5,
+                             byte[] padding6,
+                             byte[] padding7,
                              PublicKey collateralMintPubkey,
                              long mintTotalSupply,
                              PublicKey collateralSupplyVault,
-                             byte[] padding1ReserveCollateral,
-                             byte[] padding2ReserveCollateral,
-                             byte[] padding4Part1,
-                             byte[] padding4Part2,
-                             byte[] padding4Part3,
-                             byte[] padding4Part4,
-                             byte[] padding4Part5,
-                             byte[] padding4Part6) implements SerDe {
+                             byte[] padding8,
+                             byte[] padding9,
+                             byte[] padding10,
+                             byte[] padding11,
+                             ReserveConfig config,
+                             byte[] padding12,
+                             byte[] padding13,
+                             byte[] padding14) implements SerDe {
 
   public static final int BYTES = 8616;
   public static final int PLACEHOLDER_LEN = 6;
@@ -106,22 +108,20 @@ public record MinimalReserve(long version,
   public static final int ACCUMULATED_REFERRER_FEES_SF_LEN = 16;
   public static final int PENDING_REFERRER_FEES_SF_LEN = 16;
   public static final int ABSOLUTE_REFERRAL_RATE_SF_LEN = 16;
-  public static final int PADDING_2_PART_1_LEN = 256;
-  public static final int PADDING_2_PART_2_LEN = 128;
-  public static final int PADDING_2_PART_3_LEN = 24;
-  public static final int PADDING_3_LEN = 512;
-  public static final int PADDING_PART_1_LEN = 512;
-  public static final int PADDING_PART_2_LEN = 512;
-  public static final int PADDING_PART_3_LEN = 128;
-  public static final int PADDING_PART_4_LEN = 48;
-  public static final int PADDING_1_RESERVE_COLLATERAL_LEN = 512;
-  public static final int PADDING_2_RESERVE_COLLATERAL_LEN = 512;
-  public static final int PADDING_4_PART_1_LEN = 4096;
-  public static final int PADDING_4_PART_2_LEN = 512;
-  public static final int PADDING_4_PART_3_LEN = 256;
-  public static final int PADDING_4_PART_4_LEN = 64;
-  public static final int PADDING_4_PART_5_LEN = 32;
-  public static final int PADDING_4_PART_6_LEN = 8;
+  public static final int PADDING_1_LEN = 512;
+  public static final int PADDING_2_LEN = 256;
+  public static final int PADDING_3_LEN = 128;
+  public static final int PADDING_4_LEN = 16;
+  public static final int PADDING_5_LEN = 1024;
+  public static final int PADDING_6_LEN = 128;
+  public static final int PADDING_7_LEN = 48;
+  public static final int PADDING_8_LEN = 1024;
+  public static final int PADDING_9_LEN = 1024;
+  public static final int PADDING_10_LEN = 128;
+  public static final int PADDING_11_LEN = 48;
+  public static final int PADDING_12_LEN = 2048;
+  public static final int PADDING_13_LEN = 512;
+  public static final int PADDING_14_LEN = 256;
 
   public static final int VERSION_OFFSET = 0;
   public static final int SLOT_OFFSET = 8;
@@ -147,25 +147,25 @@ public record MinimalReserve(long version,
   public static final int PENDING_REFERRER_FEES_SF_OFFSET = 368;
   public static final int ABSOLUTE_REFERRAL_RATE_SF_OFFSET = 384;
   public static final int TOKEN_PROGRAM_OFFSET = 400;
-  public static final int PADDING_2_PART_1_OFFSET = 432;
-  public static final int PADDING_2_PART_2_OFFSET = 688;
-  public static final int PADDING_2_PART_3_OFFSET = 816;
-  public static final int PADDING_3_OFFSET = 840;
-  public static final int PADDING_PART_1_OFFSET = 1352;
-  public static final int PADDING_PART_2_OFFSET = 1864;
-  public static final int PADDING_PART_3_OFFSET = 2376;
-  public static final int PADDING_PART_4_OFFSET = 2504;
+  public static final int REWARDS_AMOUNT_AVAILABLE_OFFSET = 432;
+  public static final int PADDING_1_OFFSET = 440;
+  public static final int PADDING_2_OFFSET = 952;
+  public static final int PADDING_3_OFFSET = 1208;
+  public static final int PADDING_4_OFFSET = 1336;
+  public static final int PADDING_5_OFFSET = 1352;
+  public static final int PADDING_6_OFFSET = 2376;
+  public static final int PADDING_7_OFFSET = 2504;
   public static final int COLLATERAL_MINT_PUBKEY_OFFSET = 2552;
   public static final int MINT_TOTAL_SUPPLY_OFFSET = 2584;
   public static final int COLLATERAL_SUPPLY_VAULT_OFFSET = 2592;
-  public static final int PADDING_1_RESERVE_COLLATERAL_OFFSET = 2624;
-  public static final int PADDING_2_RESERVE_COLLATERAL_OFFSET = 3136;
-  public static final int PADDING_4_PART_1_OFFSET = 3648;
-  public static final int PADDING_4_PART_2_OFFSET = 7744;
-  public static final int PADDING_4_PART_3_OFFSET = 8256;
-  public static final int PADDING_4_PART_4_OFFSET = 8512;
-  public static final int PADDING_4_PART_5_OFFSET = 8576;
-  public static final int PADDING_4_PART_6_OFFSET = 8608;
+  public static final int PADDING_8_OFFSET = 2624;
+  public static final int PADDING_9_OFFSET = 3648;
+  public static final int PADDING_10_OFFSET = 4672;
+  public static final int PADDING_11_OFFSET = 4800;
+  public static final int CONFIG_OFFSET = 4848;
+  public static final int PADDING_12_OFFSET = 5800;
+  public static final int PADDING_13_OFFSET = 7848;
+  public static final int PADDING_14_OFFSET = 8360;
 
   public static MinimalReserve read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -220,44 +220,44 @@ public record MinimalReserve(long version,
     i += SerDeUtil.readArray(absoluteReferralRateSf, _data, i);
     final var tokenProgram = readPubKey(_data, i);
     i += 32;
-    final var padding2Part1 = new byte[256];
-    i += SerDeUtil.readArray(padding2Part1, _data, i);
-    final var padding2Part2 = new byte[128];
-    i += SerDeUtil.readArray(padding2Part2, _data, i);
-    final var padding2Part3 = new byte[24];
-    i += SerDeUtil.readArray(padding2Part3, _data, i);
-    final var padding3 = new byte[512];
+    final var rewardsAmountAvailable = getInt64LE(_data, i);
+    i += 8;
+    final var padding1 = new byte[512];
+    i += SerDeUtil.readArray(padding1, _data, i);
+    final var padding2 = new byte[256];
+    i += SerDeUtil.readArray(padding2, _data, i);
+    final var padding3 = new byte[128];
     i += SerDeUtil.readArray(padding3, _data, i);
-    final var paddingPart1 = new byte[512];
-    i += SerDeUtil.readArray(paddingPart1, _data, i);
-    final var paddingPart2 = new byte[512];
-    i += SerDeUtil.readArray(paddingPart2, _data, i);
-    final var paddingPart3 = new byte[128];
-    i += SerDeUtil.readArray(paddingPart3, _data, i);
-    final var paddingPart4 = new byte[48];
-    i += SerDeUtil.readArray(paddingPart4, _data, i);
+    final var padding4 = new byte[16];
+    i += SerDeUtil.readArray(padding4, _data, i);
+    final var padding5 = new byte[1024];
+    i += SerDeUtil.readArray(padding5, _data, i);
+    final var padding6 = new byte[128];
+    i += SerDeUtil.readArray(padding6, _data, i);
+    final var padding7 = new byte[48];
+    i += SerDeUtil.readArray(padding7, _data, i);
     final var collateralMintPubkey = readPubKey(_data, i);
     i += 32;
     final var mintTotalSupply = getInt64LE(_data, i);
     i += 8;
     final var collateralSupplyVault = readPubKey(_data, i);
     i += 32;
-    final var padding1ReserveCollateral = new byte[512];
-    i += SerDeUtil.readArray(padding1ReserveCollateral, _data, i);
-    final var padding2ReserveCollateral = new byte[512];
-    i += SerDeUtil.readArray(padding2ReserveCollateral, _data, i);
-    final var padding4Part1 = new byte[4096];
-    i += SerDeUtil.readArray(padding4Part1, _data, i);
-    final var padding4Part2 = new byte[512];
-    i += SerDeUtil.readArray(padding4Part2, _data, i);
-    final var padding4Part3 = new byte[256];
-    i += SerDeUtil.readArray(padding4Part3, _data, i);
-    final var padding4Part4 = new byte[64];
-    i += SerDeUtil.readArray(padding4Part4, _data, i);
-    final var padding4Part5 = new byte[32];
-    i += SerDeUtil.readArray(padding4Part5, _data, i);
-    final var padding4Part6 = new byte[8];
-    SerDeUtil.readArray(padding4Part6, _data, i);
+    final var padding8 = new byte[1024];
+    i += SerDeUtil.readArray(padding8, _data, i);
+    final var padding9 = new byte[1024];
+    i += SerDeUtil.readArray(padding9, _data, i);
+    final var padding10 = new byte[128];
+    i += SerDeUtil.readArray(padding10, _data, i);
+    final var padding11 = new byte[48];
+    i += SerDeUtil.readArray(padding11, _data, i);
+    final var config = ReserveConfig.read(_data, i);
+    i += 952;
+    final var padding12 = new byte[2048];
+    i += SerDeUtil.readArray(padding12, _data, i);
+    final var padding13 = new byte[512];
+    i += SerDeUtil.readArray(padding13, _data, i);
+    final var padding14 = new byte[256];
+    SerDeUtil.readArray(padding14, _data, i);
     return new MinimalReserve(version,
                               slot,
                               stale,
@@ -282,25 +282,25 @@ public record MinimalReserve(long version,
                               pendingReferrerFeesSf,
                               absoluteReferralRateSf,
                               tokenProgram,
-                              padding2Part1,
-                              padding2Part2,
-                              padding2Part3,
+                              rewardsAmountAvailable,
+                              padding1,
+                              padding2,
                               padding3,
-                              paddingPart1,
-                              paddingPart2,
-                              paddingPart3,
-                              paddingPart4,
+                              padding4,
+                              padding5,
+                              padding6,
+                              padding7,
                               collateralMintPubkey,
                               mintTotalSupply,
                               collateralSupplyVault,
-                              padding1ReserveCollateral,
-                              padding2ReserveCollateral,
-                              padding4Part1,
-                              padding4Part2,
-                              padding4Part3,
-                              padding4Part4,
-                              padding4Part5,
-                              padding4Part6);
+                              padding8,
+                              padding9,
+                              padding10,
+                              padding11,
+                              config,
+                              padding12,
+                              padding13,
+                              padding14);
   }
 
   @Override
@@ -346,28 +346,29 @@ public record MinimalReserve(long version,
     i += SerDeUtil.writeArrayChecked(absoluteReferralRateSf, 16, _data, i);
     tokenProgram.write(_data, i);
     i += 32;
-    i += SerDeUtil.writeArrayChecked(padding2Part1, 256, _data, i);
-    i += SerDeUtil.writeArrayChecked(padding2Part2, 128, _data, i);
-    i += SerDeUtil.writeArrayChecked(padding2Part3, 24, _data, i);
-    i += SerDeUtil.writeArrayChecked(padding3, 512, _data, i);
-    i += SerDeUtil.writeArrayChecked(paddingPart1, 512, _data, i);
-    i += SerDeUtil.writeArrayChecked(paddingPart2, 512, _data, i);
-    i += SerDeUtil.writeArrayChecked(paddingPart3, 128, _data, i);
-    i += SerDeUtil.writeArrayChecked(paddingPart4, 48, _data, i);
+    putInt64LE(_data, i, rewardsAmountAvailable);
+    i += 8;
+    i += SerDeUtil.writeArrayChecked(padding1, 512, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding2, 256, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding3, 128, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding4, 16, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding5, 1024, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding6, 128, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding7, 48, _data, i);
     collateralMintPubkey.write(_data, i);
     i += 32;
     putInt64LE(_data, i, mintTotalSupply);
     i += 8;
     collateralSupplyVault.write(_data, i);
     i += 32;
-    i += SerDeUtil.writeArrayChecked(padding1ReserveCollateral, 512, _data, i);
-    i += SerDeUtil.writeArrayChecked(padding2ReserveCollateral, 512, _data, i);
-    i += SerDeUtil.writeArrayChecked(padding4Part1, 4096, _data, i);
-    i += SerDeUtil.writeArrayChecked(padding4Part2, 512, _data, i);
-    i += SerDeUtil.writeArrayChecked(padding4Part3, 256, _data, i);
-    i += SerDeUtil.writeArrayChecked(padding4Part4, 64, _data, i);
-    i += SerDeUtil.writeArrayChecked(padding4Part5, 32, _data, i);
-    i += SerDeUtil.writeArrayChecked(padding4Part6, 8, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding8, 1024, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding9, 1024, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding10, 128, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding11, 48, _data, i);
+    i += config.write(_data, i);
+    i += SerDeUtil.writeArrayChecked(padding12, 2048, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding13, 512, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding14, 256, _data, i);
     return i - _offset;
   }
 

@@ -25,9 +25,10 @@ import static org.junit.jupiter.api.Assertions.*;
 /// rejects — the same defect class already found in Scope and Kamino Lend.
 /// These tests pin each derived key to its slot.
 ///
-/// Account orders are ground-truthed against the live on-chain IDL (marginfi
-/// `0.1.11`, program `MFv2hWf31Z9kbCa1snEPYctwafyhdvnV7FZnsebVacA`) and against
-/// the program's own Rust with `java tools/GroundTruth.java anchor`.
+/// Account orders are ground-truthed against the IDL of the deployed program
+/// (marginfi `0.1.12`, the `mrgn-0.1.12-rc2` release, program
+/// `MFv2hWf31Z9kbCa1snEPYctwafyhdvnV7FZnsebVacA`) and against the program's own
+/// Rust with `java tools/GroundTruth.java anchor`.
 final class MarginfiClientTests {
 
   private static final SolanaAccounts SOLANA_ACCOUNTS = SolanaAccounts.MAIN_NET;
@@ -165,6 +166,38 @@ final class MarginfiClientTests {
     final var emissions = keys(CLIENT.updateEmissionsDestinationAccount(MARGINFI_ACCOUNT, destination));
     assertTrue(emissions.contains(destination));
     assertNotEquals(emissions.indexOf(OWNER), emissions.indexOf(destination));
+  }
+
+  /// 0.1.12 appends the marginfi account's rebalance fee pool to
+  /// `marginfi_account_close`, read-only and unsigned, at
+  /// `["rebalance_fee_pool", marginfi_account]`. Each vector is the program's own
+  /// answer: the four-account close it accepted in
+  /// `3h8ZLZSFGrvdBnis4DBkeoYx1PeBa7CzD5fX8GmVZiYRtHP1FjHkEKTZSb7oPKJUh5s5JTFpRmogxvrg3UvpwFfs`
+  /// (slot 456502100, bump 254), and the `Right:` address its `ConstraintSeeds`
+  /// error named when a close of `2Fotcy4q…` was simulated with another account
+  /// in that slot (bump 255).
+  @Test
+  void closeAccountAppendsTheRebalanceFeePool() {
+    final var closed = PublicKey.fromBase58Encoded("EsKchznCoHAdytZNT2Fa9tSYx3msTd994u1uLduf9A8D");
+    final var closedPool = ACCOUNTS.rebalanceFeePoolPDA(closed);
+    assertEquals(PublicKey.fromBase58Encoded("93TXYSB8vPgaiZtX1z3itBfjWdUqQtEWRT6WFWmEjyo8"), closedPool.publicKey());
+    assertEquals(254, closedPool.nonce());
+
+    final var simulated = ACCOUNTS.rebalanceFeePoolPDA(
+        PublicKey.fromBase58Encoded("2Fotcy4qKSDYeZg4tE8ZertUUrpeFk58rM7hAkXusMsu"));
+    assertEquals(PublicKey.fromBase58Encoded("FMbLfFsNkVZetTkNDaE8FkgY6FLehuyS6wXjdHeWVYi8"), simulated.publicKey());
+    assertEquals(255, simulated.nonce());
+
+    final var close = CLIENT.closeAccount(closed, OWNER, FEE_PAYER);
+    assertEquals(ACCOUNTS.invokedMarginfiProgram(), close.programId());
+    assertEquals(List.of(closed, OWNER, FEE_PAYER, closedPool.publicKey()), keys(close));
+    final var metas = close.accounts();
+    assertTrue(metas.get(0).write() && !metas.get(0).signer(), "[0] marginfi account, writable");
+    assertTrue(!metas.get(1).write() && metas.get(1).signer(), "[1] authority, read-only signer");
+    assertTrue(metas.get(2).write() && metas.get(2).signer(), "[2] fee payer, writable signer");
+    assertTrue(!metas.get(3).write() && !metas.get(3).signer(), "[3] rebalance fee pool, read-only");
+
+    assertEquals(keys(close), keys(CLIENT.closeAccount(closed)), "the convenience overload derives the same pool");
   }
 
   /// The PDA variants carry the account index and third-party id as *data*, so

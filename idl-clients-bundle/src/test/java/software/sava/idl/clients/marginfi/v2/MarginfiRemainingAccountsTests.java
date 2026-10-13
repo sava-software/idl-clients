@@ -76,6 +76,16 @@ final class MarginfiRemainingAccountsTests {
     assertEquals(2, accountsPerBank(OracleSetup.Scope, ASSET_TAG_DEFAULT));
     assertEquals(2, accountsPerBank(OracleSetup.Scope, ASSET_TAG_SOL));
 
+    // 0.1.12's ScopeKamino and ScopeJuplend scale a Scope price by the venue's
+    // exchange rate, so the reserve or lending account follows the feed. The
+    // program binds them to the KAMINO and JUPLEND tags, where the fall-through
+    // also answers three, so the DEFAULT and STAKED rows are what show the setup
+    // being read at all.
+    assertEquals(3, accountsPerBank(OracleSetup.ScopeKamino, ASSET_TAG_KAMINO));
+    assertEquals(3, accountsPerBank(OracleSetup.ScopeJuplend, ASSET_TAG_JUPLEND));
+    assertEquals(3, accountsPerBank(OracleSetup.ScopeKamino, ASSET_TAG_DEFAULT));
+    assertEquals(3, accountsPerBank(OracleSetup.ScopeJuplend, ASSET_TAG_STAKED));
+
     // the setup wins over the asset tag
     assertEquals(1, accountsPerBank(OracleSetup.Fixed, ASSET_TAG_STAKED));
     assertEquals(2, accountsPerBank(OracleSetup.FixedKamino, ASSET_TAG_STAKED));
@@ -97,7 +107,8 @@ final class MarginfiRemainingAccountsTests {
   /// that appends one fails this test instead of silently pricing the new bank
   /// as an ordinary pair. That silence is not hypothetical: 0.1.11 appended nine
   /// constants, and eight of them need three or four accounts — the fall-through
-  /// answered two for all nine.
+  /// answered two for all nine. 0.1.12 appended two more, `ScopeKamino` and
+  /// `ScopeJuplend`, at three each.
   ///
   /// The expected counts are `get_remaining_accounts_per_bank` transcribed by
   /// hand, at `ASSET_TAG_DEFAULT` so the setup is the only variable. Setups that
@@ -133,6 +144,8 @@ final class MarginfiRemainingAccountsTests {
     expected.put(OracleSetup.PythMSOL, 3);
     expected.put(OracleSetup.PythLST, 3);
     expected.put(OracleSetup.PTPyth, 3);
+    expected.put(OracleSetup.ScopeKamino, 3);
+    expected.put(OracleSetup.ScopeJuplend, 3);
     expected.put(OracleSetup.KaminoMSOL, 4);
     expected.put(OracleSetup.JuplendMSOL, 4);
     expected.put(OracleSetup.KaminoLST, 4);
@@ -148,9 +161,11 @@ final class MarginfiRemainingAccountsTests {
 
     // The count is looked up from a value decoded out of one wire byte, so the
     // ordinals are as much a part of the contract as the counts: Rust numbers
-    // this enum `#[repr(u8)]`, Scope at 18 through PTFixed at 26.
+    // this enum `#[repr(u8)]`, Scope at 18 through ScopeJuplend at 28.
     assertEquals(OracleSetup.Scope, OracleSetup.read(new byte[]{18}, 0));
     assertEquals(OracleSetup.PTFixed, OracleSetup.read(new byte[]{26}, 0));
+    assertEquals(OracleSetup.ScopeKamino, OracleSetup.read(new byte[]{27}, 0));
+    assertEquals(OracleSetup.ScopeJuplend, OracleSetup.read(new byte[]{28}, 0));
   }
 
   /// Groups are laid out in the order they are added, bank first.
@@ -283,21 +298,16 @@ final class MarginfiRemainingAccountsTests {
     assertEquals(List.of(bankKey, oracle, reserve), keys(viaBank));
   }
 
-  /// Only the three fields the overload reads are populated; a generated
-  /// record accepts null for everything else.
+  /// Only the two config bytes the overload reads are set, in a zeroed account
+  /// of the generated size read back through the generated decoder, so the
+  /// helper does not track the record's arity from one program version to the
+  /// next.
   private static Bank syntheticBank(final PublicKey address,
                                     final OracleSetup oracleSetup,
                                     final int assetTag) {
-    final var config = new BankConfig(
-        null, null, null, null, 0L, null, null, oracleSetup, null, 0,
-        0, null, 0L, null, assetTag, 0, null, 0L, 0L, 0, 0, 0L,
-        null, null, null, 0, 0, 0);
-    return new Bank(
-        address, null, null, 0, null, null, null, null, null, 0,
-        0, null, 0, 0, null, null, null, 0, 0, null,
-        null, null, null, 0L, config, 0L, 0L, null, null, null,
-        null, null, null, 0, 0, 0L, 0L, null, null, null,
-        null, null, null, 0L, 0L, 0L, 0, 0, 0, null,
-        0L, 0L, null, null, 0L, 0L, null);
+    final byte[] data = new byte[Bank.BYTES];
+    data[Bank.CONFIG_OFFSET + BankConfig.ORACLE_SETUP_OFFSET] = (byte) oracleSetup.ordinal();
+    data[Bank.CONFIG_OFFSET + BankConfig.ASSET_TAG_OFFSET] = (byte) assetTag;
+    return Bank.read(address, data);
   }
 }

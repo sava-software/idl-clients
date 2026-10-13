@@ -11,13 +11,16 @@ import static software.sava.core.encoding.ByteUtil.putFloat64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param premiumWrittenOff Uncollectable premium receivable written off with the bad debt (never socialized,
+///                          never covered by insurance, never credited to the bank).
 public record LendingPoolBankHandleBankruptcyEvent(Discriminator discriminator,
                                                    AccountEventHeader header,
                                                    PublicKey bank,
                                                    PublicKey mint,
                                                    double badDebt,
                                                    double coveredAmount,
-                                                   double socializedAmount) implements MarginfiEvent {
+                                                   double socializedAmount,
+                                                   double premiumWrittenOff) implements MarginfiEvent {
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(166, 77, 41, 140, 36, 94, 10, 57);
 
@@ -40,13 +43,16 @@ public record LendingPoolBankHandleBankruptcyEvent(Discriminator discriminator,
     final var coveredAmount = getFloat64LE(_data, i);
     i += 8;
     final var socializedAmount = getFloat64LE(_data, i);
+    i += 8;
+    final var premiumWrittenOff = getFloat64LE(_data, i);
     return new LendingPoolBankHandleBankruptcyEvent(discriminator,
                                                     header,
                                                     bank,
                                                     mint,
                                                     badDebt,
                                                     coveredAmount,
-                                                    socializedAmount);
+                                                    socializedAmount,
+                                                    premiumWrittenOff);
   }
 
   @Override
@@ -63,6 +69,8 @@ public record LendingPoolBankHandleBankruptcyEvent(Discriminator discriminator,
     i += 8;
     putFloat64LE(_data, i, socializedAmount);
     i += 8;
+    putFloat64LE(_data, i, premiumWrittenOff);
+    i += 8;
     return i - _offset;
   }
 
@@ -71,6 +79,7 @@ public record LendingPoolBankHandleBankruptcyEvent(Discriminator discriminator,
     return 8 + header.l()
          + 32
          + 32
+         + 8
          + 8
          + 8
          + 8;

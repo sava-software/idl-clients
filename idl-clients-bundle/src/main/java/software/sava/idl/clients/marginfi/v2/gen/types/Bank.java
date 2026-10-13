@@ -11,8 +11,10 @@ import software.sava.rpc.json.http.response.AccountInfo;
 import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
@@ -67,6 +69,10 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///              single-pool on-ramp account in NAV.
 ///              - Bit 11 (2048): `CIRCUIT_BREAKER_ENABLED` — oracle deviation breaker active on this bank
 ///              - Bit 12 (4096): `BANK_SAME_ASSET_EMODE_ELIGIBLE` — bank may participate in same-asset e-mode.
+///              - Bit 13 (8192): `PREMIUM_ACTIVE` — a liability-bank flag: balances borrowing from this
+///              bank accrue the pairwise variable-borrow premium and project it in health checks.
+///              - Bit 14 (16384): `KAMINO_MARKET_EMERGENCY` — the Kamino lending market behind this bank is
+///              in emergency mode, so the bank backs no new borrowing.
 /// @param emissionsRate: u64 Emissions APR. Number of emitted tokens (emissions_mint) per 1e(bank.mint_decimal) tokens
 ///                      (bank mint) (native amount) per 1 YEAR.
 /// @param emissionsRemaining Remaining emissions tokens available for distribution
@@ -111,6 +117,9 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                        - JupLend: withdraw intermediary ATA (ATA of liquidity_vault_authority for bank mint)
 /// @param rateLimiter Rate limiter for controlling withdraw/borrow outflow.
 ///                    Tracks net outflow (outflows - inflows) in native tokens.
+/// @param collectedPremiumOutstanding Realized variable-borrow premium sitting in the liquidity vault, pending sweep to the
+///                                    protocol premium wallet's canonical ATA for `mint`. Only incremented when premium tokens
+///                                    are actually received (repay); never by mere accrual.
 /// @param bankSeed: u64 * `0` for legacy banks created via `lending_pool_add_bank` (created via keypair, not a PDA),
 ///                 or pre-backfill banks (1.8 or earlier) where seed remains unknown.
 ///                 * Otherwise the `bank_seed: u64` argument passed when creating the bank.
@@ -136,7 +145,15 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param cbFrozenSecondsPending: u64 Frozen halt seconds from halt intervals overwritten or cleared before `accrue_interest`
 ///                               consumed them. Non-zero only when the halt record changes without a preceding accrual, i.e.
 ///                               a paused pulse; the next accrual excludes these on top of the current halt. Zero normally.
-/// @param padding1: u64[]
+/// @param premiumTag: u16 Tag for the group's pairwise variable-borrow premium matrix. Determines the rate other
+///                   accounts pay when this bank is offered as collateral (as `collateral_tag`) and the rate
+///                   this bank's borrowers pay (as `liability_tag`).
+///                   * 0 = untagged: never matches any premium entry.
+/// @param premiumActivatedAt Unix timestamp of the most recent inactive->active `PREMIUM_ACTIVE` transition. Premium
+///                           accrual is clamped to start no earlier than this, so toggling the flag off and back on
+///                           can never charge for (or health-project) the deactivated window.
+///                           * 0 on banks that never activated premium.
+/// @param padding1: u64[][]
 public record Bank(PublicKey _address,
                    Discriminator discriminator,
                    PublicKey mint,
@@ -179,7 +196,7 @@ public record Bank(PublicKey _address,
                    PublicKey integrationAcc2,
                    PublicKey integrationAcc3,
                    BankRateLimiter rateLimiter,
-                   byte[] pad01,
+                   WrappedI80F48 collectedPremiumOutstanding,
                    long bankSeed,
                    long cbHaltStartedAt,
                    long cbHaltEndedAt,
@@ -193,16 +210,19 @@ public record Bank(PublicKey _address,
                    WrappedI80F48 cbWindowReferencePrice,
                    long cbWindowStartedAt,
                    long cbFrozenSecondsPending,
-                   long[] padding1) implements SerDe {
+                   int premiumTag,
+                   byte[] pad3,
+                   long premiumActivatedAt,
+                   long[][] padding1) implements SerDe {
 
-  public static final int BYTES = 1864;
+  public static final int BYTES = 3912;
   public static final int PAD_0_LEN = 7;
   public static final int PAD_1_LEN = 4;
   public static final int PAD_2_LEN = 6;
   public static final int PADDING_0_LEN = 8;
-  public static final int PAD_01_LEN = 16;
   public static final int CB_PAD_LEN = 5;
-  public static final int PADDING_1_LEN = 2;
+  public static final int PAD_3_LEN = 6;
+  public static final int PADDING_1_LEN = 32;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(142, 49, 166, 242, 50, 66, 97, 188);
@@ -248,7 +268,7 @@ public record Bank(PublicKey _address,
   public static final int INTEGRATION_ACC_2_OFFSET = 1592;
   public static final int INTEGRATION_ACC_3_OFFSET = 1624;
   public static final int RATE_LIMITER_OFFSET = 1656;
-  public static final int PAD_01_OFFSET = 1736;
+  public static final int COLLECTED_PREMIUM_OUTSTANDING_OFFSET = 1736;
   public static final int BANK_SEED_OFFSET = 1752;
   public static final int CB_HALT_STARTED_AT_OFFSET = 1760;
   public static final int CB_HALT_ENDED_AT_OFFSET = 1768;
@@ -262,7 +282,10 @@ public record Bank(PublicKey _address,
   public static final int CB_WINDOW_REFERENCE_PRICE_OFFSET = 1816;
   public static final int CB_WINDOW_STARTED_AT_OFFSET = 1832;
   public static final int CB_FROZEN_SECONDS_PENDING_OFFSET = 1840;
-  public static final int PADDING_1_OFFSET = 1848;
+  public static final int PREMIUM_TAG_OFFSET = 1848;
+  public static final int PAD_3_OFFSET = 1850;
+  public static final int PREMIUM_ACTIVATED_AT_OFFSET = 1856;
+  public static final int PADDING_1_OFFSET = 1864;
 
   public static Filter createMintFilter(final PublicKey mint) {
     return Filter.createMemCompFilter(MINT_OFFSET, mint);
@@ -410,6 +433,10 @@ public record Bank(PublicKey _address,
     return Filter.createMemCompFilter(RATE_LIMITER_OFFSET, rateLimiter.write());
   }
 
+  public static Filter createCollectedPremiumOutstandingFilter(final WrappedI80F48 collectedPremiumOutstanding) {
+    return Filter.createMemCompFilter(COLLECTED_PREMIUM_OUTSTANDING_OFFSET, collectedPremiumOutstanding.write());
+  }
+
   public static Filter createBankSeedFilter(final long bankSeed) {
     final byte[] _data = new byte[8];
     putInt64LE(_data, 0, bankSeed);
@@ -470,6 +497,18 @@ public record Bank(PublicKey _address,
     final byte[] _data = new byte[8];
     putInt64LE(_data, 0, cbFrozenSecondsPending);
     return Filter.createMemCompFilter(CB_FROZEN_SECONDS_PENDING_OFFSET, _data);
+  }
+
+  public static Filter createPremiumTagFilter(final int premiumTag) {
+    final byte[] _data = new byte[2];
+    putInt16LE(_data, 0, premiumTag);
+    return Filter.createMemCompFilter(PREMIUM_TAG_OFFSET, _data);
+  }
+
+  public static Filter createPremiumActivatedAtFilter(final long premiumActivatedAt) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, premiumActivatedAt);
+    return Filter.createMemCompFilter(PREMIUM_ACTIVATED_AT_OFFSET, _data);
   }
 
   public static Bank read(final byte[] _data, final int _offset) {
@@ -586,8 +625,8 @@ public record Bank(PublicKey _address,
     i += 32;
     final var rateLimiter = BankRateLimiter.read(_data, i);
     i += 80;
-    final var pad01 = new byte[16];
-    i += SerDeUtil.readArray(pad01, _data, i);
+    final var collectedPremiumOutstanding = WrappedI80F48.read(_data, i);
+    i += 16;
     final var bankSeed = getInt64LE(_data, i);
     i += 8;
     final var cbHaltStartedAt = getInt64LE(_data, i);
@@ -614,7 +653,13 @@ public record Bank(PublicKey _address,
     i += 8;
     final var cbFrozenSecondsPending = getInt64LE(_data, i);
     i += 8;
-    final var padding1 = new long[2];
+    final var premiumTag = Short.toUnsignedInt(getInt16LE(_data, i));
+    i += 2;
+    final var pad3 = new byte[6];
+    i += SerDeUtil.readArray(pad3, _data, i);
+    final var premiumActivatedAt = getInt64LE(_data, i);
+    i += 8;
+    final var padding1 = new long[32][8];
     SerDeUtil.readArray(padding1, _data, i);
     return new Bank(_address,
                     discriminator,
@@ -658,7 +703,7 @@ public record Bank(PublicKey _address,
                     integrationAcc2,
                     integrationAcc3,
                     rateLimiter,
-                    pad01,
+                    collectedPremiumOutstanding,
                     bankSeed,
                     cbHaltStartedAt,
                     cbHaltEndedAt,
@@ -672,6 +717,9 @@ public record Bank(PublicKey _address,
                     cbWindowReferencePrice,
                     cbWindowStartedAt,
                     cbFrozenSecondsPending,
+                    premiumTag,
+                    pad3,
+                    premiumActivatedAt,
                     padding1);
   }
 
@@ -742,7 +790,7 @@ public record Bank(PublicKey _address,
     integrationAcc3.write(_data, i);
     i += 32;
     i += rateLimiter.write(_data, i);
-    i += SerDeUtil.writeArrayChecked(pad01, 16, _data, i);
+    i += collectedPremiumOutstanding.write(_data, i);
     putInt64LE(_data, i, bankSeed);
     i += 8;
     putInt64LE(_data, i, cbHaltStartedAt);
@@ -766,7 +814,12 @@ public record Bank(PublicKey _address,
     i += 8;
     putInt64LE(_data, i, cbFrozenSecondsPending);
     i += 8;
-    i += SerDeUtil.writeArrayChecked(padding1, 2, _data, i);
+    putInt16LE(_data, i, premiumTag);
+    i += 2;
+    i += SerDeUtil.writeArrayChecked(pad3, 6, _data, i);
+    putInt64LE(_data, i, premiumActivatedAt);
+    i += 8;
+    i += SerDeUtil.writeArrayChecked(padding1, 32, 8, _data, i);
     return i - _offset;
   }
 

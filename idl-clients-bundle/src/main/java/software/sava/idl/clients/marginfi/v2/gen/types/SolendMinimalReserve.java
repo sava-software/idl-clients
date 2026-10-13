@@ -19,6 +19,13 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param configLoanToValueRatio: u8
 /// @param configLiquidationBonus: u8
 /// @param configLiquidationThreshold: u8
+/// @param configMinBorrowRate: u8
+/// @param configOptimalBorrowRate: u8
+/// @param configMaxBorrowRate: u8
+/// @param configDepositLimit: u64 Total liquidity ceiling in native mint units; `u64::MAX` is unlimited.
+/// @param configProtocolTakeRate: u8
+/// @param configMaxUtilizationRate: u8
+/// @param configSuperMaxBorrowRate: u64
 public record SolendMinimalReserve(long lastUpdateSlot,
                                    int lastUpdateStale,
                                    PublicKey lendingMarket,
@@ -38,25 +45,34 @@ public record SolendMinimalReserve(long lastUpdateSlot,
                                    int configLoanToValueRatio,
                                    int configLiquidationBonus,
                                    int configLiquidationThreshold,
-                                   byte[] paddingToFees64,
-                                   byte[] paddingToFees6,
+                                   int configMinBorrowRate,
+                                   int configOptimalBorrowRate,
+                                   int configMaxBorrowRate,
+                                   byte[] padding1,
+                                   long configDepositLimit,
+                                   byte[] padding2,
+                                   byte[] padding3,
+                                   int configProtocolTakeRate,
                                    byte[] liquidityAccumulatedProtocolFeesWads,
-                                   byte[] paddingFinal128,
-                                   byte[] paddingFinal64,
-                                   byte[] paddingFinal32,
-                                   byte[] paddingFinal6) implements SerDe {
+                                   byte[] padding4,
+                                   byte[] padding5,
+                                   int configMaxUtilizationRate,
+                                   long configSuperMaxBorrowRate,
+                                   byte[] padding6,
+                                   byte[] padding7) implements SerDe {
 
   public static final int BYTES = 618;
   public static final int LIQUIDITY_BORROWED_AMOUNT_WADS_LEN = 16;
   public static final int LIQUIDITY_CUMULATIVE_BORROW_RATE_WADS_LEN = 16;
   public static final int LIQUIDITY_MARKET_PRICE_LEN = 16;
-  public static final int PADDING_TO_FEES_64_LEN = 64;
-  public static final int PADDING_TO_FEES_6_LEN = 6;
+  public static final int PADDING_1_LEN = 17;
+  public static final int PADDING_2_LEN = 32;
+  public static final int PADDING_3_LEN = 9;
   public static final int LIQUIDITY_ACCUMULATED_PROTOCOL_FEES_WADS_LEN = 16;
-  public static final int PADDING_FINAL_128_LEN = 128;
-  public static final int PADDING_FINAL_64_LEN = 64;
-  public static final int PADDING_FINAL_32_LEN = 32;
-  public static final int PADDING_FINAL_6_LEN = 6;
+  public static final int PADDING_4_LEN = 64;
+  public static final int PADDING_5_LEN = 17;
+  public static final int PADDING_6_LEN = 128;
+  public static final int PADDING_7_LEN = 12;
 
   public static final int LAST_UPDATE_SLOT_OFFSET = 0;
   public static final int LAST_UPDATE_STALE_OFFSET = 8;
@@ -77,13 +93,21 @@ public record SolendMinimalReserve(long lastUpdateSlot,
   public static final int CONFIG_LOAN_TO_VALUE_RATIO_OFFSET = 299;
   public static final int CONFIG_LIQUIDATION_BONUS_OFFSET = 300;
   public static final int CONFIG_LIQUIDATION_THRESHOLD_OFFSET = 301;
-  public static final int PADDING_TO_FEES_64_OFFSET = 302;
-  public static final int PADDING_TO_FEES_6_OFFSET = 366;
+  public static final int CONFIG_MIN_BORROW_RATE_OFFSET = 302;
+  public static final int CONFIG_OPTIMAL_BORROW_RATE_OFFSET = 303;
+  public static final int CONFIG_MAX_BORROW_RATE_OFFSET = 304;
+  public static final int PADDING_1_OFFSET = 305;
+  public static final int CONFIG_DEPOSIT_LIMIT_OFFSET = 322;
+  public static final int PADDING_2_OFFSET = 330;
+  public static final int PADDING_3_OFFSET = 362;
+  public static final int CONFIG_PROTOCOL_TAKE_RATE_OFFSET = 371;
   public static final int LIQUIDITY_ACCUMULATED_PROTOCOL_FEES_WADS_OFFSET = 372;
-  public static final int PADDING_FINAL_128_OFFSET = 388;
-  public static final int PADDING_FINAL_64_OFFSET = 516;
-  public static final int PADDING_FINAL_32_OFFSET = 580;
-  public static final int PADDING_FINAL_6_OFFSET = 612;
+  public static final int PADDING_4_OFFSET = 388;
+  public static final int PADDING_5_OFFSET = 452;
+  public static final int CONFIG_MAX_UTILIZATION_RATE_OFFSET = 469;
+  public static final int CONFIG_SUPER_MAX_BORROW_RATE_OFFSET = 470;
+  public static final int PADDING_6_OFFSET = 478;
+  public static final int PADDING_7_OFFSET = 606;
 
   public static SolendMinimalReserve read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -128,20 +152,36 @@ public record SolendMinimalReserve(long lastUpdateSlot,
     ++i;
     final var configLiquidationThreshold = _data[i] & 0xFF;
     ++i;
-    final var paddingToFees64 = new byte[64];
-    i += SerDeUtil.readArray(paddingToFees64, _data, i);
-    final var paddingToFees6 = new byte[6];
-    i += SerDeUtil.readArray(paddingToFees6, _data, i);
+    final var configMinBorrowRate = _data[i] & 0xFF;
+    ++i;
+    final var configOptimalBorrowRate = _data[i] & 0xFF;
+    ++i;
+    final var configMaxBorrowRate = _data[i] & 0xFF;
+    ++i;
+    final var padding1 = new byte[17];
+    i += SerDeUtil.readArray(padding1, _data, i);
+    final var configDepositLimit = getInt64LE(_data, i);
+    i += 8;
+    final var padding2 = new byte[32];
+    i += SerDeUtil.readArray(padding2, _data, i);
+    final var padding3 = new byte[9];
+    i += SerDeUtil.readArray(padding3, _data, i);
+    final var configProtocolTakeRate = _data[i] & 0xFF;
+    ++i;
     final var liquidityAccumulatedProtocolFeesWads = new byte[16];
     i += SerDeUtil.readArray(liquidityAccumulatedProtocolFeesWads, _data, i);
-    final var paddingFinal128 = new byte[128];
-    i += SerDeUtil.readArray(paddingFinal128, _data, i);
-    final var paddingFinal64 = new byte[64];
-    i += SerDeUtil.readArray(paddingFinal64, _data, i);
-    final var paddingFinal32 = new byte[32];
-    i += SerDeUtil.readArray(paddingFinal32, _data, i);
-    final var paddingFinal6 = new byte[6];
-    SerDeUtil.readArray(paddingFinal6, _data, i);
+    final var padding4 = new byte[64];
+    i += SerDeUtil.readArray(padding4, _data, i);
+    final var padding5 = new byte[17];
+    i += SerDeUtil.readArray(padding5, _data, i);
+    final var configMaxUtilizationRate = _data[i] & 0xFF;
+    ++i;
+    final var configSuperMaxBorrowRate = getInt64LE(_data, i);
+    i += 8;
+    final var padding6 = new byte[128];
+    i += SerDeUtil.readArray(padding6, _data, i);
+    final var padding7 = new byte[12];
+    SerDeUtil.readArray(padding7, _data, i);
     return new SolendMinimalReserve(lastUpdateSlot,
                                     lastUpdateStale,
                                     lendingMarket,
@@ -161,13 +201,21 @@ public record SolendMinimalReserve(long lastUpdateSlot,
                                     configLoanToValueRatio,
                                     configLiquidationBonus,
                                     configLiquidationThreshold,
-                                    paddingToFees64,
-                                    paddingToFees6,
+                                    configMinBorrowRate,
+                                    configOptimalBorrowRate,
+                                    configMaxBorrowRate,
+                                    padding1,
+                                    configDepositLimit,
+                                    padding2,
+                                    padding3,
+                                    configProtocolTakeRate,
                                     liquidityAccumulatedProtocolFeesWads,
-                                    paddingFinal128,
-                                    paddingFinal64,
-                                    paddingFinal32,
-                                    paddingFinal6);
+                                    padding4,
+                                    padding5,
+                                    configMaxUtilizationRate,
+                                    configSuperMaxBorrowRate,
+                                    padding6,
+                                    padding7);
   }
 
   @Override
@@ -208,13 +256,28 @@ public record SolendMinimalReserve(long lastUpdateSlot,
     ++i;
     _data[i] = (byte) configLiquidationThreshold;
     ++i;
-    i += SerDeUtil.writeArrayChecked(paddingToFees64, 64, _data, i);
-    i += SerDeUtil.writeArrayChecked(paddingToFees6, 6, _data, i);
+    _data[i] = (byte) configMinBorrowRate;
+    ++i;
+    _data[i] = (byte) configOptimalBorrowRate;
+    ++i;
+    _data[i] = (byte) configMaxBorrowRate;
+    ++i;
+    i += SerDeUtil.writeArrayChecked(padding1, 17, _data, i);
+    putInt64LE(_data, i, configDepositLimit);
+    i += 8;
+    i += SerDeUtil.writeArrayChecked(padding2, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding3, 9, _data, i);
+    _data[i] = (byte) configProtocolTakeRate;
+    ++i;
     i += SerDeUtil.writeArrayChecked(liquidityAccumulatedProtocolFeesWads, 16, _data, i);
-    i += SerDeUtil.writeArrayChecked(paddingFinal128, 128, _data, i);
-    i += SerDeUtil.writeArrayChecked(paddingFinal64, 64, _data, i);
-    i += SerDeUtil.writeArrayChecked(paddingFinal32, 32, _data, i);
-    i += SerDeUtil.writeArrayChecked(paddingFinal6, 6, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding4, 64, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding5, 17, _data, i);
+    _data[i] = (byte) configMaxUtilizationRate;
+    ++i;
+    putInt64LE(_data, i, configSuperMaxBorrowRate);
+    i += 8;
+    i += SerDeUtil.writeArrayChecked(padding6, 128, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding7, 12, _data, i);
     return i - _offset;
   }
 

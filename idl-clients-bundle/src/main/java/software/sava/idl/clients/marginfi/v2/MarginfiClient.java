@@ -70,6 +70,11 @@ public interface MarginfiClient {
     return initializeAccountPda(marginfiAccount, authority(), feePayer(), accountIndex, thirdPartyId);
   }
 
+  /// Close a marginfi account. The program also takes the account's rebalance fee pool
+  /// ([MarginfiAccounts#rebalanceFeePoolPDA]), which this derives, and refuses the close with
+  /// `IllegalAction` unless that pool holds no lamports. Anyone can fund the pool, so drain it
+  /// first with the generated `MarginfiProgram.marginfiAccountWithdrawRebalanceFeePool`. The
+  /// account must also hold no open order, rebalance orders included.
   Instruction closeAccount(final PublicKey marginfiAccount,
                            final PublicKey authority,
                            final PublicKey feePayer);

@@ -1,6 +1,6 @@
 {
   "program": "MFv2hWf31Z9kbCa1snEPYctwafyhdvnV7FZnsebVacA",
-  "deployed": "metadata",
+  "deployed": null,
   "lastDeploySlot": 456093551,
   "programDataState": "upgradeable",
   "programDataStateSlot": 440077852,
@@ -17,8 +17,9 @@
     "metadata": {
       "origin": "B66dYmjB9pJ3unjp3QMiEpySb8i44Zhev3qaYj5SfLPG",
       "hash": "8551268927f89d102574d1e5f5fcf4462a972dfb2ce87a13f3bc43cdcbdb2322",
-      "matchesDeployed": true,
-      "verbatim": "idl.json"
+      "matchesDeployed": false,
+      "file": "metadata.json",
+      "verbatim": "metadata.json"
     }
   }
 }

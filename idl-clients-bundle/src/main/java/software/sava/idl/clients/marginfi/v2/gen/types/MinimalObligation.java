@@ -41,10 +41,7 @@ public record MinimalObligation(long tag,
                                 MinimalObligationCollateral[] deposits,
                                 long lowestReserveDepositLiquidationLtv,
                                 byte[] depositedValueSf,
-                                byte[] paddingPart1,
-                                byte[] paddingPart2,
-                                byte[] paddingPart3,
-                                byte[] paddingPart4,
+                                byte[] padding1,
                                 byte[] paddingPart5a,
                                 byte[] paddingPart5c) implements SerDe {
 
@@ -52,10 +49,7 @@ public record MinimalObligation(long tag,
   public static final int LAST_UPDATE_PLACEHOLDER_LEN = 6;
   public static final int DEPOSITS_LEN = 8;
   public static final int DEPOSITED_VALUE_SF_LEN = 16;
-  public static final int PADDING_PART_1_LEN = 512;
-  public static final int PADDING_PART_2_LEN = 512;
-  public static final int PADDING_PART_3_LEN = 512;
-  public static final int PADDING_PART_4_LEN = 512;
+  public static final int PADDING_1_LEN = 2048;
   public static final int PADDING_PART_5A_LEN = 64;
   public static final int PADDING_PART_5C_LEN = 24;
 
@@ -69,10 +63,7 @@ public record MinimalObligation(long tag,
   public static final int DEPOSITS_OFFSET = 88;
   public static final int LOWEST_RESERVE_DEPOSIT_LIQUIDATION_LTV_OFFSET = 1176;
   public static final int DEPOSITED_VALUE_SF_OFFSET = 1184;
-  public static final int PADDING_PART_1_OFFSET = 1200;
-  public static final int PADDING_PART_2_OFFSET = 1712;
-  public static final int PADDING_PART_3_OFFSET = 2224;
-  public static final int PADDING_PART_4_OFFSET = 2736;
+  public static final int PADDING_1_OFFSET = 1200;
   public static final int PADDING_PART_5A_OFFSET = 3248;
   public static final int PADDING_PART_5C_OFFSET = 3312;
 
@@ -101,14 +92,8 @@ public record MinimalObligation(long tag,
     i += 8;
     final var depositedValueSf = new byte[16];
     i += SerDeUtil.readArray(depositedValueSf, _data, i);
-    final var paddingPart1 = new byte[512];
-    i += SerDeUtil.readArray(paddingPart1, _data, i);
-    final var paddingPart2 = new byte[512];
-    i += SerDeUtil.readArray(paddingPart2, _data, i);
-    final var paddingPart3 = new byte[512];
-    i += SerDeUtil.readArray(paddingPart3, _data, i);
-    final var paddingPart4 = new byte[512];
-    i += SerDeUtil.readArray(paddingPart4, _data, i);
+    final var padding1 = new byte[2048];
+    i += SerDeUtil.readArray(padding1, _data, i);
     final var paddingPart5a = new byte[64];
     i += SerDeUtil.readArray(paddingPart5a, _data, i);
     final var paddingPart5c = new byte[24];
@@ -123,10 +108,7 @@ public record MinimalObligation(long tag,
                                  deposits,
                                  lowestReserveDepositLiquidationLtv,
                                  depositedValueSf,
-                                 paddingPart1,
-                                 paddingPart2,
-                                 paddingPart3,
-                                 paddingPart4,
+                                 padding1,
                                  paddingPart5a,
                                  paddingPart5c);
   }
@@ -151,10 +133,7 @@ public record MinimalObligation(long tag,
     putInt64LE(_data, i, lowestReserveDepositLiquidationLtv);
     i += 8;
     i += SerDeUtil.writeArrayChecked(depositedValueSf, 16, _data, i);
-    i += SerDeUtil.writeArrayChecked(paddingPart1, 512, _data, i);
-    i += SerDeUtil.writeArrayChecked(paddingPart2, 512, _data, i);
-    i += SerDeUtil.writeArrayChecked(paddingPart3, 512, _data, i);
-    i += SerDeUtil.writeArrayChecked(paddingPart4, 512, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding1, 2048, _data, i);
     i += SerDeUtil.writeArrayChecked(paddingPart5a, 64, _data, i);
     i += SerDeUtil.writeArrayChecked(paddingPart5c, 24, _data, i);
     return i - _offset;

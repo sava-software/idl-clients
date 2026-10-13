@@ -32,7 +32,9 @@ public enum OracleSetup implements RustEnum {
   KaminoLST,
   JuplendLST,
   PTPyth,
-  PTFixed;
+  PTFixed,
+  ScopeKamino,
+  ScopeJuplend;
 
   public static OracleSetup read(final byte[] _data, final int _offset) {
     return SerDeUtil.read(1, OracleSetup.values(), _data, _offset);

@@ -56,7 +56,9 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///              oracle cranks ran recently enough. Check `internal_err` and `err_index` for more details
 ///              in some circumstances. Invalid if generated after borrow/withdraw (these instructions will
 ///              ignore oracle issues if health is still satisfactory with some balance zeroed out).
-///              * 8, 16, 32, 64, 128, etc - reserved for future use
+///              * EMODE BOOSTED = 8 - If set, an emode or same-asset entry weights every collateral balance
+///              above its own bank's maintenance weight. Only written by maintenance passes.
+///              * 16, 32, 64, 128, etc - reserved for future use
 /// @param mrgnErr: u32 If the engine errored, look here for the error code. If the engine returns ok, you may also
 ///                check here to see if the risk engine rejected this tx (3009).
 /// @param prices Each price corresponds to that index of Balances in the LendingAccount. Useful for debugging
