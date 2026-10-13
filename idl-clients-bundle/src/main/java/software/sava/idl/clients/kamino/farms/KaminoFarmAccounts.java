@@ -75,15 +75,19 @@ public interface KaminoFarmAccounts {
     );
   }
 
+  /// A user state is seeded with its delegatee (kfarms 1.7.0, `handler_initialize_user.rs:79`). On a
+  /// farm that is not delegated, that is the user, who is also its owner. On a delegated farm it is
+  /// the account the user state stands for, the obligation for a kLend reserve's farm, and passing
+  /// the obligation's owner instead derives an address no user state has.
   static ProgramDerivedAddress userStatePDA(final PublicKey farmState,
-                                            final PublicKey owner,
+                                            final PublicKey delegatee,
                                             final PublicKey programId) {
 
     return PublicKey.findProgramAddress(
         List.of(
             "user".getBytes(US_ASCII),
             farmState.toByteArray(),
-            owner.toByteArray()
+            delegatee.toByteArray()
         ),
         programId
     );

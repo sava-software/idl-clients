@@ -23,10 +23,12 @@ public interface KaminoLendClient {
     return createClient(splAccountClient, KaminoAccounts.MAIN_NET);
   }
 
+  /// Every `FarmState`, including each reserve's farms. They are owned by the Kamino Farms program,
+  /// `KaminoAccounts.farmProgram()`, not by kLend: scanning the kLend program returns nothing.
   static CompletableFuture<List<AccountInfo<FarmState>>> fetchFarmStateAccounts(final SolanaRpcClient rpcClient,
-                                                                                final PublicKey kLendProgram) {
+                                                                                final PublicKey farmProgram) {
     return rpcClient.getProgramAccounts(
-        kLendProgram,
+        farmProgram,
         List.of(FarmState.SIZE_FILTER),
         FarmState.FACTORY
     );

@@ -13,6 +13,7 @@ import software.sava.idl.clients.kamino.vaults.gen.types.VaultState;
 
 import java.util.Arrays;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /// Covers the Kamino account scans against the capture harness. Every fetcher
@@ -36,10 +37,6 @@ final class KaminoRpcFetcherTests extends SolanaRpcCaptureTests {
     final var kLend = KAMINO_ACCOUNTS.kLendProgram();
 
     respondWith(EMPTY_PROGRAM_ACCOUNTS);
-    assertTrue(KaminoLendClient.fetchFarmStateAccounts(rpcClient(), kLend).join().isEmpty());
-    assertLastRequestContains("getProgramAccounts", kLend.toBase58(), FarmState.SIZE_FILTER.toJson());
-
-    respondWith(EMPTY_PROGRAM_ACCOUNTS);
     assertTrue(KaminoLendClient.fetchLendingMarkets(rpcClient(), kLend).join().isEmpty());
     assertLastRequestContains("getProgramAccounts", kLend.toBase58(), LendingMarket.SIZE_FILTER.toJson());
 
@@ -50,6 +47,19 @@ final class KaminoRpcFetcherTests extends SolanaRpcCaptureTests {
     respondWith(EMPTY_PROGRAM_ACCOUNTS);
     assertTrue(KaminoLendClient.fetchReferrerTokenStateAccounts(rpcClient(), kLend).join().isEmpty());
     assertLastRequestContains("getProgramAccounts", kLend.toBase58(), ReferrerTokenState.SIZE_FILTER.toJson());
+  }
+
+  /// Farm states belong to the Farms program. Scanned under kLend, as this fetcher's parameter
+  /// once named it, the size filter matches nothing: 0 accounts at slot 456604915, against 616
+  /// under the Farms program at slot 456604911.
+  @Test
+  void farmStateScanRunsUnderTheFarmsProgram() {
+    final var farms = KAMINO_ACCOUNTS.farmProgram();
+    assertEquals(PublicKey.fromBase58Encoded("FarmsPZpWu9i7Kky8tPN37rs2TpmMrAZrC7S7vJa91Hr"), farms);
+
+    respondWith(EMPTY_PROGRAM_ACCOUNTS);
+    assertTrue(KaminoLendClient.fetchFarmStateAccounts(rpcClient(), farms).join().isEmpty());
+    assertLastRequestContains("getProgramAccounts", farms.toBase58(), FarmState.SIZE_FILTER.toJson());
   }
 
   /// The market-scoped reserve scan narrows by a memcmp on the reserve's

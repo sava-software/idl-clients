@@ -8,9 +8,9 @@ import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/// Pins the farm PDA helpers offline: determinism, per-input sensitivity, and
-/// separation between the same-shaped vault prefixes (`tvault`/`fvault`/
-/// `rvault` all derive from (prefix, state, mint)).
+/// Pins the farm PDA helpers: determinism, per-input sensitivity, separation
+/// between the same-shaped vault prefixes (`tvault`/`fvault`/`rvault` all
+/// derive from (prefix, state, mint)), and the addresses live accounts hold.
 final class KaminoFarmAccountsTests {
 
   private static PublicKey key(final int fill) {
@@ -65,5 +65,44 @@ final class KaminoFarmAccountsTests {
         "state and owner are not interchangeable");
     // and the user state does not collide with the same-shaped vault family
     assertNotEquals(userState.publicKey(), KaminoFarmAccounts.farmVaultPDA(FARM_STATE, OWNER, PROGRAM).publicKey());
+  }
+
+  /// Mainnet farm 2hbG59WP, read at slot 456605143: the addresses it stores are the program's own
+  /// derivations, and its global config's treasury vault for the BONK reward is a live token
+  /// account of that mint (slot 456605334).
+  @Test
+  void farmDerivationsReproduceALiveFarm() {
+    final var farm = PublicKey.fromBase58Encoded("2hbG59WPGQL72vwNmmrrHQmtSfQdWY5CUi2EDUt22UJm");
+    final var globalConfig = PublicKey.fromBase58Encoded("6UodrBjL2ZreDy7QdR4YV1oxqMBjVYSEyrFpctqqwGwL");
+    final var stakeMint = PublicKey.fromBase58Encoded("AZo7YWPre83XySaVuwPVjeZPu9DnMsR1UEJcqkPjUtAh");
+    final var rewardMint = PublicKey.fromBase58Encoded("DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263");
+
+    assertEquals(PublicKey.fromBase58Encoded("Em8i9gn4ZHF3ibtPzGpZMoiroYQ3TwwEDL87C76bvLFu"),
+        KaminoFarmAccounts.getFarmAuthorityPDA(farm, PROGRAM).publicKey());
+    assertEquals(PublicKey.fromBase58Encoded("93Bzk3y6DNGNKNunXY92otTvx925wjv9qJZH68MEGNFu"),
+        KaminoFarmAccounts.farmVaultPDA(farm, stakeMint, PROGRAM).publicKey());
+    assertEquals(PublicKey.fromBase58Encoded("7M1Lzssao6LdgBEVK7CKrwDSs9wg1H76XS69pGUqzXAu"),
+        KaminoFarmAccounts.rewardVaultPDA(farm, rewardMint, PROGRAM).publicKey());
+    assertEquals(PublicKey.fromBase58Encoded("76Nzx5DqDre5SSP7wyNTHzYTvqeQaf1V9ZSCV7pofcH8"),
+        KaminoFarmAccounts.treasuryVaultPDA(globalConfig, rewardMint, PROGRAM).publicKey());
+  }
+
+  /// A user state is seeded with its delegatee, which is its owner only on a farm that is not
+  /// delegated. Two mainnet user states, read at slot 456605143: ANquwaRS on 2hbG59WP, not
+  /// delegated, and 9q5mggCf on the delegated 3DY4Ch6v, whose owner derives a different address.
+  @Test
+  void userStatesAreSeededWithTheirDelegatee() {
+    final var own = PublicKey.fromBase58Encoded("79nBgvQX8EdGxJbWmnVArrihTCZwSdsqLoyUzUHRJxuw");
+    assertEquals(PublicKey.fromBase58Encoded("ANquwaRSA4GTpCCxaRWWmv7zBdTH9kigVs9xSDk4eoab"),
+        KaminoFarmAccounts.userStatePDA(
+            PublicKey.fromBase58Encoded("2hbG59WPGQL72vwNmmrrHQmtSfQdWY5CUi2EDUt22UJm"), own, PROGRAM
+        ).publicKey());
+
+    final var delegatedFarm = PublicKey.fromBase58Encoded("3DY4Ch6vhWuZmHKjgw2T2jB3T5vBmpPiBZJTFdgLWnZ2");
+    final var delegatee = PublicKey.fromBase58Encoded("6DbmzaGBwnGXZpDVnsDQ48UrsrvRjmdvFYM8NYXCxC3H");
+    final var owner = PublicKey.fromBase58Encoded("5Brmo6rmwKPBD5TSuJeygePfijLXEJgkPYJWumENhNPq");
+    final var userState = PublicKey.fromBase58Encoded("9q5mggCfa8UJRc1vqQ6bEJoLxvQysHhGVJqgDNtK2ebc");
+    assertEquals(userState, KaminoFarmAccounts.userStatePDA(delegatedFarm, delegatee, PROGRAM).publicKey());
+    assertNotEquals(userState, KaminoFarmAccounts.userStatePDA(delegatedFarm, owner, PROGRAM).publicKey());
   }
 }
