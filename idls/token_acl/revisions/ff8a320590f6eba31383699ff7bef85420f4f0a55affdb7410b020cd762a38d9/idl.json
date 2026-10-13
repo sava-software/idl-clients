@@ -1,0 +1,1477 @@
+{
+    "kind": "rootNode",
+    "standard": "codama",
+    "version": "1.0.0",
+    "program": {
+      "kind": "programNode",
+      "name": "tokenAcl",
+      "publicKey": "TACLkU6CiCdkQN2MjoyDkVg2yAH9zkxiHDsiztQ52TP",
+      "version": "0.1.0",
+      "origin": "shank",
+      "docs": [],
+      "accounts": [
+        {
+            "kind": "accountNode",
+            "name": "flagAccount",
+            "size": 1,
+            "docs": [],
+            "pda": {
+              "kind": "pdaLinkNode",
+              "name": "flagAccount"
+            },
+            "data": {
+                "kind": "structTypeNode",
+                "fields": [
+                    {
+                        "kind": "structFieldTypeNode",
+                        "name": "isThawing",
+                        "docs": [],
+                        "type": {
+                            "kind": "booleanTypeNode",
+                            "size": {
+                                "kind": "numberTypeNode",
+                                "format": "u8",
+                                "endian": "le"
+                            }
+
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "kind": "accountNode",
+            "name": "mintConfig",
+            "size": 0,
+            "docs": [],
+            "pda": {
+              "kind": "pdaLinkNode",
+              "name": "mintConfig"
+            },
+            "data": {
+                "kind": "structTypeNode",
+                "fields": [
+                    {
+                        "kind": "structFieldTypeNode",
+                        "name": "discriminator",
+                        "defaultValueStrategy": "omitted",
+                        "docs": [],
+                        "type": {
+                            "kind": "numberTypeNode",
+                            "format": "u8",
+                            "endian": "le"
+                        },
+                        "defaultValue": {
+                          "kind": "numberValueNode",
+                          "number": 1
+                        }
+                    },
+                    {
+                        "kind": "structFieldTypeNode",
+                        "name": "bump",
+                        "docs": [],
+                        "type": {
+                            "kind": "numberTypeNode",
+                            "format": "u8",
+                            "endian": "le"
+                        }
+                    },
+                    {
+                        "kind": "structFieldTypeNode",
+                        "name": "enablePermissionlessThaw",
+                        "docs": [],
+                        "type": {
+                          "kind": "booleanTypeNode",
+                          "size": {
+                            "kind": "numberTypeNode",
+                            "format": "u8",
+                            "endian": "le"
+                          }
+                        }
+                    },
+                    {
+                        "kind": "structFieldTypeNode",
+                        "name": "enablePermissionlessFreeze",
+                        "docs": [],
+                        "type": {
+                          "kind": "booleanTypeNode",
+                          "size": {
+                            "kind": "numberTypeNode",
+                            "format": "u8",
+                            "endian": "le"
+                          }
+                        }
+                    },
+                    {
+                        "kind": "structFieldTypeNode",
+                        "name": "mint",
+                        "docs": [],
+                        "type": {
+                            "kind": "publicKeyTypeNode"
+                        }
+                    },
+                    {
+                        "kind": "structFieldTypeNode",
+                        "name": "freezeAuthority",
+                        "docs": [],
+                        "type": {
+                            "kind": "publicKeyTypeNode"
+
+                        }
+                    },
+                    {
+                        "kind": "structFieldTypeNode",
+                        "name": "gatingProgram",
+                        "docs": [],
+                        "type": {
+                            "kind": "publicKeyTypeNode"
+
+                        }
+                    }
+                ]
+            },
+            "discriminators": [
+                {
+                    "kind": "fieldDiscriminatorNode",
+                    "name": "discriminator",
+                    "offset": 0
+                }
+            ]
+
+        }
+      ],
+      "instructions": [
+        {
+            "kind": "instructionNode",
+            "name": "createConfig",
+            "docs": [],
+            "accounts": [
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "payer",
+                    "docs": [],
+                    "isWritable": true,
+                    "isSigner": false,
+                    "isOptional": false
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "authority",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": true,
+                    "isOptional": false
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "mint",
+                    "docs": [],
+                    "isWritable": true,
+                    "isSigner": false,
+                    "isOptional": false
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "mintConfig",
+                    "docs": [],
+                    "isWritable": true,
+                    "isSigner": false,
+                    "isOptional": false,
+                    "defaultValue": {
+                      "kind": "pdaValueNode",
+                      "pda": {
+                        "kind": "pdaLinkNode",
+                        "name": "mintConfig"
+                      },
+                      "seeds": [
+                        {
+                            "kind": "pdaSeedValueNode",
+                            "name": "mint",
+                            "value": {
+                                "kind": "accountValueNode",
+                                "name": "mint"
+                            }
+                        }
+                      ]
+                    }
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "systemProgram",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": false,
+                    "isOptional": false,
+                    "defaultValue": {
+                      "kind": "publicKeyValueNode",
+                      "publicKey": "11111111111111111111111111111111"
+                    }
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "tokenProgram",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": false,
+                    "isOptional": false,
+                    "defaultValue": {
+                      "kind": "publicKeyValueNode",
+                      "publicKey": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+                    }
+                }
+            ],
+            "arguments": [
+                {
+                    "kind": "instructionArgumentNode",
+                    "name": "discriminator",
+                    "defaultValueStrategy": "omitted",
+                    "docs": [],
+                    "type": {
+                        "kind": "numberTypeNode",
+                        "format": "u8",
+                        "endian": "le"
+                    },
+                    "defaultValue": {
+                    "kind": "numberValueNode",
+                    "number": 0
+                    }
+                },
+                {
+                    "kind": "instructionArgumentNode",
+                    "name": "gatingProgram",
+                    "docs": [],
+                    "type": {
+                        "kind": "publicKeyTypeNode"
+                    }
+                }
+            ],
+            "discriminators": [
+                {
+                  "kind": "fieldDiscriminatorNode",
+                  "name": "discriminator",
+                  "offset": 0
+                }
+            ]
+        },
+        {
+            "kind": "instructionNode",
+            "name": "setAuthority",
+            "docs": [],
+            "accounts": [
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "authority",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": true,
+                    "isOptional": false
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "mintConfig",
+                    "docs": [],
+                    "isWritable": true,
+                    "isSigner": false,
+                    "isOptional": false
+                }
+            ],
+            "arguments": [
+                {
+                    "kind": "instructionArgumentNode",
+                    "name": "discriminator",
+                    "defaultValueStrategy": "omitted",
+                    "docs": [],
+                    "type": {
+                        "kind": "numberTypeNode",
+                        "format": "u8",
+                        "endian": "le"
+                    },
+                    "defaultValue": {
+                    "kind": "numberValueNode",
+                    "number": 1
+                    }
+                },
+                {
+                    "kind": "instructionArgumentNode",
+                    "name": "newAuthority",
+                    "docs": [],
+                    "type": {
+                        "kind": "publicKeyTypeNode"
+                    }
+                }
+            ],
+            "discriminators": [
+                {
+                  "kind": "fieldDiscriminatorNode",
+                  "name": "discriminator",
+                  "offset": 0
+                }
+            ]
+        },
+        {
+            "kind": "instructionNode",
+            "name": "setGatingProgram",
+            "docs": [],
+            "accounts": [
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "authority",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": true,
+                    "isOptional": false
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "mintConfig",
+                    "docs": [],
+                    "isWritable": true,
+                    "isSigner": false,
+                    "isOptional": false
+                }
+            ],
+            "arguments": [
+                {
+                    "kind": "instructionArgumentNode",
+                    "name": "discriminator",
+                    "defaultValueStrategy": "omitted",
+                    "docs": [],
+                    "type": {
+                        "kind": "numberTypeNode",
+                        "format": "u8",
+                        "endian": "le"
+                    },
+                    "defaultValue": {
+                    "kind": "numberValueNode",
+                    "number": 2
+                    }
+                },
+                {
+                    "kind": "instructionArgumentNode",
+                    "name": "newGatingProgram",
+                    "docs": [],
+                    "type": {
+                        "kind": "publicKeyTypeNode"
+                    }
+                }
+            ],
+            "discriminators": [
+                {
+                  "kind": "fieldDiscriminatorNode",
+                  "name": "discriminator",
+                  "offset": 0
+                }
+            ]
+        }, 
+        {
+            "kind": "instructionNode",
+            "name": "deleteConfig",
+            "docs": [],
+            "accounts": [
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "authority",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": true,
+                    "isOptional": false
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "receiver",
+                    "docs": [],
+                    "isWritable": true,
+                    "isSigner": false,
+                    "isOptional": false
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "mint",
+                    "docs": [],
+                    "isWritable": true,
+                    "isSigner": false,
+                    "isOptional": false
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "mintConfig",
+                    "docs": [],
+                    "isWritable": true,
+                    "isSigner": false,
+                    "isOptional": false,
+                    "defaultValue": {
+                      "kind": "pdaValueNode",
+                      "pda": {
+                        "kind": "pdaLinkNode",
+                        "name": "mintConfig"
+                      },
+                      "seeds": [
+                        {
+                            "kind": "pdaSeedValueNode",
+                            "name": "mint",
+                            "value": {
+                                "kind": "accountValueNode",
+                                "name": "mint"
+                            }
+                        }
+                      ]
+                    }
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "tokenProgram",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": false,
+                    "isOptional": false,
+                    "defaultValue": {
+                      "kind": "publicKeyValueNode",
+                      "publicKey": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+                    }
+                }
+            ],
+            "arguments": [
+                {
+                    "kind": "instructionArgumentNode",
+                    "name": "discriminator",
+                    "defaultValueStrategy": "omitted",
+                    "docs": [],
+                    "type": {
+                        "kind": "numberTypeNode",
+                        "format": "u8",
+                        "endian": "le"
+                    },
+                    "defaultValue": {
+                    "kind": "numberValueNode",
+                    "number": 3
+                    }
+                },
+                {
+                    "kind": "instructionArgumentNode",
+                    "name": "newFreezeAuthority",
+                    "docs": [],
+                    "type": {
+                        "kind": "publicKeyTypeNode"
+                    }
+                }
+            ],
+            "discriminators": [
+                {
+                  "kind": "fieldDiscriminatorNode",
+                  "name": "discriminator",
+                  "offset": 0
+                }
+            ]
+        },
+        {
+            "kind": "instructionNode",
+            "name": "thaw",
+            "docs": [],
+            "accounts": [
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "authority",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": true,
+                    "isOptional": false
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "mint",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": false,
+                    "isOptional": false
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "tokenAccount",
+                    "docs": [],
+                    "isWritable": true,
+                    "isSigner": false,
+                    "isOptional": false
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "mintConfig",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": false,
+                    "isOptional": false,
+                    "defaultValue": {
+                      "kind": "pdaValueNode",
+                      "pda": {
+                        "kind": "pdaLinkNode",
+                        "name": "mintConfig"
+                      },
+                      "seeds": [
+                        {
+                            "kind": "pdaSeedValueNode",
+                            "name": "mint",
+                            "value": {
+                                "kind": "accountValueNode",
+                                "name": "mint"
+                            }
+                        }
+                      ]
+                    }
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "tokenProgram",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": false,
+                    "isOptional": false,
+                    "defaultValue": {
+                      "kind": "publicKeyValueNode",
+                      "publicKey": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+                    }
+                }
+            ],
+            "arguments": [
+                {
+                    "kind": "instructionArgumentNode",
+                    "name": "discriminator",
+                    "defaultValueStrategy": "omitted",
+                    "docs": [],
+                    "type": {
+                        "kind": "numberTypeNode",
+                        "format": "u8",
+                        "endian": "le"
+                    },
+                    "defaultValue": {
+                    "kind": "numberValueNode",
+                    "number": 4
+                    }
+                }
+            ],
+            "discriminators": [
+                {
+                  "kind": "fieldDiscriminatorNode",
+                  "name": "discriminator",
+                  "offset": 0
+                }
+            ]
+        }, 
+        {
+            "kind": "instructionNode",
+            "name": "freeze",
+            "docs": [],
+            "accounts": [
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "authority",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": true,
+                    "isOptional": false
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "mint",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": false,
+                    "isOptional": false
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "tokenAccount",
+                    "docs": [],
+                    "isWritable": true,
+                    "isSigner": false,
+                    "isOptional": false
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "mintConfig",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": false,
+                    "isOptional": false,
+                    "defaultValue": {
+                      "kind": "pdaValueNode",
+                      "pda": {
+                        "kind": "pdaLinkNode",
+                        "name": "mintConfig"
+                      },
+                      "seeds": [
+                        {
+                            "kind": "pdaSeedValueNode",
+                            "name": "mint",
+                            "value": {
+                                "kind": "accountValueNode",
+                                "name": "mint"
+                            }
+                        }
+                      ]
+                    }
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "tokenProgram",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": false,
+                    "isOptional": false,
+                    "defaultValue": {
+                      "kind": "publicKeyValueNode",
+                      "publicKey": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+                    }
+                }
+            ],
+            "arguments": [
+                {
+                    "kind": "instructionArgumentNode",
+                    "name": "discriminator",
+                    "defaultValueStrategy": "omitted",
+                    "docs": [],
+                    "type": {
+                        "kind": "numberTypeNode",
+                        "format": "u8",
+                        "endian": "le"
+                    },
+                    "defaultValue": {
+                    "kind": "numberValueNode",
+                    "number": 5
+                    }
+                }
+            ],
+            "discriminators": [
+                {
+                  "kind": "fieldDiscriminatorNode",
+                  "name": "discriminator",
+                  "offset": 0
+                }
+            ]
+        }, 
+        {
+            "kind": "instructionNode",
+            "name": "thawPermissionless",
+            "docs": [],
+            "accounts": [
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "authority",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": true,
+                    "isOptional": false
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "mint",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": false,
+                    "isOptional": false
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "tokenAccount",
+                    "docs": [],
+                    "isWritable": true,
+                    "isSigner": false,
+                    "isOptional": false
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "flagAccount",
+                    "docs": [],
+                    "isWritable": true,
+                    "isSigner": false,
+                    "isOptional": false,
+                    "defaultValue": {
+                      "kind": "pdaValueNode",
+                      "pda": {
+                        "kind": "pdaLinkNode",
+                        "name": "flagAccount"
+                      },
+                      "seeds": [
+                        {
+                            "kind": "pdaSeedValueNode",
+                            "name": "tokenAccount",
+                            "value": {
+                                "kind": "accountValueNode",
+                                "name": "tokenAccount"
+                            }
+                        }
+                      ]
+                    }
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "tokenAccountOwner",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": false,
+                    "isOptional": false
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "mintConfig",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": false,
+                    "isOptional": false,
+                    "defaultValue": {
+                      "kind": "pdaValueNode",
+                      "pda": {
+                        "kind": "pdaLinkNode",
+                        "name": "mintConfig"
+                      },
+                      "seeds": [
+                        {
+                            "kind": "pdaSeedValueNode",
+                            "name": "mint",
+                            "value": {
+                                "kind": "accountValueNode",
+                                "name": "mint"
+                            }
+                        }
+                      ]
+                    }
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "tokenProgram",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": false,
+                    "isOptional": false,
+                    "defaultValue": {
+                      "kind": "publicKeyValueNode",
+                      "publicKey": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+                    }
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "systemProgram",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": false,
+                    "isOptional": false,
+                    "defaultValue": {
+                      "kind": "publicKeyValueNode",
+                      "publicKey": "11111111111111111111111111111111"
+                    }
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "gatingProgram",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": false,
+                    "isOptional": false
+                }
+            ],
+            "arguments": [
+                {
+                    "kind": "instructionArgumentNode",
+                    "name": "discriminator",
+                    "defaultValueStrategy": "omitted",
+                    "docs": [],
+                    "type": {
+                        "kind": "numberTypeNode",
+                        "format": "u8",
+                        "endian": "le"
+                    },
+                    "defaultValue": {
+                    "kind": "numberValueNode",
+                    "number": 6
+                    }
+                }
+            ],
+            "discriminators": [
+                {
+                  "kind": "fieldDiscriminatorNode",
+                  "name": "discriminator",
+                  "offset": 0
+                }
+            ]
+        }, 
+        {
+            "kind": "instructionNode",
+            "name": "freezePermissionless",
+            "docs": [],
+            "accounts": [
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "authority",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": true,
+                    "isOptional": false
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "mint",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": false,
+                    "isOptional": false
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "tokenAccount",
+                    "docs": [],
+                    "isWritable": true,
+                    "isSigner": false,
+                    "isOptional": false
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "flagAccount",
+                    "docs": [],
+                    "isWritable": true,
+                    "isSigner": false,
+                    "isOptional": false,
+                    "defaultValue": {
+                      "kind": "pdaValueNode",
+                      "pda": {
+                        "kind": "pdaLinkNode",
+                        "name": "flagAccount"
+                      },
+                      "seeds": [
+                        {
+                            "kind": "pdaSeedValueNode",
+                            "name": "tokenAccount",
+                            "value": {
+                                "kind": "accountValueNode",
+                                "name": "tokenAccount"
+                            }
+                        }
+                      ]
+                    }
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "tokenAccountOwner",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": false,
+                    "isOptional": false
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "mintConfig",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": false,
+                    "isOptional": false,
+                    "defaultValue": {
+                      "kind": "pdaValueNode",
+                      "pda": {
+                        "kind": "pdaLinkNode",
+                        "name": "mintConfig"
+                      },
+                      "seeds": [
+                        {
+                            "kind": "pdaSeedValueNode",
+                            "name": "mint",
+                            "value": {
+                                "kind": "accountValueNode",
+                                "name": "mint"
+                            }
+                        }
+                      ]
+                    }
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "tokenProgram",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": false,
+                    "isOptional": false,
+                    "defaultValue": {
+                      "kind": "publicKeyValueNode",
+                      "publicKey": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+                    }
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "systemProgram",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": false,
+                    "isOptional": false,
+                    "defaultValue": {
+                      "kind": "publicKeyValueNode",
+                      "publicKey": "11111111111111111111111111111111"
+                    }
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "gatingProgram",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": false,
+                    "isOptional": false
+                }
+                
+            ],
+            "arguments": [
+                {
+                    "kind": "instructionArgumentNode",
+                    "name": "discriminator",
+                    "defaultValueStrategy": "omitted",
+                    "docs": [],
+                    "type": {
+                        "kind": "numberTypeNode",
+                        "format": "u8",
+                        "endian": "le"
+                    },
+                    "defaultValue": {
+                    "kind": "numberValueNode",
+                    "number": 7
+                    }
+                }
+            ],
+            "discriminators": [
+                {
+                  "kind": "fieldDiscriminatorNode",
+                  "name": "discriminator",
+                  "offset": 0
+                }
+            ]
+        },
+        
+        {
+            "kind": "instructionNode",
+            "name": "thawPermissionlessIdempotent",
+            "docs": [],
+            "accounts": [
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "authority",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": true,
+                    "isOptional": false
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "mint",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": false,
+                    "isOptional": false
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "tokenAccount",
+                    "docs": [],
+                    "isWritable": true,
+                    "isSigner": false,
+                    "isOptional": false
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "flagAccount",
+                    "docs": [],
+                    "isWritable": true,
+                    "isSigner": false,
+                    "isOptional": false,
+                    "defaultValue": {
+                      "kind": "pdaValueNode",
+                      "pda": {
+                        "kind": "pdaLinkNode",
+                        "name": "flagAccount"
+                      },
+                      "seeds": [
+                        {
+                            "kind": "pdaSeedValueNode",
+                            "name": "tokenAccount",
+                            "value": {
+                                "kind": "accountValueNode",
+                                "name": "tokenAccount"
+                            }
+                        }
+                      ]
+                    }
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "tokenAccountOwner",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": false,
+                    "isOptional": false
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "mintConfig",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": false,
+                    "isOptional": false,
+                    "defaultValue": {
+                      "kind": "pdaValueNode",
+                      "pda": {
+                        "kind": "pdaLinkNode",
+                        "name": "mintConfig"
+                      },
+                      "seeds": [
+                        {
+                            "kind": "pdaSeedValueNode",
+                            "name": "mint",
+                            "value": {
+                                "kind": "accountValueNode",
+                                "name": "mint"
+                            }
+                        }
+                      ]
+                    }
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "tokenProgram",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": false,
+                    "isOptional": false,
+                    "defaultValue": {
+                      "kind": "publicKeyValueNode",
+                      "publicKey": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+                    }
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "systemProgram",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": false,
+                    "isOptional": false,
+                    "defaultValue": {
+                      "kind": "publicKeyValueNode",
+                      "publicKey": "11111111111111111111111111111111"
+                    }
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "gatingProgram",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": false,
+                    "isOptional": false
+                }
+            ],
+            "arguments": [
+                {
+                    "kind": "instructionArgumentNode",
+                    "name": "discriminator",
+                    "defaultValueStrategy": "omitted",
+                    "docs": [],
+                    "type": {
+                        "kind": "numberTypeNode",
+                        "format": "u8",
+                        "endian": "le"
+                    },
+                    "defaultValue": {
+                    "kind": "numberValueNode",
+                    "number": 9
+                    }
+                }
+            ],
+            "discriminators": [
+                {
+                  "kind": "fieldDiscriminatorNode",
+                  "name": "discriminator",
+                  "offset": 0
+                }
+            ]
+        }, 
+        {
+            "kind": "instructionNode",
+            "name": "freezePermissionlessIdempotent",
+            "docs": [],
+            "accounts": [
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "authority",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": true,
+                    "isOptional": false
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "mint",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": false,
+                    "isOptional": false
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "tokenAccount",
+                    "docs": [],
+                    "isWritable": true,
+                    "isSigner": false,
+                    "isOptional": false
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "flagAccount",
+                    "docs": [],
+                    "isWritable": true,
+                    "isSigner": false,
+                    "isOptional": false,
+                    "defaultValue": {
+                      "kind": "pdaValueNode",
+                      "pda": {
+                        "kind": "pdaLinkNode",
+                        "name": "flagAccount"
+                      },
+                      "seeds": [
+                        {
+                            "kind": "pdaSeedValueNode",
+                            "name": "tokenAccount",
+                            "value": {
+                                "kind": "accountValueNode",
+                                "name": "tokenAccount"
+                            }
+                        }
+                      ]
+                    }
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "tokenAccountOwner",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": false,
+                    "isOptional": false
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "mintConfig",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": false,
+                    "isOptional": false,
+                    "defaultValue": {
+                      "kind": "pdaValueNode",
+                      "pda": {
+                        "kind": "pdaLinkNode",
+                        "name": "mintConfig"
+                      },
+                      "seeds": [
+                        {
+                            "kind": "pdaSeedValueNode",
+                            "name": "mint",
+                            "value": {
+                                "kind": "accountValueNode",
+                                "name": "mint"
+                            }
+                        }
+                      ]
+                    }
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "tokenProgram",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": false,
+                    "isOptional": false,
+                    "defaultValue": {
+                      "kind": "publicKeyValueNode",
+                      "publicKey": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+                    }
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "systemProgram",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": false,
+                    "isOptional": false,
+                    "defaultValue": {
+                      "kind": "publicKeyValueNode",
+                      "publicKey": "11111111111111111111111111111111"
+                    }
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "gatingProgram",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": false,
+                    "isOptional": false
+                }
+            ],
+            "arguments": [
+                {
+                    "kind": "instructionArgumentNode",
+                    "name": "discriminator",
+                    "defaultValueStrategy": "omitted",
+                    "docs": [],
+                    "type": {
+                        "kind": "numberTypeNode",
+                        "format": "u8",
+                        "endian": "le"
+                    },
+                    "defaultValue": {
+                    "kind": "numberValueNode",
+                    "number": 10
+                    }
+                }
+            ],
+            "discriminators": [
+                {
+                  "kind": "fieldDiscriminatorNode",
+                  "name": "discriminator",
+                  "offset": 0
+                }
+            ]
+        },
+        {
+            "kind": "instructionNode",
+            "name": "togglePermissionlessInstructions",
+            "docs": [],
+            "accounts": [
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "authority",
+                    "docs": [],
+                    "isWritable": false,
+                    "isSigner": true,
+                    "isOptional": false
+                },
+                {
+                    "kind": "instructionAccountNode",
+                    "name": "mintConfig",
+                    "docs": [],
+                    "isWritable": true,
+                    "isSigner": false,
+                    "isOptional": false
+                }
+            ],
+            "arguments": [
+                {
+                    "kind": "instructionArgumentNode",
+                    "name": "discriminator",
+                    "defaultValueStrategy": "omitted",
+                    "docs": [],
+                    "type": {
+                        "kind": "numberTypeNode",
+                        "format": "u8",
+                        "endian": "le"
+                    },
+                    "defaultValue": {
+                    "kind": "numberValueNode",
+                    "number": 8
+                    }
+                },
+                {
+                    "kind": "instructionArgumentNode",
+                    "name": "freezeEnabled",
+                    "docs": [],
+                    "type": {
+                      "kind": "booleanTypeNode",
+                      "size": {
+                        "kind": "numberTypeNode",
+                        "format": "u8",
+                        "endian": "le"
+                      }
+                    }
+                },
+                {
+                    "kind": "instructionArgumentNode",
+                    "name": "thawEnabled",
+                    "docs": [],
+                    "type": {
+                      "kind": "booleanTypeNode",
+                      "size": {
+                        "kind": "numberTypeNode",
+                        "format": "u8",
+                        "endian": "le"
+                      }
+                    }
+                }
+            ],
+            "discriminators": [
+                {
+                  "kind": "fieldDiscriminatorNode",
+                  "name": "discriminator",
+                  "offset": 0
+                }
+            ]
+        }
+        
+      ],
+      "definedTypes": [],
+      "pdas": [
+        {
+            "kind": "pdaNode",
+            "name": "mintConfig",
+            "docs": [],
+            "seeds": [
+                {
+                    "kind": "constantPdaSeedNode",
+                    "type": {
+                        "kind": "stringTypeNode",
+                        "encoding": "utf8"
+                    },
+                    "value": {
+                        "kind": "stringValueNode",
+                        "string": "MINT_CONFIG"
+                    }
+                },
+                {
+                    "kind": "variablePdaSeedNode",
+                    "name": "mint",
+                    "type": {
+                      "kind": "publicKeyTypeNode"
+                    }
+                }
+            ]
+        },
+        {
+            "kind": "pdaNode",
+            "name": "thawExtraMetasAccount",
+            "docs": [],
+            "seeds": [
+                {
+                    "kind": "constantPdaSeedNode",
+                    "type": {
+                        "kind": "stringTypeNode",
+                        "encoding": "utf8"
+                    },
+                    "value": {
+                        "kind": "stringValueNode",
+                        "string": "thaw_extra_account_metas"
+                    }
+                },
+                {
+                    "kind": "variablePdaSeedNode",
+                    "name": "mint",
+                    "type": {
+                      "kind": "publicKeyTypeNode"
+                    }
+                }
+            ]
+        },
+        {
+            "kind": "pdaNode",
+            "name": "freezeExtraMetasAccount",
+            "docs": [],
+            "seeds": [
+                {
+                    "kind": "constantPdaSeedNode",
+                    "type": {
+                        "kind": "stringTypeNode",
+                        "encoding": "utf8"
+                    },
+                    "value": {
+                        "kind": "stringValueNode",
+                        "string": "freeze_extra_account_metas"
+                    }
+                },
+                {
+                    "kind": "variablePdaSeedNode",
+                    "name": "mint",
+                    "type": {
+                      "kind": "publicKeyTypeNode"
+                    }
+                }
+            ]
+        },
+        {
+            "kind": "pdaNode",
+            "name": "flagAccount",
+            "docs": [],
+            "seeds": [
+                {
+                    "kind": "constantPdaSeedNode",
+                    "type": {
+                        "kind": "stringTypeNode",
+                        "encoding": "utf8"
+                    },
+                    "value": {
+                        "kind": "stringValueNode",
+                        "string": "FLAG_ACCOUNT"
+                    }
+                },
+                {
+                    "kind": "variablePdaSeedNode",
+                    "name": "tokenAccount",
+                    "type": {
+                      "kind": "publicKeyTypeNode"
+                    }
+                }
+            ]
+        }
+      ],
+      "errors": [
+            {
+              "kind": "errorNode",
+              "name": "InvalidAuthority",
+              "code": 0,
+              "message": "An invalid authority was provided",
+              "docs": ["InvalidAuthority: An invalid authority was provided"]
+            },
+            {
+              "kind": "errorNode",
+              "name": "InvalidSystemProgram",
+              "code": 1,
+              "message": "An invalid system program was provided",
+              "docs": ["InvalidSystemProgram: An invalid system program was provided"]
+            },
+            {
+              "kind": "errorNode",
+              "name": "InvalidTokenProgram",
+              "code": 2,
+              "message": "An invalid token program was provided",
+              "docs": ["InvalidTokenProgram: An invalid token program was provided"]
+            },
+            {
+              "kind": "errorNode",
+              "name": "InvalidTokenMint",
+              "code": 3,
+              "message": "An invalid token mint was provided",
+              "docs": ["InvalidTokenMint: An invalid token mint was provided"]
+            },
+            {
+              "kind": "errorNode",
+              "name": "InvalidMintConfig",
+              "code": 4,
+              "message": "An invalid mint config was provided",
+              "docs": ["InvalidMintConfig: An invalid mint config was provided"]
+            },
+            {
+              "kind": "errorNode",
+              "name": "InvalidGatingProgram",
+              "code": 5,
+              "message": "An invalid gating program was provided",
+              "docs": ["InvalidGatingProgram: An invalid gating program was provided"]
+            },
+            {
+              "kind": "errorNode",
+              "name": "PermissionlessThawNotEnabled",
+              "code": 6,
+              "message": "Permissionless thaw is not enabled",
+              "docs": ["PermissionlessThawNotEnabled: Permissionless thaw is not enabled"]
+            },
+            {
+              "kind": "errorNode",
+              "name": "PermissionlessFreezeNotEnabled",
+              "code": 7,
+              "message": "Permissionless freeze is not enabled",
+              "docs": ["PermissionlessFreezeNotEnabled: Permissionless freeze is not enabled"]
+            },
+            {
+              "kind": "errorNode",
+              "name": "InvalidTokenAccountOwner",
+              "code": 8,
+              "message": "An invalid token account owner was provided",
+              "docs": ["InvalidTokenAccountOwner: An invalid token account owner was provided"]
+            }
+      ]
+    },
+    "additionalPrograms": []
+}
