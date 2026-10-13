@@ -306,8 +306,8 @@ Reading the record:
   publishing.
 - **`lastDeploySlot` is the field to check against chain.** It is the slot the
   program's executable was last written at — by a deploy transaction, or by the
-  runtime at a feature activation, which is how Stake's reads 427248000 with no
-  transaction behind it at all. An unchanged slot is real evidence a generated
+  runtime at a feature activation, which is how Stake's reads 443232000, the
+  v5.1 install, with no transaction behind it at all. An unchanged slot is real evidence a generated
   client is still current, where an IDL-to-IDL diff is not, and a program with no
   upgrade authority is not exempt from the read: `Option::None` forecloses
   transaction-driven upgrades and nothing else. `programDataState` reads the

@@ -439,6 +439,15 @@ So for this one class of program the *next* binary is identifiable before it
 ships, which nothing else here offers. What it does not give is a date: a gate
 activates when enough stake has voted it in, and staged is not scheduled.
 
+**Update, 2026-10-13: it shipped as named.** The gate activated at slot
+443232000 = 1026 × 432000, at 19:34:51Z on 2026-08-31 itself, and
+`ProgramData.last_deploy_slot` reads the same slot over a payload hashing to the
+buffer's `3d2d39c5…`: the binary identified in advance is the one running.
+v5.1.0 moved no instruction variant, argument, account list, signer rule or error
+code. It changed the warmup and cooldown arithmetic and made
+`Delegation.warmup_cooldown_rate` reserved bytes; the Stake review in
+`main_net_programs.json` holds the rest.
+
 **A corroborating heuristic, and its limit.** `getEpochSchedule` reports
 `slotsPerEpoch` 432000 with `firstNormalSlot` 0, so a feature activation always
 lands on a multiple of 432000. Both slots in this program's record are —

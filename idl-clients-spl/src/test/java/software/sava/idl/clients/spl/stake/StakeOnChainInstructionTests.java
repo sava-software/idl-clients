@@ -43,10 +43,10 @@ import static org.junit.jupiter.api.Assertions.*;
 /// how mainnet reached `program@v5.0.0` — the Agave gate `upgrade_bpf_stake_program_to_v5`
 /// (`STk5Xj8hdAx3sTzmtJ3QysKkq6X2A3yj73JtxttiRyk`) activated at slot 427248000, byte-identical to
 /// `ProgramData.last_deploy_slot`, with no transaction to read it from — and
-/// `upgrade_bpf_stake_program_to_v5_1` is staged behind it, unactivated on mainnet as of
-/// 2026-08-31. What keeps these bytes good is that no gate so far has moved a discriminant width
-/// or an argument layout; v5's own change was to make sysvar *accounts* optional. A gate
-/// activating on mainnet is the trigger to re-capture.
+/// `upgrade_bpf_stake_program_to_v5_1` installed `program@v5.1.0` the same way at slot 443232000
+/// on 2026-08-31. What keeps these bytes good is that no gate so far has moved a discriminant width
+/// or an argument layout; v5's own change was to make sysvar *accounts* optional, and v5.1's moved
+/// neither (reviewed 2026-10-13). The next gate activating on mainnet is the trigger to re-capture.
 ///
 /// [StakeReferenceEncodingTests] holds all seventeen instructions, this one included, against
 /// upstream's generated JavaScript client. That is a second *encoder*, not a second source: it

@@ -180,10 +180,11 @@ and that is how this program reached `program@v5.0.0`: the Agave gate
 activated at slot 427248000, which is byte-identical to
 `ProgramData.last_deploy_slot` — the install left a deploy-slot move and no
 transaction to read it from. `upgrade_bpf_stake_program_to_v5_1`
-(`s51VGwCAgebo2745DSUris72RavoLkXGUmVJosESCXr`) is staged behind it, nine zero bytes
-on mainnet as of 2026-08-31. Seventeen instructions and this wire format are what is
-deployed today, not what is guaranteed; a gate activating on mainnet is the trigger
-to look, and a calendar still is not. `docs/PROGRAM_VERIFICATION.md` has the full
+(`s51VGwCAgebo2745DSUris72RavoLkXGUmVJosESCXr`) followed at slot 443232000 on
+2026-08-31 and installed `program@v5.1.0` the same way, moving no discriminant width,
+argument layout or account list (reviewed 2026-10-13). Seventeen instructions and
+this wire format are what is deployed today, not what is guaranteed; the next gate
+activating on mainnet is the trigger to look, and a calendar still is not. `docs/PROGRAM_VERIFICATION.md` has the full
 method.
 
 Two things would justify running it. If the comparison ever fails, the committed

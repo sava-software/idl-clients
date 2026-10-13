@@ -13,6 +13,10 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.rpc.Filter.createDataSizeFilter;
 import static software.sava.core.rpc.Filter.createMemCompFilter;
 
+/// @param warmupCoolDownRate the eight bytes the program kept as `Delegation.warmup_cooldown_rate`, an
+///                           f64 of 0.25, until v5.1.0, installed at slot 443232000 (epoch 1026), made
+///                           them reserved: a delegation made since reads 0.0 here, and the program
+///                           reads neither value.
 public record StakeAccount(PublicKey address,
                            StakeState state,
                            long rentExemptReserve,
