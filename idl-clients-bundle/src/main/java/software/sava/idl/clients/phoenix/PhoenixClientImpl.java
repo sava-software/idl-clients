@@ -242,8 +242,10 @@ final class PhoenixClientImpl implements PhoenixClient {
   /// has to authorize moving collateral between its own trader accounts. The
   /// generated builder follows the IDL, so the meta is rebuilt here.
   ///
-  /// The IDL's other Eternal instructions agree with the SDK on every signer, so
-  /// this is a one-off omission rather than a systemic gap.
+  /// The TypeScript SDK's other Eternal builders agree with the IDL on every
+  /// signer. The Rust SDK parts from it once more, signing the wallet of
+  /// `transfer_collateral_child_to_parent`, which this client leaves unsigned on
+  /// purpose: see [PhoenixClient#transferCollateralChildToParent].
   @Override
   public Instruction syncParentToChild(final PublicKey traderWalletKey,
                                        final PublicKey parentTraderAccountKey,

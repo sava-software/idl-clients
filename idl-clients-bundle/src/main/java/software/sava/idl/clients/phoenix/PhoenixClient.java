@@ -99,6 +99,12 @@ public interface PhoenixClient {
                                  final PublicKey perpAssetMapKey,
                                  final TransferCollateralInstruction params);
 
+  /// Sweeps a child trader's collateral to its parent with the trader wallet unsigned, as the IDL
+  /// and the TypeScript SDK pass it, which keeps the sweep open to anyone. A child whose trader
+  /// preference bit 0 disables sweeps needs the wallet's signature: without it the call fails
+  /// `MissingRequiredSignature`. A wallet that signs the transaction for any other reason, as fee
+  /// payer or for another instruction, signs here too, since a signature belongs to the whole
+  /// message. The Rust SDK always marks it a signer (`rise/rust/ix/src/transfer_collateral.rs`).
   Instruction transferCollateralChildToParent(final PublicKey traderWalletKey,
                                               final PublicKey childTraderAccountKey,
                                               final PublicKey parentTraderAccountKey,
