@@ -1319,8 +1319,9 @@ gone: the program-metadata PDA was republished for the deployed build, and `marg
 declared `"deployed": "metadata"` from `591de130` through 0.1.10 and 0.1.11 (slot
 444313123). That ended when 0.1.12 deployed at slot 456093551 while the metadata PDA
 `B66dYmjB9pJ3unjp3QMiEpySb8i44Zhev3qaYj5SfLPG` still held 0.1.11. The image is
-`mrgn-0.1.12-rc2` (trimmed sha256 `eb761836…`, the "verified hash" that release's notes
-give), so the client is generated from `"idlFile": "idls/marginfi_0.1.12-rc2.json"`, the
+`mrgn-0.1.12-rc2` (trimmed sha256 `eb761836…`, whose prefix `eb7618` is the "verified
+hash" that release's notes give), so the client is generated from
+`"idlFile": "idls/marginfi_0.1.12-rc2.json"`, the
 release's `marginfi.json` asset committed verbatim (sha256 `b4f80a6c…`, equal to
 GitHub's asset digest). The asset URL answers with a redirect idl-src-gen does not
 follow, hence the committed copy. The evidence is the review verdict for slot 456093551
@@ -1328,10 +1329,12 @@ in `main_net_programs.json`.
 
 Retire the bridge once the metadata PDA holds a document matching the deployed build:
 drop `idlFile` and restore `"deployed": "metadata"`, which still has to be declared
-because the anchor account lags further. Watch the `metadata` hash in the program's
-`sources.json` and the version on its gap line, not `metadata.json` disappearing: the
-asset's empty `address` keeps that file differing even from a faithful upload. A deploy
-while the PDA still lags reopens the review; it does not retire the bridge. The section
+because the anchor account lags further. Watch for the `metadata` hash in the program's
+`sources.json` to move, and read the version pair on that movement line in
+`idl-change-report.txt`. Do not wait for `metadata.json` to disappear: the asset's empty
+`address` keeps that file differing even from a faithful upload, whose gap entry then
+reads `no member differs; the metadata does`. A deploy while the PDA still lags reopens
+the review; it does not retire the bridge. The section
 above stands as the record of how the 0.1.9 gap was found and closed.
 
 ### Bundle-wide staleness sweep (2026-07-19)

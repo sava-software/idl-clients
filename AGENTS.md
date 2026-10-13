@@ -218,8 +218,8 @@ Three traps are worth carrying around even when you are not investigating:
   declare `"deployed"` — Orca does, and a declaration outranks the version rule.
   Marginfi did until 0.1.12 deployed ahead of both its on-chain channels; it is
   generated from a committed `idlFile` until its metadata PDA catches up (bundle
-  `config/pitest/README.md`). A configured program for which the run finds no IDL at all
-  now fails the run with exit 9 (the monitor's digest names it at ERROR)
+  `config/pitest/README.md`). A configured program for which the run finds no IDL
+  at all now fails the run with exit 9 (the monitor's digest names it at ERROR)
   instead of silently keeping its last generated client.
 
 The program can be asked directly, by simulating an instruction and reading the
