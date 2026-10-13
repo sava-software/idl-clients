@@ -325,14 +325,13 @@ record ScopeReaderRecord(ScopeEntry[] entries,
       }
       case TotalMintSupply -> new TotalMintSupply(i, priceAccount, emaTypes);
       case Unused -> new Unused(i);
-      default -> {
-        if (oracleType.name().startsWith("Deprecated")) {
-          yield new Deprecated(i, oracleType);
-        } else {
-          final var band = band(i);
-          yield new NotYetSupported(i, priceAccount, oracleType, emaTypes, band.refPrice(), band.toleranceBps(), generic[i]);
-        }
-      }
+      // Exhaustive, like ScopeProgramClient.refreshPriceListExtraAccounts: a constant a
+      // regeneration adds must be classified here before this compiles. An ordinal the
+      // generated enum does not name takes the null path above.
+      case DeprecatedPlaceholder1, DeprecatedPlaceholder2, DeprecatedPlaceholder3, DeprecatedPlaceholder4,
+           DeprecatedPlaceholder5, DeprecatedPlaceholder6, DeprecatedPlaceholder7, DeprecatedPlaceholder8,
+           DeprecatedPlaceholder9, DeprecatedPlaceholder10, DeprecatedPlaceholder11, DeprecatedPlaceholder12,
+           DeprecatedPlaceholder13 -> new Deprecated(i, oracleType);
     };
   }
 

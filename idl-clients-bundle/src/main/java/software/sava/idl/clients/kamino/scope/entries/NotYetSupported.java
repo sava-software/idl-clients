@@ -11,9 +11,10 @@ import java.util.Set;
 
 /// A slot whose oracle type this library does not (yet) interpret.
 ///
-/// `oracleType` is `null` when the on-chain ordinal is beyond the generated
-/// [OracleType] enum — i.e. the deployed program is ahead of the IDL this
-/// library was generated from.
+/// The reader produces one only when the on-chain ordinal is beyond the generated
+/// [OracleType] enum — i.e. the deployed program is ahead of the IDL this library was
+/// generated from — so its `oracleType` is then `null`. Every type the enum names has
+/// an entry of its own, or decodes as [Deprecated].
 public record NotYetSupported(int index,
                               PublicKey priceAccount,
                               OracleType oracleType,
