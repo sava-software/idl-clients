@@ -314,6 +314,12 @@ public interface ScopeProgramClient {
     return approveAdminCached(configuration.adminCached(), configuration._address(), feedName);
   }
 
+  /// Create a map from token mints to scope chains at `mappingsKey`, which must be the
+  /// program-derived address `["mints_to_scope_chains", oracle_prices, seed_pk, seed_id LE]`
+  /// ([KaminoAccounts#mintsToScopeChain(PublicKey, PublicKey, long)]). The program stores `bump`
+  /// without checking it, so pass that address's canonical bump. It also reads one SPL mint per
+  /// entry of `scopeChains` from the remaining accounts, in the same order, and fails with
+  /// `RequireEqViolated` unless the counts match: append them with [Instruction#extraAccounts].
   Instruction createMintMap(final PublicKey adminKey,
                             final PublicKey configurationKey,
                             final PublicKey mappingsKey,
@@ -322,31 +328,31 @@ public interface ScopeProgramClient {
                             final int bump,
                             final int[][] scopeChains);
 
+  /// Create a mint map for this feed, deriving its address and canonical bump from the feed's
+  /// `oraclePrices`. The mints still have to be appended, one per scope chain.
   default Instruction createMintMap(final Configuration configuration,
                                     final PublicKey seedPk,
                                     final long seedId,
-                                    final int bump,
                                     final int[][] scopeChains) {
+    final var mintMap = kaminoAccounts().mintsToScopeChain(configuration.oraclePrices(), seedPk, seedId);
     return createMintMap(
         configuration.admin(),
         configuration._address(),
-        configuration.oracleMappings(),
+        mintMap.publicKey(),
         seedPk,
         seedId,
-        bump,
+        mintMap.nonce(),
         scopeChains
     );
   }
 
+  /// Close a mint map, returning its rent to the admin. The program requires the map to belong to
+  /// the configuration's `oracle_prices`.
   Instruction closeMintMap(final PublicKey adminKey,
                            final PublicKey configurationKey,
                            final PublicKey mappingsKey);
 
-  default Instruction closeMintMap(final Configuration configuration) {
-    return closeMintMap(
-        configuration.admin(),
-        configuration._address(),
-        configuration.oracleMappings()
-    );
+  default Instruction closeMintMap(final Configuration configuration, final PublicKey mappingsKey) {
+    return closeMintMap(configuration.admin(), configuration._address(), mappingsKey);
   }
 }

@@ -206,12 +206,16 @@ final class ScopeProgramClientTests {
   }
 
   private static software.sava.idl.clients.kamino.scope.gen.types.Configuration configuration() {
+    return configuration(ORACLE_PRICES);
+  }
+
+  private static software.sava.idl.clients.kamino.scope.gen.types.Configuration configuration(final PublicKey oraclePrices) {
     return new software.sava.idl.clients.kamino.scope.gen.types.Configuration(
         key(0x41), // _address
         null,
         key(0x42), // admin
         ORACLE_MAPPINGS,
-        ORACLE_PRICES,
+        oraclePrices,
         key(0x43), // tokensMetadata
         ORACLE_TWAPS,
         key(0x44), // adminCached
@@ -430,13 +434,38 @@ final class ScopeProgramClientTests {
         CLIENT.refreshPythLazerPrice(
             key(0x61), config, key(0x66), key(0x67), key(0x68), new int[]{1}, new byte[]{4}, 1));
 
+    assertEquals(
+        CLIENT.closeMintMap(config.admin(), config._address(), key(0x56)),
+        CLIENT.closeMintMap(config, key(0x56)));
+  }
+
+  /// `create_mint_map` initializes its map at
+  /// `["mints_to_scope_chains", oracle_prices, seed_pk, seed_id LE]` and stores the bump it is
+  /// given unchecked. Pinned to the two maps the program owns, both seeded by `5BUwFW4n…` and 362:
+  /// `xVgV6nUq…` on the klend feed and `7GPTptkZ…` on the hubble feed, holding bumps 252 and 255,
+  /// their canonical bumps. The `Configuration` overload used to pass the feed's `OracleMappings`
+  /// here, an existing account of another type that `init` rejects.
+  @Test
+  void theConfigurationOverloadCreatesTheMintMapTheProgramDerives() {
+    final var seedPk = PublicKey.fromBase58Encoded("5BUwFW4nRbftYTDMbgxykoFWqWHPzahFSNAaaaJtVKsq");
     final int[][] chains = {{1, 2, 0xFFFF, 0xFFFF}};
-    assertEquals(
-        CLIENT.createMintMap(config.admin(), config._address(), config.oracleMappings(), key(0x55), 3L, 254, chains),
-        CLIENT.createMintMap(config, key(0x55), 3L, 254, chains));
-    assertEquals(
-        CLIENT.closeMintMap(config.admin(), config._address(), config.oracleMappings()),
-        CLIENT.closeMintMap(config));
+    record LiveMap(PublicKey oraclePrices, String address, int bump) {
+    }
+    for (final var live : List.of(
+        new LiveMap(ScopeFeedAccounts.SCOPE_MAINNET_KLEND_FEED.oraclePrices(), "xVgV6nUqDNX1prtp7vQ6S5wfLUc529KRFHy4ooSNm4M", 252),
+        new LiveMap(ScopeFeedAccounts.SCOPE_MAINNET_HUBBLE_FEED.oraclePrices(), "7GPTptkZg7DXkNhTTKcEND3zADkgu8ZM31PkAMXgq1Yd", 255))) {
+      final var mintMap = KaminoAccounts.MAIN_NET.mintsToScopeChain(live.oraclePrices(), seedPk, 362L);
+      assertEquals(PublicKey.fromBase58Encoded(live.address()), mintMap.publicKey());
+      assertEquals(live.bump(), mintMap.nonce());
+
+      final var config = configuration(live.oraclePrices());
+      final var created = CLIENT.createMintMap(config, seedPk, 362L, chains);
+      assertEquals(
+          CLIENT.createMintMap(config.admin(), config._address(), mintMap.publicKey(), seedPk, 362L, live.bump(), chains),
+          created);
+      assertEquals(mintMap.publicKey(), keys(created).get(2), "[2] the mint map, after the admin and the configuration");
+      assertNotEquals(config.oracleMappings(), keys(created).get(2));
+    }
   }
 
   private static OracleMappings mappings() {
