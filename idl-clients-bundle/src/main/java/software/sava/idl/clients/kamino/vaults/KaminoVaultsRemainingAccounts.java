@@ -23,8 +23,12 @@ import java.util.SequencedCollection;
 /// `vault_state.get_reserves_count()` entries as the vault's reserves — in the vault's
 /// own allocation order, which it then verifies — and refreshes them through a klend
 /// CPI. That CPI builds `[reserve(writable), lending_market(readonly)]` pairs, reading
-/// each market key out of its reserve, so both accounts must be present for the runtime
-/// to resolve them.
+/// each market key out of its reserve. Since kvault 2.3.1 the program looks each market
+/// up among the instruction's accounts before the CPI, so a missing market fails in
+/// kvault itself with klend's `InvalidAccountInput` (6006, a code `KaminoLendingError`
+/// decodes and `KaminoVaultError` does not), and an entry in the reserves block that is
+/// not a klend `Reserve` fails with Anchor's `AccountOwnedByWrongProgram` (3007) or a
+/// discriminator error (3001, 3002).
 ///
 /// They are supplied as two slot-ordered blocks — every reserve, then every lending
 /// market — matching the layout the official kvault interface library builds. Note this
