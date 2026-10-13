@@ -8,6 +8,7 @@ import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
+import java.util.Arrays;
 import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -60,11 +61,14 @@ public record Loan(PublicKey _address,
                    byte[] padding4,
                    byte[] reserved) implements SerDe {
 
+  public static final int BYTES = 808;
   public static final int PADDING_LEN = 6;
   public static final int PADDING_1_LEN = 7;
   public static final int PADDING_2_LEN = 7;
   public static final int PADDING_4_LEN = 4;
   public static final int RESERVED_LEN = 48;
+  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
+
   public static final Discriminator DISCRIMINATOR = toDiscriminator(20, 195, 70, 117, 165, 227, 182, 1);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 
@@ -77,6 +81,23 @@ public record Loan(PublicKey _address,
   public static final int PADDING_OFFSET = 138;
   public static final int FILL_INDEX_OFFSET = 144;
   public static final int PRINCIPAL_OFFSET = 152;
+  public static final int PADDING_1_OFFSET = 417;
+  public static final int COLLATERAL_OFFSET = 424;
+  public static final int PADDING_2_OFFSET = 689;
+  public static final int APY_OFFSET = 696;
+  public static final int DURATION_OFFSET = 700;
+  public static final int PRINCIPAL_AMOUNT_OFFSET = 704;
+  public static final int COLLATERAL_AMOUNT_OFFSET = 712;
+  public static final int INTEREST_OFFSET = 720;
+  public static final int CREATED_AT_OFFSET = 728;
+  public static final int EXPIRED_AT_OFFSET = 736;
+  public static final int UPDATED_AT_OFFSET = 744;
+  public static final int BUMP_OFFSET = 752;
+  public static final int COLLATERAL_ACCOUNT_BUMP_OFFSET = 753;
+  public static final int EXTENDABLE_OFFSET = 754;
+  public static final int EXTENSION_COUNT_OFFSET = 755;
+  public static final int PADDING_4_OFFSET = 756;
+  public static final int RESERVED_OFFSET = 760;
 
   public static Filter createLenderFilter(final PublicKey lender) {
     return Filter.createMemCompFilter(LENDER_OFFSET, lender);
@@ -108,8 +129,68 @@ public record Loan(PublicKey _address,
     return Filter.createMemCompFilter(FILL_INDEX_OFFSET, _data);
   }
 
-  public static Filter createPrincipalFilter(final Asset principal) {
-    return Filter.createMemCompFilter(PRINCIPAL_OFFSET, principal.write());
+  public static Filter createApyFilter(final long apy) {
+    final byte[] _data = new byte[4];
+    putInt32LE(_data, 0, (int) apy);
+    return Filter.createMemCompFilter(APY_OFFSET, _data);
+  }
+
+  public static Filter createDurationFilter(final long duration) {
+    final byte[] _data = new byte[4];
+    putInt32LE(_data, 0, (int) duration);
+    return Filter.createMemCompFilter(DURATION_OFFSET, _data);
+  }
+
+  public static Filter createPrincipalAmountFilter(final long principalAmount) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, principalAmount);
+    return Filter.createMemCompFilter(PRINCIPAL_AMOUNT_OFFSET, _data);
+  }
+
+  public static Filter createCollateralAmountFilter(final long collateralAmount) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, collateralAmount);
+    return Filter.createMemCompFilter(COLLATERAL_AMOUNT_OFFSET, _data);
+  }
+
+  public static Filter createInterestFilter(final long interest) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, interest);
+    return Filter.createMemCompFilter(INTEREST_OFFSET, _data);
+  }
+
+  public static Filter createCreatedAtFilter(final long createdAt) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, createdAt);
+    return Filter.createMemCompFilter(CREATED_AT_OFFSET, _data);
+  }
+
+  public static Filter createExpiredAtFilter(final long expiredAt) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, expiredAt);
+    return Filter.createMemCompFilter(EXPIRED_AT_OFFSET, _data);
+  }
+
+  public static Filter createUpdatedAtFilter(final long updatedAt) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, updatedAt);
+    return Filter.createMemCompFilter(UPDATED_AT_OFFSET, _data);
+  }
+
+  public static Filter createBumpFilter(final int bump) {
+    return Filter.createMemCompFilter(BUMP_OFFSET, new byte[]{(byte) bump});
+  }
+
+  public static Filter createCollateralAccountBumpFilter(final int collateralAccountBump) {
+    return Filter.createMemCompFilter(COLLATERAL_ACCOUNT_BUMP_OFFSET, new byte[]{(byte) collateralAccountBump});
+  }
+
+  public static Filter createExtendableFilter(final int extendable) {
+    return Filter.createMemCompFilter(EXTENDABLE_OFFSET, new byte[]{(byte) extendable});
+  }
+
+  public static Filter createExtensionCountFilter(final int extensionCount) {
+    return Filter.createMemCompFilter(EXTENSION_COUNT_OFFSET, new byte[]{(byte) extensionCount});
   }
 
   public static Loan read(final byte[] _data, final int _offset) {
@@ -163,11 +244,11 @@ public record Loan(PublicKey _address,
     final var fillIndex = getInt64LE(_data, i);
     i += 8;
     final var principal = Asset.read(_data, i);
-    i += principal.l();
+    i += 265;
     final var padding1 = new byte[7];
     i += SerDeUtil.readArray(padding1, _data, i);
     final var collateral = Asset.read(_data, i);
-    i += collateral.l();
+    i += 265;
     final var padding2 = new byte[7];
     i += SerDeUtil.readArray(padding2, _data, i);
     final var apy = Integer.toUnsignedLong(getInt32LE(_data, i));
@@ -244,9 +325,11 @@ public record Loan(PublicKey _address,
     i += SerDeUtil.writeArrayChecked(padding, 6, _data, i);
     putInt64LE(_data, i, fillIndex);
     i += 8;
-    i += principal.write(_data, i);
+    Arrays.fill(_data, i + principal.write(_data, i), i + 265, (byte) 0);
+    i += 265;
     i += SerDeUtil.writeArrayChecked(padding1, 7, _data, i);
-    i += collateral.write(_data, i);
+    Arrays.fill(_data, i + collateral.write(_data, i), i + 265, (byte) 0);
+    i += 265;
     i += SerDeUtil.writeArrayChecked(padding2, 7, _data, i);
     putInt32LE(_data, i, (int) apy);
     i += 4;
@@ -279,31 +362,6 @@ public record Loan(PublicKey _address,
 
   @Override
   public int l() {
-    return 8 + 32
-         + 32
-         + 32
-         + 32
-         + status.l()
-         + loanType.l()
-         + SerDeUtil.lenArray(padding)
-         + 8
-         + principal.l()
-         + SerDeUtil.lenArray(padding1)
-         + collateral.l()
-         + SerDeUtil.lenArray(padding2)
-         + 4
-         + 4
-         + 8
-         + 8
-         + 8
-         + 8
-         + 8
-         + 8
-         + 1
-         + 1
-         + 1
-         + 1
-         + SerDeUtil.lenArray(padding4)
-         + SerDeUtil.lenArray(reserved);
+    return BYTES;
   }
 }

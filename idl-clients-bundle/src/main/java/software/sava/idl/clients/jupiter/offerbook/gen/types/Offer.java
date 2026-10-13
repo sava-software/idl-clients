@@ -8,6 +8,7 @@ import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
+import java.util.Arrays;
 import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -63,6 +64,7 @@ public record Offer(PublicKey _address,
                     PublicKey counteredOffer,
                     byte[] reserved) implements SerDe {
 
+  public static final int BYTES = 1224;
   public static final int PADDING_LEN = 6;
   public static final int PADDING_2_LEN = 7;
   public static final int PADDING_3_LEN = 7;
@@ -70,6 +72,8 @@ public record Offer(PublicKey _address,
   public static final int PADDING_5_LEN = 8;
   public static final int PADDING_6_LEN = 5;
   public static final int RESERVED_LEN = 232;
+  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
+
   public static final Discriminator DISCRIMINATOR = toDiscriminator(215, 88, 60, 71, 170, 162, 73, 229);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 
@@ -78,6 +82,29 @@ public record Offer(PublicKey _address,
   public static final int STATUS_OFFSET = 41;
   public static final int PADDING_OFFSET = 42;
   public static final int PRINCIPAL_OFFSET = 48;
+  public static final int PADDING_2_OFFSET = 313;
+  public static final int COLLATERAL_OFFSET = 320;
+  public static final int PADDING_3_OFFSET = 585;
+  public static final int FILTER_OFFSET = 592;
+  public static final int PADDING_4_OFFSET = 857;
+  public static final int PRINCIPAL_AMOUNT_OFFSET = 864;
+  public static final int REMAINING_PRINCIPAL_OFFSET = 872;
+  public static final int COLLATERAL_AMOUNT_OFFSET = 880;
+  public static final int REMAINING_COLLATERAL_OFFSET = 888;
+  public static final int PADDING_5_OFFSET = 896;
+  public static final int APY_OFFSET = 904;
+  public static final int DURATION_OFFSET = 908;
+  public static final int CREATED_AT_OFFSET = 912;
+  public static final int EXPIRED_AT_OFFSET = 920;
+  public static final int UPDATED_AT_OFFSET = 928;
+  public static final int MIN_FILL_AMOUNT_OFFSET = 936;
+  public static final int FILL_COUNTER_OFFSET = 944;
+  public static final int ALLOW_PARTIAL_FILL_OFFSET = 952;
+  public static final int BUMP_OFFSET = 953;
+  public static final int ALLOW_EXTEND_OFFSET = 954;
+  public static final int PADDING_6_OFFSET = 955;
+  public static final int COUNTERED_OFFER_OFFSET = 960;
+  public static final int RESERVED_OFFSET = 992;
 
   public static Filter createCreatorFilter(final PublicKey creator) {
     return Filter.createMemCompFilter(CREATOR_OFFSET, creator);
@@ -91,8 +118,86 @@ public record Offer(PublicKey _address,
     return Filter.createMemCompFilter(STATUS_OFFSET, status.write());
   }
 
-  public static Filter createPrincipalFilter(final Asset principal) {
-    return Filter.createMemCompFilter(PRINCIPAL_OFFSET, principal.write());
+  public static Filter createPrincipalAmountFilter(final long principalAmount) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, principalAmount);
+    return Filter.createMemCompFilter(PRINCIPAL_AMOUNT_OFFSET, _data);
+  }
+
+  public static Filter createRemainingPrincipalFilter(final long remainingPrincipal) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, remainingPrincipal);
+    return Filter.createMemCompFilter(REMAINING_PRINCIPAL_OFFSET, _data);
+  }
+
+  public static Filter createCollateralAmountFilter(final long collateralAmount) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, collateralAmount);
+    return Filter.createMemCompFilter(COLLATERAL_AMOUNT_OFFSET, _data);
+  }
+
+  public static Filter createRemainingCollateralFilter(final long remainingCollateral) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, remainingCollateral);
+    return Filter.createMemCompFilter(REMAINING_COLLATERAL_OFFSET, _data);
+  }
+
+  public static Filter createApyFilter(final long apy) {
+    final byte[] _data = new byte[4];
+    putInt32LE(_data, 0, (int) apy);
+    return Filter.createMemCompFilter(APY_OFFSET, _data);
+  }
+
+  public static Filter createDurationFilter(final long duration) {
+    final byte[] _data = new byte[4];
+    putInt32LE(_data, 0, (int) duration);
+    return Filter.createMemCompFilter(DURATION_OFFSET, _data);
+  }
+
+  public static Filter createCreatedAtFilter(final long createdAt) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, createdAt);
+    return Filter.createMemCompFilter(CREATED_AT_OFFSET, _data);
+  }
+
+  public static Filter createExpiredAtFilter(final long expiredAt) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, expiredAt);
+    return Filter.createMemCompFilter(EXPIRED_AT_OFFSET, _data);
+  }
+
+  public static Filter createUpdatedAtFilter(final long updatedAt) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, updatedAt);
+    return Filter.createMemCompFilter(UPDATED_AT_OFFSET, _data);
+  }
+
+  public static Filter createMinFillAmountFilter(final long minFillAmount) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, minFillAmount);
+    return Filter.createMemCompFilter(MIN_FILL_AMOUNT_OFFSET, _data);
+  }
+
+  public static Filter createFillCounterFilter(final long fillCounter) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, fillCounter);
+    return Filter.createMemCompFilter(FILL_COUNTER_OFFSET, _data);
+  }
+
+  public static Filter createAllowPartialFillFilter(final int allowPartialFill) {
+    return Filter.createMemCompFilter(ALLOW_PARTIAL_FILL_OFFSET, new byte[]{(byte) allowPartialFill});
+  }
+
+  public static Filter createBumpFilter(final int bump) {
+    return Filter.createMemCompFilter(BUMP_OFFSET, new byte[]{(byte) bump});
+  }
+
+  public static Filter createAllowExtendFilter(final int allowExtend) {
+    return Filter.createMemCompFilter(ALLOW_EXTEND_OFFSET, new byte[]{(byte) allowExtend});
+  }
+
+  public static Filter createCounteredOfferFilter(final PublicKey counteredOffer) {
+    return Filter.createMemCompFilter(COUNTERED_OFFER_OFFSET, counteredOffer);
   }
 
   public static Offer read(final byte[] _data, final int _offset) {
@@ -138,15 +243,15 @@ public record Offer(PublicKey _address,
     final var padding = new byte[6];
     i += SerDeUtil.readArray(padding, _data, i);
     final var principal = Asset.read(_data, i);
-    i += principal.l();
+    i += 265;
     final var padding2 = new byte[7];
     i += SerDeUtil.readArray(padding2, _data, i);
     final var collateral = Asset.read(_data, i);
-    i += collateral.l();
+    i += 265;
     final var padding3 = new byte[7];
     i += SerDeUtil.readArray(padding3, _data, i);
     final var filter = AssetFilter.read(_data, i);
-    i += filter.l();
+    i += 265;
     final var padding4 = new byte[7];
     i += SerDeUtil.readArray(padding4, _data, i);
     final var principalAmount = getInt64LE(_data, i);
@@ -225,11 +330,14 @@ public record Offer(PublicKey _address,
     i += side.write(_data, i);
     i += status.write(_data, i);
     i += SerDeUtil.writeArrayChecked(padding, 6, _data, i);
-    i += principal.write(_data, i);
+    Arrays.fill(_data, i + principal.write(_data, i), i + 265, (byte) 0);
+    i += 265;
     i += SerDeUtil.writeArrayChecked(padding2, 7, _data, i);
-    i += collateral.write(_data, i);
+    Arrays.fill(_data, i + collateral.write(_data, i), i + 265, (byte) 0);
+    i += 265;
     i += SerDeUtil.writeArrayChecked(padding3, 7, _data, i);
-    i += filter.write(_data, i);
+    Arrays.fill(_data, i + filter.write(_data, i), i + 265, (byte) 0);
+    i += 265;
     i += SerDeUtil.writeArrayChecked(padding4, 7, _data, i);
     putInt64LE(_data, i, principalAmount);
     i += 8;
@@ -269,33 +377,6 @@ public record Offer(PublicKey _address,
 
   @Override
   public int l() {
-    return 8 + 32
-         + side.l()
-         + status.l()
-         + SerDeUtil.lenArray(padding)
-         + principal.l()
-         + SerDeUtil.lenArray(padding2)
-         + collateral.l()
-         + SerDeUtil.lenArray(padding3)
-         + filter.l()
-         + SerDeUtil.lenArray(padding4)
-         + 8
-         + 8
-         + 8
-         + 8
-         + SerDeUtil.lenArray(padding5)
-         + 4
-         + 4
-         + 8
-         + 8
-         + 8
-         + 8
-         + 8
-         + 1
-         + 1
-         + 1
-         + SerDeUtil.lenArray(padding6)
-         + 32
-         + SerDeUtil.lenArray(reserved);
+    return BYTES;
   }
 }

@@ -43,6 +43,7 @@ public record Vault(PublicKey _address,
                     byte[] totalRedeemed,
                     byte[] reserved) implements SerDe {
 
+  public static final int BYTES = 1296;
   public static final int PADDING_1_LEN = 7;
   public static final int PADDING_2_LEN = 6;
   public static final int ORACLES_LEN = 5;
@@ -52,6 +53,8 @@ public record Vault(PublicKey _address,
   public static final int TOTAL_MINTED_LEN = 16;
   public static final int TOTAL_REDEEMED_LEN = 16;
   public static final int RESERVED_LEN = 256;
+  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
+
   public static final Discriminator DISCRIMINATOR = toDiscriminator(211, 8, 232, 43, 2, 152, 117, 119);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 
@@ -68,6 +71,12 @@ public record Vault(PublicKey _address,
   public static final int DECIMALS_OFFSET = 169;
   public static final int PADDING_2_OFFSET = 170;
   public static final int ORACLES_OFFSET = 176;
+  public static final int PADDING_3_OFFSET = 781;
+  public static final int PERIOD_LIMITS_OFFSET = 784;
+  public static final int RESERVED_1_OFFSET = 976;
+  public static final int TOTAL_MINTED_OFFSET = 1008;
+  public static final int TOTAL_REDEEMED_OFFSET = 1024;
+  public static final int RESERVED_OFFSET = 1040;
 
   public static Filter createMintFilter(final PublicKey mint) {
     return Filter.createMemCompFilter(MINT_OFFSET, mint);
@@ -246,24 +255,6 @@ public record Vault(PublicKey _address,
 
   @Override
   public int l() {
-    return 8 + 32
-         + 32
-         + 32
-         + 32
-         + 8
-         + 8
-         + 8
-         + status.l()
-         + SerDeUtil.lenArray(padding1)
-         + 1
-         + 1
-         + SerDeUtil.lenArray(padding2)
-         + SerDeUtil.lenArray(oracles)
-         + SerDeUtil.lenArray(padding3)
-         + SerDeUtil.lenArray(periodLimits)
-         + SerDeUtil.lenArray(reserved1)
-         + SerDeUtil.lenArray(totalMinted)
-         + SerDeUtil.lenArray(totalRedeemed)
-         + SerDeUtil.lenArray(reserved);
+    return BYTES;
   }
 }
