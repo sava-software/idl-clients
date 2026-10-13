@@ -12,6 +12,7 @@ import software.sava.idl.clients.spl.lut.gen.AddressLookupTablePDAs;
 import software.sava.idl.clients.spl.lut.gen.AddressLookupTableProgram;
 import software.sava.idl.clients.spl.stake.LockUp;
 import software.sava.idl.clients.spl.stake.StakeAccount;
+import software.sava.idl.clients.spl.stake.StakeState;
 import software.sava.idl.clients.spl.stake.gen.StakeProgram;
 import software.sava.idl.clients.spl.stake.gen.types.*;
 import software.sava.idl.clients.spl.system.gen.SystemProgram;
@@ -327,6 +328,8 @@ record SPLClientImpl(SolanaAccounts solanaAccounts) implements SPLClient {
     return custodian == null || custodian.equals(PublicKey.NONE) ? null : custodian;
   }
 
+  /// An uninitialized stake account has no withdraw authority: the program takes the account
+  /// itself in that slot and wants its signature (stake `process_withdraw`).
   private Instruction withdraw(final StakeAccount stakeAccount,
                                final PublicKey recipient,
                                final long lamports,
@@ -335,7 +338,7 @@ record SPLClientImpl(SolanaAccounts solanaAccounts) implements SPLClient {
         solanaAccounts.invokedStakeProgram(),
         stakeAccount.address(),
         recipient,
-        stakeAccount.withdrawAuthority(),
+        stakeAccount.state() == StakeState.Uninitialized ? stakeAccount.address() : stakeAccount.withdrawAuthority(),
         custodian,
         lamports
     );

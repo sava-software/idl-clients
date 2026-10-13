@@ -376,6 +376,26 @@ final class SPLClientTests {
     return CLIENT.withdrawStakeAccount(stakeAccount(lockUp), RECIPIENT, 1_234L);
   }
 
+  /// An uninitialized stake account, lamports sent to an address the program never set up, has no
+  /// withdraw authority: the program takes the account itself in that slot and wants its
+  /// signature ("the source account is passed twice, and signed for", stake `process_withdraw`).
+  /// Its authority fields decode as zeros, so passing them asked for a signature from no one.
+  @Test
+  void withdrawFromAnUninitializedStakeAccountIsSignedByTheAccount() {
+    final var uninitialized = new StakeAccount(
+        STAKE, StakeState.Uninitialized, 0L,
+        PublicKey.NONE, PublicKey.NONE,
+        LockUp.NO_LOCKUP,
+        PublicKey.NONE, 0L, 0L, 0L, 0d, 0L, (byte) 0
+    );
+    final var ix = CLIENT.withdrawStakeAccount(uninitialized, RECIPIENT, 1_234L);
+    assertEquals(List.of(STAKE, RECIPIENT, STAKE), keys(ix));
+    assertEquals(List.of(STAKE), signers(ix));
+    assertEquals(List.of(STAKE, RECIPIENT, STAKE), keys(
+        CLIENT.withdrawStakeAccount(uninitialized, RECIPIENT, 1_234L, new Clock(null, 7L, 11L, 9L, 10L, 1_700L))
+    ));
+  }
+
   private static Instruction withdraw(final LockUp lockUp, final long epoch, final long unixTimestamp) {
     return CLIENT.withdrawStakeAccount(
         stakeAccount(lockUp), RECIPIENT, 1_234L, new Clock(null, 7L, 11L, epoch, epoch + 1, unixTimestamp)
