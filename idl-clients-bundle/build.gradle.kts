@@ -96,6 +96,22 @@ val moduleJarAudit = tasks.register<Test>("moduleJarAudit") {
 }
 tasks.check { dependsOn(moduleJarAudit) }
 
+// A zero-copy account's generated layout has to be fixed, and where it holds an enum with data
+// its width rests on a tag size the IDL cannot state; ZeroCopyLayoutAuditTests says what each
+// check catches. It reads the IDL every client in both modules was generated from.
+val zeroCopyLayoutAudit = tasks.register<Test>("zeroCopyLayoutAudit") {
+  group = "verification"
+  description = "Checks that every zero-copy account has a fixed layout, pinned to a live account where it holds an enum with data"
+  val roots = listOf(rootDir.resolve("idl-clients-spl/src/main/java"), file("src/main/java"))
+  inputs.files(roots.map { root -> fileTree(root) { include("**/gen/idl.json") } })
+  testClassesDirs = sourceSets.test.get().output.classesDirs
+  classpath = sourceSets.test.get().runtimeClasspath
+  useJUnitPlatform()
+  filter { includeTestsMatching("software.sava.idl.clients.ZeroCopyLayoutAuditTests") }
+  jvmArgumentProviders.add(CommandLineArgumentProvider { listOf("-Dsava.genSourceRoots=" + roots.joinToString(",")) })
+}
+tasks.check { dependsOn(zeroCopyLayoutAudit) }
+
 hardening {
   // Ignored live-RPC scratch drivers stay available to the normal local compile,
   // but must not enter the PIT/Jazzer recompile or its production-class audit.
