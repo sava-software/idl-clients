@@ -29,10 +29,10 @@
 !/.github/**
 !/gradle/**
 
-# IDLs a program is generated from when its config names a committed file rather than a
-# URL — `idlFile` in main_net_programs.json. Empty since 2026-08-25, when Stake became the
-# last program to move to `idlURL`. The rule stays: a future `idlFile` would land here and,
-# with nothing re-including it, be swallowed silently.
+# IDLs committed beside the config: a program's `idlFile` in main_net_programs.json (Stake
+# Pool's, and since 2026-10-13 Marginfi V2's 0.1.12 release IDL) and the managed stores of
+# store-only programs (`idlDirectory`). The rule stays: a new file here would otherwise be
+# swallowed silently.
 !/idls/**
 
 # Agent/developer tooling and the long-form docs AGENTS.md links to. Both are a
