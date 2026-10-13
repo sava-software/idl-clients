@@ -15,8 +15,9 @@ import static software.sava.core.rpc.Filter.createMemCompFilter;
 
 /// @param warmupCoolDownRate the eight bytes the program kept as `Delegation.warmup_cooldown_rate`, an
 ///                           f64 of 0.25, until v5.1.0, installed at slot 443232000 (epoch 1026), made
-///                           them reserved: a delegation made since reads 0.0 here, and the program
-///                           reads neither value.
+///                           them reserved. A delegation it creates writes zeros there, while a
+///                           rescinded deactivation or a split keeps the old value, so this reads
+///                           0.25 or 0.0, and the program reads neither.
 public record StakeAccount(PublicKey address,
                            StakeState state,
                            long rentExemptReserve,

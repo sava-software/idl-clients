@@ -109,14 +109,15 @@ final class SPLClientTests {
   // forms therefore dispatch, which is what SIMD-0490 specifies ("make all sysvar account
   // inputs optional ... will continue to gracefully accept existing instructions that include
   // sysvars"). That branching landed in `5cf845b` (2025-12-08) and first shipped in
-  // `program@v5.0.0` — which is what mainnet runs: SIMD-0490's gate
+  // `program@v5.0.0`, which reached mainnet when SIMD-0490's gate
   // `STk5Xj8hdAx3sTzmtJ3QysKkq6X2A3yj73JtxttiRyk` activated at slot 427248000, byte-identical
-  // to the program's `last_deploy_slot`. Read that gate rather than the otter-verify PDA, which
-  // is stale here and attests a v4-era commit that still required the sysvars. All ten short
-  // lists were then confirmed against the live binary by simulation, each with a long-form
-  // control. Note the binary is not frozen: `Option::None` as upgrade authority forecloses only
-  // transaction-driven upgrades, and a successor gate (`s51VGwCAgebo2745DSUris72RavoLkXGUmVJosESCXr`,
-  // v5.1) is staged though not yet activated on mainnet. It keeps the same dispatch.
+  // to the program's `last_deploy_slot` then. Read the gate rather than the otter-verify PDA,
+  // which is stale here and attests a v4-era commit that still required the sysvars. All ten
+  // short lists were then confirmed against the live binary by simulation, each with a long-form
+  // control. The binary is not frozen: `Option::None` as upgrade authority forecloses only
+  // transaction-driven upgrades, and the successor gate (`s51VGwCAgebo2745DSUris72RavoLkXGUmVJosESCXr`)
+  // installed `program@v5.1.0` at slot 443232000 on 2026-08-31, keeping the same dispatch; the
+  // short deactivate and delegate lists simulated successfully against it on 2026-10-13.
   //
   // Two consequences for what is checked where. Instruction *data* did not change, so
   // `reference-vectors.txt` and [StakeReferenceEncodingTests] are untouched by this and cannot
