@@ -34,7 +34,7 @@ public record StripEvent(Discriminator discriminator,
                          long totalSyInEscrow,
                          long ptSupply,
                          long ytBalance,
-                         Number allTimeHighSyExchangeRate,
+                         Number pyIndex,
                          long syForPt,
                          long unixTimestamp) implements ExponentCoreEvent {
 
@@ -57,7 +57,7 @@ public record StripEvent(Discriminator discriminator,
   public static final int TOTAL_SY_IN_ESCROW_OFFSET = 376;
   public static final int PT_SUPPLY_OFFSET = 384;
   public static final int YT_BALANCE_OFFSET = 392;
-  public static final int ALL_TIME_HIGH_SY_EXCHANGE_RATE_OFFSET = 400;
+  public static final int PY_INDEX_OFFSET = 400;
   public static final int SY_FOR_PT_OFFSET = 432;
   public static final int UNIX_TIMESTAMP_OFFSET = 440;
 
@@ -99,7 +99,7 @@ public record StripEvent(Discriminator discriminator,
     i += 8;
     final var ytBalance = getInt64LE(_data, i);
     i += 8;
-    final var allTimeHighSyExchangeRate = Number.read(_data, i);
+    final var pyIndex = Number.read(_data, i);
     i += 32;
     final var syForPt = getInt64LE(_data, i);
     i += 8;
@@ -121,7 +121,7 @@ public record StripEvent(Discriminator discriminator,
                           totalSyInEscrow,
                           ptSupply,
                           ytBalance,
-                          allTimeHighSyExchangeRate,
+                          pyIndex,
                           syForPt,
                           unixTimestamp);
   }
@@ -160,7 +160,7 @@ public record StripEvent(Discriminator discriminator,
     i += 8;
     putInt64LE(_data, i, ytBalance);
     i += 8;
-    i += allTimeHighSyExchangeRate.write(_data, i);
+    i += pyIndex.write(_data, i);
     putInt64LE(_data, i, syForPt);
     i += 8;
     putInt64LE(_data, i, unixTimestamp);

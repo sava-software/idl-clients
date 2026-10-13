@@ -3,58 +3,58 @@ package software.sava.idl.clients.exponent.gen.types;
 
 import software.sava.idl.clients.core.gen.SerDe;
 
-public record Principles(PrincipleDetails marginfiStandard,
-                         PrincipleDetails collectTreasury,
-                         PrincipleDetails kaminoLendStandard,
-                         PrincipleDetails exponentCore,
-                         PrincipleDetails changeStatusFlags,
-                         PrincipleDetails jitoRestaking) implements SerDe {
+public record Principles(PrincipleDetails hotAdmin,
+                         PrincipleDetails coldAdmin,
+                         PrincipleDetails pauseAdmin,
+                         PrincipleDetails reserved1,
+                         PrincipleDetails reserved2,
+                         PrincipleDetails reserved3) implements SerDe {
 
-  public static final int MARGINFI_STANDARD_OFFSET = 0;
+  public static final int HOT_ADMIN_OFFSET = 0;
 
   public static Principles read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
     int i = _offset;
-    final var marginfiStandard = PrincipleDetails.read(_data, i);
-    i += marginfiStandard.l();
-    final var collectTreasury = PrincipleDetails.read(_data, i);
-    i += collectTreasury.l();
-    final var kaminoLendStandard = PrincipleDetails.read(_data, i);
-    i += kaminoLendStandard.l();
-    final var exponentCore = PrincipleDetails.read(_data, i);
-    i += exponentCore.l();
-    final var changeStatusFlags = PrincipleDetails.read(_data, i);
-    i += changeStatusFlags.l();
-    final var jitoRestaking = PrincipleDetails.read(_data, i);
-    return new Principles(marginfiStandard,
-                          collectTreasury,
-                          kaminoLendStandard,
-                          exponentCore,
-                          changeStatusFlags,
-                          jitoRestaking);
+    final var hotAdmin = PrincipleDetails.read(_data, i);
+    i += hotAdmin.l();
+    final var coldAdmin = PrincipleDetails.read(_data, i);
+    i += coldAdmin.l();
+    final var pauseAdmin = PrincipleDetails.read(_data, i);
+    i += pauseAdmin.l();
+    final var reserved1 = PrincipleDetails.read(_data, i);
+    i += reserved1.l();
+    final var reserved2 = PrincipleDetails.read(_data, i);
+    i += reserved2.l();
+    final var reserved3 = PrincipleDetails.read(_data, i);
+    return new Principles(hotAdmin,
+                          coldAdmin,
+                          pauseAdmin,
+                          reserved1,
+                          reserved2,
+                          reserved3);
   }
 
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += marginfiStandard.write(_data, i);
-    i += collectTreasury.write(_data, i);
-    i += kaminoLendStandard.write(_data, i);
-    i += exponentCore.write(_data, i);
-    i += changeStatusFlags.write(_data, i);
-    i += jitoRestaking.write(_data, i);
+    i += hotAdmin.write(_data, i);
+    i += coldAdmin.write(_data, i);
+    i += pauseAdmin.write(_data, i);
+    i += reserved1.write(_data, i);
+    i += reserved2.write(_data, i);
+    i += reserved3.write(_data, i);
     return i - _offset;
   }
 
   @Override
   public int l() {
-    return marginfiStandard.l()
-         + collectTreasury.l()
-         + kaminoLendStandard.l()
-         + exponentCore.l()
-         + changeStatusFlags.l()
-         + jitoRestaking.l();
+    return hotAdmin.l()
+         + coldAdmin.l()
+         + pauseAdmin.l()
+         + reserved1.l()
+         + reserved2.l()
+         + reserved3.l();
   }
 }

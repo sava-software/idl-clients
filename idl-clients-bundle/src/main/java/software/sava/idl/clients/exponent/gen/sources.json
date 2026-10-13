@@ -8,17 +8,16 @@
   "programDataPayloadLength": 2023961,
   "channels": {
     "vcs": {
-      "origin": "github:exponent-finance/exponent-core@main#2897c660eeef647002b62ba971e19457182e0b37/target/idl/exponent_core.json",
-      "hash": "74d944dcba74ef73e7d933757dd6bf7f271d2e9005f1a15cfdb6f2f13e950c85",
+      "origin": "github:exponent-finance/exponent-core@main#8a429680adfae32d74b4e4a3757730d0727b3a1a/target/idl/exponent_core.json",
+      "hash": "360a92a18a29dcb7c52296e99db095945a95d2aea68f9dd4d21eb97f77b466c4",
       "matchesDeployed": true,
       "verbatim": "idl.json"
     },
     "vcsHead": {
       "origin": "github:exponent-finance/exponent-core@main/target/idl/exponent_core.json",
       "hash": "360a92a18a29dcb7c52296e99db095945a95d2aea68f9dd4d21eb97f77b466c4",
-      "matchesDeployed": false,
-      "file": "vcsHead.json",
-      "verbatim": "vcsHead.json"
+      "matchesDeployed": true,
+      "verbatim": "idl.json"
     }
   }
 }

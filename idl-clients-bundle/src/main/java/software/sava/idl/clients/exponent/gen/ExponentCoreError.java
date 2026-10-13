@@ -26,13 +26,14 @@ public sealed interface ExponentCoreError extends ProgramError permits
     ExponentCoreError.SellingYtDisabled,
     ExponentCoreError.DepositingLiquidityDisabled,
     ExponentCoreError.WithdrawingLiquidityDisabled,
-    ExponentCoreError.VaultInEmergencyMode,
     ExponentCoreError.FarmAlreadyExists,
     ExponentCoreError.ClaimLimitExceeded,
     ExponentCoreError.NetBalanceChangeExceedsLimit,
     ExponentCoreError.MinSyOutNotMet,
     ExponentCoreError.MinPtOutNotMet,
-    ExponentCoreError.MinLpOutNotMet {
+    ExponentCoreError.MinLpOutNotMet,
+    ExponentCoreError.MissingVaultForPyIndex,
+    ExponentCoreError.MarketTwoNegativeYieldUnsupported {
 
   static ExponentCoreError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -58,13 +59,14 @@ public sealed interface ExponentCoreError extends ProgramError permits
       case 6019 -> SellingYtDisabled.INSTANCE;
       case 6020 -> DepositingLiquidityDisabled.INSTANCE;
       case 6021 -> WithdrawingLiquidityDisabled.INSTANCE;
-      case 6022 -> VaultInEmergencyMode.INSTANCE;
-      case 6023 -> FarmAlreadyExists.INSTANCE;
-      case 6024 -> ClaimLimitExceeded.INSTANCE;
-      case 6025 -> NetBalanceChangeExceedsLimit.INSTANCE;
-      case 6026 -> MinSyOutNotMet.INSTANCE;
-      case 6027 -> MinPtOutNotMet.INSTANCE;
-      case 6028 -> MinLpOutNotMet.INSTANCE;
+      case 6022 -> FarmAlreadyExists.INSTANCE;
+      case 6023 -> ClaimLimitExceeded.INSTANCE;
+      case 6024 -> NetBalanceChangeExceedsLimit.INSTANCE;
+      case 6025 -> MinSyOutNotMet.INSTANCE;
+      case 6026 -> MinPtOutNotMet.INSTANCE;
+      case 6027 -> MinLpOutNotMet.INSTANCE;
+      case 6028 -> MissingVaultForPyIndex.INSTANCE;
+      case 6029 -> MarketTwoNegativeYieldUnsupported.INSTANCE;
       default -> null;
     };
   }
@@ -223,52 +225,59 @@ public sealed interface ExponentCoreError extends ProgramError permits
     );
   }
 
-  record VaultInEmergencyMode(int code, String msg) implements ExponentCoreError {
-
-    public static final VaultInEmergencyMode INSTANCE = new VaultInEmergencyMode(
-        6022, "Vault is in emergency mode"
-    );
-  }
-
   record FarmAlreadyExists(int code, String msg) implements ExponentCoreError {
 
     public static final FarmAlreadyExists INSTANCE = new FarmAlreadyExists(
-        6023, "Farm already exists"
+        6022, "Farm already exists"
     );
   }
 
   record ClaimLimitExceeded(int code, String msg) implements ExponentCoreError {
 
     public static final ClaimLimitExceeded INSTANCE = new ClaimLimitExceeded(
-        6024, "Claim limit exceeded"
+        6023, "Claim limit exceeded"
     );
   }
 
   record NetBalanceChangeExceedsLimit(int code, String msg) implements ExponentCoreError {
 
     public static final NetBalanceChangeExceedsLimit INSTANCE = new NetBalanceChangeExceedsLimit(
-        6025, "Net balance change exceeds limit"
+        6024, "Net balance change exceeds limit"
     );
   }
 
   record MinSyOutNotMet(int code, String msg) implements ExponentCoreError {
 
     public static final MinSyOutNotMet INSTANCE = new MinSyOutNotMet(
-        6026, "Min SY out not met"
+        6025, "Min SY out not met"
     );
   }
 
   record MinPtOutNotMet(int code, String msg) implements ExponentCoreError {
 
     public static final MinPtOutNotMet INSTANCE = new MinPtOutNotMet(
-        6027, "Min PT out not met"
+        6026, "Min PT out not met"
     );
   }
 
   record MinLpOutNotMet(int code, String msg) implements ExponentCoreError {
 
     public static final MinLpOutNotMet INSTANCE = new MinLpOutNotMet(
-        6028, "Min LP out not met"
+        6027, "Min LP out not met"
+    );
+  }
+
+  record MissingVaultForPyIndex(int code, String msg) implements ExponentCoreError {
+
+    public static final MissingVaultForPyIndex INSTANCE = new MissingVaultForPyIndex(
+        6028, "Vault account required to resolve py_index"
+    );
+  }
+
+  record MarketTwoNegativeYieldUnsupported(int code, String msg) implements ExponentCoreError {
+
+    public static final MarketTwoNegativeYieldUnsupported INSTANCE = new MarketTwoNegativeYieldUnsupported(
+        6029, "MarketTwo YT swaps are disabled below the vault watermark"
     );
   }
 }

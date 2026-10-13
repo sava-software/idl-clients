@@ -3930,38 +3930,43 @@
     },
     {
       "code": 6022,
-      "name": "VaultInEmergencyMode",
-      "msg": "Vault is in emergency mode"
-    },
-    {
-      "code": 6023,
       "name": "FarmAlreadyExists",
       "msg": "Farm already exists"
     },
     {
-      "code": 6024,
+      "code": 6023,
       "name": "ClaimLimitExceeded",
       "msg": "Claim limit exceeded"
     },
     {
-      "code": 6025,
+      "code": 6024,
       "name": "NetBalanceChangeExceedsLimit",
       "msg": "Net balance change exceeds limit"
     },
     {
-      "code": 6026,
+      "code": 6025,
       "name": "MinSyOutNotMet",
       "msg": "Min SY out not met"
     },
     {
-      "code": 6027,
+      "code": 6026,
       "name": "MinPtOutNotMet",
       "msg": "Min PT out not met"
     },
     {
-      "code": 6028,
+      "code": 6027,
       "name": "MinLpOutNotMet",
       "msg": "Min LP out not met"
+    },
+    {
+      "code": 6028,
+      "name": "MissingVaultForPyIndex",
+      "msg": "Vault account required to resolve py_index"
+    },
+    {
+      "code": 6029,
+      "name": "MarketTwoNegativeYieldUnsupported",
+      "msg": "MarketTwo YT swaps are disabled below the vault watermark"
     }
   ],
   "types": [
@@ -5784,6 +5789,9 @@
       "docs": [
         "High precision number, stored as 4 u64 words in little endian"
       ],
+      "repr": {
+        "kind": "c"
+      },
       "type": {
         "kind": "struct",
         "fields": [
@@ -5864,7 +5872,7 @@
         "kind": "struct",
         "fields": [
           {
-            "name": "marginfi_standard",
+            "name": "hot_admin",
             "type": {
               "defined": {
                 "name": "PrincipleDetails"
@@ -5872,7 +5880,7 @@
             }
           },
           {
-            "name": "collect_treasury",
+            "name": "cold_admin",
             "type": {
               "defined": {
                 "name": "PrincipleDetails"
@@ -5880,7 +5888,7 @@
             }
           },
           {
-            "name": "kamino_lend_standard",
+            "name": "pause_admin",
             "type": {
               "defined": {
                 "name": "PrincipleDetails"
@@ -5888,7 +5896,7 @@
             }
           },
           {
-            "name": "exponent_core",
+            "name": "reserved1",
             "type": {
               "defined": {
                 "name": "PrincipleDetails"
@@ -5896,7 +5904,7 @@
             }
           },
           {
-            "name": "change_status_flags",
+            "name": "reserved2",
             "type": {
               "defined": {
                 "name": "PrincipleDetails"
@@ -5904,7 +5912,7 @@
             }
           },
           {
-            "name": "jito_restaking",
+            "name": "reserved3",
             "type": {
               "defined": {
                 "name": "PrincipleDetails"
@@ -6188,7 +6196,7 @@
             "type": "u64"
           },
           {
-            "name": "all_time_high_sy_exchange_rate",
+            "name": "py_index",
             "type": {
               "defined": {
                 "name": "Number"
@@ -6369,7 +6377,7 @@
             "name": "last_seen_sy_exchange_rate",
             "docs": [
               "Last seen SY exchange rate",
-              "This continues to be updated even after vault maturity to track SY appreciation for treasury collection"
+              "This continues to be updated after maturity for PT redemption"
             ],
             "type": {
               "defined": {
@@ -6380,7 +6388,7 @@
           {
             "name": "all_time_high_sy_exchange_rate",
             "docs": [
-              "This is the all time high exchange rate for SY"
+              "This is the all time high exchange rate for SY while the vault is not expired"
             ],
             "type": {
               "defined": {
@@ -6391,7 +6399,9 @@
           {
             "name": "final_sy_exchange_rate",
             "docs": [
-              "This is the exchange rate for SY when the vault expires"
+              "Final PY index captured for YT interest at maturity.",
+              "This is the highest observed SY exchange rate while the vault is active,",
+              "not necessarily the live exchange rate at the last pre-expiry update."
             ],
             "type": {
               "defined": {

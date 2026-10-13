@@ -61,10 +61,14 @@
       "vcs": {
         "repo": "exponent-finance/exponent-core",
         "path": "target/idl/exponent_core.json",
-        "commit": "2897c660eeef647002b62ba971e19457182e0b37",
+        "commit": "8a429680adfae32d74b4e4a3757730d0727b3a1a",
         "head": true
       },
-      "deployed": "vcs"
+      "deployed": "vcs",
+      "review": {
+        "deploySlot": 456483984,
+        "verdict": "the generator finds no on-chain IDL and the otter-verify PDA still names f78b6818, the previous deploy's commit; exponent-core 8a42968, a parentless squash published 25 minutes after the deploy, is the nearest published source but not the build input: the image carries all 30 of its error names and messages and not VaultInEmergencyMode's, every compiled literal it adds over f250d0b, and 207 of the 208 panic locations outside precise_number fall on panic sites in 8a42968, but its personal_yield_tracker.rs reaches line 151 (published: 87 lines) and its precise_number/src/lib.rs line 402 (published: 276), so 8a42968 as published cannot rebuild it; emergency mode is removed: strip, merge, deposit_yt and stage_yt_yield (and wrapper_strip, wrapper_provide_liquidity and wrapper_merge through them) no longer refuse while the live SY rate is below the vault's all-time-high watermark (py_index), while buy_yt and sell_yt (and wrapper_buy_yt and wrapper_sell_yt through them) still refuse in that state, now before borrowing with 6029 MarketTwoNegativeYieldUnsupported instead of the VaultInEmergencyMode their strip or merge self-CPI raised; strip mints PT and YT at py_index, sy_for_pt and with it merge's pt_redemption_rate use max(py_index, live rate), all_time_high_sy_exchange_rate stops updating at expiry and final_sy_exchange_rate is set to py_index instead of the live rate while the vault is active, YT interest accrues as yt_balance*(1/last_seen_index - 1/py_index) with py_index the watermark while active and final_sy_exchange_rate otherwise, and post-expiry SY appreciation reaches treasury_sy per PT merged and per YT interest staged instead of in update_from_sy_state; errors drop VaultInEmergencyMode, moving FarmAlreadyExists..MinLpOutNotMet from 6023..6028 to 6022..6027, and add 6028 MissingVaultForPyIndex (raised only by a helper nothing calls) and 6029; StripEvent's all_time_high_sy_exchange_rate is renamed py_index (same offset and value); since the 2897c660 pin, f78b6818 renamed the Principles fields to hot_admin, cold_admin, pause_admin and reserved1..3 (same layout) and made market_two_deposit_liquidity and market_two_withdraw_liquidity round the net balance change up to whole basis points; admin only: add_emission and add_market_emission now require cold_admin; no #[derive(Accounts)] struct changed since 2897c660; client generated from 8a42968's target/idl/exponent_core.json; GroundTruth compared 36 builders, 36 match, and 42 of 42 once the six differently named structs are mapped"
+      }
     },
     {
       "name": "Jupiter Borrow",

@@ -36,9 +36,11 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param authority Authority for CPI signing
 /// @param signerBump bump for signer authority PDA
 /// @param lastSeenSyExchangeRate Last seen SY exchange rate
-///                               This continues to be updated even after vault maturity to track SY appreciation for treasury collection
-/// @param allTimeHighSyExchangeRate This is the all time high exchange rate for SY
-/// @param finalSyExchangeRate This is the exchange rate for SY when the vault expires
+///                               This continues to be updated after maturity for PT redemption
+/// @param allTimeHighSyExchangeRate This is the all time high exchange rate for SY while the vault is not expired
+/// @param finalSyExchangeRate Final PY index captured for YT interest at maturity.
+///                            This is the highest observed SY exchange rate while the vault is active,
+///                            not necessarily the live exchange rate at the last pre-expiry update.
 /// @param totalSyInEscrow: u64 How much SY is held in escrow
 /// @param syForPt: u64 The total SY set aside to back the PT holders
 ///                This value is updated on every operation that touches the PT supply or the last seen exchange rate
