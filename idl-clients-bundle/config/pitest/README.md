@@ -1023,6 +1023,12 @@ Age alone is not a reason to switch, so each was confirmed against chain:
   transactions turned up six distinct instruction discriminators, and one —
   `process_switch`, `baaa0042685139c3` — exists **only** in the repository IDL. The
   deployed program executes instructions the on-chain copy does not declare.
+  Since 2026-10-13 the channel is pinned to SDK release v2.2.2 (`54a412d`), whose
+  `ntbundle.json` declares exactly the 50 instructions, 8 accounts and 94 errors
+  the image deployed at 444949127 carries: SDK main had moved to an undeployed
+  build (`c0118a1`, bundle-sc@8e9e1c6), and the six tokenized-depositor builders
+  it brought fail 101 InstructionFallbackNotFound against the program. The branch
+  reports as `vcsHead`; advance the pin when a deploy carries that build.
 - **`jupiter.order_engine` → `"deployed": "vcs"`.** Instruction, account, type and
   error sets are identical, so nothing behavioural rides on it; the repository copy
   carries the real program address (the on-chain document declares the placeholder

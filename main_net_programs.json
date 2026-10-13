@@ -329,7 +329,9 @@
       "program": "BUNDDh4P5XviMm1f3gCvnq2qKx6TGosAGnoUK12e7cXU",
       "vcs": {
         "repo": "neutral-trade/sdk",
-        "path": "src/idl/ntbundle.json"
+        "path": "src/idl/ntbundle.json",
+        "commit": "54a412daad33fe68e6b855a87ee29bfdb7731455",
+        "head": true
       },
       "deployed": "vcs",
       "idlAccountProgramOwner": "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S",
