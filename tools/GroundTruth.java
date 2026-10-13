@@ -518,7 +518,7 @@ final class GroundTruth {
   private static final List<Set<String>> AUTOWIRED = List.of(
       Set.of("rent", "rentsysvar", "sysvarrent"),
       Set.of("clock", "clocksysvar"),
-      Set.of("instructionssysvar", "sysvarinstructions", "instructionsysvaraccount"),
+      Set.of("instructionssysvar", "sysvarinstructions", "instructionsysvar", "instructionsysvaraccount", "ixssysvar"),
       Set.of("associatedtokenprogram", "associatedtokenaccountprogram"),
       Set.of("memoprogram", "memoprogramv2"),
       Set.of("systemprogram"),
