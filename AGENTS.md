@@ -104,7 +104,9 @@ silently wrong rather than loudly, which is the reverse of how this one was caug
 
 Mutation coverage for the *dispatch-key parsing* lives in idl-src-gen's `anchorDispatch` suite,
 promoted out of the `jsonParse` package exclusions on 2026-08-13 — `AnchorInstruction`,
-`AnchorInstructionParser`, `AnchorUtil`, and nothing else.
+`AnchorInstructionParser` and `AnchorUtil`. The suite holds other classes too: its membership is
+`targetClasses` minus `excludedClasses` in idl-src-gen's `build.gradle.kts`, read there rather
+than copied here, where a list ending "and nothing else" went stale.
 
 **Optional-account and optional-signer handling is not gated by it.** That implementation is spread
 across `AnchorAccountMeta` and its parser (excluded from `anchorDispatch`) and `AccountRights`,
