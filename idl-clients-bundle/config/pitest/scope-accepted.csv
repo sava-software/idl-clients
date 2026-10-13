@@ -10,8 +10,8 @@ software.sava.idl.clients.kamino.scope.entries.MostRecentOfEntry,hashCode,MathMu
 software.sava.idl.clients.kamino.scope.entries.MostRecentOfEntry,hashCode,MathMutator,SURVIVED # hash-mixing family # line 30
 software.sava.idl.clients.kamino.scope.entries.MostRecentOfEntry,hashCode,MathMutator,SURVIVED # hash-mixing family # line 31
 software.sava.idl.clients.kamino.scope.entries.MostRecentOfEntry,hashCode,MathMutator,SURVIVED # hash-mixing family # line 32
-software.sava.idl.clients.kamino.scope.entries.NotYetSupported,equals,RemoveConditionalMutator_EQUAL_IF,SURVIVED # record-pattern family # line 28
-software.sava.idl.clients.kamino.scope.entries.NotYetSupported,hashCode,MathMutator,SURVIVED # hash-mixing family # line 45
+software.sava.idl.clients.kamino.scope.entries.NotYetSupported,equals,RemoveConditionalMutator_EQUAL_IF,SURVIVED # record-pattern family # line 29
+software.sava.idl.clients.kamino.scope.entries.NotYetSupported,hashCode,MathMutator,SURVIVED # hash-mixing family # line 51
 software.sava.idl.clients.kamino.scope.entries.NotYetSupported,hashCode,MathMutator,SURVIVED # hash-mixing family # line 46
 software.sava.idl.clients.kamino.scope.entries.NotYetSupported,hashCode,MathMutator,SURVIVED # hash-mixing family # line 47
 software.sava.idl.clients.kamino.scope.entries.NotYetSupported,hashCode,MathMutator,SURVIVED # hash-mixing family # line 48
