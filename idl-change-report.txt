@@ -7,8 +7,8 @@ nobody took. The standing disagreements live beside this file, at its name with 
 before the extension. Ordered by program and channel, and carrying no timestamp, so
 consecutive runs are worth diffing against each other.
 
-== Movement (1) ==
+== Movement (2) ==
 
-Kamino Scope: the anchor IDL at AWUuZ6o4ZJX2fDqjUqDaA1pfHenZ6XEbmuTamMgM911E moved since the last generation, 35adbb847f8908652b5dfc9bcafe69eb87ca1097a2e6f267df5f71dec7f54eea -> c9dcc43cff009106281c3081e2b74ef45d632e92894b84a2bc9be708f15b69c1: types -1 ~1; version 0.41.0 -> 0.44.0
-  types removed (1): TokenTypes
-  types changed (1): OracleType
+Jupiter Offerbook: the program was redeployed at slot 456376677, up from 437577292, and no IDL channel moved with it (the metadata IDL was last written at slot 438175753, between the previous deploy and this one; nothing has been written for this deploy); the stored program image changed: 1579016 payload bytes, was 1579016 — review required
+
+Marginfi V2: the program was redeployed at slot 456093551, up from 444313123, and no IDL channel moved with it (the anchor IDL was last written at slot 411882076, before the previous deploy; the metadata IDL was last written at slot 444316565, between the previous deploy and this one; nothing has been written for this deploy); the stored program image changed: 10485715 payload bytes, was 10485715 — review required
