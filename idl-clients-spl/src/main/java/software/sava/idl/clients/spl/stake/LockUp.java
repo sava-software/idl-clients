@@ -1,6 +1,7 @@
 package software.sava.idl.clients.spl.stake;
 
 import software.sava.core.accounts.PublicKey;
+import software.sava.core.accounts.sysvar.Clock;
 import software.sava.core.encoding.ByteUtil;
 import software.sava.idl.clients.core.gen.SerDe;
 
@@ -19,6 +20,13 @@ public record LockUp(long unixTimestamp, long epoch, PublicKey custodian) implem
     final long epoch = ByteUtil.getInt64LE(data, offset + Long.BYTES);
     final var custodian = readPubKey(data, offset + Long.BYTES + Long.BYTES);
     return new LockUp(unixTimestamp, epoch, custodian);
+  }
+
+  /// Whether the stake program holds this lockup in force at `clock` unless its custodian signs
+  /// (`Lockup::is_in_force`): its timestamp is later than the clock's, compared as the program's
+  /// `i64`, or its epoch is, compared as its `u64`.
+  public boolean isInForce(final Clock clock) {
+    return unixTimestamp > clock.unixTimestamp() || Long.compareUnsigned(epoch, clock.epoch()) > 0;
   }
 
   @Override

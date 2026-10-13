@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.SolanaAccounts;
 import software.sava.core.accounts.meta.AccountMeta;
+import software.sava.core.accounts.sysvar.Clock;
 import software.sava.core.tx.Instruction;
 import software.sava.idl.clients.spl.stake.LockUp;
 import software.sava.idl.clients.spl.stake.StakeAccount;
@@ -348,6 +349,59 @@ final class SPLClientTests {
         stakeAccount(new LockUp(1_700L, 9L, CUSTODIAN)), RECIPIENT, 1_234L);
     assertEquals(List.of(STAKE, RECIPIENT, WITHDRAWER, CUSTODIAN), keys(locked));
     assertEquals(List.of(WITHDRAWER, CUSTODIAN), signers(locked));
+
+    // either a later timestamp or a later epoch alone can hold the lockup in force
+    assertEquals(List.of(WITHDRAWER, CUSTODIAN), signers(withdraw(new LockUp(1_700L, 0L, CUSTODIAN))));
+    assertEquals(List.of(WITHDRAWER, CUSTODIAN), signers(withdraw(new LockUp(0L, 9L, CUSTODIAN))));
+    // an epoch past i64::MAX is a u64 the program compares unsigned, so it is still in force
+    assertEquals(List.of(WITHDRAWER, CUSTODIAN), signers(withdraw(new LockUp(0L, -1L, CUSTODIAN))));
+  }
+
+  /// Stake's `Lockup::is_in_force` is `unix_timestamp > clock.unix_timestamp || epoch > clock.epoch`
+  /// unless the custodian signs, and the withdraw fails `LockupInForce` only while it holds. A
+  /// lockup that can never be in force needs no custodian, and one whose custodian is the default
+  /// address cannot have one: demanding that signature made the withdrawal unsignable. Mainnet
+  /// stake account 8d713Js7 carries the first shape, (0, 0, AgLoEWAQ), at slot 456605931.
+  @Test
+  void withdrawStakeAccountOmitsACustodianThatNeverHasToSign() {
+    final var unlocked = List.of(STAKE, RECIPIENT, WITHDRAWER);
+    assertEquals(unlocked, keys(withdraw(new LockUp(0L, 0L, CUSTODIAN))));
+    assertEquals(unlocked, keys(withdraw(new LockUp(-1L, 0L, CUSTODIAN))));
+    assertEquals(unlocked, keys(withdraw(new LockUp(1_700L, 9L, PublicKey.NONE))));
+    assertEquals(unlocked, keys(withdraw(new LockUp(1_700L, 9L, null))));
+    assertEquals(List.of(WITHDRAWER), signers(withdraw(new LockUp(0L, 0L, CUSTODIAN))));
+  }
+
+  private static Instruction withdraw(final LockUp lockUp) {
+    return CLIENT.withdrawStakeAccount(stakeAccount(lockUp), RECIPIENT, 1_234L);
+  }
+
+  private static Instruction withdraw(final LockUp lockUp, final long epoch, final long unixTimestamp) {
+    return CLIENT.withdrawStakeAccount(
+        stakeAccount(lockUp), RECIPIENT, 1_234L, new Clock(null, 7L, 11L, epoch, epoch + 1, unixTimestamp)
+    );
+  }
+
+  /// Told the clock, a withdrawal carries the custodian only while the lockup holds: an expired
+  /// one is the case the clock-free overload has to over-sign.
+  @Test
+  void withdrawStakeAccountAtAClockLeavesAnExpiredLockupsCustodianOut() {
+    final var lockUp = new LockUp(1_700L, 9L, CUSTODIAN);
+    final var locked = withdraw(lockUp, 9L, 1_699L);
+    assertEquals(List.of(STAKE, RECIPIENT, WITHDRAWER, CUSTODIAN), keys(locked));
+    assertEquals(List.of(WITHDRAWER, CUSTODIAN), signers(locked));
+    assertEquals(List.of(WITHDRAWER, CUSTODIAN), signers(withdraw(lockUp, 8L, 1_700L)));
+
+    final var expired = withdraw(lockUp, 9L, 1_700L);
+    assertEquals(List.of(STAKE, RECIPIENT, WITHDRAWER), keys(expired));
+    assertEquals(List.of(WITHDRAWER), signers(expired));
+    assertEquals(1_234L, StakeProgram.WithdrawIxData.read(expired).args());
+    // without the clock the same lockup still lists its custodian
+    assertEquals(List.of(WITHDRAWER, CUSTODIAN), signers(withdraw(lockUp)));
+
+    // in force, but the default custodian is no one's to sign as
+    assertEquals(List.of(STAKE, RECIPIENT, WITHDRAWER), keys(withdraw(new LockUp(1_700L, 9L, PublicKey.NONE), 9L, 1_699L)));
+    assertEquals(List.of(STAKE, RECIPIENT, WITHDRAWER), keys(withdraw(null, 9L, 1_699L)));
   }
 
   @Test

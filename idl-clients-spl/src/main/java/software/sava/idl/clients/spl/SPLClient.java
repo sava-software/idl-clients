@@ -5,6 +5,7 @@ import software.sava.core.accounts.ProgramDerivedAddress;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.SolanaAccounts;
 import software.sava.core.accounts.meta.AccountMeta;
+import software.sava.core.accounts.sysvar.Clock;
 import software.sava.core.tx.Instruction;
 import software.sava.idl.clients.spl.stake.LockUp;
 import software.sava.idl.clients.spl.stake.StakeAccount;
@@ -261,9 +262,20 @@ public interface SPLClient {
         .toList();
   }
 
+  /// The lockup's custodian signs only while the lockup is in force ([LockUp#isInForce]), and only
+  /// one that is not the default address, which no one can sign as. Without the clock, a lockup
+  /// with a timestamp or epoch above 0 is taken to be in force even if it has expired: pass the
+  /// cluster's [Clock] to the other overload to leave an expired lockup's custodian out.
   Instruction withdrawStakeAccount(final StakeAccount stakeAccount,
                                    final PublicKey recipient,
                                    final long lamports);
+
+  /// As [#withdrawStakeAccount(StakeAccount, PublicKey, long)], with the custodian signing only if
+  /// the lockup is in force at `clock`, the Clock sysvar's value when the withdrawal executes.
+  Instruction withdrawStakeAccount(final StakeAccount stakeAccount,
+                                   final PublicKey recipient,
+                                   final long lamports,
+                                   final Clock clock);
 
   Instruction deactivateStakeAccount(final PublicKey delegatedStakeAccount, final PublicKey stakeAuthority);
 

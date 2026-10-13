@@ -5,6 +5,7 @@ import software.sava.core.accounts.ProgramDerivedAddress;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.SolanaAccounts;
 import software.sava.core.accounts.meta.AccountMeta;
+import software.sava.core.accounts.sysvar.Clock;
 import software.sava.core.tx.Instruction;
 import software.sava.idl.clients.spl.associated_token.gen.AssociatedTokenPDAs;
 import software.sava.idl.clients.spl.lut.gen.AddressLookupTablePDAs;
@@ -305,13 +306,37 @@ record SPLClientImpl(SolanaAccounts solanaAccounts) implements SPLClient {
                                           final PublicKey recipient,
                                           final long lamports) {
     final var lockup = stakeAccount.lockup();
-    final PublicKey lockupAuthority = (lockup == null || lockup.equals(LockUp.NO_LOCKUP)) ? null : lockup.custodian();
+    // no clock is behind a timestamp of at most 0 with epoch 0, so only another lockup can hold
+    final boolean mayBeInForce = lockup != null && (lockup.unixTimestamp() > 0 || lockup.epoch() != 0);
+    return withdraw(stakeAccount, recipient, lamports, mayBeInForce ? signingCustodian(lockup) : null);
+  }
+
+  @Override
+  public Instruction withdrawStakeAccount(final StakeAccount stakeAccount,
+                                          final PublicKey recipient,
+                                          final long lamports,
+                                          final Clock clock) {
+    final var lockup = stakeAccount.lockup();
+    final boolean inForce = lockup != null && lockup.isInForce(clock);
+    return withdraw(stakeAccount, recipient, lamports, inForce ? signingCustodian(lockup) : null);
+  }
+
+  /// The default custodian is no one's to sign as: such a lockup can only expire.
+  private static PublicKey signingCustodian(final LockUp lockup) {
+    final var custodian = lockup.custodian();
+    return custodian == null || custodian.equals(PublicKey.NONE) ? null : custodian;
+  }
+
+  private Instruction withdraw(final StakeAccount stakeAccount,
+                               final PublicKey recipient,
+                               final long lamports,
+                               final PublicKey custodian) {
     return StakeProgram.withdraw(
         solanaAccounts.invokedStakeProgram(),
         stakeAccount.address(),
         recipient,
         stakeAccount.withdrawAuthority(),
-        lockupAuthority,
+        custodian,
         lamports
     );
   }
