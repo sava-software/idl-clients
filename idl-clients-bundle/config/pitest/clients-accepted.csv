@@ -1,7 +1,7 @@
 software.sava.idl.clients.kamino.lend.KaminoLendingRemainingAccounts,appendObligationRefreshAccounts,MathMutator,SURVIVED # capacity-hint family # line 63
 software.sava.idl.clients.kamino.lend.KaminoLendingRemainingAccounts,appendObligationRefreshAccounts,RemoveConditionalMutator_EQUAL_IF,SURVIVED # capacity-hint family # line 63
-software.sava.idl.clients.marginfi.v2.MarginfiRemainingAccounts$Builder,build,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # capacity-hint family # line 162
-software.sava.idl.clients.marginfi.v2.MarginfiRemainingAccounts$Builder,build,RemoveConditionalMutator_EQUAL_IF,SURVIVED # capacity-hint family # line 162
+software.sava.idl.clients.marginfi.v2.MarginfiRemainingAccounts$Builder,build,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # capacity-hint family # line 169
+software.sava.idl.clients.marginfi.v2.MarginfiRemainingAccounts$Builder,build,RemoveConditionalMutator_EQUAL_IF,SURVIVED # capacity-hint family # line 169
 software.sava.idl.clients.meteora.MeteoraPDAs,customizablePermissionlessLbPairPDA,ConditionalsBoundaryMutator,SURVIVED # equal-operands family # line 55
 software.sava.idl.clients.meteora.MeteoraPDAs,lbPairPDA,ConditionalsBoundaryMutator,SURVIVED # equal-operands family # line 28
 software.sava.idl.clients.meteora.MeteoraPDAs,lbPairWithPresetParamPDA,ConditionalsBoundaryMutator,SURVIVED # equal-operands family # line 147
@@ -22,5 +22,5 @@ software.sava.idl.clients.meteora.dlmm.MeteoraDlmmClient,deriveBinAccounts,Remov
 software.sava.idl.clients.meteora.dlmm.MeteoraDlmmClientImpl,hostFeeInOrSentinel,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # callee-subsumed-guard family # line 597
 software.sava.idl.clients.meteora.dlmm.MeteoraDlmmRemainingAccounts$TransferHookExtras,append,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # callee-subsumed-guard family # line 159
 software.sava.idl.clients.meteora.dlmm.MeteoraDlmmRemainingAccounts,deriveBinAccounts,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # zero-fast-path family # line 66
-software.sava.idl.clients.kamino.vaults.KaminoVaultsRemainingAccounts,appendVaultReserves,MathMutator,SURVIVED # capacity-hint family # line 50
-software.sava.idl.clients.kamino.vaults.KaminoVaultsRemainingAccounts,appendVaultReserves,MathMutator,SURVIVED # capacity-hint family # line 72
+software.sava.idl.clients.kamino.vaults.KaminoVaultsRemainingAccounts,appendVaultReserves,MathMutator,SURVIVED # capacity-hint family # line 54
+software.sava.idl.clients.kamino.vaults.KaminoVaultsRemainingAccounts,appendVaultReserves,MathMutator,SURVIVED # capacity-hint family # line 76
