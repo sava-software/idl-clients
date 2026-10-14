@@ -218,9 +218,9 @@ Three traps are worth carrying around even when you are not investigating:
   the first remaining account from 2026-05-20 to 2026-09-26. When the two
   on-chain channels disagree on *accounts*, read both against the Rust and
   declare `"deployed"` — Orca does, and a declaration outranks the version rule.
-  Marginfi did until 0.1.12 deployed ahead of both its on-chain channels; it is
-  generated from a committed `idlFile` until its metadata PDA catches up (bundle
-  `config/pitest/README.md`). The same bridge now carries Phoenix
+  Marginfi does, and was generated from a committed `idlFile` for the two days
+  (2026-10-12 to 2026-10-14) that 0.1.12 ran ahead of both its on-chain channels
+  (bundle `config/pitest/README.md`). The same bridge now carries Phoenix
   Perpetuals the other way round: its program did not move, but its metadata PDA
   was rewritten on 2026-10-14 with a document the generator refuses, so the client
   is generated from the document that account held before, committed under

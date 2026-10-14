@@ -1343,6 +1343,15 @@ reads `no member differs; the metadata does`. A deploy while the PDA still lags 
 the review; it does not retire the bridge. The section
 above stands as the record of how the 0.1.9 gap was found and closed.
 
+**Retired on 2026-10-14.** The metadata PDA was rewritten with 0.1.12 (the channel's hash
+moved in a regeneration that day: 124 instructions, 12 accounts, 126 types, 50 events, 255
+errors, the deployed document's counts, up from 0.1.11's 104, 10, 98 and 222), and read
+against the rc2 asset it differs only in the top-level `address`, which the asset left empty
+and the account fills with the program id; every instruction, account, type, event and error
+is the same with and without documentation. So `idlFile` is dropped, `"deployed": "metadata"`
+is declared again, and `idls/marginfi_0.1.12-rc2.json` goes with the bridge: the committed
+`idl.json` is the on-chain document from here on, and the generated client is unchanged.
+
 ### Phoenix Perpetuals: pinned to the metadata document its client was generated from (2026-10-14)
 
 Phoenix rewrote the prod program-metadata PDA `H6r3zQwpMdsuSgoCFm39WjP6F9sMNyxwe3F3F9PhbqkQ`
