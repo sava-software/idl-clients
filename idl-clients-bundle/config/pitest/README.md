@@ -1343,6 +1343,33 @@ reads `no member differs; the metadata does`. A deploy while the PDA still lags 
 the review; it does not retire the bridge. The section
 above stands as the record of how the 0.1.9 gap was found and closed.
 
+### Phoenix Perpetuals: pinned to the metadata document its client was generated from (2026-10-14)
+
+Phoenix rewrote the prod program-metadata PDA `H6r3zQwpMdsuSgoCFm39WjP6F9sMNyxwe3F3F9PhbqkQ`
+at slot 456962333 (2026-10-14 19:56 UTC) without redeploying: ProgramData
+`B5ayDaz9HegiNZqYeBtcFqfZBVSGwjB2CJgHshoSfMQg` still reads slot 454907814, the deploy the
+review verdict in `main_net_programs.json` answers. The new document keeps the version string
+0.2.0, is rendered by codama (nodesVersion 1.6.0) as `"origin": "anchor-compatible"`, adds 11
+instructions (the spot-collateral family the 454907814 dispatch table already carried, and
+UpdatePerpDisplayName), removes the 3 that table had retired (MigrateTraderState and the two
+multi-arena admin setters), adds 19 types and 2 events, and marks 9 order-placing instructions
+with a key the IDL spec does not have, `"optionalTrailingAdditionalFeeConfig": true`: the
+instruction accepts its declared arguments followed by a Borsh `AdditionalFeeConfig` enum with
+no Option tag, no suffix meaning zero fees. idl-src-gen's instruction parser refuses a key it
+does not model, loudly and by design (it used to skip silently, which hid `discriminant`,
+`returns` and `legacyOptionalAccountsStrategy` for the life of the project), so a run reading
+that account fails before writing anything.
+
+Until the generator models the key, or the pin is dropped for another reason, the client is
+generated from `"idlFile": "idls/phoenix_eternal_metadata_447674939.json"`, the document the
+PDA held from slot 447674939 (2026-09-17) to 456962333, committed byte for byte from the
+client's own `gen/idl.json` (sha256 `9b9817f3…`). The client is therefore unchanged, and still
+describes the 454907814 image as the verdict says; the metadata channel now shows as moved,
+and its differences stand in the gap report. Modelling the key is the way out: a trailing
+optional argument struct with no tag is the shape Jupiter Offerbook's
+`escrow_programmable_nft_withdraw` read undeclared (see the Offerbook verdict), declared here.
+
+
 ### Bundle-wide staleness sweep (2026-07-19)
 
 Marginfi's `clearEmissions` was a *dead* method — not wrong, but incapable of

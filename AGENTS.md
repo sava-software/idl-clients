@@ -220,7 +220,12 @@ Three traps are worth carrying around even when you are not investigating:
   declare `"deployed"` — Orca does, and a declaration outranks the version rule.
   Marginfi did until 0.1.12 deployed ahead of both its on-chain channels; it is
   generated from a committed `idlFile` until its metadata PDA catches up (bundle
-  `config/pitest/README.md`). A configured program for which the run finds no IDL
+  `config/pitest/README.md`). The same bridge now carries Phoenix
+  Perpetuals the other way round: its program did not move, but its metadata PDA
+  was rewritten on 2026-10-14 with a document the generator refuses, so the client
+  is generated from the document that account held before, committed under
+  `idls/`, until the generator reads the new key or the pin is dropped. A configured
+  program for which the run finds no IDL
   at all now fails the run with exit 9 (the monitor's digest names it at ERROR)
   instead of silently keeping its last generated client.
 

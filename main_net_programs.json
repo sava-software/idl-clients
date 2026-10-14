@@ -399,6 +399,7 @@
       "package": "phoenix.perpetuals",
       "program": "EtrnLzgbS7nMMy5fbD42kXiUzGg8XQzJ972Xtk1cjWih",
       "idlAccountProgramOwner": "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S",
+      "idlFile": "idls/phoenix_eternal_metadata_447674939.json",
       "idlType": "anchor",
       "review": {
         "deploySlot": 454907814,
