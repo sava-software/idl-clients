@@ -7,6 +7,6 @@ nobody took. The standing disagreements live beside this file, at its name with 
 before the extension. Ordered by program and channel, and carrying no timestamp, so
 consecutive runs are worth diffing against each other.
 
-== Movement (0) ==
+== Movement (1) ==
 
-Nothing moved since the last generation.
+Orca Whirlpools: the program was redeployed at slot 457152296, up from 440170207, and no IDL channel moved with it (the anchor IDL was last written at slot 402013534, before the previous deploy; the metadata IDL was last written at slot 400013405, before the previous deploy); the stored program image changed: 10485715 payload bytes, was 10485715 — review required
