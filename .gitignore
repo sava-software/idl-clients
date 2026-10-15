@@ -66,6 +66,10 @@
 # Integration-style scratch files are never committed, even though they are .java
 # and would otherwise match the source rule above (see AGENTS.md).
 Integ.*
+# Each module's src/scratch suite holds machine-local programs, whatever the file is
+# called. It is neither main nor test, so no mutation suite, fuzz target or
+# certification reads it; the directory rule wins over the source re-includes above.
+/idl-clients-*/src/scratch/
 # Jazzer writes a Java reproducer beside the binary crash file it names above, and the
 # source rule re-included it: a `Crash_<hash>.java` in a module root showed up as untracked.
 Crash_*.java

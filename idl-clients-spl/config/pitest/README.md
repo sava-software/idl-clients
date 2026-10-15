@@ -44,10 +44,14 @@ that the bundle's protocol math also calls.
 Excluded: generated `software.sava.idl.clients.*.gen.*` code, the per-program bindings and the
 shared commons in `core.gen`, whose correctness belongs to idl-src-gen and whose boilerplate
 would bury the hand-written signal (the `declineExclusionAudit(...)` call beside the exclusion
-records what carries that correctness instead); the test and fuzz classes, which share the
-recompiled root; and `software.sava.idl.clients.*.Integ`, the git-ignored scratch mains, present
-on a dev machine and absent in CI, so mutating one would make the baseline machine-dependent.
+records what carries that correctness instead); and the test and fuzz classes, which share the
+recompiled root.
 `targetTests` is every `software.sava.idl.clients.*Test*` class.
+
+Local `Integ` drivers belong in git-ignored `src/scratch/java`, outside `main` and `test`,
+in the separate `scratch` JvmTestSuite. Its test task is disabled and dependency analysis
+ignores the source set. Scratch sources never enter the PIT or Jazzer recompile or classpath,
+so local drivers cannot change the mutant population and need no recompile or class exclusions.
 
 ## Mutator set
 

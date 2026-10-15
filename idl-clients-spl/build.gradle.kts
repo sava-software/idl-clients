@@ -10,17 +10,35 @@ testModuleInfo {
   requires("systems.comodal.json_iterator")
 }
 
+// Git-ignored scratch programs live in src/scratch/java, outside every mutation suite, fuzz
+// target and certification; idl-clients-bundle/build.gradle.kts carries the reasoning.
+testing {
+  suites {
+    register<JvmTestSuite>("scratch") {
+      // main() programs, not tests: nothing to discover, and an empty run fails
+      targets.configureEach { testTask.configure { enabled = false } }
+    }
+  }
+}
+
+dependencyAnalysis {
+  issues {
+    // the scratch suite is git-ignored local code: analysing it would make check compile it
+    ignoreSourceSet("scratch")
+  }
+}
+
 // Published contents. Keep in sync with idl-clients-bundle/build.gradle.kts, which carries
 // the reasoning and the moduleJarAudit task that checks both modules' jars.
 val unpublished = listOf(
   "**/next/gen/**",
 )
 tasks.jar {
-  exclude(unpublished + listOf("**/Integ.class", "**/Integ\$*.class"))
+  exclude(unpublished)
   includeEmptyDirs = false
 }
 tasks.named<Jar>("sourcesJar") {
-  exclude(unpublished + listOf("**/*.json", "**/Integ.java"))
+  exclude(unpublished + listOf("**/*.json"))
   includeEmptyDirs = false
 }
 tasks.javadoc {
@@ -30,7 +48,6 @@ tasks.javadoc {
     val path = element.relativePath.pathString
     path.contains("/gen/") && !path.startsWith("software/sava/idl/clients/core/gen/")
   }
-  exclude("**/Integ.java")
   // Already on the javadoc classpath, and so tracked as an input. Relative to the project
   // directory the javadoc tool runs in, so the option does not tie the cache key to a checkout.
   val moduleClasses = tasks.compileJava.get().destinationDirectory.get().asFile
@@ -89,15 +106,11 @@ hardening {
       // test and fuzz sources share the recompiled root
       "software.sava.idl.clients.spl.*Test*",
       "software.sava.idl.clients.spl.*Fuzz*",
-      "software.sava.idl.clients.core.*Test*",
-      // 'Integ.*' scratch files are git-ignored: present on a dev machine and
-      // absent in CI, so mutating them would make the baseline machine-dependent
-      "software.sava.idl.clients.*.Integ"
+      "software.sava.idl.clients.core.*Test*"
     )
     // The 59 this glob swallows are generated bindings across 15 gen packages plus
-    // the shared generated commons in core.gen. The other globs swallow nothing —
-    // the test/fuzz roots are subtracted as test sources, and this module has no
-    // Integ.java at all, so declining that glob here would be reported as stale.
+    // the shared generated commons in core.gen. The other globs swallow nothing:
+    // the test/fuzz roots are subtracted as test sources.
     declineExclusionAudit(
       "software.sava.idl.clients.*.gen.*",
       "idl-src-gen output: per-program instruction builders, account and type " +

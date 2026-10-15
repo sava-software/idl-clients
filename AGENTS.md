@@ -576,7 +576,9 @@ savaGithubPackagesPassword=GITHUB_TOKEN
 ./gradlew :idl-clients-bundle:test             # test one module
 ```
 
-Integration-style tests named `Integ.*` are git-ignored scratch files.
+Integration-style drivers named `Integ.*` are git-ignored scratch files. In the
+hardened modules they live under `src/scratch/java`, in the package they exercise;
+`compileScratchJava` compiles them for local use, and `check` never runs them.
 
 ### Verification tools
 
@@ -635,20 +637,21 @@ The generated operator rules follow verbatim; the repo-specific facts are in
 "This repository" below them.
 
 <!-- hardening-template block:start -->
-- Work with the module's `test` task. The mutation suites are a final gate, run once
-  per unpushed range when the work is complete and reviewed, before the push: each
-  `pitest<Suite>` whose mutated code the range can reach, including suites in
-  dependent modules, plus `mutationOwnershipAudit` when production classes or
-  target/exclusion rules changed. Never per commit, amend or review round; a change
-  the gate forces goes back through review as a delta. `hardeningCertify` (or
-  `:hardeningCertifyAll`) and `fuzzAll` are the pre-release checks this repo's notes
-  assign an owner to.
-- Doc and comment edits owe no suite; a build-script edit only when it changes what
+- Work with the module's `test` task. The mutation suites are a final gate, run once per
+  unpushed range when the work is complete and reviewed, before the push: each
+  `pitest<Suite>` whose mutated code the range can reach, including suites in dependent
+  modules, plus `mutationOwnershipAudit` when production classes or target/exclusion
+  rules changed. Never per commit, amend or review round; a change the gate forces goes
+  back through review as a delta. `hardeningCertify` (or `:hardeningCertifyAll`) and
+  `fuzzAll` are the pre-release checks this repo's notes assign an owner to.
+- Test-only edits owe the suites whose mutated code those tests exercise; when scope
+  is unclear, run `./gradlew qualityGate` from the Gradle root. Doc and comment
+  edits owe no suite; a build-script edit only when it changes what
   PIT is given. A change the gate forced owes it again by the same reachability rule
   once reviewed. `pitest<Suite>Verify` answers one way: it keeps its report while only
   recompiled Java sources changed and every recompiled class is byte-identical, which
   proves that suite is owed nothing; a refusal (a moved line, a resource, a build
-  script, an ArcMutate suite) names its cause and proves nothing by itself.
+  script, `src/main/java` under ArcMutate) names its cause and proves nothing by itself.
 - When the gate reports unkilled mutants, iterate on one cluster with
   `-PmutateOnly=<class-glob>`. Before any record decision, re-run unscoped with
   `-PnoMutationHistory`: a `[history]` report cannot support adding, removing, or
@@ -662,13 +665,12 @@ The generated operator rules follow verbatim; the repo-specific facts are in
   oracle independent of the implementation before writing the killing test. If they
   contradict current behaviour, prove the bug with a failing regression test first,
   then fix production; never lock a bug in with a passing assertion.
-- Write records only through the installed writer tasks: `BaselineUnion` adds
-  reviewed rows, `BaselineRetag` refreshes `# line` metadata, `BaselinePrune` deletes
-  only after two matching fresh history-free previews, `BaselineUpdate` is for a
-  first seed or a reviewed complete rewrite, and `pitest<Suite>BaselineRebase`
-  follows a PIT, PIT-plugin/tool-artifact, ArcMutate-base, or certificate change.
-  Never hand-edit baseline
-  rows or provenance stamps.
+- Write records only through the installed writer tasks: `BaselineUnion` adds reviewed
+  rows, `BaselineRetag` refreshes `# line` metadata, `BaselinePrune` deletes only after
+  two matching fresh history-free previews, `BaselineUpdate` is for a first seed or a
+  reviewed complete rewrite, and `pitest<Suite>BaselineRebase` follows a PIT,
+  PIT-plugin/tool-artifact, ArcMutate-base, or certificate change. Never hand-edit
+  baseline rows or provenance stamps.
 - Baseline keys are line-less (`class,method,mutator,STATUS`); `# line` tags are
   review metadata that belong to their row: `BaselineRetag` refreshes them, a hand
   edit is a hand-edited row. Identical rows are sibling mutants and the comparison
@@ -685,6 +687,8 @@ The generated operator rules follow verbatim; the repo-specific facts are in
 - Tests are deterministic: fixed seeds, no sleeps, a clock with a non-zero origin,
   stubs that return distinguishable non-default values, and the subject built inside
   the test body. Exclusions must cover the test source set, not a naming convention.
+- Git-ignored scratch sources (`Integ.java` drivers) never sit in a hardened project's
+  `main` or `test` source set; keep them in a git-ignored `scratch` source set instead.
 - Verify by the absence of failures: trust the exit code and the `.running`
   sentinel, not a summary. `MINION_DIED` and `RUN_ERROR` are not results; re-run once
   on a quiet machine. A suite that got faster without getting narrower is a bug report.
@@ -705,7 +709,8 @@ policy, and `hardeningHelp` is the task reference.
 exclusion, so a new hand-written class lands in some suite by default rather
 than being silently skipped. Reachability decides which to run, not file paths:
 editing an API also owes any suite — including one in a dependent module —
-whose mutated code calls it. Doc and comment changes owe no suite. A
+whose mutated code calls it. Test-only edits owe the suites whose mutated code
+those tests exercise. Doc and comment changes owe no suite. A
 build-script change owes one only when it changes what PIT is given: here, a
 `hardening {}` block, a dependency or the Java version (`gradle/sava.properties`
 pins the BOM and the Java version), or the sava-build pin in
@@ -719,10 +724,10 @@ the latest full report without running PIT.
 **Who owns certification.** CI runs `check`, which includes no mutation suite.
 `:hardeningCertifyAll` (the root manifest over both modules' receipts) and a
 local `fuzzAll` per module are therefore release-checklist items here, not CI's.
-Both refuse, once Git reads clean, any source input the tree does not bind —
-git-ignored files under a source root included — so run them from a clean
-`git worktree add --detach` of the commit, which carries no ignored file (see
-"Exclusion ownership" below).
+Both refuse, once Git reads clean, any source input the tree does not bind,
+including git-ignored files under `main` or `test` source roots. The local
+drivers live in `scratch`, which neither reads, so certification can run from
+the clean primary checkout (see "Exclusion ownership" below).
 
 **The shared block above is a verbatim copy**, not a contract. Since 21.5.37
 nothing gates it: `check` no longer runs `agentsTemplateInSync`,
@@ -794,15 +799,14 @@ in its `HISTORY.md`.
 exclusions, **never by allowlist** — an allowlist silently exempts every class
 added after it was written. Generated `**.gen.*` code is excluded everywhere
 (its correctness belongs to idl-src-gen, and `tools/GroundTruth.java` plus the
-execution tests are what check it). Git-ignored `Integ.java` scratch mains live
-in the bundle's test sources, in the package they exercise, so they never reach
-the jar, the javadoc or the ownership audit, and `recompileExcludes =
-listOf("Integ.java")` keeps them out of the PIT/Jazzer recompile, so the tool class
-path cannot differ between a dev machine and CI. Since sava-build 21.5.37 a clean
-certification or `fuzzAll` still refuses an ignored file under any source root,
-test sources included, so both run from a clean worktree, where none exists.
-Generated exclusions are declared to
-the ownership audit as
+execution tests are what check it). Each hardened module registers a git-ignored
+`scratch` JvmTestSuite at `src/scratch/java`; the bundle's `Integ.java` drivers
+keep the packages they exercise and their package-private access. Its test task
+is disabled and dependency analysis ignores the source set, so `check` does not
+compile or run it. PIT, Jazzer and certification read only `main` and `test`,
+and published artifacts use `main`, so the drivers need no recompile, mutation
+or packaging exclusion.
+Generated exclusions are declared to the ownership audit as
 `declineExclusionAudit(...)` in each module's `hardening {}` block — that DSL
 call is the record, and it is per-suite, so it has to be repeated in every
 suite the glob actually swallows classes in. Exclusion patterns need a trailing

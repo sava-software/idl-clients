@@ -36,8 +36,12 @@ Inside the jars, the module build scripts leave out the IDL JSON committed besid
 `gen/` (from the sources jar; the binary jar never carried it), any staged `next`
 client, the clients of non-mainnet deployments (`kamino.staging.lend`,
 `phoenix.dev.perpetuals`; see "Generated is not the same as published" in
-`AGENTS.md`), the git-ignored `Integ` scratch mains, and the javadoc of generated
-packages. Generated sources carry the IDL's own documentation as `///` comments,
+`AGENTS.md`), and the javadoc of generated packages. Local `Integ` drivers live in
+the git-ignored `src/scratch/java` tree of a separate `scratch` JvmTestSuite, with
+its test task disabled and dependency analysis ignoring that source set. They are
+outside the published `main` sources and the PIT and Jazzer classpaths, so they
+need no class, jar, sources-jar or javadoc exclusions.
+Generated sources carry the IDL's own documentation as `///` comments,
 some 22,700 lines in the bundle against 1,100 hand-written, and that documentation
 ships in the sources jar, where IDEs read it; rendered as HTML it made the bundle's
 javadoc jar 35 MB. The javadoc jar documents the hand-written layer and the

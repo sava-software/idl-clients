@@ -60,10 +60,11 @@ All three exclude:
 - Test and fuzz sources, which share the recompiled root: the `*Test*` and `*Fuzz*` globs, and
   `software.sava.idl.clients.kamino.scope.entries.ResourceUtil`, a test helper neither glob
   matches.
-- The git-ignored `Integ` scratch mains, present on a developer machine and absent in CI:
-  `recompileExcludes` keeps `Integ.java` out of the PIT and Jazzer recompile, and the
-  `software.sava.idl.clients.*.Integ` exclusion names them too, so neither the mutated
-  population nor the tool class path differs between the two.
+
+Local `Integ` drivers live in git-ignored `src/scratch/java`, outside `main` and `test`,
+in the separate `scratch` JvmTestSuite. Its test task is disabled and dependency analysis
+ignores the source set. Scratch sources never enter the PIT or Jazzer recompile or classpath,
+so local drivers cannot change the mutant population and need no recompile or class exclusions.
 
 ## Mutator sets and their trials
 

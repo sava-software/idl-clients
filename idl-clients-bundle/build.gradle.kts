@@ -10,6 +10,27 @@ testModuleInfo {
   runtimeOnly("org.junit.jupiter.engine")
 }
 
+// Git-ignored scratch programs (the Integ.java live-RPC drivers, run from the IDE) live in
+// src/scratch/java, as package-private classes in the package whose members they reach for.
+// The module-testing plugin patches this suite into the module once that folder exists, so
+// they compile as part of it; being neither main nor test, they are no input to a mutation
+// suite, a fuzz target or a certification, and check never runs them.
+testing {
+  suites {
+    register<JvmTestSuite>("scratch") {
+      // main() programs, not tests: nothing to discover, and an empty run fails
+      targets.configureEach { testTask.configure { enabled = false } }
+    }
+  }
+}
+
+dependencyAnalysis {
+  issues {
+    // the scratch suite is git-ignored local code: analysing it would make check compile it
+    ignoreSourceSet("scratch")
+  }
+}
+
 dependencies {
   project(":idl-clients-spl")
 }
@@ -28,8 +49,6 @@ dependencies {
 //   the same as published").
 // - The idl.json and channel records beside gen/ are generation provenance; the sources
 //   jar carries no JSON at all (the binary jar never did).
-// - Git-ignored Integ.java scratch mains stay out of a locally built jar, as they stay
-//   out of the hardening recompile below; a CI release builds from a tag and has none.
 // - The javadoc jar documents the hand-written layer only. Generated sources carry the
 //   IDL's own documentation, some 22,700 /// lines here, and it ships in the sources jar,
 //   where IDEs read it; rendered as HTML it made this jar 35 MB rather than 1.3 MB. The
@@ -43,15 +62,15 @@ val unpublished = listOf(
   "software/sava/idl/clients/phoenix/dev/perpetuals/**",
 )
 tasks.jar {
-  exclude(unpublished + listOf("**/Integ.class", "**/Integ\$*.class"))
+  exclude(unpublished)
   includeEmptyDirs = false
 }
 tasks.named<Jar>("sourcesJar") {
-  exclude(unpublished + listOf("**/*.json", "**/Integ.java"))
+  exclude(unpublished + listOf("**/*.json"))
   includeEmptyDirs = false
 }
 tasks.javadoc {
-  exclude("**/gen/**", "**/Integ.java")
+  exclude("**/gen/**")
   // Already on the javadoc classpath, and so tracked as an input. Relative to the project
   // directory the javadoc tool runs in, so the option does not tie the cache key to a checkout.
   val moduleClasses = tasks.compileJava.get().destinationDirectory.get().asFile
@@ -113,16 +132,11 @@ val zeroCopyLayoutAudit = tasks.register<Test>("zeroCopyLayoutAudit") {
 tasks.check { dependsOn(zeroCopyLayoutAudit) }
 
 hardening {
-  // Ignored live-RPC scratch drivers stay available to the normal local compile,
-  // but must not enter the PIT/Jazzer recompile or its production-class audit.
-  recompileExcludes = listOf("Integ.java")
-
   // Suites are split so the mutation gate owed before a push runs only the
   // suites a range can reach, not for coverage: 'clients' is a catch-all by
   // exclusion, so a new hand-written class lands in some suite by default. The
-  // shared exclusions drop generated code (owned by idl-src-gen), test/fuzz
-  // sources sharing the recompiled root, and Integ classes; the recompile
-  // exclusion above keeps ignored Integ sources out of that root.
+  // shared exclusions drop generated code (owned by idl-src-gen) and the test/fuzz
+  // sources sharing the recompiled root.
   val notMutated = listOf(
     "software.sava.idl.clients.*.gen.*",
     "software.sava.idl.clients.*Test*",
@@ -130,16 +144,14 @@ hardening {
     // a test helper whose name matches neither glob above; PIT cannot tell the
     // test root from the main root once they are merged for the recompile, so
     // any such helper has to be named here or it gets mutated
-    "software.sava.idl.clients.kamino.scope.entries.ResourceUtil",
-    "software.sava.idl.clients.*.Integ"
+    "software.sava.idl.clients.kamino.scope.entries.ResourceUtil"
   )
   // The exclusion audit reports production classes a glob swallows, per suite, and
   // only against the FIRST glob that matches — so the generated-code argument has to
   // be repeated in each suite that swallows generated code, and only there. Every
   // other glob above swallows zero (the test/fuzz roots and ResourceUtil are
-  // subtracted as test sources, Integ.java is absent from the tool recompile, and
-  // orca.* and kamino.scope.* are sibling-owned), and a decline that matches nothing
-  // is itself reported.
+  // subtracted as test sources, and orca.* and kamino.scope.* are sibling-owned),
+  // and a decline that matches nothing is itself reported.
   val generatedDecline =
       "idl-src-gen output: per-program instruction builders, account and type " +
           "(de)serialization, PDA helpers and error enums generated from each program's IDL, " +
@@ -168,7 +180,7 @@ hardening {
     // quote math and tick/PDA derivation
     targetClasses = listOf("software.sava.idl.clients.orca.*")
     excludedClasses = notMutated
-    // 41 orca.whirlpools.gen.* classes; no orca Integ.java, so no Integ decline here
+    // 41 orca.whirlpools.gen.* classes
     declineExclusionAudit("software.sava.idl.clients.*.gen.*", generatedDecline)
     targetTests = "software.sava.idl.clients.orca.*Test*"
     excludeTestClass(
@@ -192,7 +204,7 @@ hardening {
     mutators = "STRONGER,EXPERIMENTAL_NAKED_RECEIVER"
     targetClasses = listOf("software.sava.idl.clients.kamino.scope.*")
     excludedClasses = notMutated
-    // 51 kamino.scope.gen.* classes; Integ.java stays out of the tool recompile
+    // 51 kamino.scope.gen.* classes
     declineExclusionAudit("software.sava.idl.clients.*.gen.*", generatedDecline)
     targetTests = "software.sava.idl.clients.kamino.*Test*"
   }
@@ -215,7 +227,7 @@ hardening {
       "software.sava.idl.clients.spl.*"
     )
     // every bundled program's gen.* (the orca and kamino.scope ones included, since
-    // no suite mutates those either); Integ.java stays out of the tool recompile
+    // no suite mutates those either)
     declineExclusionAudit("software.sava.idl.clients.*.gen.*", generatedDecline)
     targetTests = "software.sava.idl.clients.*Test*"
   }
