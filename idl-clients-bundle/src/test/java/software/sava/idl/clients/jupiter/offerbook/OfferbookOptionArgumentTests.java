@@ -24,11 +24,11 @@ import static org.junit.jupiter.api.Assertions.*;
 /// last written at slot 438175753, two deploys earlier). The four offer creators read it at the end
 /// of their offer parameters, where `None` is one zero byte and `Some` carries 32 more; the two
 /// repays read it right after the discriminator, `Some` carrying 8 more. A call at the IDL's width
-/// fails `InstructionDidNotDeserialize` (102) before any account is checked, and the IDL's width is
-/// what every generated builder for these six sends; live callers send the extra `None` byte, and
-/// the one payer that kept sending the old width lost 170 transactions to 102 before moving to the
-/// new width at slot 456873350 (simulated against the 456774686 image at slots 456975086..456979733,
-/// and read off every transaction invoking the program since the deploy up to slot 456973818).
+/// fails `InstructionDidNotDeserialize` (102) before any account is checked, save the NFT creators'
+/// ClassicNft whose mint starts with a one-pubkey variant tag (accepted, mis-parsed); the IDL's width
+/// is what every generated builder for these six sends. Live callers send the extra `None` byte;
+/// one payer lost 170 transactions at the old width before moving at slot 456873350 (simulated at
+/// slots 456975086..456979733; every transaction since the deploy up to slot 456973818 decoded).
 ///
 /// A published IDL's field list is upstream's to correct, not a local patch's, so these pin the
 /// shortfall rather than close it, as [EscrowProgrammableNftWithdrawTests] does for the withdraw
