@@ -9,32 +9,31 @@ import java.util.OptionalInt;
 import java.util.OptionalLong;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
-import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
 /// Borsh payload updating selected fields in a spot asset's oracle-price configuration;
 /// Some(default pubkey) disables proxy price writes and None leaves that field unchanged.
 ///
-/// @param assetIndex: u32
 /// @param proxyAuthority: Option<publicKey>
 /// @param priceExpo: Option<u8>
 /// @param staleThresholdSlots: Option<u64>
-public record ChangeSpotAssetParamsInstruction(long assetIndex,
+/// @param hardStaleMultiplier: Option<u8>
+public record ChangeSpotAssetParamsInstruction(PublicKey mintAddress,
                                                PublicKey proxyAuthority,
                                                OptionalInt priceExpo,
-                                               OptionalLong staleThresholdSlots) implements SerDe {
+                                               OptionalLong staleThresholdSlots,
+                                               OptionalInt hardStaleMultiplier) implements SerDe {
 
-  public static final int ASSET_INDEX_OFFSET = 0;
-  public static final int PROXY_AUTHORITY_OFFSET = 5;
+  public static final int MINT_ADDRESS_OFFSET = 0;
+  public static final int PROXY_AUTHORITY_OFFSET = 33;
 
   public static ChangeSpotAssetParamsInstruction read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
     int i = _offset;
-    final var assetIndex = Integer.toUnsignedLong(getInt32LE(_data, i));
-    i += 4;
+    final var mintAddress = readPubKey(_data, i);
+    i += 32;
     final PublicKey proxyAuthority;
     if (SerDeUtil.isAbsent(1, _data, i)) {
       proxyAuthority = null;
@@ -56,29 +55,44 @@ public record ChangeSpotAssetParamsInstruction(long assetIndex,
     final OptionalLong staleThresholdSlots;
     if (SerDeUtil.isAbsent(1, _data, i)) {
       staleThresholdSlots = OptionalLong.empty();
+      ++i;
     } else {
       ++i;
       staleThresholdSlots = OptionalLong.of(getInt64LE(_data, i));
+      i += 8;
     }
-    return new ChangeSpotAssetParamsInstruction(assetIndex,
+    final OptionalInt hardStaleMultiplier;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      hardStaleMultiplier = OptionalInt.empty();
+    } else {
+      ++i;
+      hardStaleMultiplier = OptionalInt.of(_data[i] & 0xFF);
+    }
+    return new ChangeSpotAssetParamsInstruction(mintAddress,
                                                 proxyAuthority,
                                                 priceExpo,
-                                                staleThresholdSlots);
+                                                staleThresholdSlots,
+                                                hardStaleMultiplier);
   }
 
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    putInt32LE(_data, i, (int) assetIndex);
-    i += 4;
+    mintAddress.write(_data, i);
+    i += 32;
     i += SerDeUtil.writeOptional(1, proxyAuthority, _data, i);
     i += SerDeUtil.writeOptionalbyte(1, priceExpo, _data, i);
     i += SerDeUtil.writeOptional(1, staleThresholdSlots, _data, i);
+    i += SerDeUtil.writeOptionalbyte(1, hardStaleMultiplier, _data, i);
     return i - _offset;
   }
 
   @Override
   public int l() {
-    return 4 + (proxyAuthority == null ? 1 : (1 + 32)) + (priceExpo == null || priceExpo.isEmpty() ? 1 : (1 + 1)) + (staleThresholdSlots == null || staleThresholdSlots.isEmpty() ? 1 : (1 + 8));
+    return 32
+         + (proxyAuthority == null ? 1 : (1 + 32))
+         + (priceExpo == null || priceExpo.isEmpty() ? 1 : (1 + 1))
+         + (staleThresholdSlots == null || staleThresholdSlots.isEmpty() ? 1 : (1 + 8))
+         + (hardStaleMultiplier == null || hardStaleMultiplier.isEmpty() ? 1 : (1 + 1));
   }
 }

@@ -33,7 +33,8 @@ public sealed interface AdminParameterUpdateKind extends RustEnum permits
   AdminParameterUpdateKind.SpotCollateralConfig,
   AdminParameterUpdateKind.RiskFactors,
   AdminParameterUpdateKind.TraderCapOverride,
-  AdminParameterUpdateKind.TransferFeeTiers {
+  AdminParameterUpdateKind.TransferFeeTiers,
+  AdminParameterUpdateKind.DisplayName {
 
   static AdminParameterUpdateKind read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -59,6 +60,7 @@ public sealed interface AdminParameterUpdateKind extends RustEnum permits
       case 17 -> RiskFactors.read(_data, i);
       case 18 -> TraderCapOverride.read(_data, i);
       case 19 -> TransferFeeTiers.read(_data, i);
+      case 20 -> DisplayName.read(_data, i);
       default -> null;
     };
   }
@@ -865,6 +867,43 @@ public sealed interface AdminParameterUpdateKind extends RustEnum permits
     @Override
     public int ordinal() {
       return 19;
+    }
+  }
+
+  record DisplayName(software.sava.idl.clients.phoenix.perpetuals.gen.types.DisplayName previous, software.sava.idl.clients.phoenix.perpetuals.gen.types.DisplayName _new) implements AdminParameterUpdateKind {
+
+    public static final int BYTES = 32;
+
+    public static final int PREVIOUS_OFFSET = 0;
+    public static final int _NEW_OFFSET = 16;
+
+    public static DisplayName read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var previous = software.sava.idl.clients.phoenix.perpetuals.gen.types.DisplayName.read(_data, i);
+      i += 16;
+      final var _new = software.sava.idl.clients.phoenix.perpetuals.gen.types.DisplayName.read(_data, i);
+      return new DisplayName(previous, _new);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + writeOrdinal(_data, _offset);
+      i += previous.write(_data, i);
+      i += _new.write(_data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return ordinalBytes() + BYTES;
+    }
+
+    @Override
+    public int ordinal() {
+      return 20;
     }
   }
 }

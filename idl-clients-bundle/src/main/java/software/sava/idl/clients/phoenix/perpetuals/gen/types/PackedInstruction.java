@@ -4,6 +4,8 @@ package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
+/// Caller-provided CPI instruction whose accounts index into the trailing venue accounts.
+///
 /// @param programIdIndex: u8
 public record PackedInstruction(int programIdIndex,
                                 byte[] data,

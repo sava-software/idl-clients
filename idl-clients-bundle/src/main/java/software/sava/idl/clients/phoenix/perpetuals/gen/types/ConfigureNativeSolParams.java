@@ -18,7 +18,6 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 /// @param maxLiquidationSize: Option<u64>
 /// @param postLiquidationBuffer: Option<u64>
 /// @param quoteLotCollateralShortfallBuffer: Option<u64>
-/// @param disablePositionAuthoritySwap: Option<bool>
 public record ConfigureNativeSolParams(OptionalLong maxPerTraderBalance,
                                        OptionalLong maxGlobalBalance,
                                        OptionalLong minMarginDiscount,
@@ -27,8 +26,7 @@ public record ConfigureNativeSolParams(OptionalLong maxPerTraderBalance,
                                        OptionalLong minLiquidationSlippage,
                                        OptionalLong maxLiquidationSize,
                                        OptionalLong postLiquidationBuffer,
-                                       OptionalLong quoteLotCollateralShortfallBuffer,
-                                       Boolean disablePositionAuthoritySwap) implements SerDe {
+                                       OptionalLong quoteLotCollateralShortfallBuffer) implements SerDe {
 
   public static final int MAX_PER_TRADER_BALANCE_OFFSET = 1;
 
@@ -112,18 +110,9 @@ public record ConfigureNativeSolParams(OptionalLong maxPerTraderBalance,
     final OptionalLong quoteLotCollateralShortfallBuffer;
     if (SerDeUtil.isAbsent(1, _data, i)) {
       quoteLotCollateralShortfallBuffer = OptionalLong.empty();
-      ++i;
     } else {
       ++i;
       quoteLotCollateralShortfallBuffer = OptionalLong.of(getInt64LE(_data, i));
-      i += 8;
-    }
-    final Boolean disablePositionAuthoritySwap;
-    if (SerDeUtil.isAbsent(1, _data, i)) {
-      disablePositionAuthoritySwap = null;
-    } else {
-      ++i;
-      disablePositionAuthoritySwap = _data[i] == 1;
     }
     return new ConfigureNativeSolParams(maxPerTraderBalance,
                                         maxGlobalBalance,
@@ -133,8 +122,7 @@ public record ConfigureNativeSolParams(OptionalLong maxPerTraderBalance,
                                         minLiquidationSlippage,
                                         maxLiquidationSize,
                                         postLiquidationBuffer,
-                                        quoteLotCollateralShortfallBuffer,
-                                        disablePositionAuthoritySwap);
+                                        quoteLotCollateralShortfallBuffer);
   }
 
   @Override
@@ -149,7 +137,6 @@ public record ConfigureNativeSolParams(OptionalLong maxPerTraderBalance,
     i += SerDeUtil.writeOptional(1, maxLiquidationSize, _data, i);
     i += SerDeUtil.writeOptional(1, postLiquidationBuffer, _data, i);
     i += SerDeUtil.writeOptional(1, quoteLotCollateralShortfallBuffer, _data, i);
-    i += SerDeUtil.writeOptional(1, disablePositionAuthoritySwap, _data, i);
     return i - _offset;
   }
 
@@ -163,7 +150,6 @@ public record ConfigureNativeSolParams(OptionalLong maxPerTraderBalance,
          + (minLiquidationSlippage == null || minLiquidationSlippage.isEmpty() ? 1 : (1 + 4))
          + (maxLiquidationSize == null || maxLiquidationSize.isEmpty() ? 1 : (1 + 8))
          + (postLiquidationBuffer == null || postLiquidationBuffer.isEmpty() ? 1 : (1 + 8))
-         + (quoteLotCollateralShortfallBuffer == null || quoteLotCollateralShortfallBuffer.isEmpty() ? 1 : (1 + 8))
-         + (disablePositionAuthoritySwap == null ? 1 : (1 + 1));
+         + (quoteLotCollateralShortfallBuffer == null || quoteLotCollateralShortfallBuffer.isEmpty() ? 1 : (1 + 8));
   }
 }

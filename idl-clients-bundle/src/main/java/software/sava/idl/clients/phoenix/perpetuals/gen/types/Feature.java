@@ -8,7 +8,8 @@ public enum Feature implements RustEnum {
 
   LazilyReplenishWithdrawThrottle,
   NativeSolCollaterals,
-  PauseOnClusterRestart;
+  PauseOnClusterRestart,
+  SpotCollaterals;
 
   public static Feature read(final byte[] _data, final int _offset) {
     return SerDeUtil.read(1, Feature.values(), _data, _offset);

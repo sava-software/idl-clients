@@ -3,6 +3,8 @@ package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 
 import software.sava.idl.clients.core.gen.SerDe;
 
+/// Single-byte packed account meta: bits 7..2 = account index into the trailing venue accounts, bit 1 = is_signer, bit 0 = is_writable.
+///
 /// @param state: u8
 public record PackedAccountMeta(int state) implements SerDe {
 

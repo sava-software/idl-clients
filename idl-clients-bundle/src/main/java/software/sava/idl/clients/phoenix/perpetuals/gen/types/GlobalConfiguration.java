@@ -21,6 +21,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param exchangeStatus: u8
 /// @param quoteDecimals: u8
 /// @param withdrawalMarginFactorBps: u16
+/// @param depositCooldownPeriodInSlots: u64
 /// @param padding1: u64[]
 /// @param acknowledgedRestartSlot: u64
 /// @param padding2: u64[]
@@ -52,8 +53,18 @@ public record GlobalConfiguration(PublicKey _address,
                                   int quoteDecimals,
                                   int withdrawalMarginFactorBps,
                                   byte[] padding0,
+                                  long depositCooldownPeriodInSlots,
+                                  PublicKey pendingRootAuthority,
+                                  PublicKey pendingRiskAuthority,
+                                  PublicKey pendingMarketAuthority,
+                                  PublicKey pendingOracleAuthority,
+                                  PublicKey pendingReservedAuthority,
+                                  PublicKey pendingAdlAuthority,
+                                  PublicKey pendingCancelAuthority,
+                                  PublicKey pendingBackstopAuthority,
                                   long[] padding1,
                                   long acknowledgedRestartSlot,
+                                  QuoteLots pendingWithdrawThrottleReplenishment,
                                   long[] padding2,
                                   long[] padding3,
                                   long[] padding4,
@@ -63,8 +74,8 @@ public record GlobalConfiguration(PublicKey _address,
 
   public static final int BYTES = 2560;
   public static final int PADDING_0_LEN = 4;
-  public static final int PADDING_1_LEN = 73;
-  public static final int PADDING_2_LEN = 22;
+  public static final int PADDING_1_LEN = 40;
+  public static final int PADDING_2_LEN = 21;
   public static final int PADDING_3_LEN = 32;
   public static final int PADDING_4_LEN = 32;
   public static final int PADDING_5_LEN = 32;
@@ -96,9 +107,19 @@ public record GlobalConfiguration(PublicKey _address,
   public static final int QUOTE_DECIMALS_OFFSET = 505;
   public static final int WITHDRAWAL_MARGIN_FACTOR_BPS_OFFSET = 506;
   public static final int PADDING_0_OFFSET = 508;
-  public static final int PADDING_1_OFFSET = 512;
+  public static final int DEPOSIT_COOLDOWN_PERIOD_IN_SLOTS_OFFSET = 512;
+  public static final int PENDING_ROOT_AUTHORITY_OFFSET = 520;
+  public static final int PENDING_RISK_AUTHORITY_OFFSET = 552;
+  public static final int PENDING_MARKET_AUTHORITY_OFFSET = 584;
+  public static final int PENDING_ORACLE_AUTHORITY_OFFSET = 616;
+  public static final int PENDING_RESERVED_AUTHORITY_OFFSET = 648;
+  public static final int PENDING_ADL_AUTHORITY_OFFSET = 680;
+  public static final int PENDING_CANCEL_AUTHORITY_OFFSET = 712;
+  public static final int PENDING_BACKSTOP_AUTHORITY_OFFSET = 744;
+  public static final int PADDING_1_OFFSET = 776;
   public static final int ACKNOWLEDGED_RESTART_SLOT_OFFSET = 1096;
-  public static final int PADDING_2_OFFSET = 1104;
+  public static final int PENDING_WITHDRAW_THROTTLE_REPLENISHMENT_OFFSET = 1104;
+  public static final int PADDING_2_OFFSET = 1112;
   public static final int PADDING_3_OFFSET = 1280;
   public static final int PADDING_4_OFFSET = 1536;
   public static final int PADDING_5_OFFSET = 1792;
@@ -187,10 +208,52 @@ public record GlobalConfiguration(PublicKey _address,
     return Filter.createMemCompFilter(WITHDRAWAL_MARGIN_FACTOR_BPS_OFFSET, _data);
   }
 
+  public static Filter createDepositCooldownPeriodInSlotsFilter(final long depositCooldownPeriodInSlots) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, depositCooldownPeriodInSlots);
+    return Filter.createMemCompFilter(DEPOSIT_COOLDOWN_PERIOD_IN_SLOTS_OFFSET, _data);
+  }
+
+  public static Filter createPendingRootAuthorityFilter(final PublicKey pendingRootAuthority) {
+    return Filter.createMemCompFilter(PENDING_ROOT_AUTHORITY_OFFSET, pendingRootAuthority);
+  }
+
+  public static Filter createPendingRiskAuthorityFilter(final PublicKey pendingRiskAuthority) {
+    return Filter.createMemCompFilter(PENDING_RISK_AUTHORITY_OFFSET, pendingRiskAuthority);
+  }
+
+  public static Filter createPendingMarketAuthorityFilter(final PublicKey pendingMarketAuthority) {
+    return Filter.createMemCompFilter(PENDING_MARKET_AUTHORITY_OFFSET, pendingMarketAuthority);
+  }
+
+  public static Filter createPendingOracleAuthorityFilter(final PublicKey pendingOracleAuthority) {
+    return Filter.createMemCompFilter(PENDING_ORACLE_AUTHORITY_OFFSET, pendingOracleAuthority);
+  }
+
+  public static Filter createPendingReservedAuthorityFilter(final PublicKey pendingReservedAuthority) {
+    return Filter.createMemCompFilter(PENDING_RESERVED_AUTHORITY_OFFSET, pendingReservedAuthority);
+  }
+
+  public static Filter createPendingAdlAuthorityFilter(final PublicKey pendingAdlAuthority) {
+    return Filter.createMemCompFilter(PENDING_ADL_AUTHORITY_OFFSET, pendingAdlAuthority);
+  }
+
+  public static Filter createPendingCancelAuthorityFilter(final PublicKey pendingCancelAuthority) {
+    return Filter.createMemCompFilter(PENDING_CANCEL_AUTHORITY_OFFSET, pendingCancelAuthority);
+  }
+
+  public static Filter createPendingBackstopAuthorityFilter(final PublicKey pendingBackstopAuthority) {
+    return Filter.createMemCompFilter(PENDING_BACKSTOP_AUTHORITY_OFFSET, pendingBackstopAuthority);
+  }
+
   public static Filter createAcknowledgedRestartSlotFilter(final long acknowledgedRestartSlot) {
     final byte[] _data = new byte[8];
     putInt64LE(_data, 0, acknowledgedRestartSlot);
     return Filter.createMemCompFilter(ACKNOWLEDGED_RESTART_SLOT_OFFSET, _data);
+  }
+
+  public static Filter createPendingWithdrawThrottleReplenishmentFilter(final QuoteLots pendingWithdrawThrottleReplenishment) {
+    return Filter.createMemCompFilter(PENDING_WITHDRAW_THROTTLE_REPLENISHMENT_OFFSET, pendingWithdrawThrottleReplenishment.write());
   }
 
   public static GlobalConfiguration read(final byte[] _data, final int _offset) {
@@ -269,11 +332,31 @@ public record GlobalConfiguration(PublicKey _address,
     i += 2;
     final var padding0 = new byte[4];
     i += SerDeUtil.readArray(padding0, _data, i);
-    final var padding1 = new long[73];
+    final var depositCooldownPeriodInSlots = getInt64LE(_data, i);
+    i += 8;
+    final var pendingRootAuthority = readPubKey(_data, i);
+    i += 32;
+    final var pendingRiskAuthority = readPubKey(_data, i);
+    i += 32;
+    final var pendingMarketAuthority = readPubKey(_data, i);
+    i += 32;
+    final var pendingOracleAuthority = readPubKey(_data, i);
+    i += 32;
+    final var pendingReservedAuthority = readPubKey(_data, i);
+    i += 32;
+    final var pendingAdlAuthority = readPubKey(_data, i);
+    i += 32;
+    final var pendingCancelAuthority = readPubKey(_data, i);
+    i += 32;
+    final var pendingBackstopAuthority = readPubKey(_data, i);
+    i += 32;
+    final var padding1 = new long[40];
     i += SerDeUtil.readArray(padding1, _data, i);
     final var acknowledgedRestartSlot = getInt64LE(_data, i);
     i += 8;
-    final var padding2 = new long[22];
+    final var pendingWithdrawThrottleReplenishment = QuoteLots.read(_data, i);
+    i += 8;
+    final var padding2 = new long[21];
     i += SerDeUtil.readArray(padding2, _data, i);
     final var padding3 = new long[32];
     i += SerDeUtil.readArray(padding3, _data, i);
@@ -308,8 +391,18 @@ public record GlobalConfiguration(PublicKey _address,
                                    quoteDecimals,
                                    withdrawalMarginFactorBps,
                                    padding0,
+                                   depositCooldownPeriodInSlots,
+                                   pendingRootAuthority,
+                                   pendingRiskAuthority,
+                                   pendingMarketAuthority,
+                                   pendingOracleAuthority,
+                                   pendingReservedAuthority,
+                                   pendingAdlAuthority,
+                                   pendingCancelAuthority,
+                                   pendingBackstopAuthority,
                                    padding1,
                                    acknowledgedRestartSlot,
+                                   pendingWithdrawThrottleReplenishment,
                                    padding2,
                                    padding3,
                                    padding4,
@@ -360,10 +453,29 @@ public record GlobalConfiguration(PublicKey _address,
     putInt16LE(_data, i, withdrawalMarginFactorBps);
     i += 2;
     i += SerDeUtil.writeArrayChecked(padding0, 4, _data, i);
-    i += SerDeUtil.writeArrayChecked(padding1, 73, _data, i);
+    putInt64LE(_data, i, depositCooldownPeriodInSlots);
+    i += 8;
+    pendingRootAuthority.write(_data, i);
+    i += 32;
+    pendingRiskAuthority.write(_data, i);
+    i += 32;
+    pendingMarketAuthority.write(_data, i);
+    i += 32;
+    pendingOracleAuthority.write(_data, i);
+    i += 32;
+    pendingReservedAuthority.write(_data, i);
+    i += 32;
+    pendingAdlAuthority.write(_data, i);
+    i += 32;
+    pendingCancelAuthority.write(_data, i);
+    i += 32;
+    pendingBackstopAuthority.write(_data, i);
+    i += 32;
+    i += SerDeUtil.writeArrayChecked(padding1, 40, _data, i);
     putInt64LE(_data, i, acknowledgedRestartSlot);
     i += 8;
-    i += SerDeUtil.writeArrayChecked(padding2, 22, _data, i);
+    i += pendingWithdrawThrottleReplenishment.write(_data, i);
+    i += SerDeUtil.writeArrayChecked(padding2, 21, _data, i);
     i += SerDeUtil.writeArrayChecked(padding3, 32, _data, i);
     i += SerDeUtil.writeArrayChecked(padding4, 32, _data, i);
     i += SerDeUtil.writeArrayChecked(padding5, 32, _data, i);

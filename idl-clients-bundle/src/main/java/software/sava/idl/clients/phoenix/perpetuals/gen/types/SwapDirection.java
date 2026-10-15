@@ -4,6 +4,7 @@ package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 import software.sava.idl.clients.core.gen.RustEnum;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
+/// Which side of a two-legged swap the non-quote asset is on. Sell debits the non-quote leg and credits the quote-side leg; Buy the reverse.
 public enum SwapDirection implements RustEnum {
 
   Sell,

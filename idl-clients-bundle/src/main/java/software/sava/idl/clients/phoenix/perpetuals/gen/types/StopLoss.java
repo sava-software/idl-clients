@@ -20,11 +20,12 @@ public record StopLoss(long sequenceNumber,
                        long slot,
                        int positionSequenceNumber,
                        int flags,
+                       AdditionalFees additionalFees,
                        byte[] padding,
                        byte[] padding2) implements SerDe {
 
   public static final int BYTES = 80;
-  public static final int PADDING_LEN = 6;
+  public static final int PADDING_LEN = 4;
   public static final int PADDING_2_LEN = 32;
 
   public static final int SEQUENCE_NUMBER_OFFSET = 0;
@@ -34,7 +35,8 @@ public record StopLoss(long sequenceNumber,
   public static final int SLOT_OFFSET = 32;
   public static final int POSITION_SEQUENCE_NUMBER_OFFSET = 40;
   public static final int FLAGS_OFFSET = 41;
-  public static final int PADDING_OFFSET = 42;
+  public static final int ADDITIONAL_FEES_OFFSET = 42;
+  public static final int PADDING_OFFSET = 44;
   public static final int PADDING_2_OFFSET = 48;
 
   public static StopLoss read(final byte[] _data, final int _offset) {
@@ -56,7 +58,9 @@ public record StopLoss(long sequenceNumber,
     ++i;
     final var flags = _data[i] & 0xFF;
     ++i;
-    final var padding = new byte[6];
+    final var additionalFees = AdditionalFees.read(_data, i);
+    i += 2;
+    final var padding = new byte[4];
     i += SerDeUtil.readArray(padding, _data, i);
     final var padding2 = new byte[32];
     SerDeUtil.readArray(padding2, _data, i);
@@ -67,6 +71,7 @@ public record StopLoss(long sequenceNumber,
                         slot,
                         positionSequenceNumber,
                         flags,
+                        additionalFees,
                         padding,
                         padding2);
   }
@@ -85,7 +90,8 @@ public record StopLoss(long sequenceNumber,
     ++i;
     _data[i] = (byte) flags;
     ++i;
-    i += SerDeUtil.writeArrayChecked(padding, 6, _data, i);
+    i += additionalFees.write(_data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 4, _data, i);
     i += SerDeUtil.writeArrayChecked(padding2, 32, _data, i);
     return i - _offset;
   }

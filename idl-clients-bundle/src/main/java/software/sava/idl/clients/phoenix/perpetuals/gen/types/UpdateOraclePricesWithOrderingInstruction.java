@@ -12,7 +12,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param updateTimestamp: u64
 public record UpdateOraclePricesWithOrderingInstruction(long updateTimestamp,
                                                         OraclePriceUpdate[] updates,
-                                                        boolean shouldResetTimestamp) implements SerDe {
+                                                        OraclePriceUpdateFlags flags) implements SerDe {
 
   public static final int UPDATE_TIMESTAMP_OFFSET = 0;
   public static final int UPDATES_OFFSET = 8;
@@ -26,8 +26,8 @@ public record UpdateOraclePricesWithOrderingInstruction(long updateTimestamp,
     i += 8;
     final var updates = SerDeUtil.readVector(4, OraclePriceUpdate.class, OraclePriceUpdate::read, _data, i);
     i += SerDeUtil.lenVector(4, updates);
-    final var shouldResetTimestamp = _data[i] == 1;
-    return new UpdateOraclePricesWithOrderingInstruction(updateTimestamp, updates, shouldResetTimestamp);
+    final var flags = OraclePriceUpdateFlags.read(_data, i);
+    return new UpdateOraclePricesWithOrderingInstruction(updateTimestamp, updates, flags);
   }
 
   @Override
@@ -36,13 +36,12 @@ public record UpdateOraclePricesWithOrderingInstruction(long updateTimestamp,
     putInt64LE(_data, i, updateTimestamp);
     i += 8;
     i += SerDeUtil.writeVector(4, updates, _data, i);
-    _data[i] = (byte) (shouldResetTimestamp ? 1 : 0);
-    ++i;
+    i += flags.write(_data, i);
     return i - _offset;
   }
 
   @Override
   public int l() {
-    return 8 + SerDeUtil.lenVector(4, updates) + 1;
+    return 8 + SerDeUtil.lenVector(4, updates) + flags.l();
   }
 }

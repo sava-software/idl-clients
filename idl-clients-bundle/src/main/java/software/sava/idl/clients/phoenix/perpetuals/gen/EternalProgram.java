@@ -8,6 +8,7 @@ import software.sava.core.programs.Discriminator;
 import software.sava.core.tx.Instruction;
 import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.AddMarketParams;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.AddSpotCollateralParams;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.AuthorizedForceCancelByIdParams;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.AuthorizedForceCancelParams;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.CancelConditionalOrderInstruction;
@@ -23,6 +24,7 @@ import software.sava.idl.clients.phoenix.perpetuals.gen.types.ClearExpiredOrders
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.ClearPositionFlipOrdersParams;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.ClosePositionsParams;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.ConfigureNativeSolParams;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.ConfigureSpotCollateralParams;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.CreateConditionalOrdersAccountInstruction;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.CreateEscrowAccountParams;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.CreateEscrowRequestParams;
@@ -30,9 +32,9 @@ import software.sava.idl.clients.phoenix.perpetuals.gen.types.DepositFundsInstru
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.EnableFeatureParams;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.ExecuteConditionalOrderInstruction;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.ExecuteStopLossInstruction;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.ForceCancelRiskIncreasingParams;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.InitializeArenaParams;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.LiquidateNativeSolParams;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.LiquidateSpotParams;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.LiquidationParams;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.LiquidationTransferParams;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.MultipleOrderPacket;
@@ -47,19 +49,21 @@ import software.sava.idl.clients.phoenix.perpetuals.gen.types.PlaceLimitOrderWit
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.PlacePositionConditionalOrderInstruction;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.PlaceStopLossInstruction;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.RebirthParams;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.RegisterSplineParams;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.RegisterTraderParams;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.RemoveAllOraclesInstruction;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.RemoveOracleInstruction;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.RevokePermissionParams;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.SetMultiArenaAdditionalNodesWatermarkParams;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.SetPermissionInstruction;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.SetSpotAssetPriceInstruction;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.SetTraderCapOverrideInstruction;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.SwapNativeInstruction;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.SwapSpotWithSolInstruction;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.SwapSpotWithSpotInstruction;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.SwapSpotWithUsdcInstruction;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.TraderCapabilityUpdate;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.TransferCollateralInstruction;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.TransferNativeSolInstruction;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.TransferSpotParams;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.UncrossCrankParams;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.UpdateAuthoritiesParams;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.UpdateCommodityMarketStateInstruction;
@@ -67,6 +71,7 @@ import software.sava.idl.clients.phoenix.perpetuals.gen.types.UpdateFundingParam
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.UpdateMarketFeesParams;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.UpdateOraclePricesWithOrderingInstruction;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.UpdatePerpCancelRiskFactorInstruction;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.UpdatePerpDisplayNameInstruction;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.UpdatePerpIsolatedOnlyInstruction;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.UpdatePerpLeverageTiersInstruction;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.UpdatePerpMarkPriceParametersInstruction;
@@ -86,6 +91,7 @@ import software.sava.idl.clients.phoenix.perpetuals.gen.types.UpdateWithdrawRate
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.UpsertEscrowRequestParams;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.WithdrawFundsInstruction;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.WithdrawNativeSolAction;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.WithdrawSpotParams;
 
 import java.util.List;
 
@@ -105,6 +111,9 @@ public final class EternalProgram {
   public static final Discriminator PLACE_MARKET_ORDER_DISCRIMINATOR = toDiscriminator(90, 118, 192, 252, 192, 99, 39, 145);
 
   /// Places an immediate-or-cancel order that consumes resting liquidity on the specified market.
+  ///
+  /// The program also accepts a Borsh `AdditionalFeeConfig` after these arguments, with no Option tag (the IDL's `optionalTrailingAdditionalFeeConfig`).
+  /// This builder sends none, which the program reads as no additional fee.
   ///
   /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
   /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
@@ -141,6 +150,9 @@ public final class EternalProgram {
   }
 
   /// Places an immediate-or-cancel order that consumes resting liquidity on the specified market.
+  ///
+  /// The program also accepts a Borsh `AdditionalFeeConfig` after these arguments, with no Option tag (the IDL's `optionalTrailingAdditionalFeeConfig`).
+  /// This builder sends none, which the program reads as no additional fee.
   ///
   /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
   /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
@@ -180,6 +192,9 @@ public final class EternalProgram {
   }
 
   /// Places an immediate-or-cancel order that consumes resting liquidity on the specified market.
+  ///
+  /// The program also accepts a Borsh `AdditionalFeeConfig` after these arguments, with no Option tag (the IDL's `optionalTrailingAdditionalFeeConfig`).
+  /// This builder sends none, which the program reads as no additional fee.
   ///
   public static Instruction placeMarketOrder(final AccountMeta invokedEternalProgramMeta,
                                              final List<AccountMeta> keys,
@@ -226,6 +241,9 @@ public final class EternalProgram {
 
   /// Places a limit order that may rest on the orderbook or take liquidity depending on matching conditions.
   ///
+  /// The program also accepts a Borsh `AdditionalFeeConfig` after these arguments, with no Option tag (the IDL's `optionalTrailingAdditionalFeeConfig`).
+  /// This builder sends none, which the program reads as no additional fee.
+  ///
   /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
   /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
   /// @param globalConfigurationKey Global configuration PDA; enforces the market is registered and cross trading is enabled.
@@ -261,6 +279,9 @@ public final class EternalProgram {
   }
 
   /// Places a limit order that may rest on the orderbook or take liquidity depending on matching conditions.
+  ///
+  /// The program also accepts a Borsh `AdditionalFeeConfig` after these arguments, with no Option tag (the IDL's `optionalTrailingAdditionalFeeConfig`).
+  /// This builder sends none, which the program reads as no additional fee.
   ///
   /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
   /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
@@ -300,6 +321,9 @@ public final class EternalProgram {
   }
 
   /// Places a limit order that may rest on the orderbook or take liquidity depending on matching conditions.
+  ///
+  /// The program also accepts a Borsh `AdditionalFeeConfig` after these arguments, with no Option tag (the IDL's `optionalTrailingAdditionalFeeConfig`).
+  /// This builder sends none, which the program reads as no additional fee.
   ///
   public static Instruction placeLimitOrder(final AccountMeta invokedEternalProgramMeta,
                                             final List<AccountMeta> keys,
@@ -346,6 +370,9 @@ public final class EternalProgram {
 
   /// Places multiple post-only limit orders in a single transaction, allowing batch order placement for market making.
   ///
+  /// The program also accepts a Borsh `AdditionalFeeConfig` after these arguments, with no Option tag (the IDL's `optionalTrailingAdditionalFeeConfig`).
+  /// This builder sends none, which the program reads as no additional fee.
+  ///
   /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
   /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
   /// @param globalConfigurationKey Global configuration PDA; enforces the market is registered and cross trading is enabled.
@@ -381,6 +408,9 @@ public final class EternalProgram {
   }
 
   /// Places multiple post-only limit orders in a single transaction, allowing batch order placement for market making.
+  ///
+  /// The program also accepts a Borsh `AdditionalFeeConfig` after these arguments, with no Option tag (the IDL's `optionalTrailingAdditionalFeeConfig`).
+  /// This builder sends none, which the program reads as no additional fee.
   ///
   /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
   /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
@@ -420,6 +450,9 @@ public final class EternalProgram {
   }
 
   /// Places multiple post-only limit orders in a single transaction, allowing batch order placement for market making.
+  ///
+  /// The program also accepts a Borsh `AdditionalFeeConfig` after these arguments, with no Option tag (the IDL's `optionalTrailingAdditionalFeeConfig`).
+  /// This builder sends none, which the program reads as no additional fee.
   ///
   public static Instruction placeMultiLimitOrder(final AccountMeta invokedEternalProgramMeta,
                                                  final List<AccountMeta> keys,
@@ -466,6 +499,9 @@ public final class EternalProgram {
 
   /// Places multiple post-only limit orders with scale-set and reduce-only metadata.
   ///
+  /// The program also accepts a Borsh `AdditionalFeeConfig` after these arguments, with no Option tag (the IDL's `optionalTrailingAdditionalFeeConfig`).
+  /// This builder sends none, which the program reads as no additional fee.
+  ///
   /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
   /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
   /// @param globalConfigurationKey Global configuration PDA; enforces the market is registered and cross trading is enabled.
@@ -501,6 +537,9 @@ public final class EternalProgram {
   }
 
   /// Places multiple post-only limit orders with scale-set and reduce-only metadata.
+  ///
+  /// The program also accepts a Borsh `AdditionalFeeConfig` after these arguments, with no Option tag (the IDL's `optionalTrailingAdditionalFeeConfig`).
+  /// This builder sends none, which the program reads as no additional fee.
   ///
   /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
   /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
@@ -540,6 +579,9 @@ public final class EternalProgram {
   }
 
   /// Places multiple post-only limit orders with scale-set and reduce-only metadata.
+  ///
+  /// The program also accepts a Borsh `AdditionalFeeConfig` after these arguments, with no Option tag (the IDL's `optionalTrailingAdditionalFeeConfig`).
+  /// This builder sends none, which the program reads as no additional fee.
   ///
   public static Instruction placeMultiLimitOrderV2(final AccountMeta invokedEternalProgramMeta,
                                                    final List<AccountMeta> keys,
@@ -2132,6 +2174,9 @@ public final class EternalProgram {
 
   /// Places a stop-loss order that triggers when the market price reaches the specified trigger price.
   ///
+  /// The program also accepts a Borsh `AdditionalFeeConfig` after these arguments, with no Option tag (the IDL's `optionalTrailingAdditionalFeeConfig`).
+  /// This builder sends none, which the program reads as no additional fee.
+  ///
   /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
   /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
   /// @param globalConfigurationKey Global configuration PDA that tracks vault and system parameters.
@@ -2176,6 +2221,9 @@ public final class EternalProgram {
   }
 
   /// Places a stop-loss order that triggers when the market price reaches the specified trigger price.
+  ///
+  /// The program also accepts a Borsh `AdditionalFeeConfig` after these arguments, with no Option tag (the IDL's `optionalTrailingAdditionalFeeConfig`).
+  /// This builder sends none, which the program reads as no additional fee.
   ///
   /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
   /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
@@ -2224,6 +2272,9 @@ public final class EternalProgram {
   }
 
   /// Places a stop-loss order that triggers when the market price reaches the specified trigger price.
+  ///
+  /// The program also accepts a Borsh `AdditionalFeeConfig` after these arguments, with no Option tag (the IDL's `optionalTrailingAdditionalFeeConfig`).
+  /// This builder sends none, which the program reads as no additional fee.
   ///
   public static Instruction placeStopLoss(final AccountMeta invokedEternalProgramMeta,
                                           final List<AccountMeta> keys,
@@ -2661,8 +2712,7 @@ public final class EternalProgram {
                                                       final PublicKey globalTraderIndexKey,
                                                       final PublicKey activeTraderBufferKey,
                                                       final PublicKey orderbookKey,
-                                                      final PublicKey splinesKey,
-                                                      final ForceCancelRiskIncreasingParams params) {
+                                                      final PublicKey splinesKey) {
     final var keys = forceCancelRiskIncreasingKeys(
       phoenixProgramKey,
       phoenixLogAuthorityKey,
@@ -2675,52 +2725,14 @@ public final class EternalProgram {
       orderbookKey,
       splinesKey
     );
-    return forceCancelRiskIncreasing(invokedEternalProgramMeta, keys, params);
+    return forceCancelRiskIncreasing(invokedEternalProgramMeta, keys);
   }
 
   /// Force cancels risk-increasing orders for a trader to reduce margin exposure.
   ///
   public static Instruction forceCancelRiskIncreasing(final AccountMeta invokedEternalProgramMeta,
-                                                      final List<AccountMeta> keys,
-                                                      final ForceCancelRiskIncreasingParams params) {
-    final byte[] _data = new byte[8 + params.l()];
-    int i = FORCE_CANCEL_RISK_INCREASING_DISCRIMINATOR.write(_data, 0);
-    params.write(_data, i);
-
-    return Instruction.createInstruction(invokedEternalProgramMeta, keys, _data);
-  }
-
-  public record ForceCancelRiskIncreasingIxData(Discriminator discriminator, ForceCancelRiskIncreasingParams params) implements SerDe {
-
-    public static ForceCancelRiskIncreasingIxData read(final Instruction instruction) {
-      return read(instruction.copyData(), 0);
-    }
-
-    public static final int BYTES = 8;
-
-    public static final int PARAMS_OFFSET = 8;
-
-    public static ForceCancelRiskIncreasingIxData read(final byte[] _data, final int _offset) {
-      if (_data == null || _data.length == 0) {
-        return null;
-      }
-      final var discriminator = createAnchorDiscriminator(_data, _offset);
-      int i = _offset + discriminator.length();
-      final var params = ForceCancelRiskIncreasingParams.read(_data, i);
-      return new ForceCancelRiskIncreasingIxData(discriminator, params);
-    }
-
-    @Override
-    public int write(final byte[] _data, final int _offset) {
-      int i = _offset + discriminator.write(_data, _offset);
-      i += params.write(_data, i);
-      return i - _offset;
-    }
-
-    @Override
-    public int l() {
-      return BYTES;
-    }
+                                                      final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedEternalProgramMeta, keys, FORCE_CANCEL_RISK_INCREASING_DISCRIMINATOR);
   }
 
   public static final Discriminator UPDATE_TRADER_STATE_DISCRIMINATOR = toDiscriminator(249, 139, 82, 44, 126, 66, 133, 220);
@@ -4363,6 +4375,9 @@ public final class EternalProgram {
 
   /// Places a position-based conditional order that fires when mark price crosses the configured trigger.
   ///
+  /// The program also accepts a Borsh `AdditionalFeeConfig` after these arguments, with no Option tag (the IDL's `optionalTrailingAdditionalFeeConfig`).
+  /// This builder sends none, which the program reads as no additional fee.
+  ///
   /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
   /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
   /// @param globalConfigurationKey Global configuration PDA holding exchange-wide parameters.
@@ -4407,6 +4422,9 @@ public final class EternalProgram {
   }
 
   /// Places a position-based conditional order that fires when mark price crosses the configured trigger.
+  ///
+  /// The program also accepts a Borsh `AdditionalFeeConfig` after these arguments, with no Option tag (the IDL's `optionalTrailingAdditionalFeeConfig`).
+  /// This builder sends none, which the program reads as no additional fee.
   ///
   /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
   /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
@@ -4455,6 +4473,9 @@ public final class EternalProgram {
   }
 
   /// Places a position-based conditional order that fires when mark price crosses the configured trigger.
+  ///
+  /// The program also accepts a Borsh `AdditionalFeeConfig` after these arguments, with no Option tag (the IDL's `optionalTrailingAdditionalFeeConfig`).
+  /// This builder sends none, which the program reads as no additional fee.
   ///
   public static Instruction placePositionConditionalOrder(final AccountMeta invokedEternalProgramMeta,
                                                           final List<AccountMeta> keys,
@@ -4605,6 +4626,9 @@ public final class EternalProgram {
 
   /// Attaches a conditional order to an existing resting limit order so it fires when that order is filled.
   ///
+  /// The program also accepts a Borsh `AdditionalFeeConfig` after these arguments, with no Option tag (the IDL's `optionalTrailingAdditionalFeeConfig`).
+  /// This builder sends none, which the program reads as no additional fee.
+  ///
   /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
   /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
   /// @param globalConfigurationKey Global configuration PDA holding exchange-wide parameters.
@@ -4643,6 +4667,9 @@ public final class EternalProgram {
   }
 
   /// Attaches a conditional order to an existing resting limit order so it fires when that order is filled.
+  ///
+  /// The program also accepts a Borsh `AdditionalFeeConfig` after these arguments, with no Option tag (the IDL's `optionalTrailingAdditionalFeeConfig`).
+  /// This builder sends none, which the program reads as no additional fee.
   ///
   /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
   /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
@@ -4685,6 +4712,9 @@ public final class EternalProgram {
   }
 
   /// Attaches a conditional order to an existing resting limit order so it fires when that order is filled.
+  ///
+  /// The program also accepts a Borsh `AdditionalFeeConfig` after these arguments, with no Option tag (the IDL's `optionalTrailingAdditionalFeeConfig`).
+  /// This builder sends none, which the program reads as no additional fee.
   ///
   public static Instruction placeAttachedConditionalOrder(final AccountMeta invokedEternalProgramMeta,
                                                           final List<AccountMeta> keys,
@@ -4731,6 +4761,9 @@ public final class EternalProgram {
 
   /// Places a limit order and atomically attaches greater/less-than trigger orders to the resulting resting order.
   ///
+  /// The program also accepts a Borsh `AdditionalFeeConfig` after these arguments, with no Option tag (the IDL's `optionalTrailingAdditionalFeeConfig`).
+  /// This builder sends none, which the program reads as no additional fee.
+  ///
   /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
   /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
   /// @param globalConfigurationKey Global configuration PDA holding exchange-wide parameters.
@@ -4775,6 +4808,9 @@ public final class EternalProgram {
   }
 
   /// Places a limit order and atomically attaches greater/less-than trigger orders to the resulting resting order.
+  ///
+  /// The program also accepts a Borsh `AdditionalFeeConfig` after these arguments, with no Option tag (the IDL's `optionalTrailingAdditionalFeeConfig`).
+  /// This builder sends none, which the program reads as no additional fee.
   ///
   /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
   /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
@@ -4823,6 +4859,9 @@ public final class EternalProgram {
   }
 
   /// Places a limit order and atomically attaches greater/less-than trigger orders to the resulting resting order.
+  ///
+  /// The program also accepts a Borsh `AdditionalFeeConfig` after these arguments, with no Option tag (the IDL's `optionalTrailingAdditionalFeeConfig`).
+  /// This builder sends none, which the program reads as no additional fee.
   ///
   public static Instruction placeLimitOrderWithConditionals(final AccountMeta invokedEternalProgramMeta,
                                                             final List<AccountMeta> keys,
@@ -6411,8 +6450,7 @@ public final class EternalProgram {
                                            final PublicKey globalTraderIndexKey,
                                            final PublicKey activeTraderBufferKey,
                                            final PublicKey traderAccountKey,
-                                           final PublicKey perpAssetMapKey,
-                                           final RegisterSplineParams params) {
+                                           final PublicKey perpAssetMapKey) {
     final var keys = registerSplineKeys(
       solanaAccounts,
       phoenixProgramKey,
@@ -6428,52 +6466,14 @@ public final class EternalProgram {
       traderAccountKey,
       perpAssetMapKey
     );
-    return registerSpline(invokedEternalProgramMeta, keys, params);
+    return registerSpline(invokedEternalProgramMeta, keys);
   }
 
   /// Registers a trader as an active spline participant for a market.
   ///
   public static Instruction registerSpline(final AccountMeta invokedEternalProgramMeta,
-                                           final List<AccountMeta> keys,
-                                           final RegisterSplineParams params) {
-    final byte[] _data = new byte[8 + params.l()];
-    int i = REGISTER_SPLINE_DISCRIMINATOR.write(_data, 0);
-    params.write(_data, i);
-
-    return Instruction.createInstruction(invokedEternalProgramMeta, keys, _data);
-  }
-
-  public record RegisterSplineIxData(Discriminator discriminator, RegisterSplineParams params) implements SerDe {
-
-    public static RegisterSplineIxData read(final Instruction instruction) {
-      return read(instruction.copyData(), 0);
-    }
-
-    public static final int BYTES = 8;
-
-    public static final int PARAMS_OFFSET = 8;
-
-    public static RegisterSplineIxData read(final byte[] _data, final int _offset) {
-      if (_data == null || _data.length == 0) {
-        return null;
-      }
-      final var discriminator = createAnchorDiscriminator(_data, _offset);
-      int i = _offset + discriminator.length();
-      final var params = RegisterSplineParams.read(_data, i);
-      return new RegisterSplineIxData(discriminator, params);
-    }
-
-    @Override
-    public int write(final byte[] _data, final int _offset) {
-      int i = _offset + discriminator.write(_data, _offset);
-      i += params.write(_data, i);
-      return i - _offset;
-    }
-
-    @Override
-    public int l() {
-      return BYTES;
-    }
+                                           final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedEternalProgramMeta, keys, REGISTER_SPLINE_DISCRIMINATOR);
   }
 
   public static final Discriminator UPDATE_COMMODITY_MARKET_STATE_DISCRIMINATOR = toDiscriminator(45, 245, 97, 184, 200, 147, 142, 73);
@@ -9389,6 +9389,1308 @@ public final class EternalProgram {
     }
   }
 
+  public static final Discriminator ADD_SPOT_COLLATERAL_DISCRIMINATOR = toDiscriminator(238, 15, 82, 195, 85, 71, 216, 137);
+
+  /// Risk authority registers a new SPL spot collateral asset in the perp asset map, allocating its encoded SpotAssetIndex; the asset starts inactive.
+  ///
+  /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
+  /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
+  /// @param globalConfigurationKey Global configuration PDA used to validate the risk authority and the perp asset map key.
+  /// @param authorityKey Risk authority signer.
+  /// @param maybePermissionAccountKey Permission account slot for delegated authority validation; with no delegation this is the authority itself.
+  /// @param perpAssetMapKey Perp asset map account into which the new spot collateral entry is registered.
+  /// @param mintKey SPL mint of the collateral asset being registered; must be owned by the legacy SPL Token program and match the params mint address.
+  public static List<AccountMeta> addSpotCollateralKeys(final PublicKey phoenixProgramKey,
+                                                        final PublicKey phoenixLogAuthorityKey,
+                                                        final PublicKey globalConfigurationKey,
+                                                        final PublicKey authorityKey,
+                                                        final PublicKey maybePermissionAccountKey,
+                                                        final PublicKey perpAssetMapKey,
+                                                        final PublicKey mintKey) {
+    return List.of(
+      createRead(phoenixProgramKey),
+      createRead(phoenixLogAuthorityKey),
+      createRead(globalConfigurationKey),
+      createReadOnlySigner(authorityKey),
+      createWrite(maybePermissionAccountKey),
+      createWrite(perpAssetMapKey),
+      createRead(mintKey)
+    );
+  }
+
+  /// Risk authority registers a new SPL spot collateral asset in the perp asset map, allocating its encoded SpotAssetIndex; the asset starts inactive.
+  ///
+  /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
+  /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
+  /// @param globalConfigurationKey Global configuration PDA used to validate the risk authority and the perp asset map key.
+  /// @param authorityKey Risk authority signer.
+  /// @param maybePermissionAccountKey Permission account slot for delegated authority validation; with no delegation this is the authority itself.
+  /// @param perpAssetMapKey Perp asset map account into which the new spot collateral entry is registered.
+  /// @param mintKey SPL mint of the collateral asset being registered; must be owned by the legacy SPL Token program and match the params mint address.
+  public static Instruction addSpotCollateral(final AccountMeta invokedEternalProgramMeta,
+                                              final PublicKey phoenixProgramKey,
+                                              final PublicKey phoenixLogAuthorityKey,
+                                              final PublicKey globalConfigurationKey,
+                                              final PublicKey authorityKey,
+                                              final PublicKey maybePermissionAccountKey,
+                                              final PublicKey perpAssetMapKey,
+                                              final PublicKey mintKey,
+                                              final AddSpotCollateralParams params) {
+    final var keys = addSpotCollateralKeys(
+      phoenixProgramKey,
+      phoenixLogAuthorityKey,
+      globalConfigurationKey,
+      authorityKey,
+      maybePermissionAccountKey,
+      perpAssetMapKey,
+      mintKey
+    );
+    return addSpotCollateral(invokedEternalProgramMeta, keys, params);
+  }
+
+  /// Risk authority registers a new SPL spot collateral asset in the perp asset map, allocating its encoded SpotAssetIndex; the asset starts inactive.
+  ///
+  public static Instruction addSpotCollateral(final AccountMeta invokedEternalProgramMeta,
+                                              final List<AccountMeta> keys,
+                                              final AddSpotCollateralParams params) {
+    final byte[] _data = new byte[8 + params.l()];
+    int i = ADD_SPOT_COLLATERAL_DISCRIMINATOR.write(_data, 0);
+    params.write(_data, i);
+
+    return Instruction.createInstruction(invokedEternalProgramMeta, keys, _data);
+  }
+
+  public record AddSpotCollateralIxData(Discriminator discriminator, AddSpotCollateralParams params) implements SerDe {
+
+    public static AddSpotCollateralIxData read(final Instruction instruction) {
+      return read(instruction.copyData(), 0);
+    }
+
+    public static final int PARAMS_OFFSET = 8;
+
+    public static AddSpotCollateralIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var params = AddSpotCollateralParams.read(_data, i);
+      return new AddSpotCollateralIxData(discriminator, params);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      i += params.write(_data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 8 + params.l();
+    }
+  }
+
+  public static final Discriminator CONFIGURE_SPOT_COLLATERAL_DISCRIMINATOR = toDiscriminator(112, 103, 162, 63, 108, 147, 62, 213);
+
+  /// Risk authority applies partial risk-parameter updates to a registered spot collateral asset and optionally activates it. Activation is one-way.
+  ///
+  /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
+  /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
+  /// @param globalConfigurationKey Global configuration PDA used to validate the risk authority, the perp asset map key, and the SpotCollaterals feature flag on activation.
+  /// @param authorityKey Risk authority signer.
+  /// @param maybePermissionAccountKey Permission account slot for delegated authority validation; with no delegation this is the authority itself.
+  /// @param perpAssetMapKey Perp asset map account whose spot collateral entry is updated.
+  public static List<AccountMeta> configureSpotCollateralKeys(final PublicKey phoenixProgramKey,
+                                                              final PublicKey phoenixLogAuthorityKey,
+                                                              final PublicKey globalConfigurationKey,
+                                                              final PublicKey authorityKey,
+                                                              final PublicKey maybePermissionAccountKey,
+                                                              final PublicKey perpAssetMapKey) {
+    return List.of(
+      createRead(phoenixProgramKey),
+      createRead(phoenixLogAuthorityKey),
+      createRead(globalConfigurationKey),
+      createReadOnlySigner(authorityKey),
+      createWrite(maybePermissionAccountKey),
+      createWrite(perpAssetMapKey)
+    );
+  }
+
+  /// Risk authority applies partial risk-parameter updates to a registered spot collateral asset and optionally activates it. Activation is one-way.
+  ///
+  /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
+  /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
+  /// @param globalConfigurationKey Global configuration PDA used to validate the risk authority, the perp asset map key, and the SpotCollaterals feature flag on activation.
+  /// @param authorityKey Risk authority signer.
+  /// @param maybePermissionAccountKey Permission account slot for delegated authority validation; with no delegation this is the authority itself.
+  /// @param perpAssetMapKey Perp asset map account whose spot collateral entry is updated.
+  public static Instruction configureSpotCollateral(final AccountMeta invokedEternalProgramMeta,
+                                                    final PublicKey phoenixProgramKey,
+                                                    final PublicKey phoenixLogAuthorityKey,
+                                                    final PublicKey globalConfigurationKey,
+                                                    final PublicKey authorityKey,
+                                                    final PublicKey maybePermissionAccountKey,
+                                                    final PublicKey perpAssetMapKey,
+                                                    final ConfigureSpotCollateralParams params) {
+    final var keys = configureSpotCollateralKeys(
+      phoenixProgramKey,
+      phoenixLogAuthorityKey,
+      globalConfigurationKey,
+      authorityKey,
+      maybePermissionAccountKey,
+      perpAssetMapKey
+    );
+    return configureSpotCollateral(invokedEternalProgramMeta, keys, params);
+  }
+
+  /// Risk authority applies partial risk-parameter updates to a registered spot collateral asset and optionally activates it. Activation is one-way.
+  ///
+  public static Instruction configureSpotCollateral(final AccountMeta invokedEternalProgramMeta,
+                                                    final List<AccountMeta> keys,
+                                                    final ConfigureSpotCollateralParams params) {
+    final byte[] _data = new byte[8 + params.l()];
+    int i = CONFIGURE_SPOT_COLLATERAL_DISCRIMINATOR.write(_data, 0);
+    params.write(_data, i);
+
+    return Instruction.createInstruction(invokedEternalProgramMeta, keys, _data);
+  }
+
+  public record ConfigureSpotCollateralIxData(Discriminator discriminator, ConfigureSpotCollateralParams params) implements SerDe {
+
+    public static ConfigureSpotCollateralIxData read(final Instruction instruction) {
+      return read(instruction.copyData(), 0);
+    }
+
+    public static final int PARAMS_OFFSET = 8;
+
+    public static ConfigureSpotCollateralIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var params = ConfigureSpotCollateralParams.read(_data, i);
+      return new ConfigureSpotCollateralIxData(discriminator, params);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      i += params.write(_data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 8 + params.l();
+    }
+  }
+
+  public static final Discriminator SYNC_SPOT_DISCRIMINATOR = toDiscriminator(248, 53, 128, 214, 54, 165, 13, 2);
+
+  /// Permissionlessly reconciles the balance of the trader wallet PDA's associated token account into the trader account's spot collateral balance for one asset.
+  ///
+  /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
+  /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
+  /// @param globalConfigurationKey Read-only global configuration PDA used to verify the perp asset map and active trader buffer keys.
+  /// @param perpAssetMapKey Perp asset map providing the asset's metadata and tracking its global collateral balance.
+  /// @param mintKey SPL mint account selecting the spot collateral asset.
+  /// @param traderAccountKey Trader state PDA whose spot collateral balance is reconciled.
+  /// @param traderPhoenixWalletAtaKey Associated token account of the trader's wallet PDA for the asset's mint; the custody account whose balance is reconciled.
+  /// @param globalTraderIndexKey Global trader index account.
+  /// @param activeTraderBufferKey Active trader buffer account.
+  public static List<AccountMeta> syncSpotKeys(final PublicKey phoenixProgramKey,
+                                               final PublicKey phoenixLogAuthorityKey,
+                                               final PublicKey globalConfigurationKey,
+                                               final PublicKey perpAssetMapKey,
+                                               final PublicKey mintKey,
+                                               final PublicKey traderAccountKey,
+                                               final PublicKey traderPhoenixWalletAtaKey,
+                                               final PublicKey globalTraderIndexKey,
+                                               final PublicKey activeTraderBufferKey) {
+    return List.of(
+      createRead(phoenixProgramKey),
+      createRead(phoenixLogAuthorityKey),
+      createRead(globalConfigurationKey),
+      createWrite(perpAssetMapKey),
+      createRead(mintKey),
+      createWrite(traderAccountKey),
+      createRead(traderPhoenixWalletAtaKey),
+      createWrite(globalTraderIndexKey),
+      createWrite(activeTraderBufferKey)
+    );
+  }
+
+  /// Permissionlessly reconciles the balance of the trader wallet PDA's associated token account into the trader account's spot collateral balance for one asset.
+  ///
+  /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
+  /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
+  /// @param globalConfigurationKey Read-only global configuration PDA used to verify the perp asset map and active trader buffer keys.
+  /// @param perpAssetMapKey Perp asset map providing the asset's metadata and tracking its global collateral balance.
+  /// @param mintKey SPL mint account selecting the spot collateral asset.
+  /// @param traderAccountKey Trader state PDA whose spot collateral balance is reconciled.
+  /// @param traderPhoenixWalletAtaKey Associated token account of the trader's wallet PDA for the asset's mint; the custody account whose balance is reconciled.
+  /// @param globalTraderIndexKey Global trader index account.
+  /// @param activeTraderBufferKey Active trader buffer account.
+  public static Instruction syncSpot(final AccountMeta invokedEternalProgramMeta,
+                                     final PublicKey phoenixProgramKey,
+                                     final PublicKey phoenixLogAuthorityKey,
+                                     final PublicKey globalConfigurationKey,
+                                     final PublicKey perpAssetMapKey,
+                                     final PublicKey mintKey,
+                                     final PublicKey traderAccountKey,
+                                     final PublicKey traderPhoenixWalletAtaKey,
+                                     final PublicKey globalTraderIndexKey,
+                                     final PublicKey activeTraderBufferKey) {
+    final var keys = syncSpotKeys(
+      phoenixProgramKey,
+      phoenixLogAuthorityKey,
+      globalConfigurationKey,
+      perpAssetMapKey,
+      mintKey,
+      traderAccountKey,
+      traderPhoenixWalletAtaKey,
+      globalTraderIndexKey,
+      activeTraderBufferKey
+    );
+    return syncSpot(invokedEternalProgramMeta, keys);
+  }
+
+  /// Permissionlessly reconciles the balance of the trader wallet PDA's associated token account into the trader account's spot collateral balance for one asset.
+  ///
+  public static Instruction syncSpot(final AccountMeta invokedEternalProgramMeta,
+                                     final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedEternalProgramMeta, keys, SYNC_SPOT_DISCRIMINATOR);
+  }
+
+  public static final Discriminator TRANSFER_SPOT_DISCRIMINATOR = toDiscriminator(255, 127, 0, 119, 77, 53, 77, 58);
+
+  /// Transfers SPL spot collateral between two trader accounts (margin-validated debit on the source), moving the backing tokens between the traders' wallet-PDA custody ATAs.
+  ///
+  /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
+  /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
+  /// @param mintKey SPL mint account selecting the spot collateral asset.
+  /// @param srcTraderPhoenixWalletKey Source trader's wallet PDA; CPI authority for the custody token movement.
+  /// @param srcCustodyTokenAccountKey Source trader's custody ATA (owned by srcWallet) debited by the token transfer.
+  /// @param dstCustodyTokenAccountKey Destination trader's custody ATA (owned by the destination trader's wallet PDA); must already exist.
+  /// @param tokenProgramKey SPL Token program for the custody token transfer.
+  /// @param globalConfigurationKey Global configuration PDA.
+  /// @param traderWalletKey Signing authority for the transfer (trader wallet, or a position authority via the optional trailing permission account).
+  /// @param srcTraderAccountKey Source trader account whose spot collateral is debited.
+  /// @param dstTraderAccountKey Destination trader account whose spot collateral is credited.
+  /// @param perpAssetMapKey Perp asset map for margin calculations and spot asset metadata.
+  /// @param globalTraderIndexKey Global trader index account.
+  /// @param activeTraderBufferKey Active trader buffer account.
+  public static List<AccountMeta> transferSpotKeys(final PublicKey phoenixProgramKey,
+                                                   final PublicKey phoenixLogAuthorityKey,
+                                                   final PublicKey mintKey,
+                                                   final PublicKey srcTraderPhoenixWalletKey,
+                                                   final PublicKey srcCustodyTokenAccountKey,
+                                                   final PublicKey dstCustodyTokenAccountKey,
+                                                   final PublicKey tokenProgramKey,
+                                                   final PublicKey globalConfigurationKey,
+                                                   final PublicKey traderWalletKey,
+                                                   final PublicKey srcTraderAccountKey,
+                                                   final PublicKey dstTraderAccountKey,
+                                                   final PublicKey perpAssetMapKey,
+                                                   final PublicKey globalTraderIndexKey,
+                                                   final PublicKey activeTraderBufferKey) {
+    return List.of(
+      createRead(phoenixProgramKey),
+      createRead(phoenixLogAuthorityKey),
+      createRead(mintKey),
+      createRead(srcTraderPhoenixWalletKey),
+      createWrite(srcCustodyTokenAccountKey),
+      createWrite(dstCustodyTokenAccountKey),
+      createRead(tokenProgramKey),
+      createRead(globalConfigurationKey),
+      createReadOnlySigner(traderWalletKey),
+      createWrite(srcTraderAccountKey),
+      createWrite(dstTraderAccountKey),
+      createRead(perpAssetMapKey),
+      createWrite(globalTraderIndexKey),
+      createWrite(activeTraderBufferKey)
+    );
+  }
+
+  /// Transfers SPL spot collateral between two trader accounts (margin-validated debit on the source), moving the backing tokens between the traders' wallet-PDA custody ATAs.
+  ///
+  /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
+  /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
+  /// @param mintKey SPL mint account selecting the spot collateral asset.
+  /// @param srcTraderPhoenixWalletKey Source trader's wallet PDA; CPI authority for the custody token movement.
+  /// @param srcCustodyTokenAccountKey Source trader's custody ATA (owned by srcWallet) debited by the token transfer.
+  /// @param dstCustodyTokenAccountKey Destination trader's custody ATA (owned by the destination trader's wallet PDA); must already exist.
+  /// @param tokenProgramKey SPL Token program for the custody token transfer.
+  /// @param globalConfigurationKey Global configuration PDA.
+  /// @param traderWalletKey Signing authority for the transfer (trader wallet, or a position authority via the optional trailing permission account).
+  /// @param srcTraderAccountKey Source trader account whose spot collateral is debited.
+  /// @param dstTraderAccountKey Destination trader account whose spot collateral is credited.
+  /// @param perpAssetMapKey Perp asset map for margin calculations and spot asset metadata.
+  /// @param globalTraderIndexKey Global trader index account.
+  /// @param activeTraderBufferKey Active trader buffer account.
+  public static Instruction transferSpot(final AccountMeta invokedEternalProgramMeta,
+                                         final PublicKey phoenixProgramKey,
+                                         final PublicKey phoenixLogAuthorityKey,
+                                         final PublicKey mintKey,
+                                         final PublicKey srcTraderPhoenixWalletKey,
+                                         final PublicKey srcCustodyTokenAccountKey,
+                                         final PublicKey dstCustodyTokenAccountKey,
+                                         final PublicKey tokenProgramKey,
+                                         final PublicKey globalConfigurationKey,
+                                         final PublicKey traderWalletKey,
+                                         final PublicKey srcTraderAccountKey,
+                                         final PublicKey dstTraderAccountKey,
+                                         final PublicKey perpAssetMapKey,
+                                         final PublicKey globalTraderIndexKey,
+                                         final PublicKey activeTraderBufferKey,
+                                         final TransferSpotParams params) {
+    final var keys = transferSpotKeys(
+      phoenixProgramKey,
+      phoenixLogAuthorityKey,
+      mintKey,
+      srcTraderPhoenixWalletKey,
+      srcCustodyTokenAccountKey,
+      dstCustodyTokenAccountKey,
+      tokenProgramKey,
+      globalConfigurationKey,
+      traderWalletKey,
+      srcTraderAccountKey,
+      dstTraderAccountKey,
+      perpAssetMapKey,
+      globalTraderIndexKey,
+      activeTraderBufferKey
+    );
+    return transferSpot(invokedEternalProgramMeta, keys, params);
+  }
+
+  /// Transfers SPL spot collateral between two trader accounts (margin-validated debit on the source), moving the backing tokens between the traders' wallet-PDA custody ATAs.
+  ///
+  public static Instruction transferSpot(final AccountMeta invokedEternalProgramMeta,
+                                         final List<AccountMeta> keys,
+                                         final TransferSpotParams params) {
+    final byte[] _data = new byte[8 + params.l()];
+    int i = TRANSFER_SPOT_DISCRIMINATOR.write(_data, 0);
+    params.write(_data, i);
+
+    return Instruction.createInstruction(invokedEternalProgramMeta, keys, _data);
+  }
+
+  public record TransferSpotIxData(Discriminator discriminator, TransferSpotParams params) implements SerDe {
+
+    public static TransferSpotIxData read(final Instruction instruction) {
+      return read(instruction.copyData(), 0);
+    }
+
+    public static final int BYTES = 16;
+
+    public static final int PARAMS_OFFSET = 8;
+
+    public static TransferSpotIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var params = TransferSpotParams.read(_data, i);
+      return new TransferSpotIxData(discriminator, params);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      i += params.write(_data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator TRANSFER_SPOT_FROM_CHILD_TO_PARENT_DISCRIMINATOR = toDiscriminator(49, 4, 0, 150, 126, 152, 163, 226);
+
+  /// Sweeps a flat child trader's full balance of one SPL spot collateral asset into its cross-margin parent, moving the backing tokens between the custody ATAs (idempotent no-op if the child is not flat).
+  ///
+  /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
+  /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
+  /// @param mintKey SPL mint account selecting the spot collateral asset.
+  /// @param childTraderPhoenixWalletKey Child trader's wallet PDA; CPI authority for the custody token movement.
+  /// @param childCustodyTokenAccountKey Child trader's custody ATA (owned by childWallet) debited by the sweep.
+  /// @param parentCustodyTokenAccountKey Parent trader's custody ATA (owned by the parent's wallet PDA); must already exist.
+  /// @param tokenProgramKey SPL Token program for the custody token transfer.
+  /// @param globalConfigurationKey Global configuration PDA.
+  /// @param traderWalletKey Trader wallet owning both accounts; signature only required when the child has disabled collateral sweep.
+  /// @param childTraderAccountKey Child (isolated margin) trader account being swept.
+  /// @param parentTraderAccountKey Parent (cross margin) trader account receiving the collateral.
+  /// @param perpAssetMapKey Perp asset map for spot asset metadata.
+  /// @param globalTraderIndexKey Global trader index account.
+  /// @param activeTraderBufferKey Active trader buffer account.
+  public static List<AccountMeta> transferSpotFromChildToParentKeys(final PublicKey phoenixProgramKey,
+                                                                    final PublicKey phoenixLogAuthorityKey,
+                                                                    final PublicKey mintKey,
+                                                                    final PublicKey childTraderPhoenixWalletKey,
+                                                                    final PublicKey childCustodyTokenAccountKey,
+                                                                    final PublicKey parentCustodyTokenAccountKey,
+                                                                    final PublicKey tokenProgramKey,
+                                                                    final PublicKey globalConfigurationKey,
+                                                                    final PublicKey traderWalletKey,
+                                                                    final PublicKey childTraderAccountKey,
+                                                                    final PublicKey parentTraderAccountKey,
+                                                                    final PublicKey perpAssetMapKey,
+                                                                    final PublicKey globalTraderIndexKey,
+                                                                    final PublicKey activeTraderBufferKey) {
+    return List.of(
+      createRead(phoenixProgramKey),
+      createRead(phoenixLogAuthorityKey),
+      createRead(mintKey),
+      createRead(childTraderPhoenixWalletKey),
+      createWrite(childCustodyTokenAccountKey),
+      createWrite(parentCustodyTokenAccountKey),
+      createRead(tokenProgramKey),
+      createRead(globalConfigurationKey),
+      createRead(traderWalletKey),
+      createWrite(childTraderAccountKey),
+      createWrite(parentTraderAccountKey),
+      createRead(perpAssetMapKey),
+      createWrite(globalTraderIndexKey),
+      createWrite(activeTraderBufferKey)
+    );
+  }
+
+  /// Sweeps a flat child trader's full balance of one SPL spot collateral asset into its cross-margin parent, moving the backing tokens between the custody ATAs (idempotent no-op if the child is not flat).
+  ///
+  /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
+  /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
+  /// @param mintKey SPL mint account selecting the spot collateral asset.
+  /// @param childTraderPhoenixWalletKey Child trader's wallet PDA; CPI authority for the custody token movement.
+  /// @param childCustodyTokenAccountKey Child trader's custody ATA (owned by childWallet) debited by the sweep.
+  /// @param parentCustodyTokenAccountKey Parent trader's custody ATA (owned by the parent's wallet PDA); must already exist.
+  /// @param tokenProgramKey SPL Token program for the custody token transfer.
+  /// @param globalConfigurationKey Global configuration PDA.
+  /// @param traderWalletKey Trader wallet owning both accounts; signature only required when the child has disabled collateral sweep.
+  /// @param childTraderAccountKey Child (isolated margin) trader account being swept.
+  /// @param parentTraderAccountKey Parent (cross margin) trader account receiving the collateral.
+  /// @param perpAssetMapKey Perp asset map for spot asset metadata.
+  /// @param globalTraderIndexKey Global trader index account.
+  /// @param activeTraderBufferKey Active trader buffer account.
+  public static Instruction transferSpotFromChildToParent(final AccountMeta invokedEternalProgramMeta,
+                                                          final PublicKey phoenixProgramKey,
+                                                          final PublicKey phoenixLogAuthorityKey,
+                                                          final PublicKey mintKey,
+                                                          final PublicKey childTraderPhoenixWalletKey,
+                                                          final PublicKey childCustodyTokenAccountKey,
+                                                          final PublicKey parentCustodyTokenAccountKey,
+                                                          final PublicKey tokenProgramKey,
+                                                          final PublicKey globalConfigurationKey,
+                                                          final PublicKey traderWalletKey,
+                                                          final PublicKey childTraderAccountKey,
+                                                          final PublicKey parentTraderAccountKey,
+                                                          final PublicKey perpAssetMapKey,
+                                                          final PublicKey globalTraderIndexKey,
+                                                          final PublicKey activeTraderBufferKey) {
+    final var keys = transferSpotFromChildToParentKeys(
+      phoenixProgramKey,
+      phoenixLogAuthorityKey,
+      mintKey,
+      childTraderPhoenixWalletKey,
+      childCustodyTokenAccountKey,
+      parentCustodyTokenAccountKey,
+      tokenProgramKey,
+      globalConfigurationKey,
+      traderWalletKey,
+      childTraderAccountKey,
+      parentTraderAccountKey,
+      perpAssetMapKey,
+      globalTraderIndexKey,
+      activeTraderBufferKey
+    );
+    return transferSpotFromChildToParent(invokedEternalProgramMeta, keys);
+  }
+
+  /// Sweeps a flat child trader's full balance of one SPL spot collateral asset into its cross-margin parent, moving the backing tokens between the custody ATAs (idempotent no-op if the child is not flat).
+  ///
+  public static Instruction transferSpotFromChildToParent(final AccountMeta invokedEternalProgramMeta,
+                                                          final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedEternalProgramMeta, keys, TRANSFER_SPOT_FROM_CHILD_TO_PARENT_DISCRIMINATOR);
+  }
+
+  public static final Discriminator SWAP_SPOT_WITH_SPOT_DISCRIMINATOR = toDiscriminator(70, 110, 253, 51, 88, 242, 231, 26);
+
+  /// Swaps between two SPL spot collateral assets through a caller-supplied external venue: debits the source asset from the trader, executes packed venue instructions, and credits the trader with the output received on the signer's destination token account, moved into the destination custody ATA.
+  ///
+  /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
+  /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
+  /// @param globalConfigurationKey Global configuration PDA; must be active, gates position-authority swaps and spot-collateral activity.
+  /// @param perpAssetMapKey Perp asset map holding spot asset registrations, prices, and global tallies.
+  /// @param srcMintKey SPL mint account selecting the source spot asset.
+  /// @param dstMintKey SPL mint account selecting the destination spot asset.
+  /// @param tokenProgramKey SPL Token program for the custody transfers.
+  /// @param traderPhoenixWalletKey Trader's wallet PDA; owner of both custody ATAs and CPI authority for the source custody debit.
+  /// @param signerKey The trader wallet or the trader's position authority; the only key allowed to sign inside the packed venue instructions.
+  /// @param traderAccountKey Trader state PDA whose spot collateral balances are debited and credited.
+  /// @param withdrawQueueKey Withdraw queue PDA; the swap's collateral-value decrease is consumed from the contract-wide withdrawal throttle.
+  /// @param srcTraderPhoenixWalletAtaKey Wallet PDA's custody associated token account for the source mint; debited by amountIn.
+  /// @param signerSrcTokenAccountKey Signer-owned token account for the source mint; the external venue spends the withdrawn tokens from here.
+  /// @param signerDstTokenAccountKey Signer-owned token account for the destination mint; the external venue pays the output here, and its balance increase is moved into the destination custody account and credited.
+  /// @param dstTraderPhoenixWalletAtaKey Wallet PDA's custody associated token account for the destination mint; receives the swept output.
+  /// @param globalTraderIndexKey Global trader index account. Remaining accounts follow: caller-supplied venue accounts referenced by the packed instructions.
+  /// @param activeTraderBufferKey Active trader buffer account.
+  public static List<AccountMeta> swapSpotWithSpotKeys(final PublicKey phoenixProgramKey,
+                                                       final PublicKey phoenixLogAuthorityKey,
+                                                       final PublicKey globalConfigurationKey,
+                                                       final PublicKey perpAssetMapKey,
+                                                       final PublicKey srcMintKey,
+                                                       final PublicKey dstMintKey,
+                                                       final PublicKey tokenProgramKey,
+                                                       final PublicKey traderPhoenixWalletKey,
+                                                       final PublicKey signerKey,
+                                                       final PublicKey traderAccountKey,
+                                                       final PublicKey withdrawQueueKey,
+                                                       final PublicKey srcTraderPhoenixWalletAtaKey,
+                                                       final PublicKey signerSrcTokenAccountKey,
+                                                       final PublicKey signerDstTokenAccountKey,
+                                                       final PublicKey dstTraderPhoenixWalletAtaKey,
+                                                       final PublicKey globalTraderIndexKey,
+                                                       final PublicKey activeTraderBufferKey) {
+    return List.of(
+      createRead(phoenixProgramKey),
+      createRead(phoenixLogAuthorityKey),
+      createWrite(globalConfigurationKey),
+      createWrite(perpAssetMapKey),
+      createRead(srcMintKey),
+      createRead(dstMintKey),
+      createRead(tokenProgramKey),
+      createRead(traderPhoenixWalletKey),
+      createWritableSigner(signerKey),
+      createWrite(traderAccountKey),
+      createWrite(withdrawQueueKey),
+      createWrite(srcTraderPhoenixWalletAtaKey),
+      createWrite(signerSrcTokenAccountKey),
+      createWrite(signerDstTokenAccountKey),
+      createWrite(dstTraderPhoenixWalletAtaKey),
+      createWrite(globalTraderIndexKey),
+      createWrite(activeTraderBufferKey)
+    );
+  }
+
+  /// Swaps between two SPL spot collateral assets through a caller-supplied external venue: debits the source asset from the trader, executes packed venue instructions, and credits the trader with the output received on the signer's destination token account, moved into the destination custody ATA.
+  ///
+  /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
+  /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
+  /// @param globalConfigurationKey Global configuration PDA; must be active, gates position-authority swaps and spot-collateral activity.
+  /// @param perpAssetMapKey Perp asset map holding spot asset registrations, prices, and global tallies.
+  /// @param srcMintKey SPL mint account selecting the source spot asset.
+  /// @param dstMintKey SPL mint account selecting the destination spot asset.
+  /// @param tokenProgramKey SPL Token program for the custody transfers.
+  /// @param traderPhoenixWalletKey Trader's wallet PDA; owner of both custody ATAs and CPI authority for the source custody debit.
+  /// @param signerKey The trader wallet or the trader's position authority; the only key allowed to sign inside the packed venue instructions.
+  /// @param traderAccountKey Trader state PDA whose spot collateral balances are debited and credited.
+  /// @param withdrawQueueKey Withdraw queue PDA; the swap's collateral-value decrease is consumed from the contract-wide withdrawal throttle.
+  /// @param srcTraderPhoenixWalletAtaKey Wallet PDA's custody associated token account for the source mint; debited by amountIn.
+  /// @param signerSrcTokenAccountKey Signer-owned token account for the source mint; the external venue spends the withdrawn tokens from here.
+  /// @param signerDstTokenAccountKey Signer-owned token account for the destination mint; the external venue pays the output here, and its balance increase is moved into the destination custody account and credited.
+  /// @param dstTraderPhoenixWalletAtaKey Wallet PDA's custody associated token account for the destination mint; receives the swept output.
+  /// @param globalTraderIndexKey Global trader index account. Remaining accounts follow: caller-supplied venue accounts referenced by the packed instructions.
+  /// @param activeTraderBufferKey Active trader buffer account.
+  public static Instruction swapSpotWithSpot(final AccountMeta invokedEternalProgramMeta,
+                                             final PublicKey phoenixProgramKey,
+                                             final PublicKey phoenixLogAuthorityKey,
+                                             final PublicKey globalConfigurationKey,
+                                             final PublicKey perpAssetMapKey,
+                                             final PublicKey srcMintKey,
+                                             final PublicKey dstMintKey,
+                                             final PublicKey tokenProgramKey,
+                                             final PublicKey traderPhoenixWalletKey,
+                                             final PublicKey signerKey,
+                                             final PublicKey traderAccountKey,
+                                             final PublicKey withdrawQueueKey,
+                                             final PublicKey srcTraderPhoenixWalletAtaKey,
+                                             final PublicKey signerSrcTokenAccountKey,
+                                             final PublicKey signerDstTokenAccountKey,
+                                             final PublicKey dstTraderPhoenixWalletAtaKey,
+                                             final PublicKey globalTraderIndexKey,
+                                             final PublicKey activeTraderBufferKey,
+                                             final SwapSpotWithSpotInstruction params) {
+    final var keys = swapSpotWithSpotKeys(
+      phoenixProgramKey,
+      phoenixLogAuthorityKey,
+      globalConfigurationKey,
+      perpAssetMapKey,
+      srcMintKey,
+      dstMintKey,
+      tokenProgramKey,
+      traderPhoenixWalletKey,
+      signerKey,
+      traderAccountKey,
+      withdrawQueueKey,
+      srcTraderPhoenixWalletAtaKey,
+      signerSrcTokenAccountKey,
+      signerDstTokenAccountKey,
+      dstTraderPhoenixWalletAtaKey,
+      globalTraderIndexKey,
+      activeTraderBufferKey
+    );
+    return swapSpotWithSpot(invokedEternalProgramMeta, keys, params);
+  }
+
+  /// Swaps between two SPL spot collateral assets through a caller-supplied external venue: debits the source asset from the trader, executes packed venue instructions, and credits the trader with the output received on the signer's destination token account, moved into the destination custody ATA.
+  ///
+  public static Instruction swapSpotWithSpot(final AccountMeta invokedEternalProgramMeta,
+                                             final List<AccountMeta> keys,
+                                             final SwapSpotWithSpotInstruction params) {
+    final byte[] _data = new byte[8 + params.l()];
+    int i = SWAP_SPOT_WITH_SPOT_DISCRIMINATOR.write(_data, 0);
+    params.write(_data, i);
+
+    return Instruction.createInstruction(invokedEternalProgramMeta, keys, _data);
+  }
+
+  public record SwapSpotWithSpotIxData(Discriminator discriminator, SwapSpotWithSpotInstruction params) implements SerDe {
+
+    public static SwapSpotWithSpotIxData read(final Instruction instruction) {
+      return read(instruction.copyData(), 0);
+    }
+
+    public static final int PARAMS_OFFSET = 8;
+
+    public static SwapSpotWithSpotIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var params = SwapSpotWithSpotInstruction.read(_data, i);
+      return new SwapSpotWithSpotIxData(discriminator, params);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      i += params.write(_data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 8 + params.l();
+    }
+  }
+
+  public static final Discriminator SWAP_SPOT_WITH_USDC_DISCRIMINATOR = toDiscriminator(119, 121, 96, 136, 111, 0, 215, 223);
+
+  /// Swaps between an SPL spot collateral asset and USDC quote collateral through an external venue: Sell debits spot and sweeps received USDC into the global vault as quote collateral; Buy debits USDC from the vault and credits the spot received on the signer's spot token account, moved into the spot custody ATA.
+  ///
+  /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
+  /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
+  /// @param globalConfigurationKey Global configuration PDA; must be active, supplies the canonical quote mint and deposit cooldown.
+  /// @param perpAssetMapKey Perp asset map holding spot asset registrations, prices, and global tallies.
+  /// @param spotMintKey SPL mint account selecting the spot collateral asset.
+  /// @param globalVaultKey Global USDC vault; receives swept USDC on Sell and pays out the quote leg on Buy.
+  /// @param tokenProgramKey SPL Token program for the token transfers.
+  /// @param traderPhoenixWalletKey Trader's wallet PDA; owner of the spot custody ATA and CPI authority for the Sell custody debit.
+  /// @param signerKey The trader wallet or the trader's position authority; the only key allowed to sign inside the packed venue instructions.
+  /// @param signerQuoteTokenAccountKey Signer-owned token account of the canonical quote mint; venue-facing USDC leg (measured on Sell, funded on Buy).
+  /// @param signerSpotTokenAccountKey Signer-owned token account for the spot mint; receives the Sell custody debit for the venue to spend, and the Buy output the venue pays in.
+  /// @param traderAccountKey Trader state PDA whose quote and spot collateral balances change.
+  /// @param withdrawQueueKey Withdraw queue PDA; the swap's collateral-value decrease is consumed from the contract-wide withdrawal throttle.
+  /// @param spotTraderPhoenixWalletAtaKey Wallet PDA's custody associated token account for the spot mint; debited on Sell, receives the swept output on Buy.
+  /// @param globalTraderIndexKey Global trader index account. Remaining accounts follow: caller-supplied venue accounts referenced by the packed instructions.
+  /// @param activeTraderBufferKey Active trader buffer account.
+  public static List<AccountMeta> swapSpotWithUsdcKeys(final PublicKey phoenixProgramKey,
+                                                       final PublicKey phoenixLogAuthorityKey,
+                                                       final PublicKey globalConfigurationKey,
+                                                       final PublicKey perpAssetMapKey,
+                                                       final PublicKey spotMintKey,
+                                                       final PublicKey globalVaultKey,
+                                                       final PublicKey tokenProgramKey,
+                                                       final PublicKey traderPhoenixWalletKey,
+                                                       final PublicKey signerKey,
+                                                       final PublicKey signerQuoteTokenAccountKey,
+                                                       final PublicKey signerSpotTokenAccountKey,
+                                                       final PublicKey traderAccountKey,
+                                                       final PublicKey withdrawQueueKey,
+                                                       final PublicKey spotTraderPhoenixWalletAtaKey,
+                                                       final PublicKey globalTraderIndexKey,
+                                                       final PublicKey activeTraderBufferKey) {
+    return List.of(
+      createRead(phoenixProgramKey),
+      createRead(phoenixLogAuthorityKey),
+      createWrite(globalConfigurationKey),
+      createWrite(perpAssetMapKey),
+      createRead(spotMintKey),
+      createWrite(globalVaultKey),
+      createRead(tokenProgramKey),
+      createRead(traderPhoenixWalletKey),
+      createWritableSigner(signerKey),
+      createWrite(signerQuoteTokenAccountKey),
+      createWrite(signerSpotTokenAccountKey),
+      createWrite(traderAccountKey),
+      createWrite(withdrawQueueKey),
+      createWrite(spotTraderPhoenixWalletAtaKey),
+      createWrite(globalTraderIndexKey),
+      createWrite(activeTraderBufferKey)
+    );
+  }
+
+  /// Swaps between an SPL spot collateral asset and USDC quote collateral through an external venue: Sell debits spot and sweeps received USDC into the global vault as quote collateral; Buy debits USDC from the vault and credits the spot received on the signer's spot token account, moved into the spot custody ATA.
+  ///
+  /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
+  /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
+  /// @param globalConfigurationKey Global configuration PDA; must be active, supplies the canonical quote mint and deposit cooldown.
+  /// @param perpAssetMapKey Perp asset map holding spot asset registrations, prices, and global tallies.
+  /// @param spotMintKey SPL mint account selecting the spot collateral asset.
+  /// @param globalVaultKey Global USDC vault; receives swept USDC on Sell and pays out the quote leg on Buy.
+  /// @param tokenProgramKey SPL Token program for the token transfers.
+  /// @param traderPhoenixWalletKey Trader's wallet PDA; owner of the spot custody ATA and CPI authority for the Sell custody debit.
+  /// @param signerKey The trader wallet or the trader's position authority; the only key allowed to sign inside the packed venue instructions.
+  /// @param signerQuoteTokenAccountKey Signer-owned token account of the canonical quote mint; venue-facing USDC leg (measured on Sell, funded on Buy).
+  /// @param signerSpotTokenAccountKey Signer-owned token account for the spot mint; receives the Sell custody debit for the venue to spend, and the Buy output the venue pays in.
+  /// @param traderAccountKey Trader state PDA whose quote and spot collateral balances change.
+  /// @param withdrawQueueKey Withdraw queue PDA; the swap's collateral-value decrease is consumed from the contract-wide withdrawal throttle.
+  /// @param spotTraderPhoenixWalletAtaKey Wallet PDA's custody associated token account for the spot mint; debited on Sell, receives the swept output on Buy.
+  /// @param globalTraderIndexKey Global trader index account. Remaining accounts follow: caller-supplied venue accounts referenced by the packed instructions.
+  /// @param activeTraderBufferKey Active trader buffer account.
+  public static Instruction swapSpotWithUsdc(final AccountMeta invokedEternalProgramMeta,
+                                             final PublicKey phoenixProgramKey,
+                                             final PublicKey phoenixLogAuthorityKey,
+                                             final PublicKey globalConfigurationKey,
+                                             final PublicKey perpAssetMapKey,
+                                             final PublicKey spotMintKey,
+                                             final PublicKey globalVaultKey,
+                                             final PublicKey tokenProgramKey,
+                                             final PublicKey traderPhoenixWalletKey,
+                                             final PublicKey signerKey,
+                                             final PublicKey signerQuoteTokenAccountKey,
+                                             final PublicKey signerSpotTokenAccountKey,
+                                             final PublicKey traderAccountKey,
+                                             final PublicKey withdrawQueueKey,
+                                             final PublicKey spotTraderPhoenixWalletAtaKey,
+                                             final PublicKey globalTraderIndexKey,
+                                             final PublicKey activeTraderBufferKey,
+                                             final SwapSpotWithUsdcInstruction params) {
+    final var keys = swapSpotWithUsdcKeys(
+      phoenixProgramKey,
+      phoenixLogAuthorityKey,
+      globalConfigurationKey,
+      perpAssetMapKey,
+      spotMintKey,
+      globalVaultKey,
+      tokenProgramKey,
+      traderPhoenixWalletKey,
+      signerKey,
+      signerQuoteTokenAccountKey,
+      signerSpotTokenAccountKey,
+      traderAccountKey,
+      withdrawQueueKey,
+      spotTraderPhoenixWalletAtaKey,
+      globalTraderIndexKey,
+      activeTraderBufferKey
+    );
+    return swapSpotWithUsdc(invokedEternalProgramMeta, keys, params);
+  }
+
+  /// Swaps between an SPL spot collateral asset and USDC quote collateral through an external venue: Sell debits spot and sweeps received USDC into the global vault as quote collateral; Buy debits USDC from the vault and credits the spot received on the signer's spot token account, moved into the spot custody ATA.
+  ///
+  public static Instruction swapSpotWithUsdc(final AccountMeta invokedEternalProgramMeta,
+                                             final List<AccountMeta> keys,
+                                             final SwapSpotWithUsdcInstruction params) {
+    final byte[] _data = new byte[8 + params.l()];
+    int i = SWAP_SPOT_WITH_USDC_DISCRIMINATOR.write(_data, 0);
+    params.write(_data, i);
+
+    return Instruction.createInstruction(invokedEternalProgramMeta, keys, _data);
+  }
+
+  public record SwapSpotWithUsdcIxData(Discriminator discriminator, SwapSpotWithUsdcInstruction params) implements SerDe {
+
+    public static SwapSpotWithUsdcIxData read(final Instruction instruction) {
+      return read(instruction.copyData(), 0);
+    }
+
+    public static final int PARAMS_OFFSET = 8;
+
+    public static SwapSpotWithUsdcIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var params = SwapSpotWithUsdcInstruction.read(_data, i);
+      return new SwapSpotWithUsdcIxData(discriminator, params);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      i += params.write(_data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 8 + params.l();
+    }
+  }
+
+  public static final Discriminator SWAP_SPOT_WITH_SOL_DISCRIMINATOR = toDiscriminator(236, 150, 197, 249, 54, 231, 86, 101);
+
+  /// Swaps between an SPL spot collateral asset and native SOL collateral through an external venue: Sell debits spot and credits lamports received on the signer as native SOL collateral; Buy debits native SOL via the privileged withdraw self-CPI and credits the spot received on the signer's spot token account, moved into the spot custody ATA.
+  ///
+  /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
+  /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
+  /// @param globalConfigurationKey Global configuration PDA; must be active and have native SOL collateral enabled.
+  /// @param perpAssetMapKey Perp asset map holding spot asset registrations, prices, and global tallies.
+  /// @param spotMintKey SPL mint account selecting the spot collateral asset.
+  /// @param tokenProgramKey SPL Token program for the spot-leg token transfers.
+  /// @param systemProgramKey System program, required for the native SOL lamport movements.
+  /// @param nativeSolAuthorityKey Native SOL authority PDA, required by the Buy direction's withdraw self-CPI.
+  /// @param traderPhoenixWalletKey Trader's wallet PDA; owner of the spot custody ATA and CPI authority for the Sell custody debit.
+  /// @param signerKey The trader wallet or the trader's position authority; writable because lamports flow through it in both directions.
+  /// @param signerSpotTokenAccountKey Signer-owned token account for the spot mint; receives the Sell custody debit for the venue to spend, and the Buy output the venue pays in.
+  /// @param traderAccountKey Trader state PDA; holds the native SOL lamports and the spot collateral ledger entries.
+  /// @param withdrawQueueKey Withdraw queue PDA; the swap's collateral-value decrease is consumed from the contract-wide withdrawal throttle.
+  /// @param spotTraderPhoenixWalletAtaKey Wallet PDA's custody associated token account for the spot mint; debited on Sell, receives the swept output on Buy.
+  /// @param globalTraderIndexKey Global trader index account. Remaining accounts follow: caller-supplied venue accounts referenced by the packed instructions.
+  /// @param activeTraderBufferKey Active trader buffer account.
+  public static List<AccountMeta> swapSpotWithSolKeys(final PublicKey phoenixProgramKey,
+                                                      final PublicKey phoenixLogAuthorityKey,
+                                                      final PublicKey globalConfigurationKey,
+                                                      final PublicKey perpAssetMapKey,
+                                                      final PublicKey spotMintKey,
+                                                      final PublicKey tokenProgramKey,
+                                                      final PublicKey systemProgramKey,
+                                                      final PublicKey nativeSolAuthorityKey,
+                                                      final PublicKey traderPhoenixWalletKey,
+                                                      final PublicKey signerKey,
+                                                      final PublicKey signerSpotTokenAccountKey,
+                                                      final PublicKey traderAccountKey,
+                                                      final PublicKey withdrawQueueKey,
+                                                      final PublicKey spotTraderPhoenixWalletAtaKey,
+                                                      final PublicKey globalTraderIndexKey,
+                                                      final PublicKey activeTraderBufferKey) {
+    return List.of(
+      createRead(phoenixProgramKey),
+      createRead(phoenixLogAuthorityKey),
+      createWrite(globalConfigurationKey),
+      createWrite(perpAssetMapKey),
+      createRead(spotMintKey),
+      createRead(tokenProgramKey),
+      createRead(systemProgramKey),
+      createRead(nativeSolAuthorityKey),
+      createRead(traderPhoenixWalletKey),
+      createWritableSigner(signerKey),
+      createWrite(signerSpotTokenAccountKey),
+      createWrite(traderAccountKey),
+      createWrite(withdrawQueueKey),
+      createWrite(spotTraderPhoenixWalletAtaKey),
+      createWrite(globalTraderIndexKey),
+      createWrite(activeTraderBufferKey)
+    );
+  }
+
+  /// Swaps between an SPL spot collateral asset and native SOL collateral through an external venue: Sell debits spot and credits lamports received on the signer as native SOL collateral; Buy debits native SOL via the privileged withdraw self-CPI and credits the spot received on the signer's spot token account, moved into the spot custody ATA.
+  ///
+  /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
+  /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
+  /// @param globalConfigurationKey Global configuration PDA; must be active and have native SOL collateral enabled.
+  /// @param perpAssetMapKey Perp asset map holding spot asset registrations, prices, and global tallies.
+  /// @param spotMintKey SPL mint account selecting the spot collateral asset.
+  /// @param tokenProgramKey SPL Token program for the spot-leg token transfers.
+  /// @param systemProgramKey System program, required for the native SOL lamport movements.
+  /// @param nativeSolAuthorityKey Native SOL authority PDA, required by the Buy direction's withdraw self-CPI.
+  /// @param traderPhoenixWalletKey Trader's wallet PDA; owner of the spot custody ATA and CPI authority for the Sell custody debit.
+  /// @param signerKey The trader wallet or the trader's position authority; writable because lamports flow through it in both directions.
+  /// @param signerSpotTokenAccountKey Signer-owned token account for the spot mint; receives the Sell custody debit for the venue to spend, and the Buy output the venue pays in.
+  /// @param traderAccountKey Trader state PDA; holds the native SOL lamports and the spot collateral ledger entries.
+  /// @param withdrawQueueKey Withdraw queue PDA; the swap's collateral-value decrease is consumed from the contract-wide withdrawal throttle.
+  /// @param spotTraderPhoenixWalletAtaKey Wallet PDA's custody associated token account for the spot mint; debited on Sell, receives the swept output on Buy.
+  /// @param globalTraderIndexKey Global trader index account. Remaining accounts follow: caller-supplied venue accounts referenced by the packed instructions.
+  /// @param activeTraderBufferKey Active trader buffer account.
+  public static Instruction swapSpotWithSol(final AccountMeta invokedEternalProgramMeta,
+                                            final PublicKey phoenixProgramKey,
+                                            final PublicKey phoenixLogAuthorityKey,
+                                            final PublicKey globalConfigurationKey,
+                                            final PublicKey perpAssetMapKey,
+                                            final PublicKey spotMintKey,
+                                            final PublicKey tokenProgramKey,
+                                            final PublicKey systemProgramKey,
+                                            final PublicKey nativeSolAuthorityKey,
+                                            final PublicKey traderPhoenixWalletKey,
+                                            final PublicKey signerKey,
+                                            final PublicKey signerSpotTokenAccountKey,
+                                            final PublicKey traderAccountKey,
+                                            final PublicKey withdrawQueueKey,
+                                            final PublicKey spotTraderPhoenixWalletAtaKey,
+                                            final PublicKey globalTraderIndexKey,
+                                            final PublicKey activeTraderBufferKey,
+                                            final SwapSpotWithSolInstruction params) {
+    final var keys = swapSpotWithSolKeys(
+      phoenixProgramKey,
+      phoenixLogAuthorityKey,
+      globalConfigurationKey,
+      perpAssetMapKey,
+      spotMintKey,
+      tokenProgramKey,
+      systemProgramKey,
+      nativeSolAuthorityKey,
+      traderPhoenixWalletKey,
+      signerKey,
+      signerSpotTokenAccountKey,
+      traderAccountKey,
+      withdrawQueueKey,
+      spotTraderPhoenixWalletAtaKey,
+      globalTraderIndexKey,
+      activeTraderBufferKey
+    );
+    return swapSpotWithSol(invokedEternalProgramMeta, keys, params);
+  }
+
+  /// Swaps between an SPL spot collateral asset and native SOL collateral through an external venue: Sell debits spot and credits lamports received on the signer as native SOL collateral; Buy debits native SOL via the privileged withdraw self-CPI and credits the spot received on the signer's spot token account, moved into the spot custody ATA.
+  ///
+  public static Instruction swapSpotWithSol(final AccountMeta invokedEternalProgramMeta,
+                                            final List<AccountMeta> keys,
+                                            final SwapSpotWithSolInstruction params) {
+    final byte[] _data = new byte[8 + params.l()];
+    int i = SWAP_SPOT_WITH_SOL_DISCRIMINATOR.write(_data, 0);
+    params.write(_data, i);
+
+    return Instruction.createInstruction(invokedEternalProgramMeta, keys, _data);
+  }
+
+  public record SwapSpotWithSolIxData(Discriminator discriminator, SwapSpotWithSolInstruction params) implements SerDe {
+
+    public static SwapSpotWithSolIxData read(final Instruction instruction) {
+      return read(instruction.copyData(), 0);
+    }
+
+    public static final int PARAMS_OFFSET = 8;
+
+    public static SwapSpotWithSolIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var params = SwapSpotWithSolInstruction.read(_data, i);
+      return new SwapSpotWithSolIxData(discriminator, params);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      i += params.write(_data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 8 + params.l();
+    }
+  }
+
+  public static final Discriminator WITHDRAW_SPOT_DISCRIMINATOR = toDiscriminator(228, 41, 126, 4, 112, 18, 221, 112);
+
+  /// Withdraws SPL spot collateral (and/or uncounted custody excess) from the trader wallet's custody ATA to a destination token account of the same mint; accounted debits are margin-validated and consume the contract-wide withdrawal throttle, never enqueued.
+  ///
+  /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
+  /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
+  /// @param globalConfigurationKey Global configuration PDA.
+  /// @param signerWalletKey Trader authority signing the withdrawal.
+  /// @param traderAccountKey Trader account whose recorded spot collateral is debited.
+  /// @param perpAssetMapKey Perp asset map for margin checks, oracle valuation, and the global spot collateral tally.
+  /// @param mintKey SPL mint account selecting the spot collateral asset.
+  /// @param traderPhoenixWalletKey Trader's wallet PDA; owner of the custody ATA and CPI authority for the token movement.
+  /// @param custodyTokenAccountKey Custody ATA (owned by traderWallet, for the asset's mint) debited by the withdrawal.
+  /// @param destinationTokenAccountKey Destination token account of the same mint; must differ from the custody ATA.
+  /// @param tokenProgramKey SPL Token program for the custody token transfer.
+  /// @param withdrawQueueKey Withdraw queue PDA whose throttle budget is consumed by accounted withdrawals.
+  /// @param globalTraderIndexKey Global trader index account.
+  /// @param activeTraderBufferKey Active trader buffer account.
+  public static List<AccountMeta> withdrawSpotKeys(final PublicKey phoenixProgramKey,
+                                                   final PublicKey phoenixLogAuthorityKey,
+                                                   final PublicKey globalConfigurationKey,
+                                                   final PublicKey signerWalletKey,
+                                                   final PublicKey traderAccountKey,
+                                                   final PublicKey perpAssetMapKey,
+                                                   final PublicKey mintKey,
+                                                   final PublicKey traderPhoenixWalletKey,
+                                                   final PublicKey custodyTokenAccountKey,
+                                                   final PublicKey destinationTokenAccountKey,
+                                                   final PublicKey tokenProgramKey,
+                                                   final PublicKey withdrawQueueKey,
+                                                   final PublicKey globalTraderIndexKey,
+                                                   final PublicKey activeTraderBufferKey) {
+    return List.of(
+      createRead(phoenixProgramKey),
+      createRead(phoenixLogAuthorityKey),
+      createWrite(globalConfigurationKey),
+      createReadOnlySigner(signerWalletKey),
+      createWrite(traderAccountKey),
+      createWrite(perpAssetMapKey),
+      createRead(mintKey),
+      createRead(traderPhoenixWalletKey),
+      createWrite(custodyTokenAccountKey),
+      createWrite(destinationTokenAccountKey),
+      createRead(tokenProgramKey),
+      createWrite(withdrawQueueKey),
+      createWrite(globalTraderIndexKey),
+      createWrite(activeTraderBufferKey)
+    );
+  }
+
+  /// Withdraws SPL spot collateral (and/or uncounted custody excess) from the trader wallet's custody ATA to a destination token account of the same mint; accounted debits are margin-validated and consume the contract-wide withdrawal throttle, never enqueued.
+  ///
+  /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
+  /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
+  /// @param globalConfigurationKey Global configuration PDA.
+  /// @param signerWalletKey Trader authority signing the withdrawal.
+  /// @param traderAccountKey Trader account whose recorded spot collateral is debited.
+  /// @param perpAssetMapKey Perp asset map for margin checks, oracle valuation, and the global spot collateral tally.
+  /// @param mintKey SPL mint account selecting the spot collateral asset.
+  /// @param traderPhoenixWalletKey Trader's wallet PDA; owner of the custody ATA and CPI authority for the token movement.
+  /// @param custodyTokenAccountKey Custody ATA (owned by traderWallet, for the asset's mint) debited by the withdrawal.
+  /// @param destinationTokenAccountKey Destination token account of the same mint; must differ from the custody ATA.
+  /// @param tokenProgramKey SPL Token program for the custody token transfer.
+  /// @param withdrawQueueKey Withdraw queue PDA whose throttle budget is consumed by accounted withdrawals.
+  /// @param globalTraderIndexKey Global trader index account.
+  /// @param activeTraderBufferKey Active trader buffer account.
+  public static Instruction withdrawSpot(final AccountMeta invokedEternalProgramMeta,
+                                         final PublicKey phoenixProgramKey,
+                                         final PublicKey phoenixLogAuthorityKey,
+                                         final PublicKey globalConfigurationKey,
+                                         final PublicKey signerWalletKey,
+                                         final PublicKey traderAccountKey,
+                                         final PublicKey perpAssetMapKey,
+                                         final PublicKey mintKey,
+                                         final PublicKey traderPhoenixWalletKey,
+                                         final PublicKey custodyTokenAccountKey,
+                                         final PublicKey destinationTokenAccountKey,
+                                         final PublicKey tokenProgramKey,
+                                         final PublicKey withdrawQueueKey,
+                                         final PublicKey globalTraderIndexKey,
+                                         final PublicKey activeTraderBufferKey,
+                                         final WithdrawSpotParams params) {
+    final var keys = withdrawSpotKeys(
+      phoenixProgramKey,
+      phoenixLogAuthorityKey,
+      globalConfigurationKey,
+      signerWalletKey,
+      traderAccountKey,
+      perpAssetMapKey,
+      mintKey,
+      traderPhoenixWalletKey,
+      custodyTokenAccountKey,
+      destinationTokenAccountKey,
+      tokenProgramKey,
+      withdrawQueueKey,
+      globalTraderIndexKey,
+      activeTraderBufferKey
+    );
+    return withdrawSpot(invokedEternalProgramMeta, keys, params);
+  }
+
+  /// Withdraws SPL spot collateral (and/or uncounted custody excess) from the trader wallet's custody ATA to a destination token account of the same mint; accounted debits are margin-validated and consume the contract-wide withdrawal throttle, never enqueued.
+  ///
+  public static Instruction withdrawSpot(final AccountMeta invokedEternalProgramMeta,
+                                         final List<AccountMeta> keys,
+                                         final WithdrawSpotParams params) {
+    final byte[] _data = new byte[8 + params.l()];
+    int i = WITHDRAW_SPOT_DISCRIMINATOR.write(_data, 0);
+    params.write(_data, i);
+
+    return Instruction.createInstruction(invokedEternalProgramMeta, keys, _data);
+  }
+
+  public record WithdrawSpotIxData(Discriminator discriminator, WithdrawSpotParams params) implements SerDe {
+
+    public static WithdrawSpotIxData read(final Instruction instruction) {
+      return read(instruction.copyData(), 0);
+    }
+
+    public static final int PARAMS_OFFSET = 8;
+
+    public static WithdrawSpotIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var params = WithdrawSpotParams.read(_data, i);
+      return new WithdrawSpotIxData(discriminator, params);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      i += params.write(_data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 8 + params.l();
+    }
+  }
+
+  public static final Discriminator LIQUIDATE_SPOT_DISCRIMINATOR = toDiscriminator(107, 0, 128, 41, 35, 229, 251, 18);
+
+  /// Seizes a liquidatee's SPL spot collateral at the discounted oracle price, executing packed venue instructions to convert it and depositing the quote proceeds to the liquidatee, bypassing the withdrawal throttle and queue.
+  ///
+  /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
+  /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
+  /// @param globalConfigurationKey Global configuration PDA; must be active and gates the spot-collateral feature and authority checks.
+  /// @param perpAssetMapKey Perp asset map holding the spot asset registry entry, oracle valuation data, and global spot collateral tallies.
+  /// @param spotMintKey SPL mint account selecting the spot collateral asset.
+  /// @param globalVaultKey Global quote vault token account that receives the liquidator's quote deposit.
+  /// @param tokenProgramKey SPL Token program used for the seizure debit and quote deposit transfers.
+  /// @param traderPhoenixWalletKey Liquidatee's wallet PDA; owner of the custody ATA and CPI authority for the seizure debit.
+  /// @param signerKey Liquidator; must be the risk authority or hold a delegated liquidation permission, and owns both venue-facing token accounts.
+  /// @param maybePermissionAccountKey Permission PDA for the delegated-liquidation path; pass the signer's own key to select the direct risk-authority path.
+  /// @param signerQuoteTokenAccountKey Liquidator's quote token account; its balance delta after the venue instructions is the deposit credited to the liquidatee.
+  /// @param signerSpotTokenAccountKey Liquidator's token account for the seized asset's mint; receives the seized tokens so the venue instructions can spend them.
+  /// @param liquidateeAccountKey Trader account being liquidated; its recorded spot balance is debited and its quote collateral credited.
+  /// @param traderPhoenixWalletAtaKey Custody ATA of the seized asset, owned by the liquidatee's wallet PDA.
+  /// @param globalTraderIndexKey Global trader index account. Remaining accounts follow: shortfall-evidence trader accounts (numTradersToCheck of them, writable), then caller-supplied venue accounts referenced by the packed instructions.
+  /// @param activeTraderBufferKey Active trader buffer account.
+  public static List<AccountMeta> liquidateSpotKeys(final PublicKey phoenixProgramKey,
+                                                    final PublicKey phoenixLogAuthorityKey,
+                                                    final PublicKey globalConfigurationKey,
+                                                    final PublicKey perpAssetMapKey,
+                                                    final PublicKey spotMintKey,
+                                                    final PublicKey globalVaultKey,
+                                                    final PublicKey tokenProgramKey,
+                                                    final PublicKey traderPhoenixWalletKey,
+                                                    final PublicKey signerKey,
+                                                    final PublicKey maybePermissionAccountKey,
+                                                    final PublicKey signerQuoteTokenAccountKey,
+                                                    final PublicKey signerSpotTokenAccountKey,
+                                                    final PublicKey liquidateeAccountKey,
+                                                    final PublicKey traderPhoenixWalletAtaKey,
+                                                    final PublicKey globalTraderIndexKey,
+                                                    final PublicKey activeTraderBufferKey) {
+    return List.of(
+      createRead(phoenixProgramKey),
+      createRead(phoenixLogAuthorityKey),
+      createWrite(globalConfigurationKey),
+      createWrite(perpAssetMapKey),
+      createRead(spotMintKey),
+      createWrite(globalVaultKey),
+      createRead(tokenProgramKey),
+      createRead(traderPhoenixWalletKey),
+      createWritableSigner(signerKey),
+      createWrite(maybePermissionAccountKey),
+      createWrite(signerQuoteTokenAccountKey),
+      createWrite(signerSpotTokenAccountKey),
+      createWrite(liquidateeAccountKey),
+      createWrite(traderPhoenixWalletAtaKey),
+      createWrite(globalTraderIndexKey),
+      createWrite(activeTraderBufferKey)
+    );
+  }
+
+  /// Seizes a liquidatee's SPL spot collateral at the discounted oracle price, executing packed venue instructions to convert it and depositing the quote proceeds to the liquidatee, bypassing the withdrawal throttle and queue.
+  ///
+  /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
+  /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
+  /// @param globalConfigurationKey Global configuration PDA; must be active and gates the spot-collateral feature and authority checks.
+  /// @param perpAssetMapKey Perp asset map holding the spot asset registry entry, oracle valuation data, and global spot collateral tallies.
+  /// @param spotMintKey SPL mint account selecting the spot collateral asset.
+  /// @param globalVaultKey Global quote vault token account that receives the liquidator's quote deposit.
+  /// @param tokenProgramKey SPL Token program used for the seizure debit and quote deposit transfers.
+  /// @param traderPhoenixWalletKey Liquidatee's wallet PDA; owner of the custody ATA and CPI authority for the seizure debit.
+  /// @param signerKey Liquidator; must be the risk authority or hold a delegated liquidation permission, and owns both venue-facing token accounts.
+  /// @param maybePermissionAccountKey Permission PDA for the delegated-liquidation path; pass the signer's own key to select the direct risk-authority path.
+  /// @param signerQuoteTokenAccountKey Liquidator's quote token account; its balance delta after the venue instructions is the deposit credited to the liquidatee.
+  /// @param signerSpotTokenAccountKey Liquidator's token account for the seized asset's mint; receives the seized tokens so the venue instructions can spend them.
+  /// @param liquidateeAccountKey Trader account being liquidated; its recorded spot balance is debited and its quote collateral credited.
+  /// @param traderPhoenixWalletAtaKey Custody ATA of the seized asset, owned by the liquidatee's wallet PDA.
+  /// @param globalTraderIndexKey Global trader index account. Remaining accounts follow: shortfall-evidence trader accounts (numTradersToCheck of them, writable), then caller-supplied venue accounts referenced by the packed instructions.
+  /// @param activeTraderBufferKey Active trader buffer account.
+  public static Instruction liquidateSpot(final AccountMeta invokedEternalProgramMeta,
+                                          final PublicKey phoenixProgramKey,
+                                          final PublicKey phoenixLogAuthorityKey,
+                                          final PublicKey globalConfigurationKey,
+                                          final PublicKey perpAssetMapKey,
+                                          final PublicKey spotMintKey,
+                                          final PublicKey globalVaultKey,
+                                          final PublicKey tokenProgramKey,
+                                          final PublicKey traderPhoenixWalletKey,
+                                          final PublicKey signerKey,
+                                          final PublicKey maybePermissionAccountKey,
+                                          final PublicKey signerQuoteTokenAccountKey,
+                                          final PublicKey signerSpotTokenAccountKey,
+                                          final PublicKey liquidateeAccountKey,
+                                          final PublicKey traderPhoenixWalletAtaKey,
+                                          final PublicKey globalTraderIndexKey,
+                                          final PublicKey activeTraderBufferKey,
+                                          final LiquidateSpotParams params) {
+    final var keys = liquidateSpotKeys(
+      phoenixProgramKey,
+      phoenixLogAuthorityKey,
+      globalConfigurationKey,
+      perpAssetMapKey,
+      spotMintKey,
+      globalVaultKey,
+      tokenProgramKey,
+      traderPhoenixWalletKey,
+      signerKey,
+      maybePermissionAccountKey,
+      signerQuoteTokenAccountKey,
+      signerSpotTokenAccountKey,
+      liquidateeAccountKey,
+      traderPhoenixWalletAtaKey,
+      globalTraderIndexKey,
+      activeTraderBufferKey
+    );
+    return liquidateSpot(invokedEternalProgramMeta, keys, params);
+  }
+
+  /// Seizes a liquidatee's SPL spot collateral at the discounted oracle price, executing packed venue instructions to convert it and depositing the quote proceeds to the liquidatee, bypassing the withdrawal throttle and queue.
+  ///
+  public static Instruction liquidateSpot(final AccountMeta invokedEternalProgramMeta,
+                                          final List<AccountMeta> keys,
+                                          final LiquidateSpotParams params) {
+    final byte[] _data = new byte[8 + params.l()];
+    int i = LIQUIDATE_SPOT_DISCRIMINATOR.write(_data, 0);
+    params.write(_data, i);
+
+    return Instruction.createInstruction(invokedEternalProgramMeta, keys, _data);
+  }
+
+  public record LiquidateSpotIxData(Discriminator discriminator, LiquidateSpotParams params) implements SerDe {
+
+    public static LiquidateSpotIxData read(final Instruction instruction) {
+      return read(instruction.copyData(), 0);
+    }
+
+    public static final int PARAMS_OFFSET = 8;
+
+    public static LiquidateSpotIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var params = LiquidateSpotParams.read(_data, i);
+      return new LiquidateSpotIxData(discriminator, params);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      i += params.write(_data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 8 + params.l();
+    }
+  }
+
   public static final Discriminator SET_SPOT_ASSET_PRICE_DISCRIMINATOR = toDiscriminator(246, 172, 230, 25, 190, 58, 58, 9);
 
   /// Records the median spot-collateral price pushed by the Manticore oracle program;
@@ -10920,246 +12222,6 @@ public final class EternalProgram {
     }
   }
 
-  public static final Discriminator MIGRATE_TRADER_STATE_DISCRIMINATOR = toDiscriminator(22, 14, 74, 214, 108, 72, 207, 100);
-
-  /// Reconciles trader order extrema and reduce-only quantities from the orderbook.
-  ///
-  /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
-  /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
-  /// @param globalConfigurationKey Exchange global configuration PDA.
-  /// @param traderAccountKey Trader account whose state is updated.
-  /// @param perpAssetMapKey Perpetual and spot asset metadata account.
-  /// @param globalTraderIndexKey Global trader index header, followed by any arena accounts.
-  /// @param activeTraderBufferKey Active trader buffer header, followed by any arena accounts.
-  /// @param orderbookKey Market orderbook account.
-  public static List<AccountMeta> migrateTraderStateKeys(final PublicKey phoenixProgramKey,
-                                                         final PublicKey phoenixLogAuthorityKey,
-                                                         final PublicKey globalConfigurationKey,
-                                                         final PublicKey traderAccountKey,
-                                                         final PublicKey perpAssetMapKey,
-                                                         final PublicKey globalTraderIndexKey,
-                                                         final PublicKey activeTraderBufferKey,
-                                                         final PublicKey orderbookKey) {
-    return List.of(
-      createRead(phoenixProgramKey),
-      createRead(phoenixLogAuthorityKey),
-      createRead(globalConfigurationKey),
-      createWrite(traderAccountKey),
-      createRead(perpAssetMapKey),
-      createWrite(globalTraderIndexKey),
-      createWrite(activeTraderBufferKey),
-      createWrite(orderbookKey)
-    );
-  }
-
-  /// Reconciles trader order extrema and reduce-only quantities from the orderbook.
-  ///
-  /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
-  /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
-  /// @param globalConfigurationKey Exchange global configuration PDA.
-  /// @param traderAccountKey Trader account whose state is updated.
-  /// @param perpAssetMapKey Perpetual and spot asset metadata account.
-  /// @param globalTraderIndexKey Global trader index header, followed by any arena accounts.
-  /// @param activeTraderBufferKey Active trader buffer header, followed by any arena accounts.
-  /// @param orderbookKey Market orderbook account.
-  public static Instruction migrateTraderState(final AccountMeta invokedEternalProgramMeta,
-                                               final PublicKey phoenixProgramKey,
-                                               final PublicKey phoenixLogAuthorityKey,
-                                               final PublicKey globalConfigurationKey,
-                                               final PublicKey traderAccountKey,
-                                               final PublicKey perpAssetMapKey,
-                                               final PublicKey globalTraderIndexKey,
-                                               final PublicKey activeTraderBufferKey,
-                                               final PublicKey orderbookKey) {
-    final var keys = migrateTraderStateKeys(
-      phoenixProgramKey,
-      phoenixLogAuthorityKey,
-      globalConfigurationKey,
-      traderAccountKey,
-      perpAssetMapKey,
-      globalTraderIndexKey,
-      activeTraderBufferKey,
-      orderbookKey
-    );
-    return migrateTraderState(invokedEternalProgramMeta, keys);
-  }
-
-  /// Reconciles trader order extrema and reduce-only quantities from the orderbook.
-  ///
-  public static Instruction migrateTraderState(final AccountMeta invokedEternalProgramMeta,
-                                               final List<AccountMeta> keys) {
-    return Instruction.createInstruction(invokedEternalProgramMeta, keys, MIGRATE_TRADER_STATE_DISCRIMINATOR);
-  }
-
-  public static final Discriminator SET_MULTI_ARENA_ADDITIONAL_NODES_WATERMARK_DISCRIMINATOR = toDiscriminator(236, 252, 222, 208, 31, 131, 157, 147);
-
-  /// Updates the additional-node watermark on the trader buffer headers.
-  ///
-  /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
-  /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
-  /// @param globalConfigurationKey Exchange global configuration PDA.
-  /// @param authorityKey Authority signing this instruction.
-  /// @param maybePermissionAccountKey Writable permission account or direct-authority placeholder.
-  /// @param globalTraderIndexKey Global trader index header, followed by any arena accounts.
-  /// @param activeTraderBufferKey Active trader buffer header, followed by any arena accounts.
-  public static List<AccountMeta> setMultiArenaAdditionalNodesWatermarkKeys(final PublicKey phoenixProgramKey,
-                                                                            final PublicKey phoenixLogAuthorityKey,
-                                                                            final PublicKey globalConfigurationKey,
-                                                                            final PublicKey authorityKey,
-                                                                            final PublicKey maybePermissionAccountKey,
-                                                                            final PublicKey globalTraderIndexKey,
-                                                                            final PublicKey activeTraderBufferKey) {
-    return List.of(
-      createRead(phoenixProgramKey),
-      createRead(phoenixLogAuthorityKey),
-      createRead(globalConfigurationKey),
-      createReadOnlySigner(authorityKey),
-      createWrite(maybePermissionAccountKey),
-      createWrite(globalTraderIndexKey),
-      createWrite(activeTraderBufferKey)
-    );
-  }
-
-  /// Updates the additional-node watermark on the trader buffer headers.
-  ///
-  /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
-  /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
-  /// @param globalConfigurationKey Exchange global configuration PDA.
-  /// @param authorityKey Authority signing this instruction.
-  /// @param maybePermissionAccountKey Writable permission account or direct-authority placeholder.
-  /// @param globalTraderIndexKey Global trader index header, followed by any arena accounts.
-  /// @param activeTraderBufferKey Active trader buffer header, followed by any arena accounts.
-  public static Instruction setMultiArenaAdditionalNodesWatermark(final AccountMeta invokedEternalProgramMeta,
-                                                                  final PublicKey phoenixProgramKey,
-                                                                  final PublicKey phoenixLogAuthorityKey,
-                                                                  final PublicKey globalConfigurationKey,
-                                                                  final PublicKey authorityKey,
-                                                                  final PublicKey maybePermissionAccountKey,
-                                                                  final PublicKey globalTraderIndexKey,
-                                                                  final PublicKey activeTraderBufferKey,
-                                                                  final SetMultiArenaAdditionalNodesWatermarkParams params) {
-    final var keys = setMultiArenaAdditionalNodesWatermarkKeys(
-      phoenixProgramKey,
-      phoenixLogAuthorityKey,
-      globalConfigurationKey,
-      authorityKey,
-      maybePermissionAccountKey,
-      globalTraderIndexKey,
-      activeTraderBufferKey
-    );
-    return setMultiArenaAdditionalNodesWatermark(invokedEternalProgramMeta, keys, params);
-  }
-
-  /// Updates the additional-node watermark on the trader buffer headers.
-  ///
-  public static Instruction setMultiArenaAdditionalNodesWatermark(final AccountMeta invokedEternalProgramMeta,
-                                                                  final List<AccountMeta> keys,
-                                                                  final SetMultiArenaAdditionalNodesWatermarkParams params) {
-    final byte[] _data = new byte[8 + params.l()];
-    int i = SET_MULTI_ARENA_ADDITIONAL_NODES_WATERMARK_DISCRIMINATOR.write(_data, 0);
-    params.write(_data, i);
-
-    return Instruction.createInstruction(invokedEternalProgramMeta, keys, _data);
-  }
-
-  public record SetMultiArenaAdditionalNodesWatermarkIxData(Discriminator discriminator, SetMultiArenaAdditionalNodesWatermarkParams params) implements SerDe {
-
-    public static SetMultiArenaAdditionalNodesWatermarkIxData read(final Instruction instruction) {
-      return read(instruction.copyData(), 0);
-    }
-
-    public static final int BYTES = 12;
-
-    public static final int PARAMS_OFFSET = 8;
-
-    public static SetMultiArenaAdditionalNodesWatermarkIxData read(final byte[] _data, final int _offset) {
-      if (_data == null || _data.length == 0) {
-        return null;
-      }
-      final var discriminator = createAnchorDiscriminator(_data, _offset);
-      int i = _offset + discriminator.length();
-      final var params = SetMultiArenaAdditionalNodesWatermarkParams.read(_data, i);
-      return new SetMultiArenaAdditionalNodesWatermarkIxData(discriminator, params);
-    }
-
-    @Override
-    public int write(final byte[] _data, final int _offset) {
-      int i = _offset + discriminator.write(_data, _offset);
-      i += params.write(_data, i);
-      return i - _offset;
-    }
-
-    @Override
-    public int l() {
-      return BYTES;
-    }
-  }
-
-  public static final Discriminator SET_MULTI_ARENA_NUM_NODES_PER_ARENA_DISCRIMINATOR = toDiscriminator(91, 180, 241, 192, 78, 132, 252, 131);
-
-  /// Repairs the nodes-per-arena configuration of single-arena trader buffers.
-  ///
-  /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
-  /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
-  /// @param globalConfigurationKey Exchange global configuration PDA.
-  /// @param authorityKey Authority signing this instruction.
-  /// @param maybePermissionAccountKey Writable permission account or direct-authority placeholder.
-  /// @param globalTraderIndexKey Global trader index header, followed by any arena accounts.
-  /// @param activeTraderBufferKey Active trader buffer header, followed by any arena accounts.
-  public static List<AccountMeta> setMultiArenaNumNodesPerArenaKeys(final PublicKey phoenixProgramKey,
-                                                                    final PublicKey phoenixLogAuthorityKey,
-                                                                    final PublicKey globalConfigurationKey,
-                                                                    final PublicKey authorityKey,
-                                                                    final PublicKey maybePermissionAccountKey,
-                                                                    final PublicKey globalTraderIndexKey,
-                                                                    final PublicKey activeTraderBufferKey) {
-    return List.of(
-      createRead(phoenixProgramKey),
-      createRead(phoenixLogAuthorityKey),
-      createRead(globalConfigurationKey),
-      createReadOnlySigner(authorityKey),
-      createWrite(maybePermissionAccountKey),
-      createWrite(globalTraderIndexKey),
-      createWrite(activeTraderBufferKey)
-    );
-  }
-
-  /// Repairs the nodes-per-arena configuration of single-arena trader buffers.
-  ///
-  /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
-  /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
-  /// @param globalConfigurationKey Exchange global configuration PDA.
-  /// @param authorityKey Authority signing this instruction.
-  /// @param maybePermissionAccountKey Writable permission account or direct-authority placeholder.
-  /// @param globalTraderIndexKey Global trader index header, followed by any arena accounts.
-  /// @param activeTraderBufferKey Active trader buffer header, followed by any arena accounts.
-  public static Instruction setMultiArenaNumNodesPerArena(final AccountMeta invokedEternalProgramMeta,
-                                                          final PublicKey phoenixProgramKey,
-                                                          final PublicKey phoenixLogAuthorityKey,
-                                                          final PublicKey globalConfigurationKey,
-                                                          final PublicKey authorityKey,
-                                                          final PublicKey maybePermissionAccountKey,
-                                                          final PublicKey globalTraderIndexKey,
-                                                          final PublicKey activeTraderBufferKey) {
-    final var keys = setMultiArenaNumNodesPerArenaKeys(
-      phoenixProgramKey,
-      phoenixLogAuthorityKey,
-      globalConfigurationKey,
-      authorityKey,
-      maybePermissionAccountKey,
-      globalTraderIndexKey,
-      activeTraderBufferKey
-    );
-    return setMultiArenaNumNodesPerArena(invokedEternalProgramMeta, keys);
-  }
-
-  /// Repairs the nodes-per-arena configuration of single-arena trader buffers.
-  ///
-  public static Instruction setMultiArenaNumNodesPerArena(final AccountMeta invokedEternalProgramMeta,
-                                                          final List<AccountMeta> keys) {
-    return Instruction.createInstruction(invokedEternalProgramMeta, keys, SET_MULTI_ARENA_NUM_NODES_PER_ARENA_DISCRIMINATOR);
-  }
-
   public static final Discriminator CLOSE_TRADER_ACCOUNT_DISCRIMINATOR = toDiscriminator(126, 222, 38, 149, 207, 164, 108, 187);
 
   /// Closes an empty, inactive trader account and returns its rent.
@@ -11331,13 +12393,16 @@ public final class EternalProgram {
 
   public static final Discriminator PLACE_MARKET_ORDER_DELEGATED_DISCRIMINATOR = toDiscriminator(160, 35, 21, 235, 110, 182, 245, 65);
 
-  /// Places a market order through a delegated position authority.
+  /// Places an IOC order using the owner, primary position authority, or a delegated position authority. Accepts an optional Borsh AdditionalFeeConfig after the legacy payload; any separate conditional_taker rate is ignored.
+  ///
+  /// The program also accepts a Borsh `AdditionalFeeConfig` after these arguments, with no Option tag (the IDL's `optionalTrailingAdditionalFeeConfig`).
+  /// This builder sends none, which the program reads as no additional fee.
   ///
   /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
   /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
   /// @param globalConfigurationKey Global configuration PDA; enforces the market is registered and cross trading is enabled.
   /// @param traderWalletKey Trader authority placing the market order.
-  /// @param permissionAccountKey Permission account authorizing the delegated position authority.
+  /// @param positionAuthorityPermissionKey Trader-issued position-authority permission, or a non-permission placeholder for owner/primary authority.
   /// @param traderAccountKey Trader state PDA ("trader" account) holding balances and open positions.
   /// @param perpAssetMapKey Perp asset map governing risk limits and funding parameters for the market.
   /// @param globalTraderIndexKey Global trader index account.
@@ -11348,7 +12413,7 @@ public final class EternalProgram {
                                                                 final PublicKey phoenixLogAuthorityKey,
                                                                 final PublicKey globalConfigurationKey,
                                                                 final PublicKey traderWalletKey,
-                                                                final PublicKey permissionAccountKey,
+                                                                final PublicKey positionAuthorityPermissionKey,
                                                                 final PublicKey traderAccountKey,
                                                                 final PublicKey perpAssetMapKey,
                                                                 final PublicKey globalTraderIndexKey,
@@ -11360,7 +12425,7 @@ public final class EternalProgram {
       createRead(phoenixLogAuthorityKey),
       createWrite(globalConfigurationKey),
       createReadOnlySigner(traderWalletKey),
-      createWrite(permissionAccountKey),
+      createWrite(positionAuthorityPermissionKey),
       createWrite(traderAccountKey),
       createWrite(perpAssetMapKey),
       createWrite(globalTraderIndexKey),
@@ -11370,13 +12435,16 @@ public final class EternalProgram {
     );
   }
 
-  /// Places a market order through a delegated position authority.
+  /// Places an IOC order using the owner, primary position authority, or a delegated position authority. Accepts an optional Borsh AdditionalFeeConfig after the legacy payload; any separate conditional_taker rate is ignored.
+  ///
+  /// The program also accepts a Borsh `AdditionalFeeConfig` after these arguments, with no Option tag (the IDL's `optionalTrailingAdditionalFeeConfig`).
+  /// This builder sends none, which the program reads as no additional fee.
   ///
   /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
   /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
   /// @param globalConfigurationKey Global configuration PDA; enforces the market is registered and cross trading is enabled.
   /// @param traderWalletKey Trader authority placing the market order.
-  /// @param permissionAccountKey Permission account authorizing the delegated position authority.
+  /// @param positionAuthorityPermissionKey Trader-issued position-authority permission, or a non-permission placeholder for owner/primary authority.
   /// @param traderAccountKey Trader state PDA ("trader" account) holding balances and open positions.
   /// @param perpAssetMapKey Perp asset map governing risk limits and funding parameters for the market.
   /// @param globalTraderIndexKey Global trader index account.
@@ -11388,7 +12456,7 @@ public final class EternalProgram {
                                                       final PublicKey phoenixLogAuthorityKey,
                                                       final PublicKey globalConfigurationKey,
                                                       final PublicKey traderWalletKey,
-                                                      final PublicKey permissionAccountKey,
+                                                      final PublicKey positionAuthorityPermissionKey,
                                                       final PublicKey traderAccountKey,
                                                       final PublicKey perpAssetMapKey,
                                                       final PublicKey globalTraderIndexKey,
@@ -11401,7 +12469,7 @@ public final class EternalProgram {
       phoenixLogAuthorityKey,
       globalConfigurationKey,
       traderWalletKey,
-      permissionAccountKey,
+      positionAuthorityPermissionKey,
       traderAccountKey,
       perpAssetMapKey,
       globalTraderIndexKey,
@@ -11412,7 +12480,10 @@ public final class EternalProgram {
     return placeMarketOrderDelegated(invokedEternalProgramMeta, keys, orderPacket);
   }
 
-  /// Places a market order through a delegated position authority.
+  /// Places an IOC order using the owner, primary position authority, or a delegated position authority. Accepts an optional Borsh AdditionalFeeConfig after the legacy payload; any separate conditional_taker rate is ignored.
+  ///
+  /// The program also accepts a Borsh `AdditionalFeeConfig` after these arguments, with no Option tag (the IDL's `optionalTrailingAdditionalFeeConfig`).
+  /// This builder sends none, which the program reads as no additional fee.
   ///
   public static Instruction placeMarketOrderDelegated(final AccountMeta invokedEternalProgramMeta,
                                                       final List<AccountMeta> keys,
@@ -11574,6 +12645,104 @@ public final class EternalProgram {
       int i = _offset + discriminator.length();
       final var params = WithdrawFundsInstruction.read(_data, i);
       return new WithdrawFundsWithFeeIxData(discriminator, params);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      i += params.write(_data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator UPDATE_PERP_DISPLAY_NAME_DISCRIMINATOR = toDiscriminator(205, 2, 78, 167, 86, 227, 2, 66);
+
+  /// Sets or clears the display name of a perp asset.
+  ///
+  /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
+  /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
+  /// @param globalConfigurationKey Global configuration PDA used to validate exchange-wide account relationships.
+  /// @param authorityKey Risk authority.
+  /// @param maybePermissionAccountKey Permission account used for delegated authority validation.
+  /// @param perpAssetMapKey Perp asset map account whose metadata is updated by this instruction.
+  public static List<AccountMeta> updatePerpDisplayNameKeys(final PublicKey phoenixProgramKey,
+                                                            final PublicKey phoenixLogAuthorityKey,
+                                                            final PublicKey globalConfigurationKey,
+                                                            final PublicKey authorityKey,
+                                                            final PublicKey maybePermissionAccountKey,
+                                                            final PublicKey perpAssetMapKey) {
+    return List.of(
+      createRead(phoenixProgramKey),
+      createRead(phoenixLogAuthorityKey),
+      createRead(globalConfigurationKey),
+      createReadOnlySigner(authorityKey),
+      createWrite(maybePermissionAccountKey),
+      createWrite(perpAssetMapKey)
+    );
+  }
+
+  /// Sets or clears the display name of a perp asset.
+  ///
+  /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
+  /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
+  /// @param globalConfigurationKey Global configuration PDA used to validate exchange-wide account relationships.
+  /// @param authorityKey Risk authority.
+  /// @param maybePermissionAccountKey Permission account used for delegated authority validation.
+  /// @param perpAssetMapKey Perp asset map account whose metadata is updated by this instruction.
+  public static Instruction updatePerpDisplayName(final AccountMeta invokedEternalProgramMeta,
+                                                  final PublicKey phoenixProgramKey,
+                                                  final PublicKey phoenixLogAuthorityKey,
+                                                  final PublicKey globalConfigurationKey,
+                                                  final PublicKey authorityKey,
+                                                  final PublicKey maybePermissionAccountKey,
+                                                  final PublicKey perpAssetMapKey,
+                                                  final UpdatePerpDisplayNameInstruction params) {
+    final var keys = updatePerpDisplayNameKeys(
+      phoenixProgramKey,
+      phoenixLogAuthorityKey,
+      globalConfigurationKey,
+      authorityKey,
+      maybePermissionAccountKey,
+      perpAssetMapKey
+    );
+    return updatePerpDisplayName(invokedEternalProgramMeta, keys, params);
+  }
+
+  /// Sets or clears the display name of a perp asset.
+  ///
+  public static Instruction updatePerpDisplayName(final AccountMeta invokedEternalProgramMeta,
+                                                  final List<AccountMeta> keys,
+                                                  final UpdatePerpDisplayNameInstruction params) {
+    final byte[] _data = new byte[8 + params.l()];
+    int i = UPDATE_PERP_DISPLAY_NAME_DISCRIMINATOR.write(_data, 0);
+    params.write(_data, i);
+
+    return Instruction.createInstruction(invokedEternalProgramMeta, keys, _data);
+  }
+
+  public record UpdatePerpDisplayNameIxData(Discriminator discriminator, UpdatePerpDisplayNameInstruction params) implements SerDe {
+
+    public static UpdatePerpDisplayNameIxData read(final Instruction instruction) {
+      return read(instruction.copyData(), 0);
+    }
+
+    public static final int BYTES = 40;
+
+    public static final int PARAMS_OFFSET = 8;
+
+    public static UpdatePerpDisplayNameIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var params = UpdatePerpDisplayNameInstruction.read(_data, i);
+      return new UpdatePerpDisplayNameIxData(discriminator, params);
     }
 
     @Override

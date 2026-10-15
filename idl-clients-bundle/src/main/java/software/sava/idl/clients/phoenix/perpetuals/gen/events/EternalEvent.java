@@ -74,7 +74,9 @@ public sealed interface EternalEvent extends SerDe permits
     SpotCollateralDepositedEvent,
     SpotCollateralWithdrawnEvent,
     SpotCollateralLiquidatedEvent,
-    RestartAcknowledgedEvent {
+    RestartAcknowledgedEvent,
+    AdditionalFeeAccruedEvent,
+    SpotAssetPriceUpdatedEvent {
 
   static EternalEvent read(final byte[] _data, final int _offset) {
     if (SlotContextEvent.DISCRIMINATOR.equals(_data, _offset)) {
@@ -219,6 +221,10 @@ public sealed interface EternalEvent extends SerDe permits
       return SpotCollateralLiquidatedEvent.read(_data, _offset);
     } else if (RestartAcknowledgedEvent.DISCRIMINATOR.equals(_data, _offset)) {
       return RestartAcknowledgedEvent.read(_data, _offset);
+    } else if (AdditionalFeeAccruedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return AdditionalFeeAccruedEvent.read(_data, _offset);
+    } else if (SpotAssetPriceUpdatedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return SpotAssetPriceUpdatedEvent.read(_data, _offset);
     } else {
       return null;
     }

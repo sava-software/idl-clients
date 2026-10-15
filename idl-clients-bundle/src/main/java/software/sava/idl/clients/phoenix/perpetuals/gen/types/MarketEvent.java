@@ -75,7 +75,9 @@ public sealed interface MarketEvent extends RustEnum permits
   MarketEvent.SpotCollateralDeposited,
   MarketEvent.SpotCollateralWithdrawn,
   MarketEvent.SpotCollateralLiquidated,
-  MarketEvent.RestartAcknowledged {
+  MarketEvent.RestartAcknowledged,
+  MarketEvent.AdditionalFeeAccrued,
+  MarketEvent.SpotAssetPriceUpdated {
 
   static MarketEvent read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -152,6 +154,8 @@ public sealed interface MarketEvent extends RustEnum permits
       case 68 -> SpotCollateralWithdrawn.read(_data, i);
       case 69 -> SpotCollateralLiquidated.read(_data, i);
       case 70 -> RestartAcknowledged.read(_data, i);
+      case 71 -> AdditionalFeeAccrued.read(_data, i);
+      case 72 -> SpotAssetPriceUpdated.read(_data, i);
       default -> null;
     };
   }
@@ -1005,6 +1009,30 @@ public sealed interface MarketEvent extends RustEnum permits
     @Override
     public int ordinal() {
       return 70;
+    }
+  }
+
+  record AdditionalFeeAccrued(AdditionalFeeAccruedEvent val) implements SerDeEnum, MarketEvent {
+
+    public static AdditionalFeeAccrued read(final byte[] _data, final int _offset) {
+      return new AdditionalFeeAccrued(AdditionalFeeAccruedEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 71;
+    }
+  }
+
+  record SpotAssetPriceUpdated(SpotAssetPriceUpdatedEvent val) implements SerDeEnum, MarketEvent {
+
+    public static SpotAssetPriceUpdated read(final byte[] _data, final int _offset) {
+      return new SpotAssetPriceUpdated(SpotAssetPriceUpdatedEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 72;
     }
   }
 }

@@ -21,7 +21,7 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 
 /// Decodes real Phoenix Perpetuals events captured from mainnet.
 ///
-/// Phoenix declares all 71 of its events as **one-byte** discriminators, tags 0..70 — those are
+/// Phoenix declares all 73 of its events as **one-byte** discriminators, tags 0..72 — those are
 /// Borsh enum variant indices, not Anchor's eight-byte `sha256("event:Name")`. Upstream serializes
 /// `MarketEvent` with `#[derive(BorshSerialize)]`, and a Borsh enum tag is one byte, so an event's
 /// wire form is a single tag byte followed by the variant's fields.
@@ -37,7 +37,11 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 /// with `getTransaction` and de-framed from those instructions; see the header of
 /// `/phoenix/market-events.txt`.
 ///
-/// Coverage is 31 of the 71 variants — whichever the thirteen captured transactions happened to emit.
+/// Coverage is 35 of the 73 variants — whichever the sixteen captured transactions happened to emit.
+/// Fifteen are this program's; the sixteenth is the dev deployment's, the only live source of
+/// `SpotAssetPriceUpdatedEvent` (tag 72) while no spot asset is registered on mainnet. The two
+/// `AdditionalFeeAccruedEvent` (tag 71) batches are stop-loss executions the current client reads
+/// whole, where the client generated before tags 71 and 72 failed in `SerDeUtil.readArray`.
 /// `AuthorityChangedEvent` (tag 46), where the defect was first spotted, is not among them; the
 /// evidence for that one stays structural.
 final class PhoenixEventFixtureTests {
@@ -78,7 +82,7 @@ final class PhoenixEventFixtureTests {
 
   /// The declaration the class javadoc describes, held to the generated decoder: every variant
   /// `EternalEvent` permits has a one-byte discriminator, and together they are exactly the
-  /// tags 0..70 with none skipped or repeated. A variant added upstream moves this count first.
+  /// tags 0..72 with none skipped or repeated. A variant added upstream moves this count first.
   @Test
   void everyDeclaredEventIsAOneByteTag() throws ReflectiveOperationException {
     final var tags = new ArrayList<Integer>();
@@ -87,14 +91,14 @@ final class PhoenixEventFixtureTests {
       assertEquals(1, discriminator.length(), variant.getSimpleName());
       tags.add(discriminator.data()[0] & 0xFF);
     }
-    assertEquals(IntStream.range(0, 71).boxed().toList(), tags.stream().sorted().toList());
+    assertEquals(IntStream.range(0, 73).boxed().toList(), tags.stream().sorted().toList());
   }
 
   @Test
   void theFixtureCarriesWhatWasCaptured() {
     final var transactions = fixture();
-    assertEquals(13, transactions.size());
-    assertEquals(113, transactions.stream().mapToInt(tx -> tx.events().size()).sum());
+    assertEquals(16, transactions.size());
+    assertEquals(143, transactions.stream().mapToInt(tx -> tx.events().size()).sum());
     // every payload is exactly as long as the program said it would be
     for (final var tx : transactions) {
       for (final var event : tx.events()) {
@@ -139,7 +143,7 @@ final class PhoenixEventFixtureTests {
         byTag.merge(event.tag(), 1, Integer::sum);
       }
     }
-    assertEquals(31, byTag.size(), () -> "distinct variants covered: " + byTag);
+    assertEquals(35, byTag.size(), () -> "distinct variants covered: " + byTag);
   }
 
   /// A round-trip through `write` must reproduce the bytes the chain carried. This catches an
@@ -176,7 +180,7 @@ final class PhoenixEventFixtureTests {
         checked.add(tx.signature());
       }
     }
-    assertEquals(13, checked.stream().distinct().count(), "a SlotContextEvent in every transaction");
+    assertEquals(16, checked.stream().distinct().count(), "a SlotContextEvent in every transaction");
   }
 
   /// The sharpest edge case the capture contains: a one-byte event, whose entire wire form is its

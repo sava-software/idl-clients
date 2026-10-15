@@ -1380,6 +1380,56 @@ not the shape Jupiter Offerbook's `escrow_programmable_nft_withdraw` reads: Phoe
 reads a tagged Borsh `Option<Vec<u8>>` whose `None` is a `00` byte and whose omission fails
 102 (see the Offerbook verdict).
 
+**Retired on 2026-10-15.** idl-src-gen 1bacb16 reads `optionalTrailingAdditionalFeeConfig` as a
+flag: a marked instruction's builders send the declared arguments and no suffix, which the program
+reads as no additional fee, and their documentation says what the program would also accept. So
+the `idlFile` line and `idls/phoenix_eternal_metadata_447674939.json` are gone and the client is
+generated from the metadata PDA again; the metadata channel is the deployed channel, and
+`idl.json` is that account's document byte for byte. Against the pinned document the
+regeneration is what the gap report said: instructions +11 -3 ~14, types +19 -2 ~11, events +2.
+Ten of the eleven new builders are in the 454907814 dispatch table (the spot-collateral family the
+2026-10-13 review found there); `updatePerpDisplayName` is not, so the image rejects it, as it
+does every unknown discriminator, until a deploy carries it. The three removed builders are the
+three that table had already retired. `GlobalConfiguration` keeps its 2560 bytes and now names
+`depositCooldownPeriodInSlots` and the eight pending authorities at [512,776) and
+`pendingWithdrawThrottleReplenishment` at 1104; [776,1096) is still `padding1`, where the
+2026-10-13 review placed the live native-SOL `SpotCollateralMetadata` the document does not
+declare. `Trader.maxPositions` is still declared `u64` (`TraderTests`). The suffix was already in
+use before the republish: 5 of the 132 `PlaceMarketOrder` transactions in that review's sample
+carried bytes after the declared arguments.
+
+Checked on 2026-10-15 against rise-public 1e4365b and live bytes (session evidence, not a test,
+except where a test is named):
+
+- The eight spot user builders equal the SDK's golden vectors (`spot-ix-goldens.json`) account
+  for account and byte for byte. Three shapes the IDL cannot express remain: `transferSpot` has no
+  slot for the optional writable permission account a position authority appends after
+  `activeTraderBuffer`; `transferSpotFromChildToParent` passes the trader wallet as a non-signer,
+  as `transferCollateralChildToParent` does, where both SDKs default to a signer, so a child with
+  collateral sweep disabled needs the caller to make the wallet sign; and every builder takes one
+  `globalTraderIndex` and one `activeTraderBuffer` where the SDK takes the header plus its arenas,
+  which works while prod has no arenas (simulations with the single slots reach matching).
+- `updatePerpDisplayName` is dispatched by neither deployment: simulated on prod and dev it logs
+  "Unknown Phoenix instruction discriminator" and fails `InvalidInstructionData`, as a made-up
+  discriminator does.
+- The fee suffix has no encoder in the SDK, so the program is the reference. Live transactions
+  carry `01 32` (`MakerOnly`, 5 bps) and `00 32 32` (`MakerAndTaker`) after the declared
+  arguments and succeed, and 412 `StopLosses` accounts placed since 454907814 hold `32 32` in the
+  new `additionalFees` bytes. `AdditionalFees` stores taker before maker, the reverse of the
+  suffix; every live sample has equal rates, so that order is the document's word alone.
+- `AdditionalFeeAccruedEvent` (tag 71) decodes two prod stop-loss executions at the program's own
+  declared 51 bytes, and `SpotAssetPriceUpdatedEvent` (tag 72) the dev program's price pushes at
+  45; prod registers no spot asset, so it emits no tag 72. All three transactions are in
+  `/phoenix/market-events.txt` now, and the client generated before this change threw in
+  `SerDeUtil.readArray` on the first prod batch.
+- `GlobalConfiguration`'s ten new fields sit at rise-public's offsets and read plausibly (prod's
+  deposit cooldown 0 slots, dev's 150; no pending authority; no pending replenishment). Two regions
+  are still undeclared upstream: `padding0` at 508 holds the exchange's `FeatureSet` u32 (prod 6,
+  `NativeSolCollaterals` and `PauseOnClusterRestart`; dev 14, adding `SpotCollaterals`; each equal
+  to its program's last logged `EnableFeature` result), and `padding1` at 776 the native-SOL
+  `SpotCollateralMetadata`, which rise-public declares there and a `ConfigureNativeSol` event under
+  the current image matches byte for byte.
+
 
 ### Bundle-wide staleness sweep (2026-07-19)
 

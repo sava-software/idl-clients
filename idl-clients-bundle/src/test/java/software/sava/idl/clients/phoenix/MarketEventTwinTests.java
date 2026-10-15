@@ -50,8 +50,8 @@ final class MarketEventTwinTests {
           Integer.parseInt(parts[1]), Integer.parseInt(parts[2]), decoder.decode(parts[3])
       ));
     }
-    // a row count, not a byte length — 25 tag-0 events among the 113 captured
-    assertEquals(25, events.size(), "tag 0 (SlotContext) events in the fixture");
+    // a row count, not a byte length — 28 tag-0 events among the 143 captured
+    assertEquals(28, events.size(), "tag 0 (SlotContext) events in the fixture");
     return events;
   }
 
