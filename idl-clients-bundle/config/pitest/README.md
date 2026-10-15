@@ -1374,9 +1374,10 @@ generated from `"idlFile": "idls/phoenix_eternal_metadata_447674939.json"`, the 
 PDA held from slot 447674939 (2026-09-17) to 456962333, committed byte for byte from the
 client's own `gen/idl.json` (sha256 `9b9817f3…`). The client is therefore unchanged, and still
 describes the 454907814 image as the verdict says; the metadata channel now shows as moved,
-and its differences stand in the gap report. Modelling the key is the way out: a trailing
-optional argument struct with no tag is the shape Jupiter Offerbook's
-`escrow_programmable_nft_withdraw` read undeclared (see the Offerbook verdict), declared here.
+and its differences stand in the gap report. Modelling the key is the way out. The suffix is
+not the shape Jupiter Offerbook reads: Phoenix's `AdditionalFeeConfig` carries no Option tag
+and may be left off entirely, where Offerbook's undeclared arguments are tagged Borsh Options
+whose `None` is a `00` byte and whose omission fails 102 (see the Offerbook verdict).
 
 
 ### Bundle-wide staleness sweep (2026-07-19)

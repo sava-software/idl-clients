@@ -176,12 +176,12 @@ final class OfferbookOptionArgumentTests {
     assertEquals(0, REPAY_TOKEN_LIVE[data.length], "and the live call ends with the Option tag for None");
   }
 
-  /// No sampled transaction called the other three since the deploy; the simulation did, with
-  /// zero accounts, and read the same shape: `create_nft_principal_offer` deserializes at 63 bytes
-  /// and not 62, `create_token_collateral_offer` at 47 and not 46, `repay_non_fungible_loan` at 9 and
-  /// not 8, each with the `None` byte where its sibling above has it (slots 456975097, 456975110,
-  /// 456975248 for the IDL widths, 456976457..456977782 for the accepted ones). The builders stay at
-  /// the IDL's widths, so each falls one byte short in the same way.
+  /// The initial sample held no call to the other three; the full census found two successful calls
+  /// each of `create_token_collateral_offer` (47 bytes) and `repay_non_fungible_loan` (9 bytes), none
+  /// of `create_nft_principal_offer`. The simulation, with zero accounts, read the same shape for all
+  /// three: 63 bytes and not 62, 47 and not 46, 9 and not 8, each with the `None` byte where its
+  /// sibling above has it (slots 456975097, 456975110, 456975248 for the IDL widths, 456976457..456977782
+  /// for the accepted ones). The builders stay at the IDL's widths, so each falls one byte short.
   @Test
   void theOtherThreeBuildersStopAtTheIdlsWidth() {
     final var any = key("5bjsMDacvtuRjtSD4j4ARsfP6Ras3dywyyuvsbbnXNQk");
