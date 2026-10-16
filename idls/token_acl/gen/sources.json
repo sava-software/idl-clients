@@ -1,10 +1,10 @@
 {
   "program": "TACLkU6CiCdkQN2MjoyDkVg2yAH9zkxiHDsiztQ52TP",
   "deployed": "metadata",
-  "lastDeploySlot": 422539919,
+  "lastDeploySlot": 457707566,
   "programDataState": "upgradeable",
   "programDataStateSlot": 451983866,
-  "programDataPayloadSha256": "af9bffc6f6dc143656b82cb7cc8a78e57bdb0172e7d36bd51659157bf01fb4a0",
+  "programDataPayloadSha256": "47fc10515a3da6e726709e707433bd003728152fe2f2a3246391dec56cacb1c0",
   "programDataPayloadLength": 147152,
   "channels": {
     "metadata": {

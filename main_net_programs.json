@@ -606,6 +606,10 @@
     {
       "name": "Token ACL",
       "program": "TACLkU6CiCdkQN2MjoyDkVg2yAH9zkxiHDsiztQ52TP",
+      "review": {
+        "deploySlot": 457707566,
+        "verdict": "the live 147152-byte payload at observation slot 457751015 matches solana-foundation/token-acl 87c5f9a's 143128-byte clients/rust/tests/fixtures/token_acl.so plus 4024 zero bytes, and the verification Initialize event in the successful Squads upgrade 3BiGcF8F names 87c5f9a4182357f90955ef1d02909a3433ebbe67 (not independently rebuilt); all 11 stored Codama instruction ordinals, account positions and argument layouts, PDA seeds and the 100-byte MintConfig layout agree with that source, but the unchanged metadata IDL and upstream program/idl.json omit InvalidFlagAccount=9, returned by permissionless freeze and thaw for a wrong flag PDA (both simulated, slots 457751434 and 457751704); two further published account-privilege limitations are visible in the source: createConfig's payer is declared nonsigner although rent top-up needs its signature when it is distinct from the transaction payer and authority, and the permissionless instructions' authority is declared readonly although flag-account cleanup credits it when the flag holds lamports (these privilege cases were not simulated); the previous recorded payload af9bffc6 matches no historical checked-in fixture and its upgrade 2PfUDyav at slot 422539919 carries no verification event, so the exact behavior delta is not established; the current source enforces the token-account owner for non-idempotent permissionless freeze and thaw and validates the flag PDA, changes published in 1ac1b11 after that previous deploy; storeOnly, no Java client is generated or published, and the stored IDL stays verbatim with these upstream limitations recorded here; GroundTruth not applicable, manual account parsing compared directly"
+      },
       "idlType": "codama",
       "deployed": "metadata",
       "storeOnly": true,
@@ -615,6 +619,10 @@
     {
       "name": "Token ACL Gate",
       "program": "GATEzzqxhJnsWF6vHRsgtixxSB8PaQdcqGEVTEHWiULz",
+      "review": {
+        "deploySlot": 457707041,
+        "verdict": "the live 72824-byte payload at observation slot 457751015 matches solana-foundation/token-acl-gate's 63952-byte sdk/rust/tests/fixtures/token_acl_gate_program.so introduced at e33a873 plus 8872 zero bytes, and the verification Initialize event in the successful Squads upgrade 26LttPX6 names the pinned c525fa710883a55cedd0cd7bf2a5aef6eac05171, whose program source and fixture remain unchanged at master 023d03f (not independently rebuilt); the previous recorded payload b869c913 is byte-identical to the fixture at 2cd6f6d; the corresponding source changes add setupFreezeExtraMetas and canFreezePermissionless, retire AllowAllEoas mode 1 (Allow=0 and Block=2 stay), require the full eight-byte thaw and freeze selectors, rebase the existing 17 custom errors to 4096-4112 and add AccountAllowed=4113, validate the canonical Token ACL mint-config PDA in setup, and validate Token-2022 account and extension structure when thaw requires ImmutableOwner; mode 1 creation fails 4107, full thaw and freeze selectors reach the account-count check 4099, and their one-byte prefixes fail InvalidInstructionData (unsigned simulations, slots 457751699-457751704); canThawPermissionless already existed in the previous fixture's source, so its appearance among the metadata IDL's three added instructions repairs an old omission; all eight stored Codama instructions' account order, privileges and arguments, two account layouts (ListConfig 74 bytes, WalletEntry 65), PDA seeds, mode enum and 18 errors agree with current source, and the original five management instructions and both account layouts retain their wire shape; metadata now matches the already-pinned document, so this run needs no stored IDL change; storeOnly, no Java client is generated or published; GroundTruth not applicable, manual account parsing compared directly"
+      },
       "idlType": "codama",
       "vcs": {
         "repo": "solana-foundation/token-acl-gate",
