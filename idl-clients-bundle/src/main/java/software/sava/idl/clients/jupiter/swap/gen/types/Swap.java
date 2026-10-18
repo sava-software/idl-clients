@@ -211,7 +211,13 @@ public sealed interface Swap extends RustEnum permits
   Swap.PumpSwapBuyV4,
   Swap.PumpSwapSellV4,
   Swap.ZeroFiSwapV3,
-  Swap.DenaliV2 {
+  Swap.DenaliV2,
+  Swap.QuantumV2,
+  Swap.DrFraudsworthSolBuy,
+  Swap.DrFraudsworthSolSell,
+  Swap.DrFraudsworthSplBuy,
+  Swap.DrFraudsworthSplSell,
+  Swap.DrFraudsworthVaultConvert {
 
   static Swap read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -414,6 +420,12 @@ public sealed interface Swap extends RustEnum permits
       case 194 -> PumpSwapSellV4.read(_data, i);
       case 195 -> ZeroFiSwapV3.INSTANCE;
       case 196 -> DenaliV2.read(_data, i);
+      case 197 -> QuantumV2.read(_data, i);
+      case 198 -> DrFraudsworthSolBuy.INSTANCE;
+      case 199 -> DrFraudsworthSolSell.read(_data, i);
+      case 200 -> DrFraudsworthSplBuy.INSTANCE;
+      case 201 -> DrFraudsworthSplSell.INSTANCE;
+      case 202 -> DrFraudsworthVaultConvert.INSTANCE;
       default -> null;
     };
   }
@@ -3572,6 +3584,73 @@ public sealed interface Swap extends RustEnum permits
     @Override
     public int ordinal() {
       return 196;
+    }
+  }
+
+  record QuantumV2(Side val) implements SerDeEnum, Swap {
+
+    public static QuantumV2 read(final byte[] _data, final int _offset) {
+      return new QuantumV2(Side.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 197;
+    }
+  }
+
+  record DrFraudsworthSolBuy() implements EnumNone, Swap {
+
+    public static final DrFraudsworthSolBuy INSTANCE = new DrFraudsworthSolBuy();
+
+    @Override
+    public int ordinal() {
+      return 198;
+    }
+  }
+
+  record DrFraudsworthSolSell(boolean val) implements EnumBool, Swap {
+
+    public static final DrFraudsworthSolSell TRUE = new DrFraudsworthSolSell(true);
+    public static final DrFraudsworthSolSell FALSE = new DrFraudsworthSolSell(false);
+
+    public static DrFraudsworthSolSell read(final byte[] _data, int i) {
+      return _data[i] == 1 ? DrFraudsworthSolSell.TRUE : DrFraudsworthSolSell.FALSE;
+    }
+
+    @Override
+    public int ordinal() {
+      return 199;
+    }
+  }
+
+  record DrFraudsworthSplBuy() implements EnumNone, Swap {
+
+    public static final DrFraudsworthSplBuy INSTANCE = new DrFraudsworthSplBuy();
+
+    @Override
+    public int ordinal() {
+      return 200;
+    }
+  }
+
+  record DrFraudsworthSplSell() implements EnumNone, Swap {
+
+    public static final DrFraudsworthSplSell INSTANCE = new DrFraudsworthSplSell();
+
+    @Override
+    public int ordinal() {
+      return 201;
+    }
+  }
+
+  record DrFraudsworthVaultConvert() implements EnumNone, Swap {
+
+    public static final DrFraudsworthVaultConvert INSTANCE = new DrFraudsworthVaultConvert();
+
+    @Override
+    public int ordinal() {
+      return 202;
     }
   }
 }

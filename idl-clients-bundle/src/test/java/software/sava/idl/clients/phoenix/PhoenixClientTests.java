@@ -31,6 +31,18 @@ final class PhoenixClientTests {
   private static final SolanaAccounts SOLANA_ACCOUNTS = SolanaAccounts.MAIN_NET;
   private static final PhoenixAccounts ACCOUNTS = PhoenixAccounts.MAIN_NET;
 
+  private static final PublicKey ETERNAL_PROGRAM =
+      PublicKey.fromBase58Encoded("EtrnLzgbS7nMMy5fbD42kXiUzGg8XQzJ972Xtk1cjWih");
+
+  /// Header keys from the captured mainnet GlobalConfiguration `2zskx2iyCvb6Stg7RBZkt1f6MrF4dpYtMG3yMvKwqtUZ`
+  /// in Ellipsis-Labs/rise-public at `1e4365b88b16bd951e939278ec2064d3f41f5f87`,
+  /// `ts/tests/mocks/global_config.json`, decoded independently in
+  /// `rust/sdk/tests/ix_account_views_tests.rs::borrowed_global_config_reads_dynamic_account_headers`.
+  private static final PublicKey ACTIVE_TRADER_BUFFER_HEADER =
+      PublicKey.fromBase58Encoded("2U32rSzzrQS3eVmGHsnbw5kcqKF3wQXpHGd3hMq5YJok");
+  private static final PublicKey GLOBAL_TRADER_INDEX_HEADER =
+      PublicKey.fromBase58Encoded("HCrPXLByGqRh2szQi3gj7oRdRVBNi1gccAyn4CQCT3HK");
+
   private static final PublicKey OWNER = key(0x11);
   private static final PublicKey TRADER_ACCOUNT = key(0x13);
   private static final PublicKey TRADER_TOKEN_ACCOUNT = key(0x14);
@@ -200,6 +212,30 @@ final class PhoenixClientTests {
     assertEquals(1L, params.traderPreferenceBits());
     assertEquals(0, params.traderPdaIndex());
     assertEquals(74, params.traderSubaccountIndex());
+  }
+
+  @Test
+  void activeTraderBufferHeaderMatchesCapturedConfiguration() {
+    final var pda = EternalPDAs.activeTraderBufferHeaderPDA(ETERNAL_PROGRAM);
+    assertEquals(ACTIVE_TRADER_BUFFER_HEADER, pda.publicKey());
+  }
+
+  @Test
+  void globalTraderIndexHeaderMatchesCapturedConfiguration() {
+    final var pda = EternalPDAs.globalTraderIndexHeaderPDA(ETERNAL_PROGRAM);
+    assertEquals(GLOBAL_TRADER_INDEX_HEADER, pda.publicKey());
+  }
+
+  @Test
+  void accountFactoryUsesCapturedHeaderAddresses() {
+    final var accounts = PhoenixAccounts.createAccounts(
+        PublicKey.fromBase58Encoded("EMBERpYNE6ehWmXymZZS2skiFmCa9V5dp14e1iduM5qy"),
+        PublicKey.fromBase58Encoded("PhUsd11YkbjSaWjFncfAAmatntsjx3MgDR9B6g1ks3A"),
+        ETERNAL_PROGRAM,
+        PublicKey.fromBase58Encoded("EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"));
+
+    assertEquals(ACTIVE_TRADER_BUFFER_HEADER, accounts.activeTraderBuffer());
+    assertEquals(GLOBAL_TRADER_INDEX_HEADER, accounts.globalTraderIndex());
   }
 
   @Test

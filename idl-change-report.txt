@@ -7,15 +7,7 @@ nobody took. The standing disagreements live beside this file, at its name with 
 before the extension. Ordered by program and channel, and carrying no timestamp, so
 consecutive runs are worth diffing against each other.
 
-== Movement (3) ==
+== Movement (1) ==
 
-Token ACL Gate: the metadata IDL at 9xRvGwTcgcJjhsiNETdQTYs8YEuwYWY7W23FVF6fXvS1 moved since the last generation, a4df5ed8ee3b9b27c39664f45f5a51a7ff76d36e622196ed18210e94dbac351b -> 5e17c627d0864f27b02b40969499babdfb8184d33f524eb2f8af912baf9b58b7: instructions +3 ~5, accounts ~2, types ~1, errors +18; program.name token-acl-gate-program -> tokenAclGateProgram, program.origin shank -> (absent), program.version 0.1.0 -> 0.3.0, version 1.0.0 -> 1.5.1
-  instructions added (3): canFreezePermissionless, canThawPermissionless, setupFreezeExtraMetas
-  instructions changed (5): addWallet, createList, deleteList, removeWallet, setupExtraMetas
-  accounts changed (2): every one data changed
-  types changed (1): mode
-  errors added (18): accountAllowed, accountBlocked, accountNotWritable, immutableOwnerExtensionMissing, invalidAccountData, invalidAuthority, invalidConfigAccount, invalidData, invalidExtraMetasAccount, invalidGatingProgram, invalidInstruction, invalidListConfig, invalidRemainingAccounts, invalidSystemProgram, invalidTokenAclMintConfig, invalidWalletEntry, listNotEmpty, notEnoughAccounts
-
-Token ACL Gate: the program was redeployed at slot 457707041, up from 404649752; the stored program image changed: 72824 payload bytes, was 72824 — review required
-
-Token ACL: the program was redeployed at slot 457707566, up from 422539919, and no IDL channel moved with it (the metadata IDL was last written at slot 404648290, before the previous deploy); the stored program image changed: 147152 payload bytes, was 147152 — review required
+Jupiter Swap: the anchor IDL at C88XWfp26heEmDkmfSzeXP7Fd7GQJ2j9dDTUsyiZbUTa moved since the last generation, 50641c5d234c4a38b9e71ff1c608ad06f088ae8e80467b659b93340ba827b76b -> 2252a67e3900b7adeea8df0574cd92b0503501730a746d2fc520869bf26763e6: types ~1
+  types changed (1): Swap
