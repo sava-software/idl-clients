@@ -1,10 +1,10 @@
 {
   "program": "KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
   "deployed": "anchor",
-  "lastDeploySlot": 440486775,
+  "lastDeploySlot": 458858791,
   "programDataState": "upgradeable",
   "programDataStateSlot": 440077852,
-  "programDataPayloadSha256": "9db16dd4b7bbfe4f13df850bf880bfc4522fcece06717c0626d625746a3cc85b",
+  "programDataPayloadSha256": "35ed0e668c67a01e7e2cba155ca2d52d0ee4228424094357e9fa2c8d161cc955",
   "programDataPayloadLength": 10485715,
   "channels": {
     "anchor": {
