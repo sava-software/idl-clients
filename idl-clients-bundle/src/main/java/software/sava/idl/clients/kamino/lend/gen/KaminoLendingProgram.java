@@ -3565,7 +3565,7 @@ public final class KaminoLendingProgram {
   }
 
   /// @param liquidityAmount: u64
-  /// @param minAcceptableReceivedLiquidityAmount: u64
+  /// @param minReceivedLiquidityAmount: u64
   /// @param maxAllowedLtvOverridePercent: u64
   public static Instruction liquidateObligationAndRedeemReserveCollateral(final AccountMeta invokedKaminoLendingProgramMeta,
                                                                           final PublicKey liquidatorKey,
@@ -3589,7 +3589,7 @@ public final class KaminoLendingProgram {
                                                                           final PublicKey withdrawLiquidityTokenProgramKey,
                                                                           final PublicKey instructionSysvarAccountKey,
                                                                           final long liquidityAmount,
-                                                                          final long minAcceptableReceivedLiquidityAmount,
+                                                                          final long minReceivedLiquidityAmount,
                                                                           final long maxAllowedLtvOverridePercent) {
     final var keys = liquidateObligationAndRedeemReserveCollateralKeys(
       liquidatorKey,
@@ -3617,24 +3617,24 @@ public final class KaminoLendingProgram {
       invokedKaminoLendingProgramMeta,
       keys,
       liquidityAmount,
-      minAcceptableReceivedLiquidityAmount,
+      minReceivedLiquidityAmount,
       maxAllowedLtvOverridePercent
     );
   }
 
   /// @param liquidityAmount: u64
-  /// @param minAcceptableReceivedLiquidityAmount: u64
+  /// @param minReceivedLiquidityAmount: u64
   /// @param maxAllowedLtvOverridePercent: u64
   public static Instruction liquidateObligationAndRedeemReserveCollateral(final AccountMeta invokedKaminoLendingProgramMeta,
                                                                           final List<AccountMeta> keys,
                                                                           final long liquidityAmount,
-                                                                          final long minAcceptableReceivedLiquidityAmount,
+                                                                          final long minReceivedLiquidityAmount,
                                                                           final long maxAllowedLtvOverridePercent) {
     final byte[] _data = new byte[32];
     int i = LIQUIDATE_OBLIGATION_AND_REDEEM_RESERVE_COLLATERAL_DISCRIMINATOR.write(_data, 0);
     putInt64LE(_data, i, liquidityAmount);
     i += 8;
-    putInt64LE(_data, i, minAcceptableReceivedLiquidityAmount);
+    putInt64LE(_data, i, minReceivedLiquidityAmount);
     i += 8;
     putInt64LE(_data, i, maxAllowedLtvOverridePercent);
 
@@ -3642,11 +3642,11 @@ public final class KaminoLendingProgram {
   }
 
   /// @param liquidityAmount: u64
-  /// @param minAcceptableReceivedLiquidityAmount: u64
+  /// @param minReceivedLiquidityAmount: u64
   /// @param maxAllowedLtvOverridePercent: u64
   public record LiquidateObligationAndRedeemReserveCollateralIxData(Discriminator discriminator,
                                                                     long liquidityAmount,
-                                                                    long minAcceptableReceivedLiquidityAmount,
+                                                                    long minReceivedLiquidityAmount,
                                                                     long maxAllowedLtvOverridePercent) implements SerDe {
 
     public static LiquidateObligationAndRedeemReserveCollateralIxData read(final Instruction instruction) {
@@ -3656,7 +3656,7 @@ public final class KaminoLendingProgram {
     public static final int BYTES = 32;
 
     public static final int LIQUIDITY_AMOUNT_OFFSET = 8;
-    public static final int MIN_ACCEPTABLE_RECEIVED_LIQUIDITY_AMOUNT_OFFSET = 16;
+    public static final int MIN_RECEIVED_LIQUIDITY_AMOUNT_OFFSET = 16;
     public static final int MAX_ALLOWED_LTV_OVERRIDE_PERCENT_OFFSET = 24;
 
     public static LiquidateObligationAndRedeemReserveCollateralIxData read(final byte[] _data, final int _offset) {
@@ -3667,10 +3667,10 @@ public final class KaminoLendingProgram {
       int i = _offset + discriminator.length();
       final var liquidityAmount = getInt64LE(_data, i);
       i += 8;
-      final var minAcceptableReceivedLiquidityAmount = getInt64LE(_data, i);
+      final var minReceivedLiquidityAmount = getInt64LE(_data, i);
       i += 8;
       final var maxAllowedLtvOverridePercent = getInt64LE(_data, i);
-      return new LiquidateObligationAndRedeemReserveCollateralIxData(discriminator, liquidityAmount, minAcceptableReceivedLiquidityAmount, maxAllowedLtvOverridePercent);
+      return new LiquidateObligationAndRedeemReserveCollateralIxData(discriminator, liquidityAmount, minReceivedLiquidityAmount, maxAllowedLtvOverridePercent);
     }
 
     @Override
@@ -3678,7 +3678,7 @@ public final class KaminoLendingProgram {
       int i = _offset + discriminator.write(_data, _offset);
       putInt64LE(_data, i, liquidityAmount);
       i += 8;
-      putInt64LE(_data, i, minAcceptableReceivedLiquidityAmount);
+      putInt64LE(_data, i, minReceivedLiquidityAmount);
       i += 8;
       putInt64LE(_data, i, maxAllowedLtvOverridePercent);
       i += 8;
@@ -3749,7 +3749,7 @@ public final class KaminoLendingProgram {
   }
 
   /// @param liquidityAmount: u64
-  /// @param minAcceptableReceivedLiquidityAmount: u64
+  /// @param minReceivedLiquidityAmount: u64
   /// @param maxAllowedLtvOverridePercent: u64
   public static Instruction liquidateObligationAndRedeemReserveCollateralV2(final AccountMeta invokedKaminoLendingProgramMeta,
                                                                             final PublicKey liquidationAccountsLiquidatorKey,
@@ -3778,7 +3778,7 @@ public final class KaminoLendingProgram {
                                                                             final PublicKey debtFarmsAccountsReserveFarmStateKey,
                                                                             final PublicKey farmsProgramKey,
                                                                             final long liquidityAmount,
-                                                                            final long minAcceptableReceivedLiquidityAmount,
+                                                                            final long minReceivedLiquidityAmount,
                                                                             final long maxAllowedLtvOverridePercent) {
     final var keys = liquidateObligationAndRedeemReserveCollateralV2Keys(
       invokedKaminoLendingProgramMeta,
@@ -3812,24 +3812,24 @@ public final class KaminoLendingProgram {
       invokedKaminoLendingProgramMeta,
       keys,
       liquidityAmount,
-      minAcceptableReceivedLiquidityAmount,
+      minReceivedLiquidityAmount,
       maxAllowedLtvOverridePercent
     );
   }
 
   /// @param liquidityAmount: u64
-  /// @param minAcceptableReceivedLiquidityAmount: u64
+  /// @param minReceivedLiquidityAmount: u64
   /// @param maxAllowedLtvOverridePercent: u64
   public static Instruction liquidateObligationAndRedeemReserveCollateralV2(final AccountMeta invokedKaminoLendingProgramMeta,
                                                                             final List<AccountMeta> keys,
                                                                             final long liquidityAmount,
-                                                                            final long minAcceptableReceivedLiquidityAmount,
+                                                                            final long minReceivedLiquidityAmount,
                                                                             final long maxAllowedLtvOverridePercent) {
     final byte[] _data = new byte[32];
     int i = LIQUIDATE_OBLIGATION_AND_REDEEM_RESERVE_COLLATERAL_V_2_DISCRIMINATOR.write(_data, 0);
     putInt64LE(_data, i, liquidityAmount);
     i += 8;
-    putInt64LE(_data, i, minAcceptableReceivedLiquidityAmount);
+    putInt64LE(_data, i, minReceivedLiquidityAmount);
     i += 8;
     putInt64LE(_data, i, maxAllowedLtvOverridePercent);
 
@@ -3837,11 +3837,11 @@ public final class KaminoLendingProgram {
   }
 
   /// @param liquidityAmount: u64
-  /// @param minAcceptableReceivedLiquidityAmount: u64
+  /// @param minReceivedLiquidityAmount: u64
   /// @param maxAllowedLtvOverridePercent: u64
   public record LiquidateObligationAndRedeemReserveCollateralV2IxData(Discriminator discriminator,
                                                                       long liquidityAmount,
-                                                                      long minAcceptableReceivedLiquidityAmount,
+                                                                      long minReceivedLiquidityAmount,
                                                                       long maxAllowedLtvOverridePercent) implements SerDe {
 
     public static LiquidateObligationAndRedeemReserveCollateralV2IxData read(final Instruction instruction) {
@@ -3851,7 +3851,7 @@ public final class KaminoLendingProgram {
     public static final int BYTES = 32;
 
     public static final int LIQUIDITY_AMOUNT_OFFSET = 8;
-    public static final int MIN_ACCEPTABLE_RECEIVED_LIQUIDITY_AMOUNT_OFFSET = 16;
+    public static final int MIN_RECEIVED_LIQUIDITY_AMOUNT_OFFSET = 16;
     public static final int MAX_ALLOWED_LTV_OVERRIDE_PERCENT_OFFSET = 24;
 
     public static LiquidateObligationAndRedeemReserveCollateralV2IxData read(final byte[] _data, final int _offset) {
@@ -3862,10 +3862,10 @@ public final class KaminoLendingProgram {
       int i = _offset + discriminator.length();
       final var liquidityAmount = getInt64LE(_data, i);
       i += 8;
-      final var minAcceptableReceivedLiquidityAmount = getInt64LE(_data, i);
+      final var minReceivedLiquidityAmount = getInt64LE(_data, i);
       i += 8;
       final var maxAllowedLtvOverridePercent = getInt64LE(_data, i);
-      return new LiquidateObligationAndRedeemReserveCollateralV2IxData(discriminator, liquidityAmount, minAcceptableReceivedLiquidityAmount, maxAllowedLtvOverridePercent);
+      return new LiquidateObligationAndRedeemReserveCollateralV2IxData(discriminator, liquidityAmount, minReceivedLiquidityAmount, maxAllowedLtvOverridePercent);
     }
 
     @Override
@@ -3873,7 +3873,7 @@ public final class KaminoLendingProgram {
       int i = _offset + discriminator.write(_data, _offset);
       putInt64LE(_data, i, liquidityAmount);
       i += 8;
-      putInt64LE(_data, i, minAcceptableReceivedLiquidityAmount);
+      putInt64LE(_data, i, minReceivedLiquidityAmount);
       i += 8;
       putInt64LE(_data, i, maxAllowedLtvOverridePercent);
       i += 8;

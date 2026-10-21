@@ -2,7 +2,7 @@
   "address": "KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
   "metadata": {
     "name": "kamino_lending",
-    "version": "1.25.0",
+    "version": "1.26.0",
     "spec": "0.1.0"
   },
   "instructions": [
@@ -2371,7 +2371,7 @@
           "type": "u64"
         },
         {
-          "name": "min_acceptable_received_liquidity_amount",
+          "name": "min_received_liquidity_amount",
           "type": "u64"
         },
         {
@@ -2510,7 +2510,7 @@
           "type": "u64"
         },
         {
-          "name": "min_acceptable_received_liquidity_amount",
+          "name": "min_received_liquidity_amount",
           "type": "u64"
         },
         {
