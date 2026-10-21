@@ -85,6 +85,7 @@ import software.sava.idl.clients.phoenix.perpetuals.gen.types.UpdatePerpUPnlRisk
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.UpdateSplineParametersParamsWithOrdering;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.UpdateSplinePositionLimitsConfigParams;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.UpdateSplinePriceParamsWithOrdering;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.UpdateSplinePriceWithMetadataParams;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.UpdateTraderFeesParams;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.UpdateWithdrawParametersParams;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.UpdateWithdrawRateLimitsParams;
@@ -1138,6 +1139,106 @@ public final class EternalProgram {
     @Override
     public int l() {
       return 8 + params.l();
+    }
+  }
+
+  public static final Discriminator UPDATE_SPLINE_PRICE_WITH_METADATA_DISCRIMINATOR = toDiscriminator(153, 162, 192, 201, 188, 88, 30, 224);
+
+  /// Fixed 32-byte little-endian params followed by a 16-byte client order ID. Flags: bit 0 refreshes regions, bit 1 overrides the sequence number, bit 2 sets updateSlot, bit 3 sets bidWidth, and bit 4 sets askWidth. Unset optional fields are ignored; an explicit zero width resets that side. The processor reads only the fixed params; the client order ID is used off-chain.
+  ///
+  /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
+  /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
+  /// @param signerAccountKey Authority of the spline trader account authorised to update the spline price.
+  /// @param traderAccountKey Spline trader account whose price is being updated.
+  /// @param splineAccountKey Spline collection PDA containing the spline configuration and pricing data.
+  /// @param orderbookKey Optional market orderbook account included by some clients as trailing metadata.
+  public static List<AccountMeta> updateSplinePriceWithMetadataKeys(final AccountMeta invokedEternalProgramMeta,
+                                                                    final PublicKey phoenixProgramKey,
+                                                                    final PublicKey phoenixLogAuthorityKey,
+                                                                    final PublicKey signerAccountKey,
+                                                                    final PublicKey traderAccountKey,
+                                                                    final PublicKey splineAccountKey,
+                                                                    final PublicKey orderbookKey) {
+    return List.of(
+      createRead(phoenixProgramKey),
+      createRead(phoenixLogAuthorityKey),
+      createReadOnlySigner(signerAccountKey),
+      createRead(traderAccountKey),
+      createWrite(splineAccountKey),
+      createRead(requireNonNullElse(orderbookKey, invokedEternalProgramMeta.publicKey()))
+    );
+  }
+
+  /// Fixed 32-byte little-endian params followed by a 16-byte client order ID. Flags: bit 0 refreshes regions, bit 1 overrides the sequence number, bit 2 sets updateSlot, bit 3 sets bidWidth, and bit 4 sets askWidth. Unset optional fields are ignored; an explicit zero width resets that side. The processor reads only the fixed params; the client order ID is used off-chain.
+  ///
+  /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
+  /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
+  /// @param signerAccountKey Authority of the spline trader account authorised to update the spline price.
+  /// @param traderAccountKey Spline trader account whose price is being updated.
+  /// @param splineAccountKey Spline collection PDA containing the spline configuration and pricing data.
+  /// @param orderbookKey Optional market orderbook account included by some clients as trailing metadata.
+  public static Instruction updateSplinePriceWithMetadata(final AccountMeta invokedEternalProgramMeta,
+                                                          final PublicKey phoenixProgramKey,
+                                                          final PublicKey phoenixLogAuthorityKey,
+                                                          final PublicKey signerAccountKey,
+                                                          final PublicKey traderAccountKey,
+                                                          final PublicKey splineAccountKey,
+                                                          final PublicKey orderbookKey,
+                                                          final UpdateSplinePriceWithMetadataParams params) {
+    final var keys = updateSplinePriceWithMetadataKeys(
+      invokedEternalProgramMeta,
+      phoenixProgramKey,
+      phoenixLogAuthorityKey,
+      signerAccountKey,
+      traderAccountKey,
+      splineAccountKey,
+      orderbookKey
+    );
+    return updateSplinePriceWithMetadata(invokedEternalProgramMeta, keys, params);
+  }
+
+  /// Fixed 32-byte little-endian params followed by a 16-byte client order ID. Flags: bit 0 refreshes regions, bit 1 overrides the sequence number, bit 2 sets updateSlot, bit 3 sets bidWidth, and bit 4 sets askWidth. Unset optional fields are ignored; an explicit zero width resets that side. The processor reads only the fixed params; the client order ID is used off-chain.
+  ///
+  public static Instruction updateSplinePriceWithMetadata(final AccountMeta invokedEternalProgramMeta,
+                                                          final List<AccountMeta> keys,
+                                                          final UpdateSplinePriceWithMetadataParams params) {
+    final byte[] _data = new byte[8 + params.l()];
+    int i = UPDATE_SPLINE_PRICE_WITH_METADATA_DISCRIMINATOR.write(_data, 0);
+    params.write(_data, i);
+
+    return Instruction.createInstruction(invokedEternalProgramMeta, keys, _data);
+  }
+
+  public record UpdateSplinePriceWithMetadataIxData(Discriminator discriminator, UpdateSplinePriceWithMetadataParams params) implements SerDe {
+
+    public static UpdateSplinePriceWithMetadataIxData read(final Instruction instruction) {
+      return read(instruction.copyData(), 0);
+    }
+
+    public static final int BYTES = 56;
+
+    public static final int PARAMS_OFFSET = 8;
+
+    public static UpdateSplinePriceWithMetadataIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var params = UpdateSplinePriceWithMetadataParams.read(_data, i);
+      return new UpdateSplinePriceWithMetadataIxData(discriminator, params);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      i += params.write(_data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
     }
   }
 

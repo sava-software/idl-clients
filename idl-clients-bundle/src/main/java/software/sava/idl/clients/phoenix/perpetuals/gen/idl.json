@@ -959,6 +959,78 @@
       ]
     },
     {
+      "name": "UpdateSplinePriceWithMetadata",
+      "docs": [
+        "Fixed 32-byte little-endian params followed by a 16-byte client order ID. Flags: bit 0 refreshes regions, bit 1 overrides the sequence number, bit 2 sets updateSlot, bit 3 sets bidWidth, and bit 4 sets askWidth. Unset optional fields are ignored; an explicit zero width resets that side. The processor reads only the fixed params; the client order ID is used off-chain."
+      ],
+      "discriminator": [153, 162, 192, 201, 188, 88, 30, 224],
+      "accounts": [
+        {
+          "name": "phoenixProgram",
+          "docs": [
+            "Phoenix Eternal program id; logged to assert the correct executable is invoked."
+          ]
+        },
+        {
+          "name": "phoenixLogAuthority",
+          "docs": [
+            "Phoenix log authority PDA used for emitting on-chain market events."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [108, 111, 103]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "signerAccount",
+          "signer": true,
+          "docs": [
+            "Authority of the spline trader account authorised to update the spline price."
+          ]
+        },
+        {
+          "name": "traderAccount",
+          "docs": ["Spline trader account whose price is being updated."]
+        },
+        {
+          "name": "splineAccount",
+          "writable": true,
+          "docs": [
+            "Spline collection PDA containing the spline configuration and pricing data."
+          ]
+        },
+        {
+          "name": "orderbook",
+          "optional": true,
+          "docs": [
+            "Optional market orderbook account included by some clients as trailing metadata."
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "UpdateSplinePriceWithMetadataParams"
+            }
+          }
+        }
+      ]
+    },
+    {
       "name": "DepositFunds",
       "docs": [
         "Deposits collateral tokens from a trader's token account into the global vault, crediting the trader's account."
@@ -22264,6 +22336,44 @@
                 "type": { "defined": { "name": "AdditionalFeeTenthsBps" } }
               }
             ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "UpdateSplinePriceWithMetadataParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "newMidPrice",
+            "type": "u32"
+          },
+          {
+            "name": "flags",
+            "type": "u32"
+          },
+          {
+            "name": "userSequenceNumber",
+            "type": "u64"
+          },
+          {
+            "name": "updateSlot",
+            "type": "u64"
+          },
+          {
+            "name": "bidWidth",
+            "type": "u32"
+          },
+          {
+            "name": "askWidth",
+            "type": "u32"
+          },
+          {
+            "name": "clientOrderId",
+            "type": {
+              "array": ["u8", 16]
+            }
           }
         ]
       }
