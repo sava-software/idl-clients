@@ -1,5 +1,19 @@
 # Changelog
 
+## [25.19.13](https://github.com/sava-software/idl-clients/compare/25.19.12...25.19.13) (2026-10-23)
+
+
+### ⚠ BREAKING CHANGES
+
+* **kamino-lend:** KaminoLendingProgram's LiquidateObligationAndRedeemReserveCollateralIxData and LiquidateObligationAndRedeemReserveCollateralV2IxData records rename their minAcceptableReceivedLiquidityAmount component to minReceivedLiquidityAmount and their MIN_ACCEPTABLE_RECEIVED_LIQUIDITY_AMOUNT_OFFSET constant to MIN_RECEIVED_LIQUIDITY_AMOUNT_OFFSET, so code calling the old accessor or reading the old constant must switch to the new names. The value's type and offset (16) and the instruction data are unchanged, and the liquidateObligationAndRedeemReserveCollateral and liquidateObligationAndRedeemReserveCollateralV2 builders keep their parameter order and types, so calls to them compile as before.
+
+### Features
+
+* **jupiter:** support the latest swap variants ([db935d0](https://github.com/sava-software/idl-clients/commit/db935d0e088e649b5f7c2c9f5da35cc80915b026))
+* **kamino-lend:** sync IDL metadata and update deploy slot ([d4e932d](https://github.com/sava-software/idl-clients/commit/d4e932db6f1ee8a9be9f1737837abbaf5a1e0bee))
+* **kamino-lend:** sync Kamino Lend to its 1.26.0 IDL ([d7fbc24](https://github.com/sava-software/idl-clients/commit/d7fbc2441b5a15a83607500d185067a4ea892452))
+* **phoenix-perpetuals:** add UpdateSplinePriceWithMetadata instruction support ([d5c7832](https://github.com/sava-software/idl-clients/commit/d5c7832280efb4f83115e33306c4e5433c742fb7))
+
 ## [25.19.12](https://github.com/sava-software/idl-clients/compare/25.19.11...25.19.12) (2026-10-15)
 
 
