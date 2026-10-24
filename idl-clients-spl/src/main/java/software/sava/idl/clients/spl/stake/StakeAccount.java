@@ -18,6 +18,27 @@ import static software.sava.core.rpc.Filter.createMemCompFilter;
 ///                           them reserved. A delegation it creates writes zeros there, while a
 ///                           rescinded deactivation or a split keeps the old value, so this reads
 ///                           0.25 or 0.0, and the program reads neither.
+/// @param creditsObserved    The vote account's cumulative credits this stake has been settled up
+///                           to: read from the vote account's latest `epoch_credits` row when the
+///                           stake is delegated, at its activation epoch's reward calculation and at
+///                           each later epoch's reward calculation that pays it (under Alpenglow at
+///                           every one while it has effective or activating stake, even when its own
+///                           reward is zero); copied from the source by a split or by a move into an
+///                           inactive account; and a stake-weighted average of both accounts'
+///                           values, rounded up, after merging two fully active accounts or two in
+///                           their activation epoch, or after moving stake into a fully active one,
+///                           which can be lower than the destination held before. Alpenglow changed
+///                           what that counter counts from each cluster's own migration epoch
+///                           (mainnet epoch 1064, 2026-10-21; devnet epoch 1167 and testnet epoch
+///                           1042, both in September 2026): TowerBFT added vote credits; Alpenglow
+///                           adds the lamports of the vote account's vote rewards and, in blocks it
+///                           leads, its leader rewards, continuing from the final TowerBFT total. A
+///                           value written after the vote account's first Alpenglow row is therefore
+///                           no longer a vote-credit count and is on a different scale from one
+///                           written before it. It is not monotone either: besides those writes,
+///                           agave rewinds it to the vote account's credits when those fall below
+///                           it, as when a vote account is recreated. The program never writes a
+///                           sentinel here, so the signed read is exact.
 public record StakeAccount(PublicKey address,
                            StakeState state,
                            long rentExemptReserve,

@@ -287,6 +287,14 @@ public interface SPLClient {
     return delegatedStakeAccounts.stream().map(this::deactivateStakeAccount).toList();
   }
 
+  /// Deactivates a delegation to a vote account that has earned no credits for the last five
+  /// epochs, the stake program's only validator-liveness check. The program requires
+  /// `referenceVoteAccount` to have earned credits in each of the last five epochs, read as five
+  /// consecutive epochs in its `epoch_credits` rows; a reference whose five-row window holds the
+  /// Alpenglow migration marker, a `(u64::MAX, u64::MAX, u64::MAX)` row, therefore fails with
+  /// insufficient voting activity until the marker leaves its window, while `delinquentVoteAccount`
+  /// is judged on its latest row alone, which is never the marker (agave appends the first
+  /// Alpenglow row in the same update that inserts it), so the marker cannot change that check.
   Instruction deactivateDelinquentStake(final PublicKey delegatedStakeAccount,
                                         final PublicKey delinquentVoteAccount,
                                         final PublicKey referenceVoteAccount);
