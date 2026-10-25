@@ -33,9 +33,9 @@ import static software.sava.core.rpc.Filter.createMemCompFilter;
 ///                           1042, both in September 2026): TowerBFT added vote credits; Alpenglow
 ///                           adds the lamports of the vote account's vote rewards and, in blocks it
 ///                           leads, its leader rewards, continuing from the final TowerBFT total. A
-///                           value written after the vote account's first Alpenglow row is therefore
-///                           no longer a vote-credit count and is on a different scale from one
-///                           written before it. It is not monotone either: besides those writes,
+///                           value read from the vote account after its first Alpenglow row is thus
+///                           no longer a vote-credit count and is on a different scale from one read
+///                           before it. It is not monotone either: besides those writes,
 ///                           agave rewinds it to the vote account's credits when those fall below
 ///                           it, as when a vote account is recreated. The program never writes a
 ///                           sentinel here, so the signed read is exact.
