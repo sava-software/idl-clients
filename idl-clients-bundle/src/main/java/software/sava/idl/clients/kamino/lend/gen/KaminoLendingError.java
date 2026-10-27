@@ -140,8 +140,8 @@ public sealed interface KaminoLendingError extends ProgramError permits
     KaminoLendingError.CannotUseSameReserve,
     KaminoLendingError.TransactionIncludesRestrictedPrograms,
     KaminoLendingError.BorrowOrderDebtLiquidityMintMismatch,
-    KaminoLendingError.BorrowOrderMaxBorrowRateExceeded,
-    KaminoLendingError.BorrowOrderMinDebtTermInsufficient,
+    KaminoLendingError.DebtReserveMaxBorrowRateExceeded,
+    KaminoLendingError.DebtReserveMinDebtTermInsufficient,
     KaminoLendingError.BorrowOrderFillTimeLimitExceeded,
     KaminoLendingError.ReserveDebtMaturityReached,
     KaminoLendingError.NonUpdatableOrderConfiguration,
@@ -329,8 +329,8 @@ public sealed interface KaminoLendingError extends ProgramError permits
       case 6133 -> CannotUseSameReserve.INSTANCE;
       case 6134 -> TransactionIncludesRestrictedPrograms.INSTANCE;
       case 6135 -> BorrowOrderDebtLiquidityMintMismatch.INSTANCE;
-      case 6136 -> BorrowOrderMaxBorrowRateExceeded.INSTANCE;
-      case 6137 -> BorrowOrderMinDebtTermInsufficient.INSTANCE;
+      case 6136 -> DebtReserveMaxBorrowRateExceeded.INSTANCE;
+      case 6137 -> DebtReserveMinDebtTermInsufficient.INSTANCE;
       case 6138 -> BorrowOrderFillTimeLimitExceeded.INSTANCE;
       case 6139 -> ReserveDebtMaturityReached.INSTANCE;
       case 6140 -> NonUpdatableOrderConfiguration.INSTANCE;
@@ -1335,17 +1335,17 @@ public sealed interface KaminoLendingError extends ProgramError permits
     );
   }
 
-  record BorrowOrderMaxBorrowRateExceeded(int code, String msg) implements KaminoLendingError {
+  record DebtReserveMaxBorrowRateExceeded(int code, String msg) implements KaminoLendingError {
 
-    public static final BorrowOrderMaxBorrowRateExceeded INSTANCE = new BorrowOrderMaxBorrowRateExceeded(
-        6136, "Reserve used for fill exceeds the maximum borrow rate specified by the order"
+    public static final DebtReserveMaxBorrowRateExceeded INSTANCE = new DebtReserveMaxBorrowRateExceeded(
+        6136, "Debt reserve's max borrow rate exceeds the owner's accepted maximum"
     );
   }
 
-  record BorrowOrderMinDebtTermInsufficient(int code, String msg) implements KaminoLendingError {
+  record DebtReserveMinDebtTermInsufficient(int code, String msg) implements KaminoLendingError {
 
-    public static final BorrowOrderMinDebtTermInsufficient INSTANCE = new BorrowOrderMinDebtTermInsufficient(
-        6137, "Reserve used for fill defines a debt term shorter than specified by the order"
+    public static final DebtReserveMinDebtTermInsufficient INSTANCE = new DebtReserveMinDebtTermInsufficient(
+        6137, "Debt reserve's debt term is shorter than the owner's accepted minimum"
     );
   }
 

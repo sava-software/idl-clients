@@ -57,7 +57,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                                                     been individually marked for auto-deleveraging.
 /// @param minInitialDepositAmount: u64 Minimum amount of deposit at creation of a reserve to prevent artificial inflation
 ///                                Note: this amount cannot be recovered, the ctoken associated are never minted
-/// @param obligationOrderExecutionEnabled: u8 Whether the obligation orders should be evaluated during liquidations.
+/// @param obligationOrderExecutionEnabled: u8 Whether execution of obligation orders is enabled.
 /// @param immutable: u8 Whether the lending market is set as immutable.
 /// @param obligationOrderCreationEnabled: u8 Whether new obligation orders can be created.
 ///                                       Note: updating or cancelling existing orders is *not* affected by this flag.
@@ -153,6 +153,9 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                                             throttling).
 /// @param permissioningAuthority If not NULL, operations encoded in permissioned_ops require a signature from this authority
 /// @param permissionedOps: u64 Bitmap of operations that require permissioning authority signature
+/// @param minObligationOrderExecutionValue: u64 Minimum value that can be moved (borrowed for lever-up, or repaid for deleverage) in a single
+///                                         `execute_obligation_order()` call, in full units of the quote currency (e.g. `2` means "$2",
+///                                         not "2 lamports of USDC").
 /// @param padding1: u64[]
 public record LendingMarket(PublicKey _address,
                             Discriminator discriminator,
@@ -206,6 +209,7 @@ public record LendingMarket(PublicKey _address,
                             long termBasedFullLiquidationDurationSecs,
                             PublicKey permissioningAuthority,
                             long permissionedOps,
+                            long minObligationOrderExecutionValue,
                             long[] padding1) implements SerDe {
 
   public static final int BYTES = 4664;
@@ -215,7 +219,7 @@ public record LendingMarket(PublicKey _address,
   public static final int ELEVATION_GROUPS_LEN = 32;
   public static final int ELEVATION_GROUP_PADDING_LEN = 90;
   public static final int NAME_LEN = 32;
-  public static final int PADDING_1_LEN = 153;
+  public static final int PADDING_1_LEN = 152;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(246, 114, 50, 98, 72, 157, 28, 120);
@@ -271,7 +275,8 @@ public record LendingMarket(PublicKey _address,
   public static final int TERM_BASED_FULL_LIQUIDATION_DURATION_SECS_OFFSET = 3392;
   public static final int PERMISSIONING_AUTHORITY_OFFSET = 3400;
   public static final int PERMISSIONED_OPS_OFFSET = 3432;
-  public static final int PADDING_1_OFFSET = 3440;
+  public static final int MIN_OBLIGATION_ORDER_EXECUTION_VALUE_OFFSET = 3440;
+  public static final int PADDING_1_OFFSET = 3448;
 
   public static Filter createVersionFilter(final long version) {
     final byte[] _data = new byte[8];
@@ -487,6 +492,12 @@ public record LendingMarket(PublicKey _address,
     return Filter.createMemCompFilter(PERMISSIONED_OPS_OFFSET, _data);
   }
 
+  public static Filter createMinObligationOrderExecutionValueFilter(final long minObligationOrderExecutionValue) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, minObligationOrderExecutionValue);
+    return Filter.createMemCompFilter(MIN_OBLIGATION_ORDER_EXECUTION_VALUE_OFFSET, _data);
+  }
+
   public static LendingMarket read(final byte[] _data, final int _offset) {
     return read(null, _data, _offset);
   }
@@ -621,7 +632,9 @@ public record LendingMarket(PublicKey _address,
     i += 32;
     final var permissionedOps = getInt64LE(_data, i);
     i += 8;
-    final var padding1 = new long[153];
+    final var minObligationOrderExecutionValue = getInt64LE(_data, i);
+    i += 8;
+    final var padding1 = new long[152];
     SerDeUtil.readArray(padding1, _data, i);
     return new LendingMarket(_address,
                              discriminator,
@@ -675,6 +688,7 @@ public record LendingMarket(PublicKey _address,
                              termBasedFullLiquidationDurationSecs,
                              permissioningAuthority,
                              permissionedOps,
+                             minObligationOrderExecutionValue,
                              padding1);
   }
 
@@ -775,7 +789,9 @@ public record LendingMarket(PublicKey _address,
     i += 32;
     putInt64LE(_data, i, permissionedOps);
     i += 8;
-    i += SerDeUtil.writeArrayChecked(padding1, 153, _data, i);
+    putInt64LE(_data, i, minObligationOrderExecutionValue);
+    i += 8;
+    i += SerDeUtil.writeArrayChecked(padding1, 152, _data, i);
     return i - _offset;
   }
 

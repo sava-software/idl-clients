@@ -2,7 +2,7 @@
   "address": "KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
   "metadata": {
     "name": "kamino_lending",
-    "version": "1.26.0",
+    "version": "1.27.0",
     "spec": "0.1.0"
   },
   "instructions": [
@@ -5226,13 +5226,13 @@
     },
     {
       "code": 6136,
-      "name": "BorrowOrderMaxBorrowRateExceeded",
-      "msg": "Reserve used for fill exceeds the maximum borrow rate specified by the order"
+      "name": "DebtReserveMaxBorrowRateExceeded",
+      "msg": "Debt reserve's max borrow rate exceeds the owner's accepted maximum"
     },
     {
       "code": 6137,
-      "name": "BorrowOrderMinDebtTermInsufficient",
-      "msg": "Reserve used for fill defines a debt term shorter than specified by the order"
+      "name": "DebtReserveMinDebtTermInsufficient",
+      "msg": "Debt reserve's debt term is shorter than the owner's accepted minimum"
     },
     {
       "code": 6138,
@@ -5995,6 +5995,9 @@
           },
           {
             "name": "UpdateDisableNonceBlock"
+          },
+          {
+            "name": "UpdateMinObligationOrderExecutionValue"
           }
         ]
       }
@@ -8097,7 +8100,7 @@
           {
             "name": "obligation_order_execution_enabled",
             "docs": [
-              "Whether the obligation orders should be evaluated during liquidations."
+              "Whether execution of obligation orders is enabled."
             ],
             "type": "u8"
           },
@@ -8335,11 +8338,20 @@
             "type": "u64"
           },
           {
+            "name": "min_obligation_order_execution_value",
+            "docs": [
+              "Minimum value that can be moved (borrowed for lever-up, or repaid for deleverage) in a single",
+              "`execute_obligation_order()` call, in full units of the quote currency (e.g. `2` means \"$2\",",
+              "not \"2 lamports of USDC\")."
+            ],
+            "type": "u64"
+          },
+          {
             "name": "padding1",
             "type": {
               "array": [
                 "u64",
-                153
+                152
               ]
             }
           }

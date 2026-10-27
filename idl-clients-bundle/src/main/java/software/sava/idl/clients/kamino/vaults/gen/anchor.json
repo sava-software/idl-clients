@@ -896,31 +896,6 @@
           "docs": [
             "Required by the klend CPI."
           ]
-        },
-        {
-          "name": "reserve_withdraw_ticket",
-          "docs": [
-            "The ticket to be initialized, if the klend's withdraw queue should be used for uninvesting.",
-            "",
-            "Note: the sequence number in the seeds is bumped by klend's permissionless",
-            "`EnqueueToWithdraw`, so anyone can invalidate an address the crank pre-derived off-chain and",
-            "make this constraint revert the whole invest. We cannot fix this on our side (the seeds are",
-            "klend's) - the crank has to re-derive and retry."
-          ],
-          "writable": true,
-          "optional": true
-        },
-        {
-          "name": "owner_queued_collateral_vault",
-          "docs": [
-            "The ctokens vault expected by the klend's withdraw queue.",
-            "Must be present together with the `reserve_withdraw_ticket`."
-          ],
-          "writable": true,
-          "optional": true
-        },
-        {
-          "name": "system_program"
         }
       ],
       "args": []
@@ -1013,6 +988,110 @@
           "name": "instruction_sysvar_account",
           "docs": [
             "Required by the klend CPI."
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "max_amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "invest_v2_with_max_amount",
+      "docs": [
+        "Same as `invest_with_max_amount`, but a disinvest that the reserve cannot pay immediately",
+        "may enter klend's withdraw queue, unless `max_amount` binds; `u64::MAX` means no cap. A",
+        "binding cap disinvests at most the reserve's freely available liquidity. The queue needs the",
+        "withdraw-ticket accounts; without them, such a disinvest fails."
+      ],
+      "discriminator": [
+        119,
+        1,
+        207,
+        132,
+        76,
+        121,
+        136,
+        203
+      ],
+      "accounts": [
+        {
+          "name": "invest_accounts",
+          "accounts": [
+            {
+              "name": "payer",
+              "writable": true,
+              "signer": true
+            },
+            {
+              "name": "payer_token_account",
+              "writable": true
+            },
+            {
+              "name": "vault_state",
+              "writable": true
+            },
+            {
+              "name": "token_vault",
+              "writable": true
+            },
+            {
+              "name": "token_mint",
+              "writable": true
+            },
+            {
+              "name": "base_vault_authority",
+              "writable": true
+            },
+            {
+              "name": "ctoken_vault",
+              "writable": true
+            },
+            {
+              "name": "reserve",
+              "docs": [
+                "CPI accounts"
+              ],
+              "writable": true
+            },
+            {
+              "name": "lending_market"
+            },
+            {
+              "name": "lending_market_authority",
+              "docs": [
+                "The canonical KLend authority for `lending_market`."
+              ]
+            },
+            {
+              "name": "reserve_liquidity_supply",
+              "writable": true
+            },
+            {
+              "name": "reserve_collateral_mint",
+              "writable": true
+            },
+            {
+              "name": "reserve_whitelist_entry",
+              "optional": true
+            },
+            {
+              "name": "klend_program"
+            },
+            {
+              "name": "reserve_collateral_token_program"
+            },
+            {
+              "name": "token_program"
+            },
+            {
+              "name": "instruction_sysvar_account",
+              "docs": [
+                "Required by the klend CPI."
+              ]
+            }
           ]
         },
         {
