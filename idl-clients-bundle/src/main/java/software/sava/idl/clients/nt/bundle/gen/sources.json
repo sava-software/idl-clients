@@ -1,10 +1,10 @@
 {
   "program": "BUNDDh4P5XviMm1f3gCvnq2qKx6TGosAGnoUK12e7cXU",
   "deployed": "vcs",
-  "lastDeploySlot": 444949127,
+  "lastDeploySlot": 462411030,
   "programDataState": "upgradeable",
   "programDataStateSlot": 440077852,
-  "programDataPayloadSha256": "37391ced2c3049181697dca326a5af7ade2f7837b3c7731464fa728e86fde1e3",
+  "programDataPayloadSha256": "e6ee4c9d9b761592c6ae31169d2c9e863c18d43f522b7de12328edc7049e8a39",
   "programDataPayloadLength": 1350928,
   "channels": {
     "metadata": {
