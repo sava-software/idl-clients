@@ -17,6 +17,7 @@ public sealed interface NtbundleEvent extends SerDe permits
     BundleSwitchFallbackToWallet,
     BundleSwitchRequested,
     ChangedCoreParams,
+    ChargedFeesToTokenizedDepositor,
     ChargedFeesToUser,
     DelaysSet,
     DepositRequested,
@@ -28,10 +29,13 @@ public sealed interface NtbundleEvent extends SerDe permits
     InitializedNewVaultDepositor,
     InitializedReceivers,
     InitializedVault,
+    InstantBundleTokensMinted,
+    IssuanceFeeSet,
     ManagerWithdrawal,
     ManagerWithdrawalWithSplit,
     MaxDepositAmountSet,
     MinDepositAmountSet,
+    MintCapPerCycleSet,
     NettingCompleted,
     NewKeeperSet,
     NewManagerSet,
@@ -55,6 +59,8 @@ public sealed interface NtbundleEvent extends SerDe permits
     StrategyAdded,
     StrategyEnabled,
     StrategyRemoved,
+    TokenWithdrawalRequested,
+    TokenizedBundleDepositorInitialized,
     UserBundleAccountClosed,
     UserFeeOverrideCleared,
     UserFeeOverrideSet,
@@ -93,6 +99,8 @@ public sealed interface NtbundleEvent extends SerDe permits
       return BundleSwitchRequested.read(_data, _offset);
     } else if (ChangedCoreParams.DISCRIMINATOR.equals(_data, _offset)) {
       return ChangedCoreParams.read(_data, _offset);
+    } else if (ChargedFeesToTokenizedDepositor.DISCRIMINATOR.equals(_data, _offset)) {
+      return ChargedFeesToTokenizedDepositor.read(_data, _offset);
     } else if (ChargedFeesToUser.DISCRIMINATOR.equals(_data, _offset)) {
       return ChargedFeesToUser.read(_data, _offset);
     } else if (DelaysSet.DISCRIMINATOR.equals(_data, _offset)) {
@@ -115,6 +123,10 @@ public sealed interface NtbundleEvent extends SerDe permits
       return InitializedReceivers.read(_data, _offset);
     } else if (InitializedVault.DISCRIMINATOR.equals(_data, _offset)) {
       return InitializedVault.read(_data, _offset);
+    } else if (InstantBundleTokensMinted.DISCRIMINATOR.equals(_data, _offset)) {
+      return InstantBundleTokensMinted.read(_data, _offset);
+    } else if (IssuanceFeeSet.DISCRIMINATOR.equals(_data, _offset)) {
+      return IssuanceFeeSet.read(_data, _offset);
     } else if (ManagerWithdrawal.DISCRIMINATOR.equals(_data, _offset)) {
       return ManagerWithdrawal.read(_data, _offset);
     } else if (ManagerWithdrawalWithSplit.DISCRIMINATOR.equals(_data, _offset)) {
@@ -123,6 +135,8 @@ public sealed interface NtbundleEvent extends SerDe permits
       return MaxDepositAmountSet.read(_data, _offset);
     } else if (MinDepositAmountSet.DISCRIMINATOR.equals(_data, _offset)) {
       return MinDepositAmountSet.read(_data, _offset);
+    } else if (MintCapPerCycleSet.DISCRIMINATOR.equals(_data, _offset)) {
+      return MintCapPerCycleSet.read(_data, _offset);
     } else if (NettingCompleted.DISCRIMINATOR.equals(_data, _offset)) {
       return NettingCompleted.read(_data, _offset);
     } else if (NewKeeperSet.DISCRIMINATOR.equals(_data, _offset)) {
@@ -169,6 +183,10 @@ public sealed interface NtbundleEvent extends SerDe permits
       return StrategyEnabled.read(_data, _offset);
     } else if (StrategyRemoved.DISCRIMINATOR.equals(_data, _offset)) {
       return StrategyRemoved.read(_data, _offset);
+    } else if (TokenWithdrawalRequested.DISCRIMINATOR.equals(_data, _offset)) {
+      return TokenWithdrawalRequested.read(_data, _offset);
+    } else if (TokenizedBundleDepositorInitialized.DISCRIMINATOR.equals(_data, _offset)) {
+      return TokenizedBundleDepositorInitialized.read(_data, _offset);
     } else if (UserBundleAccountClosed.DISCRIMINATOR.equals(_data, _offset)) {
       return UserBundleAccountClosed.read(_data, _offset);
     } else if (UserFeeOverrideCleared.DISCRIMINATOR.equals(_data, _offset)) {

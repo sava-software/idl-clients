@@ -15,17 +15,16 @@
       "verbatim": "metadata.json"
     },
     "vcs": {
-      "origin": "github:neutral-trade/sdk@main#54a412daad33fe68e6b855a87ee29bfdb7731455/src/idl/ntbundle.json",
-      "hash": "3ad23f628aaddc4d54edbb3f30e35332e773ca640257456b2bd87df8dcd2f8d7",
+      "origin": "github:neutral-trade/sdk@main#02ff2665f5e4b13099c82bc2a958b8d8b7a8a656/src/idl/ntbundle.json",
+      "hash": "ac0fd75496f74546b9b7d732d5fe400cdf905a55cdaee912f9a26234c1ff49fd",
       "matchesDeployed": true,
       "verbatim": "idl.json"
     },
     "vcsHead": {
       "origin": "github:neutral-trade/sdk@main/src/idl/ntbundle.json",
       "hash": "ac0fd75496f74546b9b7d732d5fe400cdf905a55cdaee912f9a26234c1ff49fd",
-      "matchesDeployed": false,
-      "file": "vcsHead.json",
-      "verbatim": "vcsHead.json"
+      "matchesDeployed": true,
+      "verbatim": "idl.json"
     }
   }
 }

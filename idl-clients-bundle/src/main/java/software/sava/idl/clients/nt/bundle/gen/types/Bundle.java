@@ -38,6 +38,10 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param minDepositAmount: u64
 /// @param referrerMinDepositAmount: u64
 /// @param tierCount: u8
+/// @param issuanceFeeBps: u32
+/// @param managementFeeVersion: u64 Lets an unchanged user override acknowledge a bundle change without losing accrual.
+/// @param performanceFeeVersion: u64 Holders acknowledge a new version when they reset their performance fee basis.
+///                              A counter distinguishes changes made within the same clock timestamp.
 public record Bundle(PublicKey _address,
                      Discriminator discriminator,
                      byte[] name,
@@ -74,11 +78,15 @@ public record Bundle(PublicKey _address,
                      long referrerMinDepositAmount,
                      ReferralTier[] referralTiers,
                      int tierCount,
+                     long issuanceFeeBps,
+                     long lastManagementFeeChangeTimestamp,
+                     long managementFeeVersion,
+                     long performanceFeeVersion,
                      byte[] padding) implements SerDe {
 
   public static final int NAME_LEN = 32;
   public static final int REFERRAL_TIERS_LEN = 5;
-  public static final int PADDING_LEN = 117;
+  public static final int PADDING_LEN = 89;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(15, 82, 167, 230, 37, 214, 82, 80);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 
@@ -202,7 +210,15 @@ public record Bundle(PublicKey _address,
     i += SerDeUtil.readArray(referralTiers, ReferralTier::read, _data, i);
     final var tierCount = _data[i] & 0xFF;
     ++i;
-    final var padding = new byte[117];
+    final var issuanceFeeBps = Integer.toUnsignedLong(getInt32LE(_data, i));
+    i += 4;
+    final var lastManagementFeeChangeTimestamp = getInt64LE(_data, i);
+    i += 8;
+    final var managementFeeVersion = getInt64LE(_data, i);
+    i += 8;
+    final var performanceFeeVersion = getInt64LE(_data, i);
+    i += 8;
+    final var padding = new byte[89];
     SerDeUtil.readArray(padding, _data, i);
     return new Bundle(_address,
                       discriminator,
@@ -240,6 +256,10 @@ public record Bundle(PublicKey _address,
                       referrerMinDepositAmount,
                       referralTiers,
                       tierCount,
+                      issuanceFeeBps,
+                      lastManagementFeeChangeTimestamp,
+                      managementFeeVersion,
+                      performanceFeeVersion,
                       padding);
   }
 
@@ -311,7 +331,15 @@ public record Bundle(PublicKey _address,
     i += SerDeUtil.writeArrayChecked(referralTiers, 5, _data, i);
     _data[i] = (byte) tierCount;
     ++i;
-    i += SerDeUtil.writeArrayChecked(padding, 117, _data, i);
+    putInt32LE(_data, i, (int) issuanceFeeBps);
+    i += 4;
+    putInt64LE(_data, i, lastManagementFeeChangeTimestamp);
+    i += 8;
+    putInt64LE(_data, i, managementFeeVersion);
+    i += 8;
+    putInt64LE(_data, i, performanceFeeVersion);
+    i += 8;
+    i += SerDeUtil.writeArrayChecked(padding, 89, _data, i);
     return i - _offset;
   }
 
@@ -351,6 +379,10 @@ public record Bundle(PublicKey _address,
          + 8
          + SerDeUtil.lenArray(referralTiers)
          + 1
+         + 4
+         + 8
+         + 8
+         + 8
          + SerDeUtil.lenArray(padding);
   }
 }
