@@ -11,6 +11,15 @@ no generator footers. The log is a consumer-facing changelog, and with
 `always-bump-patch` versioning it is the only place a breaking change is
 announced, so keep it free of noise that is about how the work was done.
 
+When the generated code changes to follow the deployed program, because the program
+or the published IDL that describes it changed, that is not a breaking change of
+this library, whatever it adds, removes or reshapes, since following the program is
+what keeps callers' code working: mark it with neither `!` nor `BREAKING CHANGE:`,
+and say in the body what callers must update or recompile. The rule covers `gen/`
+only and dates from 2026-10-29, so earlier `!` regenerations predate it, and a
+hand-written API change or a generated change that idl-src-gen itself causes is
+still marked.
+
 ## What this repository is
 
 This repo makes it easy to interact with on-chain Solana programs from Java —
@@ -881,7 +890,8 @@ Conventions when adding a target:
   of the versioning strategy — but the version number does not react to it
   (25.18.2, 25.18.3 and 25.18.5 each shipped breaking changes as a patch). This is
   why the commit body has to carry the migration advice in full: it is the whole
-  warning a consumer gets.
+  warning a consumer gets. A generated change that follows the deployed program is
+  not a break here; "Commit messages" above says how such a commit is written.
 - A minor or major bump is **manual**. Land a `chore: release <x.y.z>` commit
   carrying a `Release-As: <x.y.z>` footer and release-please cuts that exact
   version; every `25.N.0` in this repo's history was produced that way
