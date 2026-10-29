@@ -217,7 +217,8 @@ public sealed interface Swap extends RustEnum permits
   Swap.DrFraudsworthSolSell,
   Swap.DrFraudsworthSplBuy,
   Swap.DrFraudsworthSplSell,
-  Swap.DrFraudsworthVaultConvert {
+  Swap.DrFraudsworthVaultConvert,
+  Swap.BisonFiMarketBackedV2 {
 
   static Swap read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -426,6 +427,7 @@ public sealed interface Swap extends RustEnum permits
       case 200 -> DrFraudsworthSplBuy.INSTANCE;
       case 201 -> DrFraudsworthSplSell.INSTANCE;
       case 202 -> DrFraudsworthVaultConvert.INSTANCE;
+      case 203 -> BisonFiMarketBackedV2.read(_data, i);
       default -> null;
     };
   }
@@ -3651,6 +3653,21 @@ public sealed interface Swap extends RustEnum permits
     @Override
     public int ordinal() {
       return 202;
+    }
+  }
+
+  record BisonFiMarketBackedV2(boolean val) implements EnumBool, Swap {
+
+    public static final BisonFiMarketBackedV2 TRUE = new BisonFiMarketBackedV2(true);
+    public static final BisonFiMarketBackedV2 FALSE = new BisonFiMarketBackedV2(false);
+
+    public static BisonFiMarketBackedV2 read(final byte[] _data, int i) {
+      return _data[i] == 1 ? BisonFiMarketBackedV2.TRUE : BisonFiMarketBackedV2.FALSE;
+    }
+
+    @Override
+    public int ordinal() {
+      return 203;
     }
   }
 }

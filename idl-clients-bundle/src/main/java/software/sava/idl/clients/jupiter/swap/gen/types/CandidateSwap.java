@@ -26,7 +26,8 @@ public sealed interface CandidateSwap extends RustEnum permits
   CandidateSwap.HumidiFiRouter,
   CandidateSwap.HumidiFiRouterV2,
   CandidateSwap.HumidiFiRouterV3,
-  CandidateSwap.ZeroFiSwapV3 {
+  CandidateSwap.ZeroFiSwapV3,
+  CandidateSwap.BisonFiMarketBackedV2 {
 
   static CandidateSwap read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -51,6 +52,7 @@ public sealed interface CandidateSwap extends RustEnum permits
       case 16 -> HumidiFiRouterV2.read(_data, i);
       case 17 -> HumidiFiRouterV3.read(_data, i);
       case 18 -> ZeroFiSwapV3.INSTANCE;
+      case 19 -> BisonFiMarketBackedV2.read(_data, i);
       default -> null;
     };
   }
@@ -533,6 +535,21 @@ public sealed interface CandidateSwap extends RustEnum permits
     @Override
     public int ordinal() {
       return 18;
+    }
+  }
+
+  record BisonFiMarketBackedV2(boolean val) implements EnumBool, CandidateSwap {
+
+    public static final BisonFiMarketBackedV2 TRUE = new BisonFiMarketBackedV2(true);
+    public static final BisonFiMarketBackedV2 FALSE = new BisonFiMarketBackedV2(false);
+
+    public static BisonFiMarketBackedV2 read(final byte[] _data, int i) {
+      return _data[i] == 1 ? BisonFiMarketBackedV2.TRUE : BisonFiMarketBackedV2.FALSE;
+    }
+
+    @Override
+    public int ordinal() {
+      return 19;
     }
   }
 }
