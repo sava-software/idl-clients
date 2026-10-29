@@ -1256,7 +1256,7 @@ shipped client bugs followed, both in code no test reached:
 | Method | Defect |
 |---|---|
 | `clearEmissions` | 0.1.9 removed the instruction. Every call failed with 0x65. Wrapper **deleted**. |
-| `closeOrder` | 0.1.9 prepends `group`, shifting all five accounts down one slot. Now passes `marginfiGroup()` (**breaking**: the generated builder gained a `groupKey` parameter). |
+| `closeOrder` | 0.1.9 prepends `group`, shifting all five accounts down one slot. Now passes `marginfiGroup()` (**source-incompatible**: the generated builder gained a `groupKey` parameter). |
 
 Everything else the client wraps — deposit, repay, withdraw, borrow, flashloans,
 `placeOrder`, the account lifecycle — is byte-identical across the two versions.

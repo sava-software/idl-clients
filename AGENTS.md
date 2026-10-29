@@ -11,14 +11,16 @@ no generator footers. The log is a consumer-facing changelog, and with
 `always-bump-patch` versioning it is the only place a breaking change is
 announced, so keep it free of noise that is about how the work was done.
 
-When the generated code changes to follow the deployed program, because the program
-or the published IDL that describes it changed, that is not a breaking change of
-this library, whatever it adds, removes or reshapes, since following the program is
-what keeps callers' code working: mark it with neither `!` nor `BREAKING CHANGE:`,
-and say in the body what callers must update or recompile. The rule covers `gen/`
-only and dates from 2026-10-29, so earlier `!` regenerations predate it, and a
-hand-written API change or a generated change that idl-src-gen itself causes is
-still marked.
+When the generated code changes to follow the deployed program, that is not a
+breaking change of this library, whatever it adds, removes or reshapes: following
+the program is what keeps callers' code working. That holds when the program or
+the published IDL that describes it changed, and equally when a pin, a
+`fieldTypes` correction, the `deployed` channel or an `idlFile` bridge moves a
+client generated from a document that did not describe the program onto one that
+does. Mark such a change with neither `!` nor `BREAKING CHANGE:`, and say in the
+body what callers must update or recompile. The rule covers `gen/` only and dates
+from 2026-10-29, so earlier `!` regenerations predate it; a hand-written API
+change, or a generated change that idl-src-gen itself causes, is still marked.
 
 ## What this repository is
 
@@ -898,7 +900,8 @@ Conventions when adding a target:
   (25.13.0 `c09e6c1d`, 25.14.0 `0104b3cc`, 25.15.0 `9bc9c5fd`, 25.16.0 `40fd212e`,
   25.17.0 `b9d434b5`, 25.18.0 `643bb671`, 25.19.0 `54056678`). Decide it
   deliberately when a release accumulates enough breakage that consumers should be
-  made to read the notes.
+  made to read the notes, counting only breaks of this library's own API, not
+  generated changes that follow the program.
 - The root `.gitignore` is a **recursive** whitelist: every path in the repo is
   ignored unless a rule re-includes it, not just the top level. A new kind of
   tracked file — a new resource extension, a new config directory — needs an
