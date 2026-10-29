@@ -7,12 +7,6 @@ nobody took. The standing disagreements live beside this file, at its name with 
 before the extension. Ordered by program and channel, and carrying no timestamp, so
 consecutive runs are worth diffing against each other.
 
-== Movement (1) ==
+== Movement (0) ==
 
-Neutral Trade: the vcs IDL at github:neutral-trade/sdk@main#02ff2665f5e4b13099c82bc2a958b8d8b7a8a656/src/idl/ntbundle.json moved since the last generation, 3ad23f628aaddc4d54edbb3f30e35332e773ca640257456b2bd87df8dcd2f8d7 -> ac0fd75496f74546b9b7d732d5fe400cdf905a55cdaee912f9a26234c1ff49fd: instructions +6, accounts +1, types +7 ~2, events +6, errors +12
-  instructions added (6): apply_fees_to_tokenized_depositor, initialize_tokenized_bundle_depositor, instant_mint_bundle_tokens, request_token_withdrawal, set_issuance_fee, set_mint_cap_per_cycle
-  accounts added (1): TokenizedBundleDepositor
-  types added (7): ChargedFeesToTokenizedDepositor, InstantBundleTokensMinted, IssuanceFeeSet, MintCapPerCycleSet, TokenizedBundleDepositor, TokenizedBundleDepositorInitialized, TokenWithdrawalRequested
-  types changed (2): every one type changed
-  events added (6): ChargedFeesToTokenizedDepositor, InstantBundleTokensMinted, IssuanceFeeSet, MintCapPerCycleSet, TokenizedBundleDepositorInitialized, TokenWithdrawalRequested
-  errors added (12): ExcessiveIssuanceFee, InstantMintCapExceeded, InvalidTokenizedBundleDepositor, InvalidTokenizedBundleMint, InvalidTokenizedBundleTokenAuthority, MinimumSharesOutNotMet, MinimumTokensOutNotMet, PendingStateActive, PermissionedBundleTokenizationUnsupported, TokenAmountTooSmall, TokenAmountZero, TokenizedBundleStateInvalid
+Nothing moved since the last generation.
