@@ -1,5 +1,12 @@
 # Changelog
 
+## [25.19.14](https://github.com/sava-software/idl-clients/compare/25.19.13...25.19.14) (2026-10-31)
+
+
+### Features
+
+* **nt:** generate Neutral Trade from the deployed v2.3.0 interface ([7296ae1](https://github.com/sava-software/idl-clients/commit/7296ae1b2730d8a7f08e865726f0bc6c217655ca))
+
 ## [25.19.13](https://github.com/sava-software/idl-clients/compare/25.19.12...25.19.13) (2026-10-29)
 
 
