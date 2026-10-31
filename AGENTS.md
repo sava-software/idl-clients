@@ -581,6 +581,31 @@ savaGithubPackagesUsername=GITHUB_USERNAME
 savaGithubPackagesPassword=GITHUB_TOKEN
 ```
 
+- Every artifact Gradle resolves is verified against `gradle/verification-metadata.xml`, the
+  signatures and checksums policy sava-build's `verificationPolicy` task guards as part of
+  `check`; the rules and the update procedure are sava-build's README, "Verifying sava
+  artifacts". Check a dependency or policy change with
+  `./gradlew --no-daemon --no-configuration-cache check resolveVerificationTools`: a reused
+  configuration-cache entry resolves nothing and so verifies nothing. A new BOM or parent POM
+  is validated once more from an empty `GRADLE_USER_HOME`, since a warm cache hides metadata a
+  cold one fetches, and an IntelliJ sync with download sources on resolves the Gradle sources
+  zip, Groovy's sources and plugin sources jars through the same policy (README steps 4 and
+  5). A refusal names each refused artifact and the reason, and the README's step 2 says what
+  to do: a bump under a key listed as unauthenticated in
+  `gradle/verification/version-scoped-keys.txt` (the PIT and ArcMutate signers) is checked and
+  then the version on its rule moves, unless its line gives a reason to stop, and a publisher
+  source found later widens the rule to the group or module the key signs and takes the key
+  off the list in one edit, unless the key is also one that must not vouch; a new release
+  under a key that must not vouch stops, though an old release a dependency change brings in
+  can be added as another exact version once checked; a new key goes into the keyring with a
+  rule scoped to the publisher's group or module, version-free when its fingerprint is
+  confirmed from the publisher, version-free on gradle/gradle's corroboration for the same
+  group with a note in the list's header, or at the exact version with a line in the list
+  when it has neither; an unsigned artifact is reviewed and its SHA-256 pinned in a
+  `component` entry. A key is listed exactly when its rule carries a version, so those two
+  edits go together. A `-PsavaBuildLocalRepo` build needs `--dependency-verification
+  lenient`, since the test repo's artifacts are unsigned.
+
 ```shell
 ./gradlew check                                # full build + tests
 ./gradlew :idl-clients-bundle:compileJava      # compile one module
@@ -751,7 +776,8 @@ outside it, and re-read these notes against each bullet that changed: nothing
 else finds a local sentence the new block contradicts. Inspect the loaded
 plugin's coordinates, JAR path and SHA-256 with `:idl-clients-spl:savaBuildIdentity`;
 `-PsavaBuildLocalRepo=<sava-build>/build/sava-test-repo` builds against an
-unpublished plugin, and a blank value clears an inherited override.
+unpublished plugin, needs `--dependency-verification lenient` ("Build & test"),
+and a blank value clears an inherited override.
 
 **ArcMutate is active.** A root `arcmutate-licence.txt` (**tracked** — a
 `!/arcmutate-licence.txt` re-include in `.gitignore` keeps it in the tree on
