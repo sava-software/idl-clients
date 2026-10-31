@@ -263,7 +263,7 @@
       "typeRefs": [
         {
           "refProgram": "KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
-          "srcMismatch": "WARN_KEEP_LOCAL",
+          "srcMismatch": "ERROR",
           "matchOnTypeName": true,
           "excludeTypes": [
             "GlobalConfig",
@@ -273,20 +273,6 @@
             {"refType": "LastUpdate", "localType": "LastUpdate", "srcMismatch": "WARN_KEEP_REF"},
             {"refType": "ReserveConfig", "localType": "ReserveConfig", "srcMismatch": "WARN_KEEP_REF"}
           ]
-        },
-        {
-          "refProgram": "HFn8GnPADiny6XqUoWE8uRPPxb29ikn4yTuPa9MF2fWJ",
-          "srcMismatch": "WARN_KEEP_REF",
-          "matchOnTypeName": true,
-          "excludeTypes": [],
-          "explicitRules": []
-        },
-        {
-          "refProgram": "FarmsPZpWu9i7Kky8tPN37rs2TpmMrAZrC7S7vJa91Hr",
-          "srcMismatch": "KEEP_LOCAL",
-          "matchOnTypeName": true,
-          "excludeTypes": [],
-          "explicitRules": []
         }
       ],
       "review": {
