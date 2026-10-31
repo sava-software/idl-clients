@@ -604,7 +604,10 @@ savaGithubPackagesPassword=GITHUB_TOKEN
   when it has neither; an unsigned artifact is reviewed and its SHA-256 pinned in a
   `component` entry. A key is listed exactly when its rule carries a version, so those two
   edits go together. A `-PsavaBuildLocalRepo` build needs `--dependency-verification
-  lenient`, since the test repo's artifacts are unsigned.
+  lenient`, since the test repo's artifacts are unsigned. An `includeBuild` of a sibling
+  repository runs with `--dependency-verification lenient` and gets no trust of its own: the
+  root policy governs the whole composite, the sibling's own build logic included, and CI
+  never resolves that graph.
 
 ```shell
 ./gradlew check                                # full build + tests
