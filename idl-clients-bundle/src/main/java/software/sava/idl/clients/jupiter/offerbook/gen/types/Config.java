@@ -59,13 +59,14 @@ public record Config(PublicKey _address,
                      int isPaused,
                      int disableRepayment,
                      byte[] padding2,
+                     PublicKey operator,
                      byte[] reserved) implements SerDe {
 
   public static final int BYTES = 536;
   public static final int PADDING_LEN = 6;
   public static final int PADDING_1_LEN = 6;
   public static final int PADDING_2_LEN = 2;
-  public static final int RESERVED_LEN = 400;
+  public static final int RESERVED_LEN = 368;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(155, 12, 170, 224, 30, 250, 204, 130);
@@ -92,7 +93,8 @@ public record Config(PublicKey _address,
   public static final int IS_PAUSED_OFFSET = 132;
   public static final int DISABLE_REPAYMENT_OFFSET = 133;
   public static final int PADDING_2_OFFSET = 134;
-  public static final int RESERVED_OFFSET = 136;
+  public static final int OPERATOR_OFFSET = 136;
+  public static final int RESERVED_OFFSET = 168;
 
   public static Filter createAdminFilter(final PublicKey admin) {
     return Filter.createMemCompFilter(ADMIN_OFFSET, admin);
@@ -190,6 +192,10 @@ public record Config(PublicKey _address,
     return Filter.createMemCompFilter(DISABLE_REPAYMENT_OFFSET, new byte[]{(byte) disableRepayment});
   }
 
+  public static Filter createOperatorFilter(final PublicKey operator) {
+    return Filter.createMemCompFilter(OPERATOR_OFFSET, operator);
+  }
+
   public static Config read(final byte[] _data, final int _offset) {
     return read(null, _data, _offset);
   }
@@ -266,7 +272,9 @@ public record Config(PublicKey _address,
     ++i;
     final var padding2 = new byte[2];
     i += SerDeUtil.readArray(padding2, _data, i);
-    final var reserved = new byte[400];
+    final var operator = readPubKey(_data, i);
+    i += 32;
+    final var reserved = new byte[368];
     SerDeUtil.readArray(reserved, _data, i);
     return new Config(_address,
                       discriminator,
@@ -291,6 +299,7 @@ public record Config(PublicKey _address,
                       isPaused,
                       disableRepayment,
                       padding2,
+                      operator,
                       reserved);
   }
 
@@ -336,7 +345,9 @@ public record Config(PublicKey _address,
     _data[i] = (byte) disableRepayment;
     ++i;
     i += SerDeUtil.writeArrayChecked(padding2, 2, _data, i);
-    i += SerDeUtil.writeArrayChecked(reserved, 400, _data, i);
+    operator.write(_data, i);
+    i += 32;
+    i += SerDeUtil.writeArrayChecked(reserved, 368, _data, i);
     return i - _offset;
   }
 

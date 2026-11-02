@@ -29,7 +29,17 @@ public sealed interface OfferbookError extends ProgramError permits
     OfferbookError.InvalidAsset,
     OfferbookError.MissingLoanVault,
     OfferbookError.NotExtendable,
-    OfferbookError.LoanDue {
+    OfferbookError.LoanDue,
+    OfferbookError.InvalidRepayAmount,
+    OfferbookError.UnauthorizedTaker,
+    OfferbookError.YieldMarketPaused,
+    OfferbookError.YieldNotEnabled,
+    OfferbookError.InvalidYieldAccount,
+    OfferbookError.NothingToCompound,
+    OfferbookError.OperatorUnset,
+    OfferbookError.YieldWithdrawShortfall,
+    OfferbookError.ImmutableYieldMarketField,
+    OfferbookError.YieldDepositNoShares {
 
   static OfferbookError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -59,6 +69,16 @@ public sealed interface OfferbookError extends ProgramError permits
       case 6023 -> MissingLoanVault.INSTANCE;
       case 6024 -> NotExtendable.INSTANCE;
       case 6025 -> LoanDue.INSTANCE;
+      case 6026 -> InvalidRepayAmount.INSTANCE;
+      case 6027 -> UnauthorizedTaker.INSTANCE;
+      case 6028 -> YieldMarketPaused.INSTANCE;
+      case 6029 -> YieldNotEnabled.INSTANCE;
+      case 6030 -> InvalidYieldAccount.INSTANCE;
+      case 6031 -> NothingToCompound.INSTANCE;
+      case 6032 -> OperatorUnset.INSTANCE;
+      case 6033 -> YieldWithdrawShortfall.INSTANCE;
+      case 6034 -> ImmutableYieldMarketField.INSTANCE;
+      case 6035 -> YieldDepositNoShares.INSTANCE;
       default -> null;
     };
   }
@@ -242,6 +262,76 @@ public sealed interface OfferbookError extends ProgramError permits
 
     public static final LoanDue INSTANCE = new LoanDue(
         6025, "Loan is due"
+    );
+  }
+
+  record InvalidRepayAmount(int code, String msg) implements OfferbookError {
+
+    public static final InvalidRepayAmount INSTANCE = new InvalidRepayAmount(
+        6026, "Invalid Repay Amount"
+    );
+  }
+
+  record UnauthorizedTaker(int code, String msg) implements OfferbookError {
+
+    public static final UnauthorizedTaker INSTANCE = new UnauthorizedTaker(
+        6027, "Unauthorized Taker"
+    );
+  }
+
+  record YieldMarketPaused(int code, String msg) implements OfferbookError {
+
+    public static final YieldMarketPaused INSTANCE = new YieldMarketPaused(
+        6028, "Yield Market Paused"
+    );
+  }
+
+  record YieldNotEnabled(int code, String msg) implements OfferbookError {
+
+    public static final YieldNotEnabled INSTANCE = new YieldNotEnabled(
+        6029, "Yield Not Enabled"
+    );
+  }
+
+  record InvalidYieldAccount(int code, String msg) implements OfferbookError {
+
+    public static final InvalidYieldAccount INSTANCE = new InvalidYieldAccount(
+        6030, "Invalid Yield Account"
+    );
+  }
+
+  record NothingToCompound(int code, String msg) implements OfferbookError {
+
+    public static final NothingToCompound INSTANCE = new NothingToCompound(
+        6031, "Nothing To Compound"
+    );
+  }
+
+  record OperatorUnset(int code, String msg) implements OfferbookError {
+
+    public static final OperatorUnset INSTANCE = new OperatorUnset(
+        6032, "Operator Unset"
+    );
+  }
+
+  record YieldWithdrawShortfall(int code, String msg) implements OfferbookError {
+
+    public static final YieldWithdrawShortfall INSTANCE = new YieldWithdrawShortfall(
+        6033, "Yield Withdraw Did Not Deliver"
+    );
+  }
+
+  record ImmutableYieldMarketField(int code, String msg) implements OfferbookError {
+
+    public static final ImmutableYieldMarketField INSTANCE = new ImmutableYieldMarketField(
+        6034, "Immutable Yield Market Field"
+    );
+  }
+
+  record YieldDepositNoShares(int code, String msg) implements OfferbookError {
+
+    public static final YieldDepositNoShares INSTANCE = new YieldDepositNoShares(
+        6035, "Yield Deposit Returned No Shares"
     );
   }
 }

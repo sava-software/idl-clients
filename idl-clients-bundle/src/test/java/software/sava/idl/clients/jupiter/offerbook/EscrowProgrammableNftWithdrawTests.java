@@ -5,28 +5,33 @@ import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.SolanaAccounts;
 import software.sava.core.accounts.meta.AccountMeta;
 import software.sava.idl.clients.jupiter.offerbook.gen.OfferbookProgram;
+import software.sava.idl.clients.jupiter.offerbook.gen.OfferbookProgram.EscrowProgrammableNftWithdrawIxData;
 
-import java.util.Arrays;
 import java.util.HexFormat;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 /// Jupiter Offerbook's upgrade at slot 456376677 made `escrow_programmable_nft_withdraw` read a
-/// trailing Borsh `Option<Vec<u8>>` that the program-metadata IDL this client is generated from
-/// does not declare. The generated builder therefore sends the discriminator alone, and the program
-/// rejects every such call with `InstructionDidNotDeserialize` (102) before it checks an account;
-/// the same call with one more zero byte (`None`) reaches account validation.
+/// trailing Borsh `Option<Vec<u8>>`, `authorization_data`. The program-metadata IDL did not declare
+/// it until a Squads vault transaction rewrote that account at slot 464256975, so the builder
+/// generated from the earlier document sent the discriminator alone, and the program rejected
+/// every such call with `InstructionDidNotDeserialize` (102) before it checked an account.
 ///
-/// A published IDL's field list is upstream's to correct, not a local patch's, so this pins the
-/// shortfall rather than closing it. When Jupiter republishes the IDL the regenerated builder
-/// changes and this test fails: rewrite it then to assert the full encoding.
+/// This pins the regenerated builder to a call the program accepted, byte for byte, so a
+/// regeneration that loses the argument again fails here instead of on chain.
+/// [OfferbookOptionArgumentTests] pins the six instructions whose arguments the upgrade at slot
+/// 456774686 extended: three to calls the program accepted, the other three to the widths the
+/// program was simulated to read.
 final class EscrowProgrammableNftWithdrawTests {
+
+  private static final HexFormat HEX = HexFormat.of();
 
   /// A post-upgrade call the program accepted, top-level in
   /// `5R8AQypDqEfCCMRqPVRCoiohUTe5qNjUgaz2K3kCyNjer9w4cCBGb3U4JxPoazswpfYwAVWLG8fGLV5dy3hoboSs`
-  /// (slot 456377081): its instruction data and its 18 accounts, in order.
-  private static final byte[] LIVE_DATA = HexFormat.of().parseHex("1c9d15ea3bdeaab200");
+  /// (slot 456377081): its instruction data, the discriminator and then the Option tag for `None`,
+  /// and its 18 accounts, in order.
+  private static final byte[] LIVE_DATA = HEX.parseHex("1c9d15ea3bdeaab2" + "00");
   private static final List<String> LIVE_ACCOUNTS = List.of(
       "BAosUdFfknnnd22KPms5DQAHrQ6ynjVmRJpfVcMtiXNN",
       "rpJC37Zx5rskxgeLJ6dMfYKSxN1w6o8C5CuGds2sogz",
@@ -53,23 +58,32 @@ final class EscrowProgrammableNftWithdrawTests {
   }
 
   @Test
-  void theGeneratedBuilderStopsOneByteShortOfWhatTheProgramReads() {
+  void theGeneratedBuilderReproducesTheLiveCall() {
     final var program = AccountMeta.createInvoked(live(17));
     final var ix = OfferbookProgram.escrowProgrammableNftWithdraw(
         program,
         SolanaAccounts.MAIN_NET,
         live(0), live(1), live(2), live(3), live(4), live(5), live(6), live(7), live(8), live(9),
-        live(10), live(12), live(14), live(16), live(17)
+        live(10), live(12), live(14), live(16), live(17),
+        null
     );
 
     assertEquals(LIVE_ACCOUNTS, ix.accounts().stream().map(meta -> meta.publicKey().toBase58()).toList(),
         "the accounts are the ones the program accepted");
+    assertArrayEquals(LIVE_DATA, ix.data(), "the discriminator, then the Option tag for None");
+    assertNull(EscrowProgrammableNftWithdrawIxData.read(LIVE_DATA, 0).authorizationData(),
+        "and the generated reader decodes the live call's argument as None");
+  }
 
-    final byte[] data = ix.data();
-    assertArrayEquals(OfferbookProgram.ESCROW_PROGRAMMABLE_NFT_WITHDRAW_DISCRIMINATOR.data(), data,
-        "what the stale IDL declares: the discriminator alone");
-    assertEquals(LIVE_DATA.length - 1, data.length, "the shortfall is exactly one byte");
-    assertArrayEquals(Arrays.copyOf(LIVE_DATA, data.length), data, "the live call leads with the same discriminator");
-    assertEquals(0, LIVE_DATA[data.length], "and ends with the Option tag for None");
+  /// No live call in hand carries authorization data. `Some` is Borsh's: the tag `01`, the length
+  /// as a little-endian `u32`, then the bytes, written out here by hand.
+  @Test
+  void someAuthorizationDataIsTheTagThenALengthPrefixedVector() {
+    final var expected = HEX.parseHex("1c9d15ea3bdeaab2" + "01" + "03000000" + "010203");
+    final var ix = OfferbookProgram.escrowProgrammableNftWithdraw(
+        AccountMeta.createInvoked(live(17)), List.of(), new byte[]{1, 2, 3}
+    );
+    assertArrayEquals(expected, ix.data());
+    assertArrayEquals(new byte[]{1, 2, 3}, EscrowProgrammableNftWithdrawIxData.read(expected, 0).authorizationData());
   }
 }

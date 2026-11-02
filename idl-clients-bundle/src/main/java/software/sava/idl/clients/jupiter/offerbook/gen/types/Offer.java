@@ -62,6 +62,7 @@ public record Offer(PublicKey _address,
                     int allowExtend,
                     byte[] padding6,
                     PublicKey counteredOffer,
+                    PublicKey whitelistedTaker,
                     byte[] reserved) implements SerDe {
 
   public static final int BYTES = 1224;
@@ -71,7 +72,7 @@ public record Offer(PublicKey _address,
   public static final int PADDING_4_LEN = 7;
   public static final int PADDING_5_LEN = 8;
   public static final int PADDING_6_LEN = 5;
-  public static final int RESERVED_LEN = 232;
+  public static final int RESERVED_LEN = 200;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(215, 88, 60, 71, 170, 162, 73, 229);
@@ -104,7 +105,8 @@ public record Offer(PublicKey _address,
   public static final int ALLOW_EXTEND_OFFSET = 954;
   public static final int PADDING_6_OFFSET = 955;
   public static final int COUNTERED_OFFER_OFFSET = 960;
-  public static final int RESERVED_OFFSET = 992;
+  public static final int WHITELISTED_TAKER_OFFSET = 992;
+  public static final int RESERVED_OFFSET = 1024;
 
   public static Filter createCreatorFilter(final PublicKey creator) {
     return Filter.createMemCompFilter(CREATOR_OFFSET, creator);
@@ -200,6 +202,10 @@ public record Offer(PublicKey _address,
     return Filter.createMemCompFilter(COUNTERED_OFFER_OFFSET, counteredOffer);
   }
 
+  public static Filter createWhitelistedTakerFilter(final PublicKey whitelistedTaker) {
+    return Filter.createMemCompFilter(WHITELISTED_TAKER_OFFSET, whitelistedTaker);
+  }
+
   public static Offer read(final byte[] _data, final int _offset) {
     return read(null, _data, _offset);
   }
@@ -288,7 +294,9 @@ public record Offer(PublicKey _address,
     i += SerDeUtil.readArray(padding6, _data, i);
     final var counteredOffer = readPubKey(_data, i);
     i += 32;
-    final var reserved = new byte[232];
+    final var whitelistedTaker = readPubKey(_data, i);
+    i += 32;
+    final var reserved = new byte[200];
     SerDeUtil.readArray(reserved, _data, i);
     return new Offer(_address,
                      discriminator,
@@ -319,6 +327,7 @@ public record Offer(PublicKey _address,
                      allowExtend,
                      padding6,
                      counteredOffer,
+                     whitelistedTaker,
                      reserved);
   }
 
@@ -371,7 +380,9 @@ public record Offer(PublicKey _address,
     i += SerDeUtil.writeArrayChecked(padding6, 5, _data, i);
     counteredOffer.write(_data, i);
     i += 32;
-    i += SerDeUtil.writeArrayChecked(reserved, 232, _data, i);
+    whitelistedTaker.write(_data, i);
+    i += 32;
+    i += SerDeUtil.writeArrayChecked(reserved, 200, _data, i);
     return i - _offset;
   }
 

@@ -25,6 +25,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param updatedAt: u64
 /// @param createdAt: u64
 /// @param bump: u8
+/// @param flags: u8
 public record User(PublicKey _address,
                    Discriminator discriminator,
                    PublicKey owner,
@@ -38,11 +39,12 @@ public record User(PublicKey _address,
                    long updatedAt,
                    long createdAt,
                    int bump,
+                   int flags,
                    byte[] padding,
                    byte[] reserved) implements SerDe {
 
   public static final int BYTES = 208;
-  public static final int PADDING_LEN = 7;
+  public static final int PADDING_LEN = 6;
   public static final int RESERVED_LEN = 64;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
@@ -60,7 +62,8 @@ public record User(PublicKey _address,
   public static final int UPDATED_AT_OFFSET = 120;
   public static final int CREATED_AT_OFFSET = 128;
   public static final int BUMP_OFFSET = 136;
-  public static final int PADDING_OFFSET = 137;
+  public static final int FLAGS_OFFSET = 137;
+  public static final int PADDING_OFFSET = 138;
   public static final int RESERVED_OFFSET = 144;
 
   public static Filter createOwnerFilter(final PublicKey owner) {
@@ -123,6 +126,10 @@ public record User(PublicKey _address,
     return Filter.createMemCompFilter(BUMP_OFFSET, new byte[]{(byte) bump});
   }
 
+  public static Filter createFlagsFilter(final int flags) {
+    return Filter.createMemCompFilter(FLAGS_OFFSET, new byte[]{(byte) flags});
+  }
+
   public static User read(final byte[] _data, final int _offset) {
     return read(null, _data, _offset);
   }
@@ -179,7 +186,9 @@ public record User(PublicKey _address,
     i += 8;
     final var bump = _data[i] & 0xFF;
     ++i;
-    final var padding = new byte[7];
+    final var flags = _data[i] & 0xFF;
+    ++i;
+    final var padding = new byte[6];
     i += SerDeUtil.readArray(padding, _data, i);
     final var reserved = new byte[64];
     SerDeUtil.readArray(reserved, _data, i);
@@ -196,6 +205,7 @@ public record User(PublicKey _address,
                     updatedAt,
                     createdAt,
                     bump,
+                    flags,
                     padding,
                     reserved);
   }
@@ -225,7 +235,9 @@ public record User(PublicKey _address,
     i += 8;
     _data[i] = (byte) bump;
     ++i;
-    i += SerDeUtil.writeArrayChecked(padding, 7, _data, i);
+    _data[i] = (byte) flags;
+    ++i;
+    i += SerDeUtil.writeArrayChecked(padding, 6, _data, i);
     i += SerDeUtil.writeArrayChecked(reserved, 64, _data, i);
     return i - _offset;
   }

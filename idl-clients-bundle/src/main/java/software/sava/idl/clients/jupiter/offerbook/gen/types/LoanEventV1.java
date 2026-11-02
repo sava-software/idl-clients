@@ -10,6 +10,9 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// Frozen pre-partial-repayment loan event schema. Kept in the IDL so historical
+/// events remain parseable; not emitted by current code (see `LoanEventV2`).
+///
 /// @param fillIndex: u64
 /// @param apy: u32
 /// @param duration: u32

@@ -7,6 +7,13 @@ nobody took. The standing disagreements live beside this file, at its name with 
 before the extension. Ordered by program and channel, and carrying no timestamp, so
 consecutive runs are worth diffing against each other.
 
-== Movement (0) ==
+== Movement (1) ==
 
-Nothing moved since the last generation.
+Jupiter Offerbook: the metadata IDL at FS2xtZ5qzmFc5xB24uXVhu67EiWeDegaeAeRk68xNBRF moved since the last generation, 8b035db707a44166fdd7bd80d1dcbccfaf4683697f190596ddf75abfcd05cc49 -> 3ea4fa2ea16404a64e98a21f87d1dcaae65d5c30320d611aa6fa74b0804c387c: instructions +6 ~6, accounts +1, types +16 ~13, events +11, errors +10
+  instructions added (6): create_yield_market, escrow_yield_deposit, escrow_yield_withdraw, escrow_yield_withdraw_all, set_yield_enabled, update_yield_market
+  instructions changed (6): create_nft_collateral_offer, create_nft_principal_offer, escrow_classic_nft_withdraw, escrow_programmable_nft_withdraw, repay_non_fungible_loan, repay_token_loan
+  accounts added (1): YieldMarket
+  types added (16): EscrowYieldDeposit, EscrowYieldWithdraw, LoanCreatedV2, LoanDefaultedV2, LoanEventV2, LoanExtendedV2, LoanPartiallyRepaid, LoanRepaidV2, OfferCancelledV3, OfferCreatedV3, OfferEventV3, OfferFilledV3, UpdateYieldMarketAction, YieldEnabledUpdated, YieldMarket, YieldMarketParams
+  types changed (13): Config, Loan, LoanEventV1, NftCollateralOfferParams, NftPrincipalOfferParams, Offer, OfferEventV0, OfferEventV1, OfferEventV2, TokenCollateralOfferParams, TokenPrincipalOfferParams, UpdateConfigAction, User
+  events added (11): EscrowYieldDeposit, EscrowYieldWithdraw, LoanCreatedV2, LoanDefaultedV2, LoanExtendedV2, LoanPartiallyRepaid, LoanRepaidV2, OfferCancelledV3, OfferCreatedV3, OfferFilledV3, YieldEnabledUpdated
+  errors added (10): ImmutableYieldMarketField, InvalidRepayAmount, InvalidYieldAccount, NothingToCompound, OperatorUnset, UnauthorizedTaker, YieldDepositNoShares, YieldMarketPaused, YieldNotEnabled, YieldWithdrawShortfall

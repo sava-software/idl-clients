@@ -21,6 +21,26 @@ public final class OfferbookPDAs {
     ), program);
   }
 
+  public static ProgramDerivedAddress claimAccountPDA(final PublicKey liquidityProgram,
+                                                      final PublicKey userAccount,
+                                                      final PublicKey mintAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      "user_claim".getBytes(US_ASCII),
+      userAccount.toByteArray(),
+      mintAccount.toByteArray()
+    ), liquidityProgram);
+  }
+
+  public static ProgramDerivedAddress claimAccount1PDA(final PublicKey liquidityProgram,
+                                                       final PublicKey signerUserAccount,
+                                                       final PublicKey mintAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      "user_claim".getBytes(US_ASCII),
+      signerUserAccount.toByteArray(),
+      mintAccount.toByteArray()
+    ), liquidityProgram);
+  }
+
   public static ProgramDerivedAddress configPDA(final PublicKey program) {
     return PublicKey.findProgramAddress(List.of(
       "config".getBytes(US_ASCII)
@@ -130,6 +150,14 @@ public final class OfferbookPDAs {
     ), program);
   }
 
+  public static ProgramDerivedAddress userPDA(final PublicKey program,
+                                              final PublicKey userAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      "user".getBytes(US_ASCII),
+      userAccount.toByteArray()
+    ), program);
+  }
+
   public static ProgramDerivedAddress userEscrowTokenAccountPDA(final PublicKey program,
                                                                 final PublicKey signerUserAccount,
                                                                 final PublicKey tokenProgramAccount,
@@ -149,6 +177,55 @@ public final class OfferbookPDAs {
       signerUserAccount.toByteArray(),
       tokenProgramAccount.toByteArray(),
       mintAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress userEscrowTokenAccount2PDA(final PublicKey program,
+                                                                 final PublicKey userAccount,
+                                                                 final PublicKey tokenProgramAccount,
+                                                                 final PublicKey mintAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      userAccount.toByteArray(),
+      tokenProgramAccount.toByteArray(),
+      mintAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress userJlTokenAccountPDA(final PublicKey program,
+                                                            final PublicKey userAccount,
+                                                            final PublicKey tokenProgramAccount,
+                                                            final PublicKey jlMintAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      userAccount.toByteArray(),
+      tokenProgramAccount.toByteArray(),
+      jlMintAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress userJlTokenAccount1PDA(final PublicKey program,
+                                                             final PublicKey signerUserAccount,
+                                                             final PublicKey tokenProgramAccount,
+                                                             final PublicKey jlMintAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      signerUserAccount.toByteArray(),
+      tokenProgramAccount.toByteArray(),
+      jlMintAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress yieldMarketPDA(final PublicKey program,
+                                                     final PublicKey mintAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      "yield_market".getBytes(US_ASCII),
+      mintAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress yieldMarket1PDA(final PublicKey program,
+                                                      final PublicKey yieldMarketAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      "yield_market".getBytes(US_ASCII),
+      yieldMarketAccount.toByteArray()
     ), program);
   }
 

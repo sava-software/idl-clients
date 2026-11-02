@@ -6,72 +6,105 @@ import software.sava.idl.clients.core.gen.SerDe;
 public sealed interface OfferbookEvent extends SerDe permits
     EscrowDeposit,
     EscrowWithdraw,
+    EscrowYieldDeposit,
+    EscrowYieldWithdraw,
     LoanCreated,
     LoanCreatedV1,
+    LoanCreatedV2,
     LoanDefaulted,
     LoanDefaultedV1,
+    LoanDefaultedV2,
     LoanExtendabilityUpdated,
     LoanExtended,
+    LoanExtendedV2,
+    LoanPartiallyRepaid,
     LoanRepaid,
     LoanRepaidV1,
+    LoanRepaidV2,
     OfferCancelled,
     OfferCancelledV1,
     OfferCancelledV2,
+    OfferCancelledV3,
     OfferCreated,
     OfferCreatedV1,
     OfferCreatedV2,
+    OfferCreatedV3,
     OfferFilled,
     OfferFilledV1,
     OfferFilledV2,
+    OfferFilledV3,
     ProtocolFee,
     RefereeReward,
-    ReferralReward {
+    ReferralReward,
+    YieldEnabledUpdated {
 
   static OfferbookEvent read(final byte[] _data, final int _offset) {
     if (EscrowDeposit.DISCRIMINATOR.equals(_data, _offset)) {
       return EscrowDeposit.read(_data, _offset);
     } else if (EscrowWithdraw.DISCRIMINATOR.equals(_data, _offset)) {
       return EscrowWithdraw.read(_data, _offset);
+    } else if (EscrowYieldDeposit.DISCRIMINATOR.equals(_data, _offset)) {
+      return EscrowYieldDeposit.read(_data, _offset);
+    } else if (EscrowYieldWithdraw.DISCRIMINATOR.equals(_data, _offset)) {
+      return EscrowYieldWithdraw.read(_data, _offset);
     } else if (LoanCreated.DISCRIMINATOR.equals(_data, _offset)) {
       return LoanCreated.read(_data, _offset);
     } else if (LoanCreatedV1.DISCRIMINATOR.equals(_data, _offset)) {
       return LoanCreatedV1.read(_data, _offset);
+    } else if (LoanCreatedV2.DISCRIMINATOR.equals(_data, _offset)) {
+      return LoanCreatedV2.read(_data, _offset);
     } else if (LoanDefaulted.DISCRIMINATOR.equals(_data, _offset)) {
       return LoanDefaulted.read(_data, _offset);
     } else if (LoanDefaultedV1.DISCRIMINATOR.equals(_data, _offset)) {
       return LoanDefaultedV1.read(_data, _offset);
+    } else if (LoanDefaultedV2.DISCRIMINATOR.equals(_data, _offset)) {
+      return LoanDefaultedV2.read(_data, _offset);
     } else if (LoanExtendabilityUpdated.DISCRIMINATOR.equals(_data, _offset)) {
       return LoanExtendabilityUpdated.read(_data, _offset);
     } else if (LoanExtended.DISCRIMINATOR.equals(_data, _offset)) {
       return LoanExtended.read(_data, _offset);
+    } else if (LoanExtendedV2.DISCRIMINATOR.equals(_data, _offset)) {
+      return LoanExtendedV2.read(_data, _offset);
+    } else if (LoanPartiallyRepaid.DISCRIMINATOR.equals(_data, _offset)) {
+      return LoanPartiallyRepaid.read(_data, _offset);
     } else if (LoanRepaid.DISCRIMINATOR.equals(_data, _offset)) {
       return LoanRepaid.read(_data, _offset);
     } else if (LoanRepaidV1.DISCRIMINATOR.equals(_data, _offset)) {
       return LoanRepaidV1.read(_data, _offset);
+    } else if (LoanRepaidV2.DISCRIMINATOR.equals(_data, _offset)) {
+      return LoanRepaidV2.read(_data, _offset);
     } else if (OfferCancelled.DISCRIMINATOR.equals(_data, _offset)) {
       return OfferCancelled.read(_data, _offset);
     } else if (OfferCancelledV1.DISCRIMINATOR.equals(_data, _offset)) {
       return OfferCancelledV1.read(_data, _offset);
     } else if (OfferCancelledV2.DISCRIMINATOR.equals(_data, _offset)) {
       return OfferCancelledV2.read(_data, _offset);
+    } else if (OfferCancelledV3.DISCRIMINATOR.equals(_data, _offset)) {
+      return OfferCancelledV3.read(_data, _offset);
     } else if (OfferCreated.DISCRIMINATOR.equals(_data, _offset)) {
       return OfferCreated.read(_data, _offset);
     } else if (OfferCreatedV1.DISCRIMINATOR.equals(_data, _offset)) {
       return OfferCreatedV1.read(_data, _offset);
     } else if (OfferCreatedV2.DISCRIMINATOR.equals(_data, _offset)) {
       return OfferCreatedV2.read(_data, _offset);
+    } else if (OfferCreatedV3.DISCRIMINATOR.equals(_data, _offset)) {
+      return OfferCreatedV3.read(_data, _offset);
     } else if (OfferFilled.DISCRIMINATOR.equals(_data, _offset)) {
       return OfferFilled.read(_data, _offset);
     } else if (OfferFilledV1.DISCRIMINATOR.equals(_data, _offset)) {
       return OfferFilledV1.read(_data, _offset);
     } else if (OfferFilledV2.DISCRIMINATOR.equals(_data, _offset)) {
       return OfferFilledV2.read(_data, _offset);
+    } else if (OfferFilledV3.DISCRIMINATOR.equals(_data, _offset)) {
+      return OfferFilledV3.read(_data, _offset);
     } else if (ProtocolFee.DISCRIMINATOR.equals(_data, _offset)) {
       return ProtocolFee.read(_data, _offset);
     } else if (RefereeReward.DISCRIMINATOR.equals(_data, _offset)) {
       return RefereeReward.read(_data, _offset);
     } else if (ReferralReward.DISCRIMINATOR.equals(_data, _offset)) {
       return ReferralReward.read(_data, _offset);
+    } else if (YieldEnabledUpdated.DISCRIMINATOR.equals(_data, _offset)) {
+      return YieldEnabledUpdated.read(_data, _offset);
     } else {
       return null;
     }

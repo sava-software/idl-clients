@@ -32,6 +32,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param collateralAccountBump: u8
 /// @param extendable: u8
 /// @param extensionCount: u8
+/// @param repaidPrincipal: u64
 public record Loan(PublicKey _address,
                    Discriminator discriminator,
                    PublicKey lender,
@@ -59,6 +60,7 @@ public record Loan(PublicKey _address,
                    int extendable,
                    int extensionCount,
                    byte[] padding4,
+                   long repaidPrincipal,
                    byte[] reserved) implements SerDe {
 
   public static final int BYTES = 808;
@@ -66,7 +68,7 @@ public record Loan(PublicKey _address,
   public static final int PADDING_1_LEN = 7;
   public static final int PADDING_2_LEN = 7;
   public static final int PADDING_4_LEN = 4;
-  public static final int RESERVED_LEN = 48;
+  public static final int RESERVED_LEN = 40;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(20, 195, 70, 117, 165, 227, 182, 1);
@@ -97,7 +99,8 @@ public record Loan(PublicKey _address,
   public static final int EXTENDABLE_OFFSET = 754;
   public static final int EXTENSION_COUNT_OFFSET = 755;
   public static final int PADDING_4_OFFSET = 756;
-  public static final int RESERVED_OFFSET = 760;
+  public static final int REPAID_PRINCIPAL_OFFSET = 760;
+  public static final int RESERVED_OFFSET = 768;
 
   public static Filter createLenderFilter(final PublicKey lender) {
     return Filter.createMemCompFilter(LENDER_OFFSET, lender);
@@ -193,6 +196,12 @@ public record Loan(PublicKey _address,
     return Filter.createMemCompFilter(EXTENSION_COUNT_OFFSET, new byte[]{(byte) extensionCount});
   }
 
+  public static Filter createRepaidPrincipalFilter(final long repaidPrincipal) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, repaidPrincipal);
+    return Filter.createMemCompFilter(REPAID_PRINCIPAL_OFFSET, _data);
+  }
+
   public static Loan read(final byte[] _data, final int _offset) {
     return read(null, _data, _offset);
   }
@@ -277,7 +286,9 @@ public record Loan(PublicKey _address,
     ++i;
     final var padding4 = new byte[4];
     i += SerDeUtil.readArray(padding4, _data, i);
-    final var reserved = new byte[48];
+    final var repaidPrincipal = getInt64LE(_data, i);
+    i += 8;
+    final var reserved = new byte[40];
     SerDeUtil.readArray(reserved, _data, i);
     return new Loan(_address,
                     discriminator,
@@ -306,6 +317,7 @@ public record Loan(PublicKey _address,
                     extendable,
                     extensionCount,
                     padding4,
+                    repaidPrincipal,
                     reserved);
   }
 
@@ -356,7 +368,9 @@ public record Loan(PublicKey _address,
     _data[i] = (byte) extensionCount;
     ++i;
     i += SerDeUtil.writeArrayChecked(padding4, 4, _data, i);
-    i += SerDeUtil.writeArrayChecked(reserved, 48, _data, i);
+    putInt64LE(_data, i, repaidPrincipal);
+    i += 8;
+    i += SerDeUtil.writeArrayChecked(reserved, 40, _data, i);
     return i - _offset;
   }
 

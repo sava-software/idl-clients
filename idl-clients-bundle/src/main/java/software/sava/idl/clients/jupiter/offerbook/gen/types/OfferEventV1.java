@@ -11,7 +11,7 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Frozen pre-extension offer event schema. Kept in the IDL so historical
-/// events remain parseable; not emitted by current code (see `OfferEventV2`).
+/// events remain parseable; not emitted by current code (see `OfferEventV3`).
 ///
 /// @param principalAmount: u64
 /// @param remainingPrincipal: u64
