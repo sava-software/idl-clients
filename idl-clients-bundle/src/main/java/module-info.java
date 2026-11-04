@@ -32,6 +32,7 @@ module software.sava.idl.clients.bundle {
   exports software.sava.idl.clients.jupiter.perpetuals.gen.events;
   exports software.sava.idl.clients.jupiter.perpetuals.gen.types;
   exports software.sava.idl.clients.jupiter.perpetuals.gen;
+  exports software.sava.idl.clients.jupiter.perpetuals;
   exports software.sava.idl.clients.jupiter.stable.gen.events;
   exports software.sava.idl.clients.jupiter.stable.gen.types;
   exports software.sava.idl.clients.jupiter.stable.gen;
