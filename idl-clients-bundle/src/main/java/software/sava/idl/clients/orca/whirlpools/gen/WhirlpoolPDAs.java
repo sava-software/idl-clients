@@ -99,7 +99,8 @@ public final class WhirlpoolPDAs {
     ), program);
   }
 
-  public static ProgramDerivedAddress positionBundleTokenAccountPDA(final PublicKey program,
+  /// @param associatedTokenAccountProgram the program the address is derived under, ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL
+  public static ProgramDerivedAddress positionBundleTokenAccountPDA(final PublicKey associatedTokenAccountProgram,
                                                                     final PublicKey positionBundleOwnerAccount,
                                                                     final PublicKey TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA,
                                                                     final PublicKey positionBundleMintAccount) {
@@ -107,10 +108,11 @@ public final class WhirlpoolPDAs {
       positionBundleOwnerAccount.toByteArray(),
       TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA.toByteArray(),
       positionBundleMintAccount.toByteArray()
-    ), program);
+    ), associatedTokenAccountProgram);
   }
 
-  public static ProgramDerivedAddress positionTokenAccountPDA(final PublicKey program,
+  /// @param associatedTokenAccountProgram the program the address is derived under, ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL
+  public static ProgramDerivedAddress positionTokenAccountPDA(final PublicKey associatedTokenAccountProgram,
                                                               final PublicKey ownerAccount,
                                                               final PublicKey TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA,
                                                               final PublicKey positionMintAccount) {
@@ -118,7 +120,7 @@ public final class WhirlpoolPDAs {
       ownerAccount.toByteArray(),
       TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA.toByteArray(),
       positionMintAccount.toByteArray()
-    ), program);
+    ), associatedTokenAccountProgram);
   }
 
   public static ProgramDerivedAddress rewardTokenBadgePDA(final PublicKey program,

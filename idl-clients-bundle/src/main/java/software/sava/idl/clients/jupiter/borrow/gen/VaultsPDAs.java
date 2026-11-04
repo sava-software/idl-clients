@@ -22,14 +22,15 @@ public final class VaultsPDAs {
     ), program);
   }
 
-  public static ProgramDerivedAddress metadataAccountPDA(final PublicKey program,
+  /// @param metadataProgram the program the address is derived under, metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s
+  public static ProgramDerivedAddress metadataAccountPDA(final PublicKey metadataProgram,
                                                          final PublicKey metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s,
                                                          final PublicKey positionMintAccount) {
     return PublicKey.findProgramAddress(List.of(
       "metadata".getBytes(US_ASCII),
       metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s.toByteArray(),
       positionMintAccount.toByteArray()
-    ), program);
+    ), metadataProgram);
   }
 
   /// @param vaultId u16 seed value encoding is program-specific — commonly its little-endian bytes (`SerDeUtil` `*LESeed` helpers) or its decimal string (`SerDeUtil.asciiSeed`); verify against the program source.
@@ -56,7 +57,8 @@ public final class VaultsPDAs {
     ), program);
   }
 
-  public static ProgramDerivedAddress positionTokenAccountPDA(final PublicKey program,
+  /// @param associatedTokenAccountProgram the program the address is derived under, ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL
+  public static ProgramDerivedAddress positionTokenAccountPDA(final PublicKey associatedTokenAccountProgram,
                                                               final PublicKey signerAccount,
                                                               final PublicKey TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA,
                                                               final PublicKey positionMintAccount) {
@@ -64,10 +66,11 @@ public final class VaultsPDAs {
       signerAccount.toByteArray(),
       TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA.toByteArray(),
       positionMintAccount.toByteArray()
-    ), program);
+    ), associatedTokenAccountProgram);
   }
 
-  public static ProgramDerivedAddress rebalancerBorrowTokenAccountPDA(final PublicKey program,
+  /// @param associatedTokenAccountProgram the program the address is derived under, ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL
+  public static ProgramDerivedAddress rebalancerBorrowTokenAccountPDA(final PublicKey associatedTokenAccountProgram,
                                                                       final PublicKey rebalancerAccount,
                                                                       final PublicKey borrowTokenProgramAccount,
                                                                       final PublicKey borrowTokenAccount) {
@@ -75,10 +78,11 @@ public final class VaultsPDAs {
       rebalancerAccount.toByteArray(),
       borrowTokenProgramAccount.toByteArray(),
       borrowTokenAccount.toByteArray()
-    ), program);
+    ), associatedTokenAccountProgram);
   }
 
-  public static ProgramDerivedAddress rebalancerSupplyTokenAccountPDA(final PublicKey program,
+  /// @param associatedTokenAccountProgram the program the address is derived under, ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL
+  public static ProgramDerivedAddress rebalancerSupplyTokenAccountPDA(final PublicKey associatedTokenAccountProgram,
                                                                       final PublicKey rebalancerAccount,
                                                                       final PublicKey supplyTokenProgramAccount,
                                                                       final PublicKey supplyTokenAccount) {
@@ -86,7 +90,7 @@ public final class VaultsPDAs {
       rebalancerAccount.toByteArray(),
       supplyTokenProgramAccount.toByteArray(),
       supplyTokenAccount.toByteArray()
-    ), program);
+    ), associatedTokenAccountProgram);
   }
 
   /// @param vaultId u16 seed value encoding is program-specific — commonly its little-endian bytes (`SerDeUtil` `*LESeed` helpers) or its decimal string (`SerDeUtil.asciiSeed`); verify against the program source.

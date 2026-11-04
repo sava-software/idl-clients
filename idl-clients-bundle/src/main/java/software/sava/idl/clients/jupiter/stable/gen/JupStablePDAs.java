@@ -30,7 +30,8 @@ public final class JupStablePDAs {
     ), program);
   }
 
-  public static ProgramDerivedAddress custodianTokenAccountPDA(final PublicKey program,
+  /// @param associatedTokenAccountProgram the program the address is derived under, ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL
+  public static ProgramDerivedAddress custodianTokenAccountPDA(final PublicKey associatedTokenAccountProgram,
                                                                final PublicKey custodianAccount,
                                                                final PublicKey vaultTokenProgramAccount,
                                                                final PublicKey vaultMintAccount) {
@@ -38,10 +39,11 @@ public final class JupStablePDAs {
       custodianAccount.toByteArray(),
       vaultTokenProgramAccount.toByteArray(),
       vaultMintAccount.toByteArray()
-    ), program);
+    ), associatedTokenAccountProgram);
   }
 
-  public static ProgramDerivedAddress custodianTokenAccount1PDA(final PublicKey program,
+  /// @param associatedTokenAccountProgram the program the address is derived under, ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL
+  public static ProgramDerivedAddress custodianTokenAccount1PDA(final PublicKey associatedTokenAccountProgram,
                                                                 final PublicKey custodianAccount,
                                                                 final PublicKey tokenProgramAccount,
                                                                 final PublicKey vaultMintAccount) {
@@ -49,7 +51,7 @@ public final class JupStablePDAs {
       custodianAccount.toByteArray(),
       tokenProgramAccount.toByteArray(),
       vaultMintAccount.toByteArray()
-    ), program);
+    ), associatedTokenAccountProgram);
   }
 
   public static ProgramDerivedAddress eventAuthorityPDA(final PublicKey program) {
@@ -74,7 +76,8 @@ public final class JupStablePDAs {
     ), program);
   }
 
-  public static ProgramDerivedAddress tokenAccountPDA(final PublicKey program,
+  /// @param associatedTokenAccountProgram the program the address is derived under, ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL
+  public static ProgramDerivedAddress tokenAccountPDA(final PublicKey associatedTokenAccountProgram,
                                                       final PublicKey authorityAccount,
                                                       final PublicKey tokenProgramAccount,
                                                       final PublicKey mintAccount) {
@@ -82,7 +85,7 @@ public final class JupStablePDAs {
       authorityAccount.toByteArray(),
       tokenProgramAccount.toByteArray(),
       mintAccount.toByteArray()
-    ), program);
+    ), associatedTokenAccountProgram);
   }
 
   public static ProgramDerivedAddress vaultPDA(final PublicKey program,

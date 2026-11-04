@@ -10,7 +10,8 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 
 public final class LendingPDAs {
 
-  public static ProgramDerivedAddress depositorTokenAccountPDA(final PublicKey program,
+  /// @param associatedTokenAccountProgram the program the address is derived under, ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL
+  public static ProgramDerivedAddress depositorTokenAccountPDA(final PublicKey associatedTokenAccountProgram,
                                                                final PublicKey signerAccount,
                                                                final PublicKey tokenProgramAccount,
                                                                final PublicKey mintAccount) {
@@ -18,7 +19,7 @@ public final class LendingPDAs {
       signerAccount.toByteArray(),
       tokenProgramAccount.toByteArray(),
       mintAccount.toByteArray()
-    ), program);
+    ), associatedTokenAccountProgram);
   }
 
   public static ProgramDerivedAddress fTokenMintPDA(final PublicKey program,
@@ -45,14 +46,15 @@ public final class LendingPDAs {
     ), program);
   }
 
-  public static ProgramDerivedAddress metadataAccountPDA(final PublicKey program,
+  /// @param metadataProgram the program the address is derived under, metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s
+  public static ProgramDerivedAddress metadataAccountPDA(final PublicKey metadataProgram,
                                                          final PublicKey metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s,
                                                          final PublicKey fTokenMintAccount) {
     return PublicKey.findProgramAddress(List.of(
       "metadata".getBytes(US_ASCII),
       metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s.toByteArray(),
       fTokenMintAccount.toByteArray()
-    ), program);
+    ), metadataProgram);
   }
 
   private LendingPDAs() {

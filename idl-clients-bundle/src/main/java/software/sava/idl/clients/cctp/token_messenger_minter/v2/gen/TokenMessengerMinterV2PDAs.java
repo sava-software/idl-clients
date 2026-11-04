@@ -10,12 +10,13 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 
 public final class TokenMessengerMinterV2PDAs {
 
-  public static ProgramDerivedAddress authorityPdaPDA(final PublicKey program,
+  /// @param messageTransmitterProgram the program the address is derived under, CCTPV2Sm4AdWt5296sk4P66VBZ7bEhcARwFaaS9YPbeC
+  public static ProgramDerivedAddress authorityPdaPDA(final PublicKey messageTransmitterProgram,
                                                       final PublicKey CCTPV2vPZJS2u2BBsUoscuikbYjnpFmbFsvVuJdgUMQe) {
     return PublicKey.findProgramAddress(List.of(
       "message_transmitter_authority".getBytes(US_ASCII),
       CCTPV2vPZJS2u2BBsUoscuikbYjnpFmbFsvVuJdgUMQe.toByteArray()
-    ), program);
+    ), messageTransmitterProgram);
   }
 
   public static ProgramDerivedAddress custodyTokenAccountPDA(final PublicKey program,
@@ -49,7 +50,8 @@ public final class TokenMessengerMinterV2PDAs {
     ), program);
   }
 
-  public static ProgramDerivedAddress feeRecipientTokenAccountPDA(final PublicKey program,
+  /// @param associatedTokenAccountProgram the program the address is derived under, ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL
+  public static ProgramDerivedAddress feeRecipientTokenAccountPDA(final PublicKey associatedTokenAccountProgram,
                                                                   final PublicKey tokenMessengerFeeRecipientAccount,
                                                                   final PublicKey TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA,
                                                                   final PublicKey localTokenMintAccount) {
@@ -57,7 +59,7 @@ public final class TokenMessengerMinterV2PDAs {
       tokenMessengerFeeRecipientAccount.toByteArray(),
       TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA.toByteArray(),
       localTokenMintAccount.toByteArray()
-    ), program);
+    ), associatedTokenAccountProgram);
   }
 
   public static ProgramDerivedAddress localTokenPDA(final PublicKey program,

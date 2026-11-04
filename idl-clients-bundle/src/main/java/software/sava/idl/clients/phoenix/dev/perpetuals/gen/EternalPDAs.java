@@ -41,10 +41,11 @@ public final class EternalPDAs {
     ), program);
   }
 
-  public static ProgramDerivedAddress globalConfigurationPDA(final PublicKey program) {
+  /// @param EtrnLzgbS7nMMy5fbD42kXiUzGg8XQzJ972Xtk1cjWih the program the address is derived under, EtrnLzgbS7nMMy5fbD42kXiUzGg8XQzJ972Xtk1cjWih
+  public static ProgramDerivedAddress globalConfigurationPDA(final PublicKey EtrnLzgbS7nMMy5fbD42kXiUzGg8XQzJ972Xtk1cjWih) {
     return PublicKey.findProgramAddress(List.of(
       "global".getBytes(US_ASCII)
-    ), program);
+    ), EtrnLzgbS7nMMy5fbD42kXiUzGg8XQzJ972Xtk1cjWih);
   }
 
   public static ProgramDerivedAddress globalConfiguration1PDA(final PublicKey program) {
@@ -78,10 +79,11 @@ public final class EternalPDAs {
     ), program);
   }
 
-  public static ProgramDerivedAddress phoenixLogAuthorityPDA(final PublicKey program) {
+  /// @param EtrnLzgbS7nMMy5fbD42kXiUzGg8XQzJ972Xtk1cjWih the program the address is derived under, EtrnLzgbS7nMMy5fbD42kXiUzGg8XQzJ972Xtk1cjWih
+  public static ProgramDerivedAddress phoenixLogAuthorityPDA(final PublicKey EtrnLzgbS7nMMy5fbD42kXiUzGg8XQzJ972Xtk1cjWih) {
     return PublicKey.findProgramAddress(List.of(
       "log".getBytes(US_ASCII)
-    ), program);
+    ), EtrnLzgbS7nMMy5fbD42kXiUzGg8XQzJ972Xtk1cjWih);
   }
 
   public static ProgramDerivedAddress splineCollectionHeaderPDA(final PublicKey program,

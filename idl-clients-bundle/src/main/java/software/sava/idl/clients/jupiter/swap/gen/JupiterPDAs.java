@@ -8,7 +8,8 @@ import java.util.List;
 
 public final class JupiterPDAs {
 
-  public static ProgramDerivedAddress destinationTokenAccountPDA(final PublicKey program,
+  /// @param associatedTokenAccountProgram the program the address is derived under, ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL
+  public static ProgramDerivedAddress destinationTokenAccountPDA(final PublicKey associatedTokenAccountProgram,
                                                                  final PublicKey walletAccount,
                                                                  final PublicKey tokenProgramAccount,
                                                                  final PublicKey mintAccount) {
@@ -16,7 +17,7 @@ public final class JupiterPDAs {
       walletAccount.toByteArray(),
       tokenProgramAccount.toByteArray(),
       mintAccount.toByteArray()
-    ), program);
+    ), associatedTokenAccountProgram);
   }
 
   private JupiterPDAs() {

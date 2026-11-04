@@ -31,9 +31,9 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// The same loss leaves `user` and `yield_market` declared, in one instruction each, as derived
 /// from their own addresses, so those declarations get no helper either. Derive a user with
 /// `signerUserPDA` from its owner, and a yield market with `yieldMarketPDA` from its mint. The
-/// other generated helpers reproduce live accounts, provided each associated token account
-/// derivation (the escrows and the JL token accounts) gets the associated token program as its
-/// `program`, not Offerbook's.
+/// other generated helpers reproduce live accounts. Those deriving an associated token account
+/// (the escrows and the JL token accounts) take the associated token program as
+/// `associatedTokenAccountProgram`, not Offerbook's id.
 public final class JupiterOfferbookPDAs {
 
   /// The offer a creator's `create_*_offer` initializes: `["offer", creator, offerIndex]`, with

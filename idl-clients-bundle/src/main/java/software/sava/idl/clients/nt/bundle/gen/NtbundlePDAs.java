@@ -18,7 +18,8 @@ public final class NtbundlePDAs {
     ), program);
   }
 
-  public static ProgramDerivedAddress bundleAssetAccountPDA(final PublicKey program,
+  /// @param associatedTokenAccountProgram the program the address is derived under, ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL
+  public static ProgramDerivedAddress bundleAssetAccountPDA(final PublicKey associatedTokenAccountProgram,
                                                             final PublicKey bundleAssetAuthorityAccount,
                                                             final PublicKey TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA,
                                                             final PublicKey assetAddressAccount) {
@@ -26,7 +27,7 @@ public final class NtbundlePDAs {
       bundleAssetAuthorityAccount.toByteArray(),
       TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA.toByteArray(),
       assetAddressAccount.toByteArray()
-    ), program);
+    ), associatedTokenAccountProgram);
   }
 
   public static ProgramDerivedAddress bundleAssetAuthorityPDA(final PublicKey program,
@@ -83,7 +84,8 @@ public final class NtbundlePDAs {
     ), program);
   }
 
-  public static ProgramDerivedAddress pendingDepositTokenAccountPDA(final PublicKey program,
+  /// @param associatedTokenAccountProgram the program the address is derived under, ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL
+  public static ProgramDerivedAddress pendingDepositTokenAccountPDA(final PublicKey associatedTokenAccountProgram,
                                                                     final PublicKey pendingBundleAssetAuthorityAccount,
                                                                     final PublicKey TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA,
                                                                     final PublicKey assetAddressAccount) {
@@ -91,7 +93,7 @@ public final class NtbundlePDAs {
       pendingBundleAssetAuthorityAccount.toByteArray(),
       TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA.toByteArray(),
       assetAddressAccount.toByteArray()
-    ), program);
+    ), associatedTokenAccountProgram);
   }
 
   public static ProgramDerivedAddress referrerAccountPDA(final PublicKey program,
@@ -134,7 +136,8 @@ public final class NtbundlePDAs {
     ), program);
   }
 
-  public static ProgramDerivedAddress sourceBundleAssetAccountPDA(final PublicKey program,
+  /// @param associatedTokenAccountProgram the program the address is derived under, ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL
+  public static ProgramDerivedAddress sourceBundleAssetAccountPDA(final PublicKey associatedTokenAccountProgram,
                                                                   final PublicKey sourceBundleAssetAuthorityAccount,
                                                                   final PublicKey TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA,
                                                                   final PublicKey assetAddressAccount) {
@@ -142,7 +145,7 @@ public final class NtbundlePDAs {
       sourceBundleAssetAuthorityAccount.toByteArray(),
       TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA.toByteArray(),
       assetAddressAccount.toByteArray()
-    ), program);
+    ), associatedTokenAccountProgram);
   }
 
   public static ProgramDerivedAddress sourceBundleAssetAuthorityPDA(final PublicKey program,
@@ -213,7 +216,8 @@ public final class NtbundlePDAs {
     ), program);
   }
 
-  public static ProgramDerivedAddress targetPendingDepositTokenAccountPDA(final PublicKey program,
+  /// @param associatedTokenAccountProgram the program the address is derived under, ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL
+  public static ProgramDerivedAddress targetPendingDepositTokenAccountPDA(final PublicKey associatedTokenAccountProgram,
                                                                           final PublicKey targetPendingBundleAssetAuthorityAccount,
                                                                           final PublicKey TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA,
                                                                           final PublicKey assetAddressAccount) {
@@ -221,7 +225,7 @@ public final class NtbundlePDAs {
       targetPendingBundleAssetAuthorityAccount.toByteArray(),
       TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA.toByteArray(),
       assetAddressAccount.toByteArray()
-    ), program);
+    ), associatedTokenAccountProgram);
   }
 
   public static ProgramDerivedAddress targetUserBundleAccountPDA(final PublicKey program,

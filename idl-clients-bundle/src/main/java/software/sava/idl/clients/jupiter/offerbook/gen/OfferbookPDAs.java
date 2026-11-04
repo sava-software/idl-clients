@@ -10,7 +10,8 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 
 public final class OfferbookPDAs {
 
-  public static ProgramDerivedAddress borrowerCollateralEscrowPDA(final PublicKey program,
+  /// @param associatedTokenAccountProgram the program the address is derived under, ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL
+  public static ProgramDerivedAddress borrowerCollateralEscrowPDA(final PublicKey associatedTokenAccountProgram,
                                                                   final PublicKey borrowerUserAccount,
                                                                   final PublicKey collateralTokenProgramAccount,
                                                                   final PublicKey collateralMintAccount) {
@@ -18,7 +19,7 @@ public final class OfferbookPDAs {
       borrowerUserAccount.toByteArray(),
       collateralTokenProgramAccount.toByteArray(),
       collateralMintAccount.toByteArray()
-    ), program);
+    ), associatedTokenAccountProgram);
   }
 
   public static ProgramDerivedAddress claimAccountPDA(final PublicKey liquidityProgram,
@@ -59,7 +60,8 @@ public final class OfferbookPDAs {
     ), program);
   }
 
-  public static ProgramDerivedAddress lenderCollateralEscrowPDA(final PublicKey program,
+  /// @param associatedTokenAccountProgram the program the address is derived under, ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL
+  public static ProgramDerivedAddress lenderCollateralEscrowPDA(final PublicKey associatedTokenAccountProgram,
                                                                 final PublicKey signerUserAccount,
                                                                 final PublicKey collateralTokenProgramAccount,
                                                                 final PublicKey collateralMintAccount) {
@@ -67,10 +69,11 @@ public final class OfferbookPDAs {
       signerUserAccount.toByteArray(),
       collateralTokenProgramAccount.toByteArray(),
       collateralMintAccount.toByteArray()
-    ), program);
+    ), associatedTokenAccountProgram);
   }
 
-  public static ProgramDerivedAddress lenderPrincipalEscrowPDA(final PublicKey program,
+  /// @param associatedTokenAccountProgram the program the address is derived under, ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL
+  public static ProgramDerivedAddress lenderPrincipalEscrowPDA(final PublicKey associatedTokenAccountProgram,
                                                                final PublicKey lenderUserAccount,
                                                                final PublicKey principalTokenProgramAccount,
                                                                final PublicKey principalMintAccount) {
@@ -78,10 +81,11 @@ public final class OfferbookPDAs {
       lenderUserAccount.toByteArray(),
       principalTokenProgramAccount.toByteArray(),
       principalMintAccount.toByteArray()
-    ), program);
+    ), associatedTokenAccountProgram);
   }
 
-  public static ProgramDerivedAddress lenderPrincipalEscrow1PDA(final PublicKey program,
+  /// @param associatedTokenAccountProgram the program the address is derived under, ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL
+  public static ProgramDerivedAddress lenderPrincipalEscrow1PDA(final PublicKey associatedTokenAccountProgram,
                                                                 final PublicKey signerUserAccount,
                                                                 final PublicKey principalTokenProgramAccount,
                                                                 final PublicKey principalMintAccount) {
@@ -89,7 +93,7 @@ public final class OfferbookPDAs {
       signerUserAccount.toByteArray(),
       principalTokenProgramAccount.toByteArray(),
       principalMintAccount.toByteArray()
-    ), program);
+    ), associatedTokenAccountProgram);
   }
 
   public static ProgramDerivedAddress loanVaultPDA(final PublicKey program,
@@ -108,7 +112,8 @@ public final class OfferbookPDAs {
     ), program);
   }
 
-  public static ProgramDerivedAddress userEscrowTokenAccountPDA(final PublicKey program,
+  /// @param associatedTokenAccountProgram the program the address is derived under, ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL
+  public static ProgramDerivedAddress userEscrowTokenAccountPDA(final PublicKey associatedTokenAccountProgram,
                                                                 final PublicKey signerUserAccount,
                                                                 final PublicKey tokenProgramAccount,
                                                                 final PublicKey nftMintAccount) {
@@ -116,10 +121,11 @@ public final class OfferbookPDAs {
       signerUserAccount.toByteArray(),
       tokenProgramAccount.toByteArray(),
       nftMintAccount.toByteArray()
-    ), program);
+    ), associatedTokenAccountProgram);
   }
 
-  public static ProgramDerivedAddress userEscrowTokenAccount1PDA(final PublicKey program,
+  /// @param associatedTokenAccountProgram the program the address is derived under, ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL
+  public static ProgramDerivedAddress userEscrowTokenAccount1PDA(final PublicKey associatedTokenAccountProgram,
                                                                  final PublicKey signerUserAccount,
                                                                  final PublicKey tokenProgramAccount,
                                                                  final PublicKey mintAccount) {
@@ -127,10 +133,11 @@ public final class OfferbookPDAs {
       signerUserAccount.toByteArray(),
       tokenProgramAccount.toByteArray(),
       mintAccount.toByteArray()
-    ), program);
+    ), associatedTokenAccountProgram);
   }
 
-  public static ProgramDerivedAddress userEscrowTokenAccount2PDA(final PublicKey program,
+  /// @param associatedTokenAccountProgram the program the address is derived under, ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL
+  public static ProgramDerivedAddress userEscrowTokenAccount2PDA(final PublicKey associatedTokenAccountProgram,
                                                                  final PublicKey userAccount,
                                                                  final PublicKey tokenProgramAccount,
                                                                  final PublicKey mintAccount) {
@@ -138,10 +145,11 @@ public final class OfferbookPDAs {
       userAccount.toByteArray(),
       tokenProgramAccount.toByteArray(),
       mintAccount.toByteArray()
-    ), program);
+    ), associatedTokenAccountProgram);
   }
 
-  public static ProgramDerivedAddress userJlTokenAccountPDA(final PublicKey program,
+  /// @param associatedTokenAccountProgram the program the address is derived under, ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL
+  public static ProgramDerivedAddress userJlTokenAccountPDA(final PublicKey associatedTokenAccountProgram,
                                                             final PublicKey userAccount,
                                                             final PublicKey tokenProgramAccount,
                                                             final PublicKey jlMintAccount) {
@@ -149,10 +157,11 @@ public final class OfferbookPDAs {
       userAccount.toByteArray(),
       tokenProgramAccount.toByteArray(),
       jlMintAccount.toByteArray()
-    ), program);
+    ), associatedTokenAccountProgram);
   }
 
-  public static ProgramDerivedAddress userJlTokenAccount1PDA(final PublicKey program,
+  /// @param associatedTokenAccountProgram the program the address is derived under, ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL
+  public static ProgramDerivedAddress userJlTokenAccount1PDA(final PublicKey associatedTokenAccountProgram,
                                                              final PublicKey signerUserAccount,
                                                              final PublicKey tokenProgramAccount,
                                                              final PublicKey jlMintAccount) {
@@ -160,7 +169,7 @@ public final class OfferbookPDAs {
       signerUserAccount.toByteArray(),
       tokenProgramAccount.toByteArray(),
       jlMintAccount.toByteArray()
-    ), program);
+    ), associatedTokenAccountProgram);
   }
 
   public static ProgramDerivedAddress yieldMarketPDA(final PublicKey program,

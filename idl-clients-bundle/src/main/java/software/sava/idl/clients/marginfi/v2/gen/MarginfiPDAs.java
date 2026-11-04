@@ -66,17 +66,19 @@ public final class MarginfiPDAs {
     ), program);
   }
 
-  public static ProgramDerivedAddress claimStatusPDA(final PublicKey program,
+  /// @param merkleDistributorProgram the program the address is derived under, distAitdwx9mDm3SaPMtGZRjpXMPUenLhmPwoySV3Hp
+  public static ProgramDerivedAddress claimStatusPDA(final PublicKey merkleDistributorProgram,
                                                      final PublicKey liquidityVaultAuthorityAccount,
                                                      final PublicKey distributorAccount) {
     return PublicKey.findProgramAddress(List.of(
       "ClaimStatus".getBytes(US_ASCII),
       liquidityVaultAuthorityAccount.toByteArray(),
       distributorAccount.toByteArray()
-    ), program);
+    ), merkleDistributorProgram);
   }
 
-  public static ProgramDerivedAddress destinationTokenAccountPDA(final PublicKey program,
+  /// @param associatedTokenAccountProgram the program the address is derived under, ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL
+  public static ProgramDerivedAddress destinationTokenAccountPDA(final PublicKey associatedTokenAccountProgram,
                                                                  final PublicKey feeStateAccount,
                                                                  final PublicKey tokenProgramAccount,
                                                                  final PublicKey rewardMintAccount) {
@@ -84,7 +86,7 @@ public final class MarginfiPDAs {
       feeStateAccount.toByteArray(),
       tokenProgramAccount.toByteArray(),
       rewardMintAccount.toByteArray()
-    ), program);
+    ), associatedTokenAccountProgram);
   }
 
   public static ProgramDerivedAddress executeRecordPDA(final PublicKey program,
@@ -141,13 +143,14 @@ public final class MarginfiPDAs {
     ), program);
   }
 
-  public static ProgramDerivedAddress integrationAcc2PDA(final PublicKey program,
+  /// @param driftProgram the program the address is derived under, dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH
+  public static ProgramDerivedAddress integrationAcc2PDA(final PublicKey driftProgram,
                                                          final PublicKey liquidityVaultAuthorityAccount) {
     return PublicKey.findProgramAddress(List.of(
       "user".getBytes(US_ASCII),
       liquidityVaultAuthorityAccount.toByteArray(),
       "\u0000\u0000".getBytes(US_ASCII)
-    ), program);
+    ), driftProgram);
   }
 
   public static ProgramDerivedAddress integrationAcc21PDA(final PublicKey program,
@@ -166,15 +169,17 @@ public final class MarginfiPDAs {
     ), program);
   }
 
-  public static ProgramDerivedAddress integrationAcc3PDA(final PublicKey program,
+  /// @param driftProgram the program the address is derived under, dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH
+  public static ProgramDerivedAddress integrationAcc3PDA(final PublicKey driftProgram,
                                                          final PublicKey liquidityVaultAuthorityAccount) {
     return PublicKey.findProgramAddress(List.of(
       "user_stats".getBytes(US_ASCII),
       liquidityVaultAuthorityAccount.toByteArray()
-    ), program);
+    ), driftProgram);
   }
 
-  public static ProgramDerivedAddress intermediaryTokenAccountPDA(final PublicKey program,
+  /// @param associatedTokenAccountProgram the program the address is derived under, ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL
+  public static ProgramDerivedAddress intermediaryTokenAccountPDA(final PublicKey associatedTokenAccountProgram,
                                                                   final PublicKey liquidityVaultAuthorityAccount,
                                                                   final PublicKey tokenProgramAccount,
                                                                   final PublicKey rewardMintAccount) {
@@ -182,7 +187,7 @@ public final class MarginfiPDAs {
       liquidityVaultAuthorityAccount.toByteArray(),
       tokenProgramAccount.toByteArray(),
       rewardMintAccount.toByteArray()
-    ), program);
+    ), associatedTokenAccountProgram);
   }
 
   public static ProgramDerivedAddress liquidationRecordPDA(final PublicKey program,

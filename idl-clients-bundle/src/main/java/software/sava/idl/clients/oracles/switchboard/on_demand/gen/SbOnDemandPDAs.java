@@ -10,7 +10,8 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 
 public final class SbOnDemandPDAs {
 
-  public static ProgramDerivedAddress escrowPDA(final PublicKey program,
+  /// @param associatedTokenAccountProgram the program the address is derived under, ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL
+  public static ProgramDerivedAddress escrowPDA(final PublicKey associatedTokenAccountProgram,
                                                 final PublicKey payerAccount,
                                                 final PublicKey TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA,
                                                 final PublicKey wsolMintAccount) {
@@ -18,7 +19,7 @@ public final class SbOnDemandPDAs {
       payerAccount.toByteArray(),
       TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA.toByteArray(),
       wsolMintAccount.toByteArray()
-    ), program);
+    ), associatedTokenAccountProgram);
   }
 
   public static ProgramDerivedAddress oraclePDA(final PublicKey program,
@@ -50,7 +51,8 @@ public final class SbOnDemandPDAs {
     ), program);
   }
 
-  public static ProgramDerivedAddress queueEscrowPDA(final PublicKey program,
+  /// @param associatedTokenAccountProgram the program the address is derived under, ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL
+  public static ProgramDerivedAddress queueEscrowPDA(final PublicKey associatedTokenAccountProgram,
                                                      final PublicKey queueAccount,
                                                      final PublicKey TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA,
                                                      final PublicKey nativeMintAccount) {
@@ -58,10 +60,11 @@ public final class SbOnDemandPDAs {
       queueAccount.toByteArray(),
       TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA.toByteArray(),
       nativeMintAccount.toByteArray()
-    ), program);
+    ), associatedTokenAccountProgram);
   }
 
-  public static ProgramDerivedAddress rewardEscrowPDA(final PublicKey program,
+  /// @param associatedTokenAccountProgram the program the address is derived under, ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL
+  public static ProgramDerivedAddress rewardEscrowPDA(final PublicKey associatedTokenAccountProgram,
                                                       final PublicKey pullFeedAccount,
                                                       final PublicKey TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA,
                                                       final PublicKey wrappedSolMintAccount) {
@@ -69,10 +72,11 @@ public final class SbOnDemandPDAs {
       pullFeedAccount.toByteArray(),
       TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA.toByteArray(),
       wrappedSolMintAccount.toByteArray()
-    ), program);
+    ), associatedTokenAccountProgram);
   }
 
-  public static ProgramDerivedAddress rewardEscrow1PDA(final PublicKey program,
+  /// @param associatedTokenAccountProgram the program the address is derived under, ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL
+  public static ProgramDerivedAddress rewardEscrow1PDA(final PublicKey associatedTokenAccountProgram,
                                                        final PublicKey randomnessAccount,
                                                        final PublicKey TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA,
                                                        final PublicKey wrappedSolMintAccount) {
@@ -80,10 +84,11 @@ public final class SbOnDemandPDAs {
       randomnessAccount.toByteArray(),
       TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA.toByteArray(),
       wrappedSolMintAccount.toByteArray()
-    ), program);
+    ), associatedTokenAccountProgram);
   }
 
-  public static ProgramDerivedAddress rewardVaultPDA(final PublicKey program,
+  /// @param associatedTokenAccountProgram the program the address is derived under, ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL
+  public static ProgramDerivedAddress rewardVaultPDA(final PublicKey associatedTokenAccountProgram,
                                                      final PublicKey vaultAccount,
                                                      final PublicKey TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA,
                                                      final PublicKey switchMintAccount) {
@@ -91,7 +96,7 @@ public final class SbOnDemandPDAs {
       vaultAccount.toByteArray(),
       TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA.toByteArray(),
       switchMintAccount.toByteArray()
-    ), program);
+    ), associatedTokenAccountProgram);
   }
 
   public static ProgramDerivedAddress statePDA(final PublicKey program) {
@@ -108,7 +113,8 @@ public final class SbOnDemandPDAs {
     ), program);
   }
 
-  public static ProgramDerivedAddress subsidyVaultPDA(final PublicKey program,
+  /// @param associatedTokenAccountProgram the program the address is derived under, ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL
+  public static ProgramDerivedAddress subsidyVaultPDA(final PublicKey associatedTokenAccountProgram,
                                                       final PublicKey programStateAccount,
                                                       final PublicKey TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA,
                                                       final PublicKey switchMintAccount) {
@@ -116,7 +122,7 @@ public final class SbOnDemandPDAs {
       programStateAccount.toByteArray(),
       TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA.toByteArray(),
       switchMintAccount.toByteArray()
-    ), program);
+    ), associatedTokenAccountProgram);
   }
 
   private SbOnDemandPDAs() {
