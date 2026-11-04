@@ -83,11 +83,12 @@ public final class TokenMessengerMinterV2PDAs {
     ), program);
   }
 
+  /// @param remoteTokenMessengerDomain u32 seed value encoding is program-specific — commonly its little-endian bytes (`SerDeUtil` `*LESeed` helpers) or its decimal string (`SerDeUtil.asciiSeed`); verify against the program source.
   public static ProgramDerivedAddress remoteTokenMessenger1PDA(final PublicKey program,
-                                                               final PublicKey remoteTokenMessengerDomainAccount) {
+                                                               final byte[] remoteTokenMessengerDomain) {
     return PublicKey.findProgramAddress(List.of(
       "remote_token_messenger".getBytes(US_ASCII),
-      remoteTokenMessengerDomainAccount.toByteArray()
+      remoteTokenMessengerDomain
     ), program);
   }
 
@@ -119,12 +120,13 @@ public final class TokenMessengerMinterV2PDAs {
     ), program);
   }
 
+  /// @param tokenPairRemoteDomain u32 seed value encoding is program-specific — commonly its little-endian bytes (`SerDeUtil` `*LESeed` helpers) or its decimal string (`SerDeUtil.asciiSeed`); verify against the program source.
   public static ProgramDerivedAddress tokenPair1PDA(final PublicKey program,
-                                                    final PublicKey tokenPairRemoteDomainAccount,
+                                                    final byte[] tokenPairRemoteDomain,
                                                     final PublicKey tokenPairRemoteTokenAccount) {
     return PublicKey.findProgramAddress(List.of(
       "token_pair".getBytes(US_ASCII),
-      tokenPairRemoteDomainAccount.toByteArray(),
+      tokenPairRemoteDomain,
       tokenPairRemoteTokenAccount.toByteArray()
     ), program);
   }

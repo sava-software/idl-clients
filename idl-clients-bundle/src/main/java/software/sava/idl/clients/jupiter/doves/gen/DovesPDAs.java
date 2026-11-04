@@ -26,11 +26,12 @@ public final class DovesPDAs {
     ), program);
   }
 
+  /// @param feedPair the bytes of PriceFeed.pair as the program hashes them
   public static ProgramDerivedAddress feed1PDA(final PublicKey program,
-                                               final PublicKey feedPairAccount) {
+                                               final byte[] feedPair) {
     return PublicKey.findProgramAddress(List.of(
       "feed".getBytes(US_ASCII),
-      feedPairAccount.toByteArray()
+      feedPair
     ), program);
   }
 

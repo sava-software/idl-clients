@@ -187,17 +187,18 @@ public final class WhirlpoolPDAs {
     ), program);
   }
 
+  /// @param adaptiveFeeTierFeeTierIndex u16 seed value encoding is program-specific — commonly its little-endian bytes (`SerDeUtil` `*LESeed` helpers) or its decimal string (`SerDeUtil.asciiSeed`); verify against the program source.
   public static ProgramDerivedAddress whirlpool1PDA(final PublicKey program,
                                                     final PublicKey whirlpoolsConfigAccount,
                                                     final PublicKey tokenMintAAccount,
                                                     final PublicKey tokenMintBAccount,
-                                                    final PublicKey adaptiveFeeTierFeeTierIndexAccount) {
+                                                    final byte[] adaptiveFeeTierFeeTierIndex) {
     return PublicKey.findProgramAddress(List.of(
       "whirlpool".getBytes(US_ASCII),
       whirlpoolsConfigAccount.toByteArray(),
       tokenMintAAccount.toByteArray(),
       tokenMintBAccount.toByteArray(),
-      adaptiveFeeTierFeeTierIndexAccount.toByteArray()
+      adaptiveFeeTierFeeTierIndex
     ), program);
   }
 
