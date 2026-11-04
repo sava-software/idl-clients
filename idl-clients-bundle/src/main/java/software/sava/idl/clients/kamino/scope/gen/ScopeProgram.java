@@ -817,7 +817,7 @@ public final class ScopeProgram {
                                           final long seedId,
                                           final int bump,
                                           final int[][] scopeChains) {
-    final byte[] _data = new byte[49 + SerDeUtil.lenVectorArray(4, scopeChains)];
+    final byte[] _data = new byte[49 + SerDeUtil.lenUnsignedShortVectorArray(4, scopeChains)];
     int i = CREATE_MINT_MAP_DISCRIMINATOR.write(_data, 0);
     seedPk.write(_data, i);
     i += 32;
@@ -825,7 +825,7 @@ public final class ScopeProgram {
     i += 8;
     _data[i] = (byte) bump;
     ++i;
-    SerDeUtil.writeVectorArrayChecked(4, scopeChains, 4, _data, i);
+    SerDeUtil.writeUnsignedShortVectorArrayChecked(4, scopeChains, 4, _data, i);
 
     return Instruction.createInstruction(invokedScopeProgramMeta, keys, _data);
   }
@@ -877,13 +877,13 @@ public final class ScopeProgram {
       i += 8;
       _data[i] = (byte) bump;
       ++i;
-      i += SerDeUtil.writeVectorArrayChecked(4, scopeChains, 4, _data, i);
+      i += SerDeUtil.writeUnsignedShortVectorArrayChecked(4, scopeChains, 4, _data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + 32 + 8 + 1 + SerDeUtil.lenVectorArray(4, scopeChains);
+      return 8 + 32 + 8 + 1 + SerDeUtil.lenUnsignedShortVectorArray(4, scopeChains);
     }
   }
 

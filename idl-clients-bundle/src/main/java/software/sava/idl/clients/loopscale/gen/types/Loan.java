@@ -177,9 +177,9 @@ public record Loan(PublicKey _address,
     i += 8;
     i += SerDeUtil.writeArrayChecked(ledgers, 5, _data, i);
     i += SerDeUtil.writeArrayChecked(collateral, 5, _data, i);
-    i += SerDeUtil.writeArrayChecked(weightMatrix, 5, 5, _data, i);
-    i += SerDeUtil.writeArrayChecked(ltvMatrix, 5, 5, _data, i);
-    i += SerDeUtil.writeArrayChecked(lqtMatrix, 5, 5, _data, i);
+    i += SerDeUtil.writeUnsignedIntArrayChecked(weightMatrix, 5, 5, _data, i);
+    i += SerDeUtil.writeUnsignedIntArrayChecked(ltvMatrix, 5, 5, _data, i);
+    i += SerDeUtil.writeUnsignedIntArrayChecked(lqtMatrix, 5, 5, _data, i);
     return i - _offset;
   }
 

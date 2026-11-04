@@ -2551,11 +2551,11 @@ public final class SerDeUtil {
     return i - offset;
   }
 
-  public static int writeArrayChecked(final BigInteger[][] array,
-                                      final int firstDimensionLength,
-                                      final int secondDimensionLength,
-                                      final byte[] data,
-                                      final int offset) {
+  public static int write128ArrayChecked(final BigInteger[][] array,
+                                         final int firstDimensionLength,
+                                         final int secondDimensionLength,
+                                         final byte[] data,
+                                         final int offset) {
     if (array.length != firstDimensionLength) {
       throw invalidArrayLength(array, firstDimensionLength, array.length);
     }
@@ -2564,6 +2564,14 @@ public final class SerDeUtil {
       i += write128ArrayChecked(a, secondDimensionLength, data, i);
     }
     return i - offset;
+  }
+
+  public static int writeArrayChecked(final BigInteger[][] array,
+                                      final int firstDimensionLength,
+                                      final int secondDimensionLength,
+                                      final byte[] data,
+                                      final int offset) {
+    return write128ArrayChecked(array, firstDimensionLength, secondDimensionLength, data, offset);
   }
 
   public static int write128Vector(final int prefixBytes,
@@ -3508,7 +3516,19 @@ public final class SerDeUtil {
     return write128ArrayChecked(array, fixedLength, data, offset);
   }
 
+  public static int writeU128ArrayChecked(final BigInteger[][] array,
+                                          final int firstDimensionLength,
+                                          final int secondDimensionLength,
+                                          final byte[] data,
+                                          final int offset) {
+    return write128ArrayChecked(array, firstDimensionLength, secondDimensionLength, data, offset);
+  }
+
   public static int writeU128Vector(final int prefixBytes, final BigInteger[] array, final byte[] data, final int offset) {
+    return write128Vector(prefixBytes, array, data, offset);
+  }
+
+  public static int writeU128Vector(final int prefixBytes, final BigInteger[][] array, final byte[] data, final int offset) {
     return write128Vector(prefixBytes, array, data, offset);
   }
 
@@ -3658,7 +3678,19 @@ public final class SerDeUtil {
     return write256ArrayChecked(array, fixedLength, data, offset);
   }
 
+  public static int writeU256ArrayChecked(final BigInteger[][] array,
+                                          final int firstDimensionLength,
+                                          final int secondDimensionLength,
+                                          final byte[] data,
+                                          final int offset) {
+    return write256ArrayChecked(array, firstDimensionLength, secondDimensionLength, data, offset);
+  }
+
   public static int writeU256Vector(final int prefixBytes, final BigInteger[] array, final byte[] data, final int offset) {
+    return write256Vector(prefixBytes, array, data, offset);
+  }
+
+  public static int writeU256Vector(final int prefixBytes, final BigInteger[][] array, final byte[] data, final int offset) {
     return write256Vector(prefixBytes, array, data, offset);
   }
 
