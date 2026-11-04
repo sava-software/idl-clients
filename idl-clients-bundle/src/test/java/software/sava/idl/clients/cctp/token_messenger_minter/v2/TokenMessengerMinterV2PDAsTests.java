@@ -60,7 +60,7 @@ final class TokenMessengerMinterV2PDAsTests {
     assertEquals(key(address), pda.publicKey());
     assertEquals(bump, pda.nonce());
     assertEquals(key(address),
-        TokenMessengerMinterV2PDAs.tokenPairPDA(PROGRAM, seed, key(remoteToken).toByteArray()).publicKey(),
+        TokenMessengerMinterV2PDAs.tokenPairPDA(PROGRAM, seed, key(remoteToken)).publicKey(),
         "link_token_pair's derivation hashes the same bytes from its arguments");
   }
 }

@@ -67,6 +67,7 @@ public final class LbClmmPDAs {
     ), program);
   }
 
+  /// @param ixIndex u16 seed value encoding is program-specific — commonly its little-endian bytes (`SerDeUtil` `*LESeed` helpers) or its decimal string (`SerDeUtil.asciiSeed`); verify against the program source.
   public static ProgramDerivedAddress presetParameterPDA(final PublicKey program,
                                                          final byte[] ixIndex) {
     return PublicKey.findProgramAddress(List.of(

@@ -27,10 +27,11 @@ public final class TokenMessengerMinterV2PDAs {
   }
 
   public static ProgramDerivedAddress denylistAccountPDA(final PublicKey program,
-                                                         final byte[] paramsAccount) {
+                                                         final PublicKey paramsAccount) {
+    final byte[] paramsAccountBytes = paramsAccount.toByteArray();
     return PublicKey.findProgramAddress(List.of(
       "denylist_account".getBytes(US_ASCII),
-      paramsAccount
+      paramsAccountBytes
     ), program);
   }
 
@@ -75,6 +76,7 @@ public final class TokenMessengerMinterV2PDAs {
     ), program);
   }
 
+  /// @param paramsDomain u32 seed value encoding is program-specific — commonly its little-endian bytes (`SerDeUtil` `*LESeed` helpers) or its decimal string (`SerDeUtil.asciiSeed`); verify against the program source.
   public static ProgramDerivedAddress remoteTokenMessengerPDA(final PublicKey program,
                                                               final byte[] paramsDomain) {
     return PublicKey.findProgramAddress(List.of(
@@ -110,13 +112,15 @@ public final class TokenMessengerMinterV2PDAs {
     ), program);
   }
 
+  /// @param paramsRemoteDomain u32 seed value encoding is program-specific — commonly its little-endian bytes (`SerDeUtil` `*LESeed` helpers) or its decimal string (`SerDeUtil.asciiSeed`); verify against the program source.
   public static ProgramDerivedAddress tokenPairPDA(final PublicKey program,
                                                    final byte[] paramsRemoteDomain,
-                                                   final byte[] paramsRemoteToken) {
+                                                   final PublicKey paramsRemoteToken) {
+    final byte[] paramsRemoteTokenBytes = paramsRemoteToken.toByteArray();
     return PublicKey.findProgramAddress(List.of(
       "token_pair".getBytes(US_ASCII),
       paramsRemoteDomain,
-      paramsRemoteToken
+      paramsRemoteTokenBytes
     ), program);
   }
 

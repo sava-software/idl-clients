@@ -22,12 +22,14 @@ public final class SbOnDemandPDAs {
   }
 
   public static ProgramDerivedAddress oraclePDA(final PublicKey program,
-                                                final byte[] paramsQueue,
-                                                final byte[] paramsSourceOracleKey) {
+                                                final PublicKey paramsQueue,
+                                                final PublicKey paramsSourceOracleKey) {
+    final byte[] paramsQueueBytes = paramsQueue.toByteArray();
+    final byte[] paramsSourceOracleKeyBytes = paramsSourceOracleKey.toByteArray();
     return PublicKey.findProgramAddress(List.of(
       "Oracle".getBytes(US_ASCII),
-      paramsQueue,
-      paramsSourceOracleKey
+      paramsQueueBytes,
+      paramsSourceOracleKeyBytes
     ), program);
   }
 
@@ -40,10 +42,11 @@ public final class SbOnDemandPDAs {
   }
 
   public static ProgramDerivedAddress queuePDA(final PublicKey program,
-                                               final byte[] paramsSourceQueueKey) {
+                                               final PublicKey paramsSourceQueueKey) {
+    final byte[] paramsSourceQueueKeyBytes = paramsSourceQueueKey.toByteArray();
     return PublicKey.findProgramAddress(List.of(
       "Queue".getBytes(US_ASCII),
-      paramsSourceQueueKey
+      paramsSourceQueueKeyBytes
     ), program);
   }
 

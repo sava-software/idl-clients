@@ -114,6 +114,8 @@ public final class EternalPDAs {
     ), program);
   }
 
+  /// @param paramsTraderPdaIndex u8 seed value encoding is program-specific — commonly its little-endian bytes (`SerDeUtil` `*LESeed` helpers) or its decimal string (`SerDeUtil.asciiSeed`); verify against the program source.
+  /// @param paramsTraderSubaccountIndex u8 seed value encoding is program-specific — commonly its little-endian bytes (`SerDeUtil` `*LESeed` helpers) or its decimal string (`SerDeUtil.asciiSeed`); verify against the program source.
   public static ProgramDerivedAddress traderAccountPDA(final PublicKey program,
                                                        final PublicKey traderWalletAccount,
                                                        final byte[] paramsTraderPdaIndex,
