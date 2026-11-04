@@ -1,0 +1,15 @@
+# Loopscale (1oopBoJG58DgkUVKkEzKgyG9dvRmpgeEm1AVjoHkF78) event CPIs, captured from mainnet
+# with getTransaction (encoding json, maxSupportedTransactionVersion 1, finalized).
+# Each 'cpi' line is the complete data of one inner instruction the program invoked on
+# itself, with the event authority 6sbyEiDvcYELrqoxurz3XTTLLg5wpe8dHCXi4uTvSSTV as its only
+# account: 8-byte EVENT_IX_TAG_LE e445a52e51cb9a1d, 8-byte event discriminator, payload.
+#   tx <signature> <slot> <blockTime>
+#   cpi <outer instruction index> <position in innerInstructions[outer]> <stackHeight> <emitting instruction> <base64 data>
+tx 2yhdNR2cNeA5tLQCd6ueBNZuFr3xifwoEbfNFwCAiLK2ApVuA92wzBc9Cg2ctgMmvbiKMMAXDHKCvZEE98cJm551 465207273 1793775002
+cpi 2 2 2 deposit_collateral 5EWlLlHLmh3se+J93cjkOAM7R9r1g2nDUEMtJtjn4VrWnYe+FSLkwfzYVVT07oL/kgBDaBYmr+rUPobpLC0+D6Y11WihvegbifCY2nrG5dnxrgFDaBYmr+rUPobpLC0+D6Y11WihvegbifCY2nrG5dnxrvaqHDQ+AAAA
+tx 3Mhx4VrGJXc11wfKgKpj49HHSiqorjEB7zaTxqGsWMM4yuJHDznCsQSeuXDdEL3ey18K931QKAQj76msHCeTrsNN 465174521 1793767994
+cpi 2 1 2 claim_vault_rewards 5EWlLlHLmh3se+J93cjkOAqNjs0JU+TEJaw0w31k90xp7k+2kVCDXkgVC8/NQiHTZAjuSlbRcBGZrXBc1lKwpmLnlklynSm2erP3PnBSDzHtoxu9gcxkuqP0SFhfWQvqVYFenbRUJJSoXH0OSFVSbboBAAAAAAAAAEN3Nxx0+G6hi/F/sWAzhFKqY/rcrNWjH7Os9UulLoitOrrqagAAAAA=
+cpi 2 2 2 claim_vault_rewards 5EWlLlHLmh3se+J93cjkOAuipfwS4Xlbp1JKL0zqq5hFtMLNgPyoIyehSrzCmkf86A==
+tx 4eAm7FhLNx3Jthf2t2BfHMEyP7yLWSY4mGG2WMLqewT9SNpVZtp4io8F7i4phBQ1rS7LdZUDSkzn3FtWbvyUNxAC 465225154 1793778832
+cpi 2 7 2 unstake_user_vault_lp 5EWlLlHLmh3se+J93cjkOAa3DJEJG0P/C2AF9Ex1Sw5SCqSAl5q4xjQKYnjxOdDjYWXs2kp+Pe82CM1BeDYicCfzbVRNrPEVpWpJd6Zzt8JqjY7NCVPkxCWsNMN9ZPdMae5PtpFQg15IFQvPzUIh02TG+nrzvtutOj1l82qryXQxsbvkwtL24OR8pgIDRS9dYZDk6moAAAAAAAAAAAAAAAAAeQJuAgAAAAACAAAAAAAAAAA=
+cpi 4 9 2 stake_user_vault_lp 5EWlLlHLmh3se+J93cjkOAW3DJEJG0P/C2AF9Ex1Sw5SCqSAl5q4xjQKYnjxOdDjYfDcERc4yutIwiHF5f7ybW+FLeKdSO9b1apPdYbiksSCjY7NCVPkxCWsNMN9ZPdMae5PtpFQg15IFQvPzUIh02TG+nrzvtutOj1l82qryXQxsbvkwtL24OR8pgIDRS9dYQAdtHsCAAAAAAFAQg8AAAAAAA==
