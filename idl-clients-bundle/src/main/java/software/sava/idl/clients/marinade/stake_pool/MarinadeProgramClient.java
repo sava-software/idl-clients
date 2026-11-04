@@ -38,12 +38,17 @@ public interface MarinadeProgramClient {
     return rpcClient.getMinimumBalanceForRentExemption(TicketAccountData.BYTES);
   }
 
+  /// Selects tickets by discriminator, not by size. `order_unstake` takes the ticket account
+  /// `zero`-initialised, so the client that creates it picks the length: live tickets are 88
+  /// bytes ([TicketAccountData#BYTES]) or 165, zero past the layout, which [TicketAccountData]
+  /// decodes either way. A `dataSize` filter matches one exact length and dropped the 165-byte
+  /// tickets, 4 of 1,009 on 2026-11-04.
   static CompletableFuture<List<AccountInfo<TicketAccountData>>> fetchTicketAccounts(final SolanaRpcClient rpcClient,
                                                                                      final PublicKey marinadeProgram,
                                                                                      final PublicKey owner) {
     return rpcClient.getProgramAccounts(
         marinadeProgram,
-        List.of(TicketAccountData.SIZE_FILTER, TicketAccountData.createBeneficiaryFilter(owner)),
+        List.of(TicketAccountData.DISCRIMINATOR_FILTER, TicketAccountData.createBeneficiaryFilter(owner)),
         TicketAccountData.FACTORY
     );
   }

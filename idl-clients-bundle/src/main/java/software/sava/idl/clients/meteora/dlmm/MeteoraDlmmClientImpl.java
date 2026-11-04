@@ -35,12 +35,21 @@ record MeteoraDlmmClientImpl(SolanaAccounts solanaAccounts,
     return meteoraAccounts.invokedDlmmProgram();
   }
 
+  /// Selects by discriminator and owner only, as the DLMM SDK's `getAllLbPairPositionsByUser`
+  /// does. A position wider than the layout's 70 bins is longer than [PositionV2#BYTES]: each
+  /// extra bin appends a 112-byte `PositionBinData` record after it (the SDK's
+  /// `decodeExtendedPosition`). A `dataSize` filter matches one exact length, so it dropped every
+  /// wider position, 15,274 of 190,603 live on 2026-11-04.
+  ///
+  /// [PositionV2] decodes the first 70 bins only. For a wider position, `lowerBinId` and
+  /// `upperBinId` still span the whole range, but its liquidity shares, fee and reward infos stop
+  /// at the 70th bin; the rest sit in the account data past [PositionV2#BYTES], which the
+  /// decoded result does not carry.
   @Override
   public CompletableFuture<List<AccountInfo<PositionV2>>> fetchPositions(final SolanaRpcClient rpcClient) {
     return rpcClient.getProgramAccounts(
         meteoraAccounts.dlmmProgram(),
         List.of(
-            PositionV2.SIZE_FILTER,
             Filter.createMemCompFilter(0, meteoraAccounts.positionV2Discriminator().data()),
             PositionV2.createOwnerFilter(owner)
         ),

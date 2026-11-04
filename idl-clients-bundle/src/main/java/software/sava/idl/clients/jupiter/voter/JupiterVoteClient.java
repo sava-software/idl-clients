@@ -36,12 +36,15 @@ public interface JupiterVoteClient {
 
   PublicKey feePayer();
 
+  /// Selects escrows by discriminator, not by size. Live escrows are 322 bytes ([Escrow#BYTES])
+  /// or 328, zero past the layout, which [Escrow] decodes either way. A `dataSize` filter matches
+  /// one exact length and dropped the 328-byte escrows, 16 of 356,687 on 2026-11-04.
   default CompletableFuture<List<AccountInfo<Escrow>>> fetchEscrowAccountsForDelegate(final SolanaRpcClient rpcClient,
                                                                                       final PublicKey delegate) {
     return rpcClient.getProgramAccounts(
         jupiterAccounts().voteProgram(),
         List.of(
-            Escrow.SIZE_FILTER,
+            Escrow.DISCRIMINATOR_FILTER,
             Escrow.createVoteDelegateFilter(delegate)
         ),
         Escrow.FACTORY

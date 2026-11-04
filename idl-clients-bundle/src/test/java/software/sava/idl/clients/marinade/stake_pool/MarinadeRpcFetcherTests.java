@@ -5,6 +5,7 @@ import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.SolanaAccounts;
 import software.sava.core.accounts.meta.AccountMeta;
 import software.sava.core.encoding.ByteUtil;
+import software.sava.core.rpc.Filter;
 import software.sava.idl.clients.SolanaRpcCaptureTests;
 import software.sava.idl.clients.marinade.stake_pool.gen.types.FeeCents;
 import software.sava.idl.clients.marinade.stake_pool.gen.types.List;
@@ -16,6 +17,8 @@ import software.sava.idl.clients.marinade.stake_pool.gen.types.ValidatorSystem;
 import software.sava.idl.clients.spl.SPLAccountClient;
 
 import java.util.Arrays;
+import java.util.Base64;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -32,10 +35,23 @@ final class MarinadeRpcFetcherTests extends SolanaRpcCaptureTests {
   private static final PublicKey OWNER = key(0x11);
   private static final PublicKey FEE_PAYER = key(0x12);
 
+  /// A live delayed-unstake ticket 165 bytes long, 77 past [TicketAccountData#BYTES] and zero
+  /// there, the length a size filter dropped: fetched from mainnet at slot 465282733, owned by
+  /// the Marinade program and naming its state account.
+  private static final String LONG_TICKET = "DPuvkM4ogczj9brLUam1RkMZb6wRvtg8F5exonx43j2p";
+  private static final String LONG_TICKET_DATA = "hU0SYtMB5wN1EZsxdYB1huP0p+XND4kOlqdTsQ/Mx2gelHOgCDJw8bqJ2OZzd+OSf03kXAJcXT0WTkF3MME5qIwarR/BpvqPfpaYAAAAAAB6AgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+  private static final PublicKey LONG_TICKET_BENEFICIARY = PublicKey.fromBase58Encoded("DZAkBrLEwkQCDNdpdf2gYUEbACDca878ob1XhzuNg7oc");
+
   private static PublicKey key(final int fill) {
     final byte[] publicKey = new byte[PublicKey.PUBLIC_KEY_LENGTH];
     Arrays.fill(publicKey, (byte) fill);
     return PublicKey.createPubKey(publicKey);
+  }
+
+  /// The request's whole `filters` array as sava-rpc writes it. Matching it pins that no other
+  /// filter is sent, which one fragment per filter cannot: a `dataSize` filter would pass that.
+  private static String filterArray(final Filter... filters) {
+    return Arrays.stream(filters).map(Filter::toJson).collect(Collectors.joining(",", "\"filters\":[", "]"));
   }
 
   private static MarinadeProgramClient client() {
@@ -51,41 +67,43 @@ final class MarinadeRpcFetcherTests extends SolanaRpcCaptureTests {
     assertLastRequestContains("getMinimumBalanceForRentExemption", Long.toString(TicketAccountData.BYTES));
   }
 
-  /// The ticket scan is sized to the ticket layout and filtered to the
-  /// beneficiary; the default overload binds the client's own program and
-  /// owner. The response ticket's fields are asserted through the parse.
+  /// The ticket scan pins the account type by discriminator and filters to the
+  /// beneficiary, sending no size filter: live tickets are 88 or 165 bytes. The
+  /// default overload binds the client's own program and owner. The response is
+  /// the live 165-byte ticket, decoded through the fetcher's factory; the
+  /// expected fields were read from its bytes at the IDL's offsets.
   @Test
-  void ticketAccountsFilterBySizeAndBeneficiary() {
-    final var ticketKey = key(0x21);
-    final var beneficiary = key(0x22);
-    final var ticket = new TicketAccountData(
-        null, TicketAccountData.DISCRIMINATOR, MARINADE_ACCOUNTS.stateAccount(), beneficiary, 5_000_000L, 700L);
-    final byte[] ticketData = new byte[TicketAccountData.BYTES];
-    ticket.write(ticketData, 0);
+  void ticketAccountsFilterByDiscriminatorAndBeneficiary() {
+    final byte[] ticketData = Base64.getDecoder().decode(LONG_TICKET_DATA);
+    assertEquals(TicketAccountData.BYTES + 77, ticketData.length);
+    assertArrayEquals(new byte[77], Arrays.copyOfRange(ticketData, TicketAccountData.BYTES, ticketData.length));
     final var response = programAccountsResult(
-        ticketKey.toBase58(), ticketData, MARINADE_ACCOUNTS.marinadeProgram().toBase58());
+        LONG_TICKET, ticketData, MARINADE_ACCOUNTS.marinadeProgram().toBase58());
 
     respondWith(response);
     final var explicit = MarinadeProgramClient
-        .fetchTicketAccounts(rpcClient(), MARINADE_ACCOUNTS.marinadeProgram(), beneficiary)
+        .fetchTicketAccounts(rpcClient(), MARINADE_ACCOUNTS.marinadeProgram(), LONG_TICKET_BENEFICIARY)
         .join();
-    assertEquals(1, explicit.size());
-    final var parsed = explicit.getFirst().data();
-    assertEquals(beneficiary, parsed.beneficiary());
-    assertEquals(5_000_000L, parsed.lamportsAmount());
-    assertEquals(700L, parsed.createdEpoch());
     assertLastRequestContains(
         "getProgramAccounts",
         MARINADE_ACCOUNTS.marinadeProgram().toBase58(),
-        TicketAccountData.SIZE_FILTER.toJson(),
-        TicketAccountData.createBeneficiaryFilter(beneficiary).toJson());
+        filterArray(TicketAccountData.DISCRIMINATOR_FILTER, TicketAccountData.createBeneficiaryFilter(LONG_TICKET_BENEFICIARY)));
+    assertEquals(1, explicit.size());
+    final var accountInfo = explicit.getFirst();
+    assertEquals(PublicKey.fromBase58Encoded(LONG_TICKET), accountInfo.pubKey());
+    assertEquals(165, accountInfo.space());
+    final var parsed = accountInfo.data();
+    assertEquals(MARINADE_ACCOUNTS.stateAccount(), parsed.stateAddress());
+    assertEquals(LONG_TICKET_BENEFICIARY, parsed.beneficiary());
+    assertEquals(9_999_998L, parsed.lamportsAmount());
+    assertEquals(634L, parsed.createdEpoch());
 
     // the default overload scans for the client's own owner
     respondWith(response);
     assertEquals(1, client().fetchTicketAccounts(rpcClient()).join().size());
     assertLastRequestContains(
         MARINADE_ACCOUNTS.marinadeProgram().toBase58(),
-        TicketAccountData.createBeneficiaryFilter(OWNER).toJson());
+        filterArray(TicketAccountData.DISCRIMINATOR_FILTER, TicketAccountData.createBeneficiaryFilter(OWNER)));
   }
 
   @Test

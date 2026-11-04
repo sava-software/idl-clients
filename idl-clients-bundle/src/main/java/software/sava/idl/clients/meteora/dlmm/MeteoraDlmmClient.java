@@ -112,6 +112,10 @@ public interface MeteoraDlmmClient {
     return deriveBinAccounts(positionV2.lbPair(), positionV2.lowerBinId(), positionV2.upperBinId());
   }
 
+  /// Every position the owner holds, whatever its width. [PositionV2] decodes a position's first
+  /// 70 bins: for a wider one, `lowerBinId` and `upperBinId` span the whole range, but its
+  /// liquidity shares and fee and reward infos stop at the 70th bin, and the remaining bins'
+  /// records are not decoded.
   CompletableFuture<List<AccountInfo<PositionV2>>> fetchPositions(final SolanaRpcClient rpcClient);
 
   CompletableFuture<List<AccountInfo<LbPair>>> fetchPairs(final SolanaRpcClient rpcClient);

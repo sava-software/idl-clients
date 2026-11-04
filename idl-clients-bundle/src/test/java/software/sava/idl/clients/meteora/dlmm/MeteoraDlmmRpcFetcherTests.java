@@ -11,15 +11,17 @@ import software.sava.idl.clients.meteora.dlmm.gen.types.LbPair;
 import software.sava.idl.clients.meteora.dlmm.gen.types.PositionV2;
 
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/// Covers the DLMM account scans against the capture harness. The DLMM
-/// program hosts several same-sized account families, so each scan pairs the
-/// size filter with the account discriminator carried by `MeteoraAccounts`;
-/// the position scan additionally narrows to the client's owner, and the
-/// mint-scoped pair scan adds both mint memcmps — each pinned via the exact
-/// `Filter.toJson()` the client must emit.
+/// Covers the DLMM account scans against the capture harness. Every scan
+/// selects by the account discriminator carried by `MeteoraAccounts`. The pair
+/// scans pair it with the size filter, and the mint-scoped one adds both mint
+/// memcmps, each pinned via the exact `Filter.toJson()` the client must emit.
+/// The position scan narrows to the client's owner and sends no size filter,
+/// since a position wider than 70 bins is longer than `PositionV2.BYTES`; its
+/// whole filter array is pinned, so a size filter cannot return unnoticed.
 final class MeteoraDlmmRpcFetcherTests extends SolanaRpcCaptureTests {
 
   private static final SolanaAccounts SOLANA_ACCOUNTS = SolanaAccounts.MAIN_NET;
@@ -37,16 +39,22 @@ final class MeteoraDlmmRpcFetcherTests extends SolanaRpcCaptureTests {
         SOLANA_ACCOUNTS, METEORA_ACCOUNTS, OWNER, AccountMeta.createFeePayer(key(0x12)));
   }
 
+  /// The request's whole `filters` array as sava-rpc writes it. Matching it pins that no other
+  /// filter is sent, which one fragment per filter cannot: a `dataSize` filter would pass that.
+  private static String filterArray(final Filter... filters) {
+    return Arrays.stream(filters).map(Filter::toJson).collect(Collectors.joining(",", "\"filters\":[", "]"));
+  }
+
   @Test
-  void positionScanSelectsTheOwnersPositions() {
+  void positionScanSelectsTheOwnersPositionsOfAnyWidth() {
     respondWith(EMPTY_PROGRAM_ACCOUNTS);
     assertTrue(client().fetchPositions(rpcClient()).join().isEmpty());
     assertLastRequestContains(
         "getProgramAccounts",
         METEORA_ACCOUNTS.dlmmProgram().toBase58(),
-        PositionV2.SIZE_FILTER.toJson(),
-        Filter.createMemCompFilter(0, METEORA_ACCOUNTS.positionV2Discriminator().data()).toJson(),
-        PositionV2.createOwnerFilter(OWNER).toJson());
+        filterArray(
+            Filter.createMemCompFilter(0, METEORA_ACCOUNTS.positionV2Discriminator().data()),
+            PositionV2.createOwnerFilter(OWNER)));
   }
 
   @Test
