@@ -92,16 +92,6 @@ public final class OfferbookPDAs {
     ), program);
   }
 
-  public static ProgramDerivedAddress loanPDA(final PublicKey program,
-                                              final PublicKey offerAccount,
-                                              final PublicKey offer2Account) {
-    return PublicKey.findProgramAddress(List.of(
-      "loan".getBytes(US_ASCII),
-      offerAccount.toByteArray(),
-      offer2Account.toByteArray()
-    ), program);
-  }
-
   public static ProgramDerivedAddress loanVaultPDA(final PublicKey program,
                                                    final PublicKey loanAccount) {
     return PublicKey.findProgramAddress(List.of(
@@ -110,51 +100,11 @@ public final class OfferbookPDAs {
     ), program);
   }
 
-  public static ProgramDerivedAddress offerPDA(final PublicKey program,
-                                               final PublicKey signerAccount,
-                                               final PublicKey signerUserAccount) {
-    return PublicKey.findProgramAddress(List.of(
-      "offer".getBytes(US_ASCII),
-      signerAccount.toByteArray(),
-      signerUserAccount.toByteArray()
-    ), program);
-  }
-
-  public static ProgramDerivedAddress protocolFeeTokenAccountPDA(final PublicKey program,
-                                                                 final PublicKey configAccount,
-                                                                 final PublicKey collateralTokenProgramAccount,
-                                                                 final PublicKey collateralMintAccount) {
-    return PublicKey.findProgramAddress(List.of(
-      configAccount.toByteArray(),
-      collateralTokenProgramAccount.toByteArray(),
-      collateralMintAccount.toByteArray()
-    ), program);
-  }
-
-  public static ProgramDerivedAddress protocolFeeTokenAccount1PDA(final PublicKey program,
-                                                                  final PublicKey configAccount,
-                                                                  final PublicKey principalTokenProgramAccount,
-                                                                  final PublicKey principalMintAccount) {
-    return PublicKey.findProgramAddress(List.of(
-      configAccount.toByteArray(),
-      principalTokenProgramAccount.toByteArray(),
-      principalMintAccount.toByteArray()
-    ), program);
-  }
-
   public static ProgramDerivedAddress signerUserPDA(final PublicKey program,
                                                     final PublicKey signerAccount) {
     return PublicKey.findProgramAddress(List.of(
       "user".getBytes(US_ASCII),
       signerAccount.toByteArray()
-    ), program);
-  }
-
-  public static ProgramDerivedAddress userPDA(final PublicKey program,
-                                              final PublicKey userAccount) {
-    return PublicKey.findProgramAddress(List.of(
-      "user".getBytes(US_ASCII),
-      userAccount.toByteArray()
     ), program);
   }
 
@@ -218,14 +168,6 @@ public final class OfferbookPDAs {
     return PublicKey.findProgramAddress(List.of(
       "yield_market".getBytes(US_ASCII),
       mintAccount.toByteArray()
-    ), program);
-  }
-
-  public static ProgramDerivedAddress yieldMarket1PDA(final PublicKey program,
-                                                      final PublicKey yieldMarketAccount) {
-    return PublicKey.findProgramAddress(List.of(
-      "yield_market".getBytes(US_ASCII),
-      yieldMarketAccount.toByteArray()
     ), program);
   }
 

@@ -6,6 +6,7 @@
   "programDataStateSlot": 440077852,
   "programDataPayloadSha256": "3e5cf44c4b6c82434f62ad4f6504091bbe16ad8d68317ffdb6283de9be6e2d1c",
   "programDataPayloadLength": 1879016,
+  "ignorePdas": ["loan","offer","protocol_fee_token_account"],
   "channels": {
     "metadata": {
       "origin": "FS2xtZ5qzmFc5xB24uXVhu67EiWeDegaeAeRk68xNBRF",

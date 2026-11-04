@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.HexFormat;
 import java.util.List;
 import java.util.OptionalLong;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -51,6 +52,18 @@ final class OfferbookOptionArgumentTests {
     return ix.accounts().stream().map(meta -> meta.publicKey().toBase58()).toList();
   }
 
+  /// Each account's flags, `W` or `R` and then `S` for a signer, in order. The live strings
+  /// below are the flags the runtime handed the program, which come from the transaction's
+  /// message header, since an instruction carries account indices only. In each of these
+  /// transactions, another instruction shares the signer, and in the repay
+  /// `borrower_collateral_escrow` too, so those flags are not the call's alone: a later IDL that
+  /// drops a write there wants review, not acceptance.
+  private static String flagsOf(final Instruction ix) {
+    return ix.accounts().stream()
+        .map(meta -> (meta.write() ? "W" : "R") + (meta.signer() ? "S" : ""))
+        .collect(Collectors.joining(" "));
+  }
+
   /// A post-upgrade `create_nft_collateral_offer` the program accepted, top-level in
   /// `21Taw4JDNjsZLw7mYUbaTkYSQv6WL2cXdomkxueNXrJY59pcmdoUSDWKhhUTDZLNr9ajQ7WyZbnLR8ZU5eSGd7yN`
   /// (slot 456926828): 63 bytes, the discriminator, the 22-byte offer parameters ending in the
@@ -69,6 +82,7 @@ final class OfferbookOptionArgumentTests {
       "4sZptGwLvk2ywxa2E8UosgogwrjTxjPfFAK7o2rcKHb9",
       "offerbkFMvVfpQhL8ZQ5iromnjct5rz3r52B9ewu3ie"
   );
+  private static final String NFT_COLLATERAL_FLAGS = "WS W R W R R R R R";
   /// That call's parameters and collateral asset, decoded by hand from its bytes.
   private static final NftCollateralOfferParams NFT_COLLATERAL_PARAMS =
       new NftCollateralOfferParams(23_000_000L, 3_500L, 604_800L, 259_200L, false, null);
@@ -86,6 +100,7 @@ final class OfferbookOptionArgumentTests {
         NFT_COLLATERAL_PARAMS, collateral
     );
     assertEquals(NFT_COLLATERAL_ACCOUNTS, keysOf(ix), "the accounts are the ones the program accepted");
+    assertEquals(NFT_COLLATERAL_FLAGS, flagsOf(ix), "with the flags the program received");
     assertArrayEquals(NFT_COLLATERAL_LIVE, ix.data(), "the parameters, the None tag for the taker, then the collateral");
 
     assertEquals(NFT_COLLATERAL_PARAMS, NftCollateralOfferParams.read(NFT_COLLATERAL_LIVE, 8),
@@ -112,6 +127,7 @@ final class OfferbookOptionArgumentTests {
       "4sZptGwLvk2ywxa2E8UosgogwrjTxjPfFAK7o2rcKHb9",
       "offerbkFMvVfpQhL8ZQ5iromnjct5rz3r52B9ewu3ie"
   );
+  private static final String TOKEN_PRINCIPAL_FLAGS = "WS W R W R R R R R R";
   /// That call's parameters, decoded by hand from its bytes.
   private static final TokenPrincipalOfferParams TOKEN_PRINCIPAL_PARAMS = new TokenPrincipalOfferParams(
       154_299_500L, 1_543_202_958L, 9_500L, 86_400L, 172_800L, true, 10_000_000L, false, null);
@@ -127,6 +143,7 @@ final class OfferbookOptionArgumentTests {
         TOKEN_PRINCIPAL_PARAMS
     );
     assertEquals(TOKEN_PRINCIPAL_ACCOUNTS, keysOf(ix), "the accounts are the ones the program accepted");
+    assertEquals(TOKEN_PRINCIPAL_FLAGS, flagsOf(ix), "with the flags the program received");
     assertArrayEquals(TOKEN_PRINCIPAL_LIVE, ix.data(), "the parameters, ending in the None tag for the taker");
 
     assertEquals(TOKEN_PRINCIPAL_PARAMS, TokenPrincipalOfferParams.read(TOKEN_PRINCIPAL_LIVE, 8),
@@ -190,6 +207,7 @@ final class OfferbookOptionArgumentTests {
       "4sZptGwLvk2ywxa2E8UosgogwrjTxjPfFAK7o2rcKHb9",
       "offerbkFMvVfpQhL8ZQ5iromnjct5rz3r52B9ewu3ie"
   );
+  private static final String REPAY_TOKEN_FLAGS = "WS R W R W W R R R W W W W R R R R";
 
   @Test
   void repayTokenLoanReproducesTheLiveCall() {
@@ -202,6 +220,7 @@ final class OfferbookOptionArgumentTests {
         OptionalLong.empty()
     );
     assertEquals(REPAY_TOKEN_ACCOUNTS, keysOf(ix), "the accounts are the ones the program accepted");
+    assertEquals(REPAY_TOKEN_FLAGS, flagsOf(ix), "with the flags the program received");
     assertArrayEquals(REPAY_TOKEN_LIVE, ix.data(), "the discriminator, then the Option tag for None, which settles the loan");
 
     assertEquals(OptionalLong.empty(), RepayTokenLoanIxData.read(REPAY_TOKEN_LIVE, 0).amount(),
