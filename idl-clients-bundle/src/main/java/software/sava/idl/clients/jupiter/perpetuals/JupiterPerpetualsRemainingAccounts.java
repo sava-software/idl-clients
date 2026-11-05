@@ -93,10 +93,14 @@ public final class JupiterPerpetualsRemainingAccounts {
   /// `custodies` must hold the record of every key in `pool.custodies()`, keyed by that
   /// custody's address; entries for other keys are ignored. Each listed custody must belong to
   /// `pool`, so the Pool has to carry its own address, as `Pool.read(PublicKey, byte[])` and
-  /// `Pool.read(AccountInfo)` give it. Nothing is sorted or deduplicated.
+  /// `Pool.read(AccountInfo)` give it. A custody record that carries its own address must sit
+  /// under that address, so a record filed under another custody's key is refused rather than
+  /// priced with the wrong oracle; a record decoded without an address, by
+  /// `Custody.read(byte[], int)`, is taken at its key. Nothing is sorted or deduplicated.
   ///
   /// @throws IllegalArgumentException when a custody the Pool lists is missing from
-  ///                                  `custodies`, or names a different pool
+  ///                                  `custodies`, names a different pool, or carries an
+  ///                                  address other than its key
   public static List<AccountMeta> poolPricingAccounts(final Pool pool,
                                                       final Map<PublicKey, Custody> custodies) {
     final var custodyKeys = Arrays.asList(pool.custodies());
@@ -110,6 +114,11 @@ public final class JupiterPerpetualsRemainingAccounts {
       if (!custody.pool().equals(pool._address())) {
         throw new IllegalArgumentException("Custody " + custodyKey + " belongs to pool " + custody.pool()
             + ", not to " + pool._address() + ".");
+      }
+      final var address = custody._address();
+      if (address != null && !address.equals(custodyKey)) {
+        throw new IllegalArgumentException("The record filed under custody " + custodyKey
+            + " is the account " + address + ".");
       }
       oracles.add(custody.dovesAgOracle());
     }

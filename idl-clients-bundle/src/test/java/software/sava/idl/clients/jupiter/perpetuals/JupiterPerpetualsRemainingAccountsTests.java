@@ -506,6 +506,36 @@ final class JupiterPerpetualsRemainingAccountsTests {
     assertTrue(thrown.getMessage().contains(otherPool.toBase58()), thrown.getMessage());
   }
 
+  /// A record filed under another custody's key would put that custody's oracle in the wrong
+  /// slot, which the program rejects with 6002. Here the live USDC custody sits under the SOL
+  /// custody's key; both belong to the pool, so only the address check can tell.
+  @Test
+  void aCustodyFiledUnderAnotherCustodysKeyIsRejected() {
+    final var sol = CUSTODIES.get(0);
+    final var usdc = CUSTODIES.get(3);
+    final var custodies = custodies();
+    custodies.put(sol, custody(3));
+    assertEquals(usdc, custodies.get(sol)._address());
+
+    final var thrown = assertThrows(IllegalArgumentException.class,
+        () -> JupiterPerpetualsRemainingAccounts.poolPricingAccounts(pool(), custodies));
+    assertTrue(thrown.getMessage().contains(sol.toBase58()), thrown.getMessage());
+    assertTrue(thrown.getMessage().contains(usdc.toBase58()), thrown.getMessage());
+  }
+
+  /// A custody decoded without its address, by `Custody.read(byte[], int)`, is taken at its key:
+  /// the check guards a mismatch, not a missing address.
+  @Test
+  void aCustodyReadWithoutItsAddressIsTakenAtItsKey() {
+    final var custodies = custodies();
+    final var custody = Custody.read(custodyData(3), 0);
+    assertNull(custody._address());
+    custodies.put(CUSTODIES.get(3), custody);
+
+    final var tail = JupiterPerpetualsRemainingAccounts.poolPricingAccounts(pool(), custodies);
+    assertEquals(JupiterPerpetualsRemainingAccounts.poolPricingAccounts(pool(), custodies()), tail);
+  }
+
   /// A Pool decoded without its address cannot vouch for its custodies, so it is refused rather
   /// than trusted.
   @Test
