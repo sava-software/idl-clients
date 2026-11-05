@@ -44,8 +44,6 @@ public record Loan(PublicKey _address,
   public static final int WEIGHT_MATRIX_LEN = 5;
   public static final int LTV_MATRIX_LEN = 5;
   public static final int LQT_MATRIX_LEN = 5;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
-
   public static final Discriminator DISCRIMINATOR = toDiscriminator(20, 195, 70, 117, 165, 227, 182, 1);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 

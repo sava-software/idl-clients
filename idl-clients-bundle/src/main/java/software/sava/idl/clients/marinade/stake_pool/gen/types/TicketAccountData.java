@@ -25,8 +25,6 @@ public record TicketAccountData(PublicKey _address,
                                 long createdEpoch) implements SerDe {
 
   public static final int BYTES = 88;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
-
   public static final Discriminator DISCRIMINATOR = toDiscriminator(133, 77, 18, 98, 211, 1, 231, 3);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 

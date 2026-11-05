@@ -6,6 +6,7 @@
   "programDataStateSlot": 440077852,
   "programDataPayloadSha256": "31f0a627dba051a938de650464e55cc5397a4be0fd496929c1f9cf02fe5e9011",
   "programDataPayloadLength": 793991,
+  "noSizeFilter": {"Edition":41,"UseAuthorityRecord":10},
   "channels": {
     "vcs": {
       "origin": "github:metaplex-foundation/mpl-token-metadata@main/idls/token_metadata.json",

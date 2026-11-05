@@ -6,6 +6,7 @@
   "programDataStateSlot": 440077852,
   "programDataPayloadSha256": "80d948efc721daa0052f39adb09060d4a42b59a91cb410663c58a01a4b39d3e1",
   "programDataPayloadLength": 456272,
+  "noSizeFilter": {"AgPriceFeed":266,"PriceFeed":96},
   "channels": {
     "anchor": {
       "origin": "4D2RLxRVWjGUp7E45noWC6x7BfmSQbQ4mQevHvTV5ai6",

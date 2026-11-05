@@ -16,8 +16,6 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 public record ReferrerState(PublicKey _address, Discriminator discriminator, PublicKey shortUrl, PublicKey owner) implements SerDe {
 
   public static final int BYTES = 72;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
-
   public static final Discriminator DISCRIMINATOR = toDiscriminator(194, 81, 217, 103, 12, 19, 12, 66);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 

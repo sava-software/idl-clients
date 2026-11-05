@@ -103,8 +103,6 @@ public record FarmState(PublicKey _address,
   public static final int REWARD_INFOS_LEN = 10;
   public static final int PADDING_0_LEN = 3;
   public static final int PADDING_LEN = 74;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
-
   public static final Discriminator DISCRIMINATOR = toDiscriminator(198, 102, 216, 74, 63, 66, 163, 190);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 

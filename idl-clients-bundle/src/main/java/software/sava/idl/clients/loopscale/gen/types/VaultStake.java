@@ -35,8 +35,6 @@ public record VaultStake(PublicKey _address,
                          long unstakeFeeApplied) implements SerDe {
 
   public static final int BYTES = 150;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
-
   public static final Discriminator DISCRIMINATOR = toDiscriminator(225, 34, 128, 53, 167, 239, 182, 107);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 

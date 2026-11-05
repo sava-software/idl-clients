@@ -6,6 +6,7 @@
   "programDataStateSlot": 440077852,
   "programDataPayloadSha256": "b1d35ccd58b3e8a113612be100fbfe99cd50773ed6e098088498ae0c2f938b9d",
   "programDataPayloadLength": 10485715,
+  "noSizeFilter": {"BorrowPosition":169,"Custody":1117,"Position":210,"StakeInfo":106},
   "channels": {
     "anchor": {
       "origin": "38GK1i4cQPAxqrbfKX4RRMNfXpKRn5PgLFHVJeXm1C8Y",

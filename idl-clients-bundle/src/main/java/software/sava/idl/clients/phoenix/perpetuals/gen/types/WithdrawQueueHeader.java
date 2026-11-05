@@ -28,8 +28,6 @@ public record WithdrawQueueHeader(PublicKey _address,
 
   public static final int BYTES = 120;
   public static final int RESERVED_LEN = 5;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
-
   public static final Discriminator DISCRIMINATOR = toDiscriminator(125, 59, 94, 108, 171, 16, 43, 228);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 

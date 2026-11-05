@@ -29,8 +29,6 @@ public record EscrowHeader(PublicKey _address,
                            long capacity) implements SerDe {
 
   public static final int BYTES = 104;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
-
   public static final Discriminator DISCRIMINATOR = toDiscriminator(50, 4, 48, 59, 209, 138, 251, 204);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 

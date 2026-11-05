@@ -102,16 +102,18 @@ final class EmberStateTests {
     assertEquals("EtrnLzgbS7nMMy5fbD42kXiUzGg8XQzJ972Xtk1cjWih", trailing.toBase58());
   }
 
-  /// The practical consequence, so nobody reaches for `SIZE_FILTER` and wonders why a scan comes
-  /// back empty. The filter really is built from the short `BYTES`, and the size it asks the RPC
-  /// for is not a size any Ember account has.
+  /// The practical consequence: a `dataSize` filter built from the short `BYTES` asks the RPC for
+  /// a size no Ember account has, so the record carries no `SIZE_FILTER`. The config withholds it
+  /// (`"noSizeFilter"` in `main_net_programs.json`, held to `BYTES` 104), and a scan filters on
+  /// `DISCRIMINATOR_FILTER` instead. When the IDL is fixed and `BYTES` moves, the generator refuses
+  /// the stale entry, which is the cue to re-measure and drop it.
   @Test
-  void theSizeFilterAsksForASizeNoLiveAccountHas() {
-    assertEquals(Filter.createDataSizeFilter(EmberState.BYTES), EmberState.SIZE_FILTER,
-        "SIZE_FILTER is derived from the stale BYTES");
-    assertEquals("{\"dataSize\":104}", EmberState.SIZE_FILTER.toJson(), "what actually goes on the wire");
-
-    assertNotEquals(Filter.createDataSizeFilter(accountData().length), EmberState.SIZE_FILTER,
-        "so a size-filtered scan returns empty — filter on DISCRIMINATOR_FILTER instead");
+  void theRecordCarriesNoSizeFilter() {
+    assertNotEquals(accountData().length, EmberState.BYTES,
+        "a dataSize filter from BYTES would match no live account");
+    assertThrows(NoSuchFieldException.class, () -> EmberState.class.getField("SIZE_FILTER"),
+        "the size filter is withheld by config");
+    assertEquals(Filter.createMemCompFilter(0, EmberState.DISCRIMINATOR.data()), EmberState.DISCRIMINATOR_FILTER,
+        "the filter a scan uses instead");
   }
 }

@@ -31,8 +31,6 @@ public record PriceFeed(PublicKey _address,
   public static final int BYTES = 96;
   public static final int PAIR_LEN = 32;
   public static final int SIGNER_LEN = 33;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
-
   public static final Discriminator DISCRIMINATOR = toDiscriminator(189, 103, 252, 23, 152, 35, 243, 156);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 

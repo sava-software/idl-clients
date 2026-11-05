@@ -42,8 +42,6 @@ public record Position(PublicKey _address,
                        int bump) implements SerDe {
 
   public static final int BYTES = 210;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
-
   public static final Discriminator DISCRIMINATOR = toDiscriminator(170, 188, 143, 228, 122, 64, 247, 208);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 

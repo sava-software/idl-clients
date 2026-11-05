@@ -39,8 +39,6 @@ public record UserRewardsInfo(PublicKey _address,
   public static final int LAST_REWARD_INDEXES_LEN = 5;
   public static final int PENDING_REWARDS_LEN = 5;
   public static final int LAST_REWARD_INDEX_UPDATE_TIME_LEN = 5;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
-
   public static final Discriminator DISCRIMINATOR = toDiscriminator(242, 27, 82, 180, 183, 119, 156, 237);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 

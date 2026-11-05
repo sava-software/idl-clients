@@ -15,6 +15,8 @@ import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.util.stream.Collectors;
+import software.sava.core.rpc.Filter;
 
 /// Covers the Kamino account scans against the capture harness. Every fetcher
 /// selects by a size filter (several account types share the program, so the
@@ -32,6 +34,12 @@ final class KaminoRpcFetcherTests extends SolanaRpcCaptureTests {
     return PublicKey.createPubKey(publicKey);
   }
 
+  /// The request's whole `filters` array as sava-rpc writes it, so that no other filter, a
+  /// `dataSize` among them, is sent beside the ones named.
+  private static String filterArray(final Filter... filters) {
+    return Arrays.stream(filters).map(Filter::toJson).collect(Collectors.joining(",", "\"filters\":[", "]"));
+  }
+
   @Test
   void lendScansSelectByAccountSize() {
     final var kLend = KAMINO_ACCOUNTS.kLendProgram();
@@ -40,9 +48,10 @@ final class KaminoRpcFetcherTests extends SolanaRpcCaptureTests {
     assertTrue(KaminoLendClient.fetchLendingMarkets(rpcClient(), kLend).join().isEmpty());
     assertLastRequestContains("getProgramAccounts", kLend.toBase58(), LendingMarket.SIZE_FILTER.toJson());
 
+    // Referrer states come in two live lengths, so this scan selects by discriminator alone.
     respondWith(EMPTY_PROGRAM_ACCOUNTS);
     assertTrue(KaminoLendClient.fetchReferrerStateAccounts(rpcClient(), kLend).join().isEmpty());
-    assertLastRequestContains("getProgramAccounts", kLend.toBase58(), ReferrerState.SIZE_FILTER.toJson());
+    assertLastRequestContains("getProgramAccounts", kLend.toBase58(), filterArray(ReferrerState.DISCRIMINATOR_FILTER));
 
     respondWith(EMPTY_PROGRAM_ACCOUNTS);
     assertTrue(KaminoLendClient.fetchReferrerTokenStateAccounts(rpcClient(), kLend).join().isEmpty());
@@ -50,8 +59,9 @@ final class KaminoRpcFetcherTests extends SolanaRpcCaptureTests {
   }
 
   /// Farm states belong to the Farms program. Scanned under kLend, as this fetcher's parameter
-  /// once named it, the size filter matches nothing: 0 accounts at slot 456604915, against 616
-  /// under the Farms program at slot 456604911.
+  /// once named it, the scan matches nothing: 0 accounts at slot 456604915, against 616 under
+  /// the Farms program at slot 456604911. It selects by discriminator alone, since live farms
+  /// come in more than one length.
   @Test
   void farmStateScanRunsUnderTheFarmsProgram() {
     final var farms = KAMINO_ACCOUNTS.farmProgram();
@@ -59,7 +69,7 @@ final class KaminoRpcFetcherTests extends SolanaRpcCaptureTests {
 
     respondWith(EMPTY_PROGRAM_ACCOUNTS);
     assertTrue(KaminoLendClient.fetchFarmStateAccounts(rpcClient(), farms).join().isEmpty());
-    assertLastRequestContains("getProgramAccounts", farms.toBase58(), FarmState.SIZE_FILTER.toJson());
+    assertLastRequestContains("getProgramAccounts", farms.toBase58(), filterArray(FarmState.DISCRIMINATOR_FILTER));
   }
 
   /// The market-scoped reserve scan narrows by a memcmp on the reserve's

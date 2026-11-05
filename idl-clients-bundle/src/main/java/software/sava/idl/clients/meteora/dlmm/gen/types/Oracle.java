@@ -24,8 +24,6 @@ public record Oracle(PublicKey _address,
                      long length) implements SerDe {
 
   public static final int BYTES = 32;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
-
   public static final Discriminator DISCRIMINATOR = toDiscriminator(139, 194, 131, 179, 140, 179, 229, 244);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 

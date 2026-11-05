@@ -20,8 +20,6 @@ public record EmberState(PublicKey _address,
                          PublicKey outputMint) implements SerDe {
 
   public static final int BYTES = 104;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
-
   public static final Discriminator DISCRIMINATOR = toDiscriminator(142, 206, 11, 177, 63, 157, 55, 98);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 

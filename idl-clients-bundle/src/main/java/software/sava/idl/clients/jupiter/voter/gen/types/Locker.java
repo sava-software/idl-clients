@@ -41,8 +41,6 @@ public record Locker(PublicKey _address,
 
   public static final int BYTES = 658;
   public static final int BUFFERS_LEN = 32;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
-
   public static final Discriminator DISCRIMINATOR = toDiscriminator(74, 246, 6, 113, 249, 228, 75, 169);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 

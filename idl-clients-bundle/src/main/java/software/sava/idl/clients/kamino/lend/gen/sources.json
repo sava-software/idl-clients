@@ -6,6 +6,7 @@
   "programDataStateSlot": 440077852,
   "programDataPayloadSha256": "6482390f659a6774b059768313b6f701b14819110f9e10db8fa651a311e9c97b",
   "programDataPayloadLength": 10485715,
+  "noSizeFilter": {"Obligation":3344,"ReferrerState":72},
   "channels": {
     "anchor": {
       "origin": "8qLKwp1fk8WyqmzarkuMeZEX3AzL4VDSmA2UZTKT2aCJ",

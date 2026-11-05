@@ -32,8 +32,6 @@ public record SplineCollectionHeader(PublicKey _address,
 
   public static final int BYTES = 112;
   public static final int PADDING_LEN = 32;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
-
   public static final Discriminator DISCRIMINATOR = toDiscriminator(192, 245, 182, 191, 88, 37, 79, 48);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 

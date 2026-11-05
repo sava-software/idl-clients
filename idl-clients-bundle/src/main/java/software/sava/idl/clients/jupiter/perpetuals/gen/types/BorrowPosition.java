@@ -35,8 +35,6 @@ public record BorrowPosition(PublicKey _address,
                              long lastBorrowed) implements SerDe {
 
   public static final int BYTES = 169;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
-
   public static final Discriminator DISCRIMINATOR = toDiscriminator(243, 140, 20, 139, 32, 243, 114, 55);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 

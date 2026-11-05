@@ -6,6 +6,7 @@
   "programDataStateSlot": 440077852,
   "programDataPayloadSha256": "296fd550ce78a556ba05dbaff8f8fd6c04fa538bc99f9a0a836e5e430645a3ac",
   "programDataPayloadLength": 2009338,
+  "noSizeFilter": {"TicketAccountData":88},
   "channels": {
     "anchor": {
       "origin": "9jWC3EixD3D7ChMrrSRw3opnGHQ8YxZGJqGkzcup3tAn",

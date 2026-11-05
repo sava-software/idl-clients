@@ -31,8 +31,6 @@ public record GlobalConfig(PublicKey _address,
 
   public static final int BYTES = 2136;
   public static final int PADDING_1_LEN = 126;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
-
   public static final Discriminator DISCRIMINATOR = toDiscriminator(149, 8, 156, 202, 160, 252, 176, 217);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 

@@ -74,8 +74,6 @@ public record Custody(PublicKey _address,
                       long withdrawalLimitIntervalSeconds) implements SerDe {
 
   public static final int BYTES = 1117;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
-
   public static final Discriminator DISCRIMINATOR = toDiscriminator(1, 184, 48, 81, 93, 131, 63, 145);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 

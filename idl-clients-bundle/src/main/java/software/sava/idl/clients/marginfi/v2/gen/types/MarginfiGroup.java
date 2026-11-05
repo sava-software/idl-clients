@@ -122,8 +122,6 @@ public record MarginfiGroup(PublicKey _address,
   public static final int PREMIUM_ENTRIES_LEN = 64;
   public static final int PADDING_2_LEN = 31;
   public static final int PADDING_3_LEN = 28;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
-
   public static final Discriminator DISCRIMINATOR = toDiscriminator(182, 23, 173, 240, 151, 206, 182, 67);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 

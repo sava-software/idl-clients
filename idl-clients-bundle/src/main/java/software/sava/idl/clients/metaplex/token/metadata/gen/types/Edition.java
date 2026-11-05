@@ -19,8 +19,6 @@ public record Edition(PublicKey _address,
                       long edition) implements SerDe {
 
   public static final int BYTES = 41;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
-
   public static final int KEY_OFFSET = 0;
   public static final int PARENT_OFFSET = 1;
   public static final int EDITION_OFFSET = 33;

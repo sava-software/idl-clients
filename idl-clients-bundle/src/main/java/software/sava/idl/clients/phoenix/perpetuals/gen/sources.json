@@ -6,6 +6,7 @@
   "programDataStateSlot": 440077852,
   "programDataPayloadSha256": "1dff93143cad98a346615480762276afe1c62ffa5bc13a0e639e6070aafdf6c5",
   "programDataPayloadLength": 3624048,
+  "noSizeFilter": {"ConditionalOrderHeader":96,"EscrowHeader":104,"OrderbookHeader":120,"SplineCollectionHeader":112,"Trader":224,"WithdrawQueueHeader":120},
   "channels": {
     "metadata": {
       "origin": "H6r3zQwpMdsuSgoCFm39WjP6F9sMNyxwe3F3F9PhbqkQ",

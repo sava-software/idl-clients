@@ -31,8 +31,6 @@ public record StakeInfo(PublicKey _address,
                         int bump) implements SerDe {
 
   public static final int BYTES = 106;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
-
   public static final Discriminator DISCRIMINATOR = toDiscriminator(66, 62, 68, 70, 108, 179, 183, 235);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 

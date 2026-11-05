@@ -50,8 +50,6 @@ public record Escrow(PublicKey _address,
 
   public static final int BYTES = 322;
   public static final int BUFFERS_LEN = 9;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
-
   public static final Discriminator DISCRIMINATOR = toDiscriminator(31, 213, 123, 187, 186, 22, 218, 155);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 

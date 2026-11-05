@@ -46,8 +46,6 @@ public record Governor(PublicKey _address,
 
   public static final int BYTES = 729;
   public static final int BUFFERS_LEN = 32;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
-
   public static final Discriminator DISCRIMINATOR = toDiscriminator(37, 136, 44, 80, 68, 85, 213, 178);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 

@@ -51,8 +51,6 @@ public record Trader(PublicKey _address,
   public static final int PADDING_0_LEN = 4;
   public static final int PADDING_1_LEN = 4;
   public static final int CONDITIONAL_ORDER_BITS_LEN = 24;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
-
   public static final Discriminator DISCRIMINATOR = toDiscriminator(41, 97, 73, 105, 110, 214, 112, 9);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 

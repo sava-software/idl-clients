@@ -45,8 +45,6 @@ public record OrderbookHeader(PublicKey _address,
   public static final int BYTES = 120;
   public static final int PADDING_0_LEN = 6;
   public static final int ASSET_ID_PADDING_LEN = 4;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
-
   public static final Discriminator DISCRIMINATOR = toDiscriminator(65, 1, 40, 241, 166, 14, 86, 188);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 

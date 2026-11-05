@@ -20,8 +20,6 @@ public record TokenBadge(PublicKey _address,
                          boolean attributeRequireNonTransferablePosition) implements SerDe {
 
   public static final int BYTES = 73;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
-
   public static final Discriminator DISCRIMINATOR = toDiscriminator(116, 219, 204, 229, 249, 116, 255, 150);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 

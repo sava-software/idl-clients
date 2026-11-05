@@ -37,8 +37,6 @@ public record Vote(PublicKey _address,
 
   public static final int BYTES = 115;
   public static final int BUFFERS_LEN = 32;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
-
   public static final Discriminator DISCRIMINATOR = toDiscriminator(96, 91, 104, 57, 145, 35, 172, 155);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 

@@ -36,8 +36,6 @@ public record AgPriceFeed(PublicKey _address,
 
   public static final int BYTES = 266;
   public static final int PYTH_FEED_ID_LEN = 32;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
-
   public static final Discriminator DISCRIMINATOR = toDiscriminator(112, 249, 139, 217, 215, 208, 249, 54);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 

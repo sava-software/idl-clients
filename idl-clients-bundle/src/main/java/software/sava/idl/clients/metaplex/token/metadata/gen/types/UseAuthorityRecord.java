@@ -19,8 +19,6 @@ public record UseAuthorityRecord(PublicKey _address,
                                  int bump) implements SerDe {
 
   public static final int BYTES = 10;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
-
   public static final int KEY_OFFSET = 0;
   public static final int ALLOWED_USES_OFFSET = 1;
   public static final int BUMP_OFFSET = 9;

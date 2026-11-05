@@ -20,8 +20,6 @@ public record WhirlpoolsConfigExtension(PublicKey _address,
                                         PublicKey tokenBadgeAuthority) implements SerDe {
 
   public static final int BYTES = 104;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
-
   public static final Discriminator DISCRIMINATOR = toDiscriminator(2, 99, 215, 163, 240, 26, 153, 58);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 

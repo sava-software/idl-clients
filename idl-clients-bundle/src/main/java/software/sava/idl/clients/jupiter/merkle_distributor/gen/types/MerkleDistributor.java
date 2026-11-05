@@ -75,8 +75,6 @@ public record MerkleDistributor(PublicKey _address,
   public static final int ROOT_LEN = 32;
   public static final int PADDING_0_LEN = 3;
   public static final int PADDING_2_LEN = 5;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
-
   public static final Discriminator DISCRIMINATOR = toDiscriminator(77, 119, 139, 70, 84, 247, 12, 26);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 

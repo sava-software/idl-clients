@@ -6,6 +6,7 @@
   "programDataStateSlot": 440077852,
   "programDataPayloadSha256": "c422b22f3eefe86dd55878a4f505b9c68c26e241dc96af1573ca032b24b8ee3f",
   "programDataPayloadLength": 10485715,
+  "noSizeFilter": {"AdaptiveFeeTier":128,"LockConfig":113,"PositionBundle":72,"TokenBadge":73,"WhirlpoolsConfigExtension":104},
   "channels": {
     "anchor": {
       "origin": "2KFqE4RWoPVbvodo8vbggCFeHPS8TDvgpwp79ALMrcyn",

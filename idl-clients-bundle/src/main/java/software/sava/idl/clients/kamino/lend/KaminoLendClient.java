@@ -25,11 +25,16 @@ public interface KaminoLendClient {
 
   /// Every `FarmState`, including each reserve's farms. They are owned by the Kamino Farms program,
   /// `KaminoAccounts.farmProgram()`, not by kLend: scanning the kLend program returns nothing.
+  ///
+  /// Selects by discriminator, not by size. Live farms are 8336 bytes ([FarmState#BYTES]) or
+  /// 10000, zero past the layout, which [FarmState] decodes either way; a `dataSize` filter
+  /// matches one exact length and dropped the 10000-byte farms, 5 of 650 on 2026-11-04. Nine
+  /// farms of 4736 bytes, older than the layout, are returned too and fail to decode.
   static CompletableFuture<List<AccountInfo<FarmState>>> fetchFarmStateAccounts(final SolanaRpcClient rpcClient,
                                                                                 final PublicKey farmProgram) {
     return rpcClient.getProgramAccounts(
         farmProgram,
-        List.of(FarmState.SIZE_FILTER),
+        List.of(FarmState.DISCRIMINATOR_FILTER),
         FarmState.FACTORY
     );
   }
@@ -62,11 +67,14 @@ public interface KaminoLendClient {
     );
   }
 
+  /// Selects by discriminator, not by size. Of the 19 live referrer states on 2026-11-04, 11 are
+  /// 72 bytes ([ReferrerState#BYTES]) and 8 are 40, created at that length before the current
+  /// layout; the short ones are returned and fail to decode, where a `dataSize` filter hid them.
   static CompletableFuture<List<AccountInfo<ReferrerState>>> fetchReferrerStateAccounts(final SolanaRpcClient rpcClient,
                                                                                         final PublicKey kLendProgram) {
     return rpcClient.getProgramAccounts(
         kLendProgram,
-        List.of(ReferrerState.SIZE_FILTER),
+        List.of(ReferrerState.DISCRIMINATOR_FILTER),
         ReferrerState.FACTORY
     );
   }

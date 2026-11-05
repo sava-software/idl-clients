@@ -18,8 +18,6 @@ public record PositionBundle(PublicKey _address, Discriminator discriminator, Pu
 
   public static final int BYTES = 72;
   public static final int POSITION_BITMAP_LEN = 32;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
-
   public static final Discriminator DISCRIMINATOR = toDiscriminator(129, 169, 175, 65, 185, 95, 32, 100);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 

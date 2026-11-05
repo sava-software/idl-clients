@@ -106,8 +106,6 @@ public record Obligation(PublicKey _address,
   public static final int OBLIGATION_ORDERS_LEN = 2;
   public static final int TAIL_BORROW_ORDERS_LEN = 2;
   public static final int PADDING_3_LEN = 29;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
-
   public static final Discriminator DISCRIMINATOR = toDiscriminator(168, 206, 141, 106, 88, 76, 172, 167);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 

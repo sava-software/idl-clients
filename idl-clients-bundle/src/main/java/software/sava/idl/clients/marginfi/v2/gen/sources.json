@@ -6,6 +6,7 @@
   "programDataStateSlot": 440077852,
   "programDataPayloadSha256": "ff993886d9c639b100302baf8a5a5723946f70e193091175310d7f2b1e453c19",
   "programDataPayloadLength": 10485715,
+  "noSizeFilter": {"Bank":3912,"MarginfiGroup":9256},
   "channels": {
     "anchor": {
       "origin": "9tb2tzSkQqDng2h8dC2xbuKHfQpmPoZP4vnd5Y1rkmmK",

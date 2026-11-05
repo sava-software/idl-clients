@@ -65,8 +65,6 @@ public record PositionV2(PublicKey _address,
   public static final int FEE_INFOS_LEN = 70;
   public static final int TOTAL_CLAIMED_REWARDS_LEN = 2;
   public static final int RESERVED_LEN = 85;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
-
   public static final Discriminator DISCRIMINATOR = toDiscriminator(117, 176, 212, 199, 245, 180, 133, 182);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 

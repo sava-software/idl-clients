@@ -44,8 +44,6 @@ public record AdaptiveFeeTier(PublicKey _address,
                               int majorSwapThresholdTicks) implements SerDe {
 
   public static final int BYTES = 128;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
-
   public static final Discriminator DISCRIMINATOR = toDiscriminator(147, 16, 144, 116, 47, 146, 149, 46);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 

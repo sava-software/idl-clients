@@ -32,8 +32,6 @@ public record LimitOrder(PublicKey _address,
   public static final int BYTES = 120;
   public static final int PADDING_0_LEN = 14;
   public static final int PADDING_1_LEN = 4;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
-
   public static final Discriminator DISCRIMINATOR = toDiscriminator(137, 183, 212, 91, 115, 29, 141, 227);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 

@@ -30,8 +30,6 @@ public record ConditionalOrderHeader(PublicKey _address,
 
   public static final int BYTES = 96;
   public static final int PADDING_LEN = 6;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
-
   public static final Discriminator DISCRIMINATOR = toDiscriminator(147, 116, 229, 177, 249, 200, 146, 49);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 

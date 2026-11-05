@@ -25,8 +25,6 @@ public record LockConfig(PublicKey _address,
                          LockTypeLabel lockType) implements SerDe {
 
   public static final int BYTES = 113;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
-
   public static final Discriminator DISCRIMINATOR = toDiscriminator(106, 47, 238, 159, 124, 12, 160, 192);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 

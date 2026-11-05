@@ -223,8 +223,6 @@ public record Bank(PublicKey _address,
   public static final int CB_PAD_LEN = 5;
   public static final int PAD_3_LEN = 6;
   public static final int PADDING_1_LEN = 32;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
-
   public static final Discriminator DISCRIMINATOR = toDiscriminator(142, 49, 166, 242, 50, 66, 97, 188);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 
