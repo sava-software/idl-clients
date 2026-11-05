@@ -2,6 +2,7 @@
 package software.sava.idl.clients.metaplex.token.metadata.gen.types;
 
 import software.sava.idl.clients.core.gen.RustEnum;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 public sealed interface UseArgs extends RustEnum permits
   UseArgs.V1 {
@@ -15,10 +16,10 @@ public sealed interface UseArgs extends RustEnum permits
     };
   }
 
-  record V1(AuthorizationData val) implements SerDeEnum, UseArgs {
+  record V1(AuthorizationData val) implements OptionalSerdeEnum, UseArgs {
 
     public static V1 read(final byte[] _data, final int _offset) {
-      return new V1(AuthorizationData.read(_data, _offset));
+      return new V1(SerDeUtil.isAbsent(1, _data, _offset) ? null : AuthorizationData.read(_data, _offset + 1));
     }
 
     @Override

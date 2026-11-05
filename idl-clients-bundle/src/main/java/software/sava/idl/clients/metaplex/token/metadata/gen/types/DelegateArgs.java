@@ -47,10 +47,10 @@ public sealed interface DelegateArgs extends RustEnum permits
     };
   }
 
-  record CollectionV1(AuthorizationData val) implements SerDeEnum, DelegateArgs {
+  record CollectionV1(AuthorizationData val) implements OptionalSerdeEnum, DelegateArgs {
 
     public static CollectionV1 read(final byte[] _data, final int _offset) {
-      return new CollectionV1(AuthorizationData.read(_data, _offset));
+      return new CollectionV1(SerDeUtil.isAbsent(1, _data, _offset) ? null : AuthorizationData.read(_data, _offset + 1));
     }
 
     @Override
@@ -145,10 +145,10 @@ public sealed interface DelegateArgs extends RustEnum permits
     }
   }
 
-  record DataV1(AuthorizationData val) implements SerDeEnum, DelegateArgs {
+  record DataV1(AuthorizationData val) implements OptionalSerdeEnum, DelegateArgs {
 
     public static DataV1 read(final byte[] _data, final int _offset) {
-      return new DataV1(AuthorizationData.read(_data, _offset));
+      return new DataV1(SerDeUtil.isAbsent(1, _data, _offset) ? null : AuthorizationData.read(_data, _offset + 1));
     }
 
     @Override
@@ -305,10 +305,10 @@ public sealed interface DelegateArgs extends RustEnum permits
     }
   }
 
-  record ProgrammableConfigV1(AuthorizationData val) implements SerDeEnum, DelegateArgs {
+  record ProgrammableConfigV1(AuthorizationData val) implements OptionalSerdeEnum, DelegateArgs {
 
     public static ProgrammableConfigV1 read(final byte[] _data, final int _offset) {
-      return new ProgrammableConfigV1(AuthorizationData.read(_data, _offset));
+      return new ProgrammableConfigV1(SerDeUtil.isAbsent(1, _data, _offset) ? null : AuthorizationData.read(_data, _offset + 1));
     }
 
     @Override
@@ -317,10 +317,10 @@ public sealed interface DelegateArgs extends RustEnum permits
     }
   }
 
-  record AuthorityItemV1(AuthorizationData val) implements SerDeEnum, DelegateArgs {
+  record AuthorityItemV1(AuthorizationData val) implements OptionalSerdeEnum, DelegateArgs {
 
     public static AuthorityItemV1 read(final byte[] _data, final int _offset) {
-      return new AuthorityItemV1(AuthorizationData.read(_data, _offset));
+      return new AuthorityItemV1(SerDeUtil.isAbsent(1, _data, _offset) ? null : AuthorizationData.read(_data, _offset + 1));
     }
 
     @Override
@@ -329,10 +329,10 @@ public sealed interface DelegateArgs extends RustEnum permits
     }
   }
 
-  record DataItemV1(AuthorizationData val) implements SerDeEnum, DelegateArgs {
+  record DataItemV1(AuthorizationData val) implements OptionalSerdeEnum, DelegateArgs {
 
     public static DataItemV1 read(final byte[] _data, final int _offset) {
-      return new DataItemV1(AuthorizationData.read(_data, _offset));
+      return new DataItemV1(SerDeUtil.isAbsent(1, _data, _offset) ? null : AuthorizationData.read(_data, _offset + 1));
     }
 
     @Override
@@ -341,10 +341,10 @@ public sealed interface DelegateArgs extends RustEnum permits
     }
   }
 
-  record CollectionItemV1(AuthorizationData val) implements SerDeEnum, DelegateArgs {
+  record CollectionItemV1(AuthorizationData val) implements OptionalSerdeEnum, DelegateArgs {
 
     public static CollectionItemV1 read(final byte[] _data, final int _offset) {
-      return new CollectionItemV1(AuthorizationData.read(_data, _offset));
+      return new CollectionItemV1(SerDeUtil.isAbsent(1, _data, _offset) ? null : AuthorizationData.read(_data, _offset + 1));
     }
 
     @Override
@@ -353,10 +353,10 @@ public sealed interface DelegateArgs extends RustEnum permits
     }
   }
 
-  record ProgrammableConfigItemV1(AuthorizationData val) implements SerDeEnum, DelegateArgs {
+  record ProgrammableConfigItemV1(AuthorizationData val) implements OptionalSerdeEnum, DelegateArgs {
 
     public static ProgrammableConfigItemV1 read(final byte[] _data, final int _offset) {
-      return new ProgrammableConfigItemV1(AuthorizationData.read(_data, _offset));
+      return new ProgrammableConfigItemV1(SerDeUtil.isAbsent(1, _data, _offset) ? null : AuthorizationData.read(_data, _offset + 1));
     }
 
     @Override
@@ -365,10 +365,10 @@ public sealed interface DelegateArgs extends RustEnum permits
     }
   }
 
-  record PrintDelegateV1(AuthorizationData val) implements SerDeEnum, DelegateArgs {
+  record PrintDelegateV1(AuthorizationData val) implements OptionalSerdeEnum, DelegateArgs {
 
     public static PrintDelegateV1 read(final byte[] _data, final int _offset) {
-      return new PrintDelegateV1(AuthorizationData.read(_data, _offset));
+      return new PrintDelegateV1(SerDeUtil.isAbsent(1, _data, _offset) ? null : AuthorizationData.read(_data, _offset + 1));
     }
 
     @Override
