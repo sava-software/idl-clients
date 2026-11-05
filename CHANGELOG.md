@@ -1,5 +1,37 @@
 # Changelog
 
+## [25.19.14](https://github.com/sava-software/idl-clients/compare/25.19.13...25.19.14) (2026-11-05)
+
+
+### ⚠ BREAKING CHANGES
+
+* **metaplex:** those eleven variants implement `RustEnum.OptionalSerdeEnum` instead of `RustEnum.SerDeEnum`: code that refers to them as a `SerDeEnum` must use `OptionalSerdeEnum`, and code compiled against an earlier release must be recompiled. Their names, components and constructors are unchanged.
+* generated builders and records send an empty array, byte string or string, a blank string argument included, as present and empty, where they sent it as absent: pass null for an absent value. This affects Squads v4's memos, Marginfi V2, Metaplex Token Metadata, Jupiter Offerbook, Loopscale, and the fixed-size optional arrays of Switchboard On-Demand and Phoenix Perpetuals.
+* `denylistAccountPDA`, `tokenPairPDA`, `oraclePDA` and `queuePDA` take a `PublicKey` where they took its bytes: pass the key itself instead of `key.toByteArray()`.
+* `remoteTokenMessenger1PDA`, `tokenPair1PDA`, `whirlpool1PDA` and `feed1PDA` take a `byte[]` where they took a `PublicKey`: pass `SerDeUtil.asciiSeed(domain)`, `SerDeUtil.int16LESeed(feeTierIndex)` or the 32 pair bytes, and a caller that wrapped the pair bytes in a `PublicKey` passes `key.toByteArray()`.
+
+### Features
+
+* **jupiter-perpetuals:** append the pool's pricing accounts with JupiterPerpetualsRemainingAccounts ([7e812ac](https://github.com/sava-software/idl-clients/commit/7e812acfb540babb256d09aa72f168e6ab90851b))
+* **marginfi:** decode MarginfiAccountExecuteOrderEvent ([0ea99fb](https://github.com/sava-software/idl-clients/commit/0ea99fb7fd877dbd9c42f252a3f250d4f62e14a2))
+* **nt:** generate Neutral Trade from the deployed v2.3.0 interface ([7296ae1](https://github.com/sava-software/idl-clients/commit/7296ae1b2730d8a7f08e865726f0bc6c217655ca))
+* **offerbook:** derive offers, loans and protocol fee accounts with JupiterOfferbookPDAs ([2ba0930](https://github.com/sava-software/idl-clients/commit/2ba09306d667f42e6084f99f480d53ed9e29abf4))
+* **offerbook:** follow the republished IDL, so seven rejected builders encode their Option arguments ([002be54](https://github.com/sava-software/idl-clients/commit/002be542b4a513d202e3558db147364b60d945bb))
+
+
+### Bug Fixes
+
+* fetch Meteora positions, Jupiter vote escrows and Marinade tickets of every length ([d68f4a6](https://github.com/sava-software/idl-clients/commit/d68f4a65f0c8ab6e4bc77ebb14c76401f1b3c1e5))
+* four generated PDA helpers take a non-key seed as bytes instead of a PublicKey ([c662239](https://github.com/sava-software/idl-clients/commit/c6622397501c506546192f7ba9269bcc219477b6))
+* generated code sends an empty array, byte string or string as present, and only null as absent ([ac5c340](https://github.com/sava-software/idl-clients/commit/ac5c340e46bc4a713d24f1b5bc7cc5ccd28452e7))
+* generated writers encode nested u16 and u32 arrays at their element width ([9fc85c0](https://github.com/sava-software/idl-clients/commit/9fc85c04b2e9de9cbcf2b86914ce783715314006))
+* **jupiter-perpetuals:** refuse a custody record filed under another custody's key ([3b31907](https://github.com/sava-software/idl-clients/commit/3b3190742fb9d3ac5ae1166cda12ebd30fa62765))
+* **kamino:** the farm and referrer scans skip legacy accounts shorter than the layout ([6ca46c8](https://github.com/sava-software/idl-clients/commit/6ca46c825f33b69ae4484990ae2e10b1ff7164ff))
+* **metaplex:** lock, unlock, use and delegate arguments carry their Option tag ([79d6852](https://github.com/sava-software/idl-clients/commit/79d685245c71fca1e7bde3d17e58c1704150b6d6))
+* name each generated PDA helper's derivation program after the program the IDL fixes ([0ddf68d](https://github.com/sava-software/idl-clients/commit/0ddf68d0cc4059ffe0e7016be5ef6188e3d9b2ee))
+* PDA helpers whose seed reads a key field of an instruction argument take a PublicKey ([08c65e0](https://github.com/sava-software/idl-clients/commit/08c65e09cc403173b05719c5b11f95aa671a17c4))
+* withhold SIZE_FILTER on 45 account records whose programs allocate another length ([adbd53d](https://github.com/sava-software/idl-clients/commit/adbd53d091a9b53f27565519da95605d9f95fc78))
+
 ## [25.19.13](https://github.com/sava-software/idl-clients/compare/25.19.12...25.19.13) (2026-10-29)
 
 
