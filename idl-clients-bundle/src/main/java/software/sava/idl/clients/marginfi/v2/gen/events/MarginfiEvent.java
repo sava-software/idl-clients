@@ -40,6 +40,7 @@ public sealed interface MarginfiEvent extends SerDe permits
     MarginfiAccountCloseOrderEvent,
     MarginfiAccountCloseRebalanceOrderEvent,
     MarginfiAccountCreateEvent,
+    MarginfiAccountExecuteOrderEvent,
     MarginfiAccountFreezeEvent,
     MarginfiAccountPlaceOrderEvent,
     MarginfiAccountPlaceRebalanceOrderEvent,
@@ -128,6 +129,8 @@ public sealed interface MarginfiEvent extends SerDe permits
       return MarginfiAccountCloseRebalanceOrderEvent.read(_data, _offset);
     } else if (MarginfiAccountCreateEvent.DISCRIMINATOR.equals(_data, _offset)) {
       return MarginfiAccountCreateEvent.read(_data, _offset);
+    } else if (MarginfiAccountExecuteOrderEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return MarginfiAccountExecuteOrderEvent.read(_data, _offset);
     } else if (MarginfiAccountFreezeEvent.DISCRIMINATOR.equals(_data, _offset)) {
       return MarginfiAccountFreezeEvent.read(_data, _offset);
     } else if (MarginfiAccountPlaceOrderEvent.DISCRIMINATOR.equals(_data, _offset)) {

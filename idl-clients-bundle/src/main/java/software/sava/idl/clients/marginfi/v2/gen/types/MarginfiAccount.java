@@ -36,6 +36,8 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                     - 64: `ACCOUNT_FROZEN` - the admin has frozen the account; only the group admin may perform
 ///                     actions until unfrozen.
 /// @param emissionsDestinationAccount Wallet whose canonical ATA receives off-chain emissions distributions.
+/// @param healthCache Replace through `set_health_cache` or `set_receivership_start_health_cache` so that
+///                    ordinary updates cannot retain receivership-start provenance.
 /// @param migratedFrom If this account was migrated from another one, store the original account key
 /// @param migratedTo If this account has been migrated to another one, store the destination account key
 /// @param lastUpdate: u64 Unix timestamp (u64) of the last account interaction. Note: Bank.last_update uses i64.

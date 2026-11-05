@@ -8488,7 +8488,7 @@ public final class MarginfiProgram {
   /// `marginfi_account_set_keeper_close_flags`. Keeper keeps the rent.
   ///
   /// @param marginfiAccountKey marginfi account was closed.
-  ///                           The ownership check is checked in the handler or/and type checks are made in the handler.
+  ///                           The handler validates ownership and layout unless the account is already closed.
   public static List<AccountMeta> marginfiAccountKeeperCloseOrderKeys(final PublicKey marginfiAccountKey,
                                                                       final PublicKey feeRecipientKey,
                                                                       final PublicKey orderKey) {
@@ -8504,7 +8504,7 @@ public final class MarginfiProgram {
   /// `marginfi_account_set_keeper_close_flags`. Keeper keeps the rent.
   ///
   /// @param marginfiAccountKey marginfi account was closed.
-  ///                           The ownership check is checked in the handler or/and type checks are made in the handler.
+  ///                           The handler validates ownership and layout unless the account is already closed.
   public static Instruction marginfiAccountKeeperCloseOrder(final AccountMeta invokedMarginfiProgramMeta,
                                                             final PublicKey marginfiAccountKey,
                                                             final PublicKey feeRecipientKey,
