@@ -131,7 +131,7 @@ public record PullFeedSetConfigsParams(byte[] feedHash,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    if (feedHash == null || feedHash.length == 0) {
+    if (feedHash == null) {
       _data[i++] = 0;
     } else {
       _data[i++] = 1;
@@ -140,13 +140,13 @@ public record PullFeedSetConfigsParams(byte[] feedHash,
     i += SerDeUtil.writeOptional(1, authority, _data, i);
     i += SerDeUtil.writeOptional(1, maxVariance, _data, i);
     i += SerDeUtil.writeOptionalUnsignedInt(1, minResponses, _data, i);
-    if (name == null || name.length == 0) {
+    if (name == null) {
       _data[i++] = 0;
     } else {
       _data[i++] = 1;
       i += SerDeUtil.writeArrayChecked(name, 32, _data, i);
     }
-    if (ipfsHash == null || ipfsHash.length == 0) {
+    if (ipfsHash == null) {
       _data[i++] = 0;
     } else {
       _data[i++] = 1;
@@ -160,12 +160,12 @@ public record PullFeedSetConfigsParams(byte[] feedHash,
 
   @Override
   public int l() {
-    return (feedHash == null || feedHash.length == 0 ? 1 : (1 + SerDeUtil.lenArray(feedHash)))
+    return (feedHash == null ? 1 : (1 + SerDeUtil.lenArray(feedHash)))
          + (authority == null ? 1 : (1 + 32))
          + (maxVariance == null || maxVariance.isEmpty() ? 1 : (1 + 8))
          + (minResponses == null || minResponses.isEmpty() ? 1 : (1 + 4))
-         + (name == null || name.length == 0 ? 1 : (1 + SerDeUtil.lenArray(name)))
-         + (ipfsHash == null || ipfsHash.length == 0 ? 1 : (1 + SerDeUtil.lenArray(ipfsHash)))
+         + (name == null ? 1 : (1 + SerDeUtil.lenArray(name)))
+         + (ipfsHash == null ? 1 : (1 + SerDeUtil.lenArray(ipfsHash)))
          + (minSampleSize == null || minSampleSize.isEmpty() ? 1 : (1 + 1))
          + (maxStaleness == null || maxStaleness.isEmpty() ? 1 : (1 + 4))
          + (permitWriteByAuthority == null ? 1 : (1 + 1));

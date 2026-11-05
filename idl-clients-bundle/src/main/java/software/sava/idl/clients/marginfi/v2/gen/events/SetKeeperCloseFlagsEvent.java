@@ -38,7 +38,7 @@ public record SetKeeperCloseFlagsEvent(Discriminator discriminator, AccountEvent
   public int write(final byte[] _data, final int _offset) {
     int i = _offset + discriminator.write(_data, _offset);
     i += header.write(_data, i);
-    if (bankKeys == null || bankKeys.length == 0) {
+    if (bankKeys == null) {
       _data[i++] = 0;
     } else {
       _data[i++] = 1;
@@ -49,6 +49,6 @@ public record SetKeeperCloseFlagsEvent(Discriminator discriminator, AccountEvent
 
   @Override
   public int l() {
-    return 8 + header.l() + (bankKeys == null || bankKeys.length == 0 ? 1 : (1 + SerDeUtil.lenVector(4, bankKeys)));
+    return 8 + header.l() + (bankKeys == null ? 1 : (1 + SerDeUtil.lenVector(4, bankKeys)));
   }
 }

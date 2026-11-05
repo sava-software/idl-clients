@@ -55,7 +55,7 @@ public record OracleInitParams(long recentSlot,
     i += 32;
     queue.write(_data, i);
     i += 32;
-    if (secpAuthority == null || secpAuthority.length == 0) {
+    if (secpAuthority == null) {
       _data[i++] = 0;
     } else {
       _data[i++] = 1;
@@ -66,6 +66,6 @@ public record OracleInitParams(long recentSlot,
 
   @Override
   public int l() {
-    return 8 + 32 + 32 + (secpAuthority == null || secpAuthority.length == 0 ? 1 : (1 + SerDeUtil.lenArray(secpAuthority)));
+    return 8 + 32 + 32 + (secpAuthority == null ? 1 : (1 + SerDeUtil.lenArray(secpAuthority)));
   }
 }

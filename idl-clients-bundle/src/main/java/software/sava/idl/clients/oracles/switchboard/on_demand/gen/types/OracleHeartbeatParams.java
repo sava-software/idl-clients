@@ -26,7 +26,7 @@ public record OracleHeartbeatParams(byte[] gatewayUri) implements SerDe {
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    if (gatewayUri == null || gatewayUri.length == 0) {
+    if (gatewayUri == null) {
       _data[i++] = 0;
     } else {
       _data[i++] = 1;
@@ -37,6 +37,6 @@ public record OracleHeartbeatParams(byte[] gatewayUri) implements SerDe {
 
   @Override
   public int l() {
-    return (gatewayUri == null || gatewayUri.length == 0 ? 1 : (1 + SerDeUtil.lenArray(gatewayUri)));
+    return (gatewayUri == null ? 1 : (1 + SerDeUtil.lenArray(gatewayUri)));
   }
 }

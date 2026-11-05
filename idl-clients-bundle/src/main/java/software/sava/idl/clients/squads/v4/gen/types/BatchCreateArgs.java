@@ -46,6 +46,6 @@ public record BatchCreateArgs(int vaultIndex, String memo, byte[] _memo) impleme
 
   @Override
   public int l() {
-    return 1 + (_memo == null || _memo.length == 0 ? 1 : (1 + 4 + _memo.length));
+    return 1 + (_memo == null ? 1 : (1 + 4 + _memo.length));
   }
 }

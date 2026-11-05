@@ -122,6 +122,6 @@ public record MultisigAddSpendingLimitArgs(PublicKey createKey,
          + period.l()
          + SerDeUtil.lenVector(4, members)
          + SerDeUtil.lenVector(4, destinations)
-         + (_memo == null || _memo.length == 0 ? 1 : (1 + 4 + _memo.length));
+         + (_memo == null ? 1 : (1 + 4 + _memo.length));
   }
 }

@@ -42,7 +42,7 @@ public record OracleSetConfigsParams(PublicKey newAuthority, byte[] newSecpAutho
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
     i += SerDeUtil.writeOptional(1, newAuthority, _data, i);
-    if (newSecpAuthority == null || newSecpAuthority.length == 0) {
+    if (newSecpAuthority == null) {
       _data[i++] = 0;
     } else {
       _data[i++] = 1;
@@ -53,6 +53,6 @@ public record OracleSetConfigsParams(PublicKey newAuthority, byte[] newSecpAutho
 
   @Override
   public int l() {
-    return (newAuthority == null ? 1 : (1 + 32)) + (newSecpAuthority == null || newSecpAuthority.length == 0 ? 1 : (1 + SerDeUtil.lenArray(newSecpAuthority)));
+    return (newAuthority == null ? 1 : (1 + 32)) + (newSecpAuthority == null ? 1 : (1 + SerDeUtil.lenArray(newSecpAuthority)));
   }
 }

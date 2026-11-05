@@ -39,6 +39,6 @@ public record ProposalVoteArgs(String memo, byte[] _memo) implements SerDe {
 
   @Override
   public int l() {
-    return (_memo == null || _memo.length == 0 ? 1 : (1 + 4 + _memo.length));
+    return (_memo == null ? 1 : (1 + 4 + _memo.length));
   }
 }

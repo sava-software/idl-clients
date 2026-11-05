@@ -194,7 +194,7 @@ public record UpdatePerpMarkPriceParametersInstruction(Symbol perpAssetSymbol,
     i += SerDeUtil.writeOptional(1, spotPriceStaleThreshold, _data, i);
     i += SerDeUtil.writeOptional(1, bookPriceStaleThreshold, _data, i);
     i += SerDeUtil.writeOptional(1, perpPriceStaleThreshold, _data, i);
-    if (riskActionPriceValidityRules == null || riskActionPriceValidityRules.length == 0) {
+    if (riskActionPriceValidityRules == null) {
       _data[i++] = 0;
     } else {
       _data[i++] = 1;
@@ -218,7 +218,7 @@ public record UpdatePerpMarkPriceParametersInstruction(Symbol perpAssetSymbol,
          + (spotPriceStaleThreshold == null || spotPriceStaleThreshold.isEmpty() ? 1 : (1 + 8))
          + (bookPriceStaleThreshold == null || bookPriceStaleThreshold.isEmpty() ? 1 : (1 + 8))
          + (perpPriceStaleThreshold == null || perpPriceStaleThreshold.isEmpty() ? 1 : (1 + 8))
-         + (riskActionPriceValidityRules == null || riskActionPriceValidityRules.length == 0 ? 1 : (1 + SerDeUtil.lenArray(riskActionPriceValidityRules)))
+         + (riskActionPriceValidityRules == null ? 1 : (1 + SerDeUtil.lenArray(riskActionPriceValidityRules)))
          + (oracleDivergenceRadius == null || oracleDivergenceRadius.isEmpty() ? 1 : (1 + 2))
          + (minOracleResponses == null || minOracleResponses.isEmpty() ? 1 : (1 + 1));
   }

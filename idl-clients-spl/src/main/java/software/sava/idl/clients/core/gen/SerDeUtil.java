@@ -321,7 +321,7 @@ public final class SerDeUtil {
                                        final byte[] bytes,
                                        final byte[] data,
                                        final int offset) {
-    if (bytes == null || bytes.length == 0) {
+    if (bytes == null) {
       writeVal(optionalBytes, 0, data, offset);
       return optionalBytes;
     } else {
@@ -335,7 +335,7 @@ public final class SerDeUtil {
                                         final byte[] bytes,
                                         final byte[] data,
                                         final int offset) {
-    if (bytes == null || bytes.length == 0) {
+    if (bytes == null) {
       writeVal(optionalBytes, 0, data, offset);
       return optionalBytes;
     } else {
@@ -418,7 +418,7 @@ public final class SerDeUtil {
   }
 
   public static int lenOptionalVector(final int optionalBytes, final int prefixBytes, final byte[] array) {
-    if (array == null || array.length == 0) {
+    if (array == null) {
       return optionalBytes;
     } else {
       return optionalBytes + lenVector(prefixBytes, array);
@@ -517,7 +517,7 @@ public final class SerDeUtil {
 
   /// @throws IllegalArgumentException if `str` contains unpaired UTF-16 surrogates
   public static byte[] getBytes(final String str, final Charset charset) {
-    return str == null || str.isBlank() ? null : encodeString(str, charset);
+    return str == null ? null : encodeString(str, charset);
   }
 
   public static byte[][] getBytes(final String[] strings, final Charset charset) {

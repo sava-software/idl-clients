@@ -8945,10 +8945,10 @@ public final class MarginfiProgram {
                                                                final PublicKey[] bankKeysOpt) {
     final byte[] _data = new byte[
     8
-    + (bankKeysOpt == null || bankKeysOpt.length == 0 ? 1 : (1 + SerDeUtil.lenVector(4, bankKeysOpt)))
+    + (bankKeysOpt == null ? 1 : (1 + SerDeUtil.lenVector(4, bankKeysOpt)))
     ];
     int i = MARGINFI_ACCOUNT_SET_KEEPER_CLOSE_FLAGS_DISCRIMINATOR.write(_data, 0);
-    if (bankKeysOpt == null || bankKeysOpt.length == 0) {
+    if (bankKeysOpt == null) {
       _data[i++] = 0;
     } else {
       _data[i++] = 1;
@@ -8986,7 +8986,7 @@ public final class MarginfiProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      if (bankKeysOpt == null || bankKeysOpt.length == 0) {
+      if (bankKeysOpt == null) {
         _data[i++] = 0;
       } else {
         _data[i++] = 1;
@@ -8997,7 +8997,7 @@ public final class MarginfiProgram {
 
     @Override
     public int l() {
-      return 8 + (bankKeysOpt == null || bankKeysOpt.length == 0 ? 1 : (1 + SerDeUtil.lenVector(4, bankKeysOpt)));
+      return 8 + (bankKeysOpt == null ? 1 : (1 + SerDeUtil.lenVector(4, bankKeysOpt)));
     }
   }
 
@@ -9475,14 +9475,14 @@ public final class MarginfiProgram {
                                                                 final OptionalLong keeperTip) {
     final byte[] _data = new byte[
     8
-    + (allowedBanks == null || allowedBanks.length == 0 ? 1 : (1 + SerDeUtil.lenVector(4, allowedBanks)))
+    + (allowedBanks == null ? 1 : (1 + SerDeUtil.lenVector(4, allowedBanks)))
     + (minImprovement == null ? 1 : (1 + minImprovement.l()))
     + (cooldownSeconds == null || cooldownSeconds.isEmpty() ? 1 : 9)
     + (amount == null || amount.isEmpty() ? 1 : 9)
     + (keeperTip == null || keeperTip.isEmpty() ? 1 : 9)
     ];
     int i = MARGINFI_ACCOUNT_UPDATE_REBALANCE_ORDER_DISCRIMINATOR.write(_data, 0);
-    if (allowedBanks == null || allowedBanks.length == 0) {
+    if (allowedBanks == null) {
       _data[i++] = 0;
     } else {
       _data[i++] = 1;
@@ -9573,7 +9573,7 @@ public final class MarginfiProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      if (allowedBanks == null || allowedBanks.length == 0) {
+      if (allowedBanks == null) {
         _data[i++] = 0;
       } else {
         _data[i++] = 1;
@@ -9588,7 +9588,7 @@ public final class MarginfiProgram {
 
     @Override
     public int l() {
-      return 8 + (allowedBanks == null || allowedBanks.length == 0 ? 1 : (1 + SerDeUtil.lenVector(4, allowedBanks)))
+      return 8 + (allowedBanks == null ? 1 : (1 + SerDeUtil.lenVector(4, allowedBanks)))
            + (minImprovement == null ? 1 : (1 + minImprovement.l()))
            + (cooldownSeconds == null || cooldownSeconds.isEmpty() ? 1 : (1 + 8))
            + (amount == null || amount.isEmpty() ? 1 : (1 + 8))
@@ -12132,17 +12132,17 @@ public final class MarginfiProgram {
                                               final byte[] description) {
     final byte[] _data = new byte[
     8
-    + (ticker == null || ticker.length == 0 ? 1 : (1 + SerDeUtil.lenVector(4, ticker)))
-    + (description == null || description.length == 0 ? 1 : (1 + SerDeUtil.lenVector(4, description)))
+    + (ticker == null ? 1 : (1 + SerDeUtil.lenVector(4, ticker)))
+    + (description == null ? 1 : (1 + SerDeUtil.lenVector(4, description)))
     ];
     int i = WRITE_BANK_METADATA_DISCRIMINATOR.write(_data, 0);
-    if (ticker == null || ticker.length == 0) {
+    if (ticker == null) {
       _data[i++] = 0;
     } else {
       _data[i++] = 1;
       i += SerDeUtil.writeVector(4, ticker, _data, i);
     }
-    if (description == null || description.length == 0) {
+    if (description == null) {
       _data[i++] = 0;
     } else {
       _data[i++] = 1;
@@ -12190,13 +12190,13 @@ public final class MarginfiProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      if (ticker == null || ticker.length == 0) {
+      if (ticker == null) {
         _data[i++] = 0;
       } else {
         _data[i++] = 1;
         i += SerDeUtil.writeVector(4, ticker, _data, i);
       }
-      if (description == null || description.length == 0) {
+      if (description == null) {
         _data[i++] = 0;
       } else {
         _data[i++] = 1;
@@ -12207,7 +12207,7 @@ public final class MarginfiProgram {
 
     @Override
     public int l() {
-      return 8 + (ticker == null || ticker.length == 0 ? 1 : (1 + SerDeUtil.lenVector(4, ticker))) + (description == null || description.length == 0 ? 1 : (1 + SerDeUtil.lenVector(4, description)));
+      return 8 + (ticker == null ? 1 : (1 + SerDeUtil.lenVector(4, ticker))) + (description == null ? 1 : (1 + SerDeUtil.lenVector(4, description)));
     }
   }
 
@@ -12278,19 +12278,19 @@ public final class MarginfiProgram {
                                                      final byte[] description) {
     final byte[] _data = new byte[
     16
-    + (ticker == null || ticker.length == 0 ? 1 : (1 + SerDeUtil.lenVector(4, ticker)))
-    + (description == null || description.length == 0 ? 1 : (1 + SerDeUtil.lenVector(4, description)))
+    + (ticker == null ? 1 : (1 + SerDeUtil.lenVector(4, ticker)))
+    + (description == null ? 1 : (1 + SerDeUtil.lenVector(4, description)))
     ];
     int i = WRITE_BANK_METADATA_PRE_INIT_DISCRIMINATOR.write(_data, 0);
     putInt64LE(_data, i, bankSeed);
     i += 8;
-    if (ticker == null || ticker.length == 0) {
+    if (ticker == null) {
       _data[i++] = 0;
     } else {
       _data[i++] = 1;
       i += SerDeUtil.writeVector(4, ticker, _data, i);
     }
-    if (description == null || description.length == 0) {
+    if (description == null) {
       _data[i++] = 0;
     } else {
       _data[i++] = 1;
@@ -12347,13 +12347,13 @@ public final class MarginfiProgram {
       int i = _offset + discriminator.write(_data, _offset);
       putInt64LE(_data, i, bankSeed);
       i += 8;
-      if (ticker == null || ticker.length == 0) {
+      if (ticker == null) {
         _data[i++] = 0;
       } else {
         _data[i++] = 1;
         i += SerDeUtil.writeVector(4, ticker, _data, i);
       }
-      if (description == null || description.length == 0) {
+      if (description == null) {
         _data[i++] = 0;
       } else {
         _data[i++] = 1;
@@ -12364,7 +12364,7 @@ public final class MarginfiProgram {
 
     @Override
     public int l() {
-      return 8 + 8 + (ticker == null || ticker.length == 0 ? 1 : (1 + SerDeUtil.lenVector(4, ticker))) + (description == null || description.length == 0 ? 1 : (1 + SerDeUtil.lenVector(4, description)));
+      return 8 + 8 + (ticker == null ? 1 : (1 + SerDeUtil.lenVector(4, ticker))) + (description == null ? 1 : (1 + SerDeUtil.lenVector(4, description)));
     }
   }
 

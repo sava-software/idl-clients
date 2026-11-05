@@ -3985,12 +3985,12 @@ public final class LoopscaleProgram {
                                                     final PublicKey newAuthority) {
     final byte[] _data = new byte[
     8
-    + (assetUpdateParams == null || assetUpdateParams.length == 0 ? 1 : (1 + SerDeUtil.lenVector(4, assetUpdateParams)))
+    + (assetUpdateParams == null ? 1 : (1 + SerDeUtil.lenVector(4, assetUpdateParams)))
     + (updateCapParams == null ? 1 : (1 + updateCapParams.l()))
     + (newAuthority == null ? 1 : 33)
     ];
     int i = UPDATE_MARKET_INFORMATION_DISCRIMINATOR.write(_data, 0);
-    if (assetUpdateParams == null || assetUpdateParams.length == 0) {
+    if (assetUpdateParams == null) {
       _data[i++] = 0;
     } else {
       _data[i++] = 1;
@@ -4051,7 +4051,7 @@ public final class LoopscaleProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      if (assetUpdateParams == null || assetUpdateParams.length == 0) {
+      if (assetUpdateParams == null) {
         _data[i++] = 0;
       } else {
         _data[i++] = 1;
@@ -4064,7 +4064,7 @@ public final class LoopscaleProgram {
 
     @Override
     public int l() {
-      return 8 + (assetUpdateParams == null || assetUpdateParams.length == 0 ? 1 : (1 + SerDeUtil.lenVector(4, assetUpdateParams))) + (updateCapParams == null ? 1 : (1 + updateCapParams.l())) + (newAuthority == null ? 1 : (1 + 32));
+      return 8 + (assetUpdateParams == null ? 1 : (1 + SerDeUtil.lenVector(4, assetUpdateParams))) + (updateCapParams == null ? 1 : (1 + updateCapParams.l())) + (newAuthority == null ? 1 : (1 + 32));
     }
   }
 

@@ -229,13 +229,13 @@ public record BankConfigFast(OptionalLong depositLimit,
     i += SerDeUtil.writeOptionalUnsignedInt(1, liquidationLiquidatorFee, _data, i);
     i += SerDeUtil.writeOptionalUnsignedInt(1, liquidationInsuranceFee, _data, i);
     i += SerDeUtil.writeOptional(1, circuitBreakerEnabled, _data, i);
-    if (cbDeviationBpsTiers == null || cbDeviationBpsTiers.length == 0) {
+    if (cbDeviationBpsTiers == null) {
       _data[i++] = 0;
     } else {
       _data[i++] = 1;
       i += SerDeUtil.writeUnsignedShortArrayChecked(cbDeviationBpsTiers, 3, _data, i);
     }
-    if (cbTierDurationsSeconds == null || cbTierDurationsSeconds.length == 0) {
+    if (cbTierDurationsSeconds == null) {
       _data[i++] = 0;
     } else {
       _data[i++] = 1;
@@ -260,8 +260,8 @@ public record BankConfigFast(OptionalLong depositLimit,
          + (liquidationLiquidatorFee == null || liquidationLiquidatorFee.isEmpty() ? 1 : (1 + 4))
          + (liquidationInsuranceFee == null || liquidationInsuranceFee.isEmpty() ? 1 : (1 + 4))
          + (circuitBreakerEnabled == null ? 1 : (1 + 1))
-         + (cbDeviationBpsTiers == null || cbDeviationBpsTiers.length == 0 ? 1 : (1 + SerDeUtil.lenUnsignedShortArray(cbDeviationBpsTiers)))
-         + (cbTierDurationsSeconds == null || cbTierDurationsSeconds.length == 0 ? 1 : (1 + SerDeUtil.lenUnsignedShortArray(cbTierDurationsSeconds)))
+         + (cbDeviationBpsTiers == null ? 1 : (1 + SerDeUtil.lenUnsignedShortArray(cbDeviationBpsTiers)))
+         + (cbTierDurationsSeconds == null ? 1 : (1 + SerDeUtil.lenUnsignedShortArray(cbTierDurationsSeconds)))
          + (cbEscalationWindowMult == null || cbEscalationWindowMult.isEmpty() ? 1 : (1 + 1))
          + (cbEmaAlphaBps == null || cbEmaAlphaBps.isEmpty() ? 1 : (1 + 2))
          + (cbWindowSeconds == null || cbWindowSeconds.isEmpty() ? 1 : (1 + 4))

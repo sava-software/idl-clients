@@ -139,7 +139,7 @@ public record AssetData(String name, byte[] _name,
     i += SerDeUtil.writeVector(4, _uri, _data, i);
     putInt16LE(_data, i, sellerFeeBasisPoints);
     i += 2;
-    if (creators == null || creators.length == 0) {
+    if (creators == null) {
       _data[i++] = 0;
     } else {
       _data[i++] = 1;
@@ -163,7 +163,7 @@ public record AssetData(String name, byte[] _name,
          + 4 + _symbol.length
          + 4 + _uri.length
          + 2
-         + (creators == null || creators.length == 0 ? 1 : (1 + SerDeUtil.lenVector(4, creators)))
+         + (creators == null ? 1 : (1 + SerDeUtil.lenVector(4, creators)))
          + 1
          + 1
          + tokenStandard.l()

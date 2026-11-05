@@ -124,7 +124,7 @@ public record InterestRateConfigOpt(WrappedI80F48 insuranceFeeFixedApr,
     i += SerDeUtil.writeOptional(1, protocolOriginationFee, _data, i);
     i += SerDeUtil.writeOptionalUnsignedInt(1, zeroUtilRate, _data, i);
     i += SerDeUtil.writeOptionalUnsignedInt(1, hundredUtilRate, _data, i);
-    if (points == null || points.length == 0) {
+    if (points == null) {
       _data[i++] = 0;
     } else {
       _data[i++] = 1;
@@ -142,6 +142,6 @@ public record InterestRateConfigOpt(WrappedI80F48 insuranceFeeFixedApr,
          + (protocolOriginationFee == null ? 1 : (1 + protocolOriginationFee.l()))
          + (zeroUtilRate == null || zeroUtilRate.isEmpty() ? 1 : (1 + 4))
          + (hundredUtilRate == null || hundredUtilRate.isEmpty() ? 1 : (1 + 4))
-         + (points == null || points.length == 0 ? 1 : (1 + SerDeUtil.lenArray(points)));
+         + (points == null ? 1 : (1 + SerDeUtil.lenArray(points)));
   }
 }

@@ -110,6 +110,6 @@ public record MultisigCreateArgsV2(PublicKey configAuthority,
          + SerDeUtil.lenVector(4, members)
          + 4
          + (rentCollector == null ? 1 : (1 + 32))
-         + (_memo == null || _memo.length == 0 ? 1 : (1 + 4 + _memo.length));
+         + (_memo == null ? 1 : (1 + 4 + _memo.length));
   }
 }

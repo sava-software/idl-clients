@@ -277,7 +277,7 @@ public record AddMarketParams(Symbol perpAssetSymbol,
     ++i;
     _data[i] = (byte) oracleHardStaleMultiplier;
     ++i;
-    if (riskActionPriceValidityRules == null || riskActionPriceValidityRules.length == 0) {
+    if (riskActionPriceValidityRules == null) {
       _data[i++] = 0;
     } else {
       _data[i++] = 1;
@@ -321,7 +321,7 @@ public record AddMarketParams(Symbol perpAssetSymbol,
          + 1
          + 1
          + 1
-         + (riskActionPriceValidityRules == null || riskActionPriceValidityRules.length == 0 ? 1 : (1 + SerDeUtil.lenArray(riskActionPriceValidityRules)))
+         + (riskActionPriceValidityRules == null ? 1 : (1 + SerDeUtil.lenArray(riskActionPriceValidityRules)))
          + 1
          + (fundingPeriodSeconds == null || fundingPeriodSeconds.isEmpty() ? 1 : (1 + 8))
          + (fundingIntervalSeconds == null || fundingIntervalSeconds.isEmpty() ? 1 : (1 + 8))

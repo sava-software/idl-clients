@@ -1268,10 +1268,10 @@ public final class OfferbookProgram {
                                                           final byte[] authorizationData) {
     final byte[] _data = new byte[
     8
-    + (authorizationData == null || authorizationData.length == 0 ? 1 : (1 + SerDeUtil.lenVector(4, authorizationData)))
+    + (authorizationData == null ? 1 : (1 + SerDeUtil.lenVector(4, authorizationData)))
     ];
     int i = ESCROW_PROGRAMMABLE_NFT_WITHDRAW_DISCRIMINATOR.write(_data, 0);
-    if (authorizationData == null || authorizationData.length == 0) {
+    if (authorizationData == null) {
       _data[i++] = 0;
     } else {
       _data[i++] = 1;
@@ -1309,7 +1309,7 @@ public final class OfferbookProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      if (authorizationData == null || authorizationData.length == 0) {
+      if (authorizationData == null) {
         _data[i++] = 0;
       } else {
         _data[i++] = 1;
@@ -1320,7 +1320,7 @@ public final class OfferbookProgram {
 
     @Override
     public int l() {
-      return 8 + (authorizationData == null || authorizationData.length == 0 ? 1 : (1 + SerDeUtil.lenVector(4, authorizationData)));
+      return 8 + (authorizationData == null ? 1 : (1 + SerDeUtil.lenVector(4, authorizationData)));
     }
   }
 
