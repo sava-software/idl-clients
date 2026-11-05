@@ -17,9 +17,11 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -146,7 +148,16 @@ public abstract class SolanaRpcCaptureTests implements HttpHandler {
   }
 
   protected static String programAccountsResult(final String pubKeyBase58, final byte[] data, final String ownerBase58) {
-    return "{\"jsonrpc\":\"2.0\",\"result\":{\"context\":{\"apiVersion\":\"2.1.0\",\"slot\":123},\"value\":"
-        + "[{\"pubkey\":\"" + pubKeyBase58 + "\",\"account\":" + accountValueJson(data, ownerBase58) + "}]},\"id\":1}";
+    return programAccountsResult(ownerBase58, List.of(Map.entry(pubKeyBase58, data)));
+  }
+
+  /// A `getProgramAccounts` result holding every given account, in order, under one owner.
+  protected static String programAccountsResult(final String ownerBase58,
+                                                final List<Map.Entry<String, byte[]>> accounts) {
+    return accounts.stream()
+        .map(account -> "{\"pubkey\":\"" + account.getKey() + "\",\"account\":" + accountValueJson(account.getValue(), ownerBase58) + "}")
+        .collect(Collectors.joining(",",
+            "{\"jsonrpc\":\"2.0\",\"result\":{\"context\":{\"apiVersion\":\"2.1.0\",\"slot\":123},\"value\":[",
+            "]},\"id\":1}"));
   }
 }
