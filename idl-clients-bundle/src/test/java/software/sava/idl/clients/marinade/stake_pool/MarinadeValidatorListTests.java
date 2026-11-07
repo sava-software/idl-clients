@@ -64,6 +64,7 @@ final class MarinadeValidatorListTests {
   }
 
   @Test
+  @SuppressWarnings("deprecation") // Preserve regression coverage of the deprecated terminator-based factory.
   void factoryOverReadsStaleTail() {
     final var live = new ValidatorRecord[]{record(1, 100), record(2, 200), record(3, 300)};
     final var stale = new ValidatorRecord[]{record(4, 400), record(5, 500)};
@@ -114,6 +115,7 @@ final class MarinadeValidatorListTests {
   /// records — no zeroed tail to break on, so the length bound alone must stop
   /// the scan. An over-shot bound reads past the end and throws instead.
   @Test
+  @SuppressWarnings("deprecation") // Preserve regression coverage of the deprecated terminator-based factory.
   void factoryReadsAnExactFitList() {
     final var live = new ValidatorRecord[]{record(1, 100), record(2, 200), record(3, 300)};
     final byte[] data = buildList(live, new ValidatorRecord[0], 0);
@@ -129,6 +131,7 @@ final class MarinadeValidatorListTests {
   /// `MAGIC_LEN + ITEM_SIZE` bytes, so its only iteration starts with `offset == to`
   /// and the inclusive bound is what admits the record.
   @Test
+  @SuppressWarnings("deprecation") // Preserve regression coverage of the deprecated terminator-based factory.
   void factoryReadsASingleExactSlot() {
     final byte[] data = new byte[MAGIC_LEN + ITEM_SIZE];
     record(1, 100).write(data, MAGIC_LEN);

@@ -173,6 +173,7 @@ final class NonceAccountTests {
   /// `advanceNonceAccount` must reference the account and its authority, and the authority is
   /// the party that has to sign.
   @Test
+  @SuppressWarnings("deprecation") // The nonce instruction still requires the legacy RecentBlockhashes account.
   void advanceNonceAccountReferencesTheAuthority() {
     final var address = key(4);
     final var authority = key(5);

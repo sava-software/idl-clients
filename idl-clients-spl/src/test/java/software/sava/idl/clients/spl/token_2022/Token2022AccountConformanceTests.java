@@ -702,7 +702,7 @@ final class Token2022AccountConformanceTests {
         assertEquals(2, entry.size(), at + " entries are key/value pairs");
         assertNull(expected.put(string(entry.get(0)), string(entry.get(1))), at + " keys are unique");
       }
-      final var map = assertInstanceOf(Map.class, decoded, at);
+      final Map<?, ?> map = assertInstanceOf(Map.class, decoded, at);
       assertEquals(expected, map, at);
       assertEquals(List.copyOf(expected.keySet()), List.copyOf(map.keySet()),
           at + " iteration order follows the Borsh Vec");
@@ -883,8 +883,8 @@ final class Token2022AccountConformanceTests {
       // sava-core keeps DefaultAccountState's discriminant as the raw u8
       assertEquals(((AccountState) generated).ordinal(), savaCore, at);
     } else if (type == Map.class) {
-      final var expected = assertInstanceOf(Map.class, generated, at);
-      final var actual = assertInstanceOf(Map.class, savaCore, at);
+      final Map<?, ?> expected = assertInstanceOf(Map.class, generated, at);
+      final Map<?, ?> actual = assertInstanceOf(Map.class, savaCore, at);
       assertEquals(expected, actual, at);
       assertEquals(List.copyOf(expected.keySet()), List.copyOf(actual.keySet()),
           at + ": both keep the Borsh Vec's order");
