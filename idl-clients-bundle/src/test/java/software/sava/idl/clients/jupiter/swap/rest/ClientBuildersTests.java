@@ -39,6 +39,10 @@ final class ClientBuildersTests {
     Duration requestTimeoutField() {
       return requestTimeout;
     }
+
+    URI endpointField() {
+      return endpoint;
+    }
   }
 
   private static final class TestJupiterBuilder extends JupiterClientBuilder<Object> {
@@ -86,6 +90,17 @@ final class ClientBuildersTests {
     assertSame(jupiterBuilder, jupiterBuilder.apiKey(" key\n"));
     assertSame(jupiterBuilder, jupiterBuilder.apiKey("   "));
     assertSame(jupiterBuilder, jupiterBuilder.apiKey(null));
+  }
+
+  /// The `String` overload of `endpoint` sets the URI it parses, as `endpoint(URI)` would. One that
+  /// only returned the builder would leave the client pointed at whatever endpoint was set before,
+  /// or at the client's default.
+  @Test
+  void theStringEndpointOverloadSetsTheParsedUri() {
+    final var builder = new TestBuilder();
+    builder.endpoint(URI.create("http://localhost:1/"));
+    builder.endpoint("http://localhost:2/");
+    assertEquals(URI.create("http://localhost:2/"), builder.endpointField());
   }
 
   /// `setDefaults` fills only what is unset: a no-op request extension, a fresh
