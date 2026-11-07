@@ -52,8 +52,9 @@ swap-instructions response with a present cleanup, the two field-scan
 orderings, the swap-ix wrapper, swap-tx, ultra order, price/token maps and the
 ASR claim envelope), assembled 2026-07-23 from the fixtures in the
 since-removed `JupiterSwapApiClientTests` and in `JupiterSwapInstructionsTests`
-and `ClaimProofTests` — structured JSON is slow to reach from a scratch
-mutator.
+and `ClaimProofTests`, except `07-prices`, whose toy values follow the
+`/price/v3` body shape of `JupiterPriceClientTest` — structured JSON is slow to
+reach from a scratch mutator.
 
 The Swap API V2 seeds were copied 2026-10-03, byte for byte, from the text
 block named in brackets in `JupiterSwapV2TestFixtures`, except `10-swap-build`,

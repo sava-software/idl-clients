@@ -39,10 +39,9 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 /// Subclasses build their own client against [#endpoint]. Note that the Jupiter
 /// builders' setters are declared on the shared base builders and return those
 /// types. A chain ending in `createClient()` still compiles, because
-/// `HttpClientBuilder` declares it; what chaining loses is
-/// `createLocalClient()`, which only the swap API's concrete `Builder`
-/// declares, and a `JupiterClientBuilder` setter such as `apiKey(...)` called
-/// after an `HttpClientBuilder` one, so those calls go statement by statement.
+/// `HttpClientBuilder` declares it; what chaining loses is a
+/// `JupiterClientBuilder` setter such as `apiKey(...)` called after an
+/// `HttpClientBuilder` one, so those calls go statement by statement.
 /// A key is optional: a builder without one builds a keyless client that sends
 /// no `x-api-key` header.
 @Execution(ExecutionMode.SAME_THREAD)
@@ -114,14 +113,6 @@ abstract class JupiterRestTests implements HttpHandler {
 
   private static void write(final HttpExchange exchange, final int code, final String body) {
     try {
-      if (code < 200) {
-        // An interim status carries neither a body nor a length, so the client reads until the
-        // server hangs up; closing the connection here is what lets a test see the status at all.
-        exchange.getResponseHeaders().set("Connection", "close");
-        exchange.sendResponseHeaders(code, -1);
-        exchange.close();
-        return;
-      }
       final byte[] bytes = body.getBytes(UTF_8);
       exchange.sendResponseHeaders(code, bytes.length);
       try (final var os = exchange.getResponseBody()) {

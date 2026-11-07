@@ -313,7 +313,7 @@ final class JupiterExecuteOrderTests {
   }
 
   /// Swap API V2's documented 500 body (`openapi-spec/swap/v2/swap.yaml`) is `signature` and `error`,
-  /// the one body of the two APIs this parser serves with no `code` property. The client fails its
+  /// the only body that spec documents with no `code` property. The client fails its
   /// future on a 5xx before this parser sees it, but a body recovered from the failure's message
   /// parses as `code` 0 with no `status`, so `code` 0 alone is not success. A `code` that is present
   /// and null or `""` fails the parse instead (`codeIsNeverDefaulted`).

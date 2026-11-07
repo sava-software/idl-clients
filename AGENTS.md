@@ -47,7 +47,7 @@ both calling instructions and reading/deserializing on-chain data. It contains:
   shared generated commons.
 - `idl-clients-bundle/` — the bulk of third-party programs (Jupiter, Kamino,
   Meteora, Orca, Marginfi, Metaplex, Squads, oracles, ...), plus REST API
-  clients for off-chain services (e.g. Jupiter swap/ultra APIs).
+  clients for off-chain services (e.g. Jupiter swap, price and token APIs).
 - `idl-clients-drift/` — Drift. Dead code: Drift's programs no longer work
   on-chain, so the module is excluded from the build (`settings.gradle.kts`) and
   is neither compiled, tested nor published. Don't invest effort here unless asked.
