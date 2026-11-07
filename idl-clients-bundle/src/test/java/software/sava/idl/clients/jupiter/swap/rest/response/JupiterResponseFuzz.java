@@ -3,11 +3,9 @@ package software.sava.idl.clients.jupiter.swap.rest.response;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.tx.Instruction;
 import software.sava.core.tx.TxBuilder;
-import software.sava.idl.clients.jupiter.swap.rest.request.JupiterQuoteRequest;
 import software.sava.idl.clients.jupiter.swap.rest.request.JupiterSwapBuildRequest;
 import software.sava.idl.clients.jupiter.swap.rest.request.JupiterSwapExecuteRequest;
 import software.sava.idl.clients.jupiter.swap.rest.request.JupiterSwapOrderRequest;
-import software.sava.idl.clients.jupiter.swap.rest.request.JupiterUltraOrderRequest;
 import software.sava.idl.clients.jupiter.voter.rest.response.ClaimAsrProof;
 import software.sava.idl.clients.spl.compute_budget.gen.ComputeBudgetProgram.SetComputeUnitPriceIxData;
 import systems.comodal.jsoniter.FieldBufferPredicate;
@@ -38,8 +36,10 @@ import static systems.comodal.jsoniter.JsonIterator.fieldEquals;
 ///
 /// The selector is the first byte, unsigned, modulo 14:
 /// `(data[0] & 0xFF) % 14`. It was `% 10` before the Swap API V2 parsers
-/// joined; the seeds `00`–`09` lead with `0x00`–`0x09`, so they keep their
-/// parsers:
+/// joined; the seeds `00`–`08` lead with `0x00`–`0x08`, so they keep their
+/// parsers. 9 selected the Metis v1 and Ultra request parsers until they were
+/// removed with `JupiterSwapApiClient`, and now selects nothing, so that the
+/// seeds leading with 10–13 still reach theirs:
 ///
 /// - 0: a `/swap/v1/quote` response, `JupiterQuote.parse`
 /// - 1: a `/swap/v1/swap-instructions` response, `JupiterSwapInstructions.parseInstructions`
@@ -50,7 +50,7 @@ import static systems.comodal.jsoniter.JsonIterator.fieldEquals;
 /// - 6: an Ultra order, `JupiterUltraOrder.parse`
 /// - 7: `JupiterPrice.parsePrices` and `JupiterTokenV2.parseTokens`
 /// - 8: `ClaimAsrProof.parseProof`
-/// - 9: `JupiterQuoteRequest.parseRequest` and `JupiterUltraOrderRequest.parseRequest`
+/// - 9: nothing
 /// - 10: a `/swap/v2/build` response, `JupiterSwapBuild.parse`
 /// - 11: a `/swap/v2/order` response, `JupiterSwapOrder.parse`
 /// - 12: `JupiterSwapBuildRequest.parseRequest` and `JupiterSwapOrderRequest.parseRequest`
@@ -170,10 +170,7 @@ public final class JupiterResponseFuzz {
         tolerate(() -> JupiterTokenV2.parseTokens(JsonIterator.parse(json)));
       }
       case 8 -> tolerate(() -> ClaimAsrProof.parseProof(JsonIterator.parse(json)));
-      case 9 -> {
-        tolerate(() -> JupiterQuoteRequest.parseRequest(JsonIterator.parse(json)));
-        tolerate(() -> JupiterUltraOrderRequest.parseRequest(JsonIterator.parse(json)));
-      }
+      // 9 selects nothing since the v1 request parsers were removed; see the class documentation
       case 10 -> {
         final var build = parseOrNull(() -> JupiterSwapBuild.parse(JsonIterator.parse(json)));
         if (build != null) {

@@ -874,7 +874,7 @@ authority; the trial numbers behind each choice are in each module's
 - The `PER_CLASS` field-initializer trap in REST-client costume: the Jupiter
   clients' URL-wiring mutants could not be paired with the tests that drove
   those URLs until the client was built inside the test body —
-  `urlWiringIsCoveredFromInsideTheTest` in `JupiterSwapApiClientTests` and
+  `urlWiringIsCoveredFromInsideTheTest` in `JupiterSwapV2ClientTests` and
   `JupiterTokenClientTests` is the pattern.
 - The same trap is what made an unkilled count wander here. A same-commit
   annotation change was a no-op: at JUnit 6.1.2 `@Execution`/`@TestInstance` are

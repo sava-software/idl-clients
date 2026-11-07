@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static software.sava.idl.clients.jupiter.swap.rest.response.JupiterSwapV2TestFixtures.USDC_KEY;
 import static software.sava.idl.clients.jupiter.swap.rest.response.JupiterSwapV2TestFixtures.WSOL_KEY;
 
-/// The `/execute` result parser that Swap API V2's `execute` and the Ultra `executeOrder` share.
+/// The `/execute` result parser behind Swap API V2's `execute`.
 /// Jupiter may already have landed the transaction a result reports on, and a failed parse costs
 /// the caller `status` and `signature`, so an amount must parse as any u64 in decimal digits, the
 /// slot as any integer in decimal digits, a swap event mint as any 32-byte base58 key, and each as

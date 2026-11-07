@@ -114,23 +114,13 @@ final class ClientBuildersTests {
 
   /// Every Jupiter client resolves its endpoint URLs at *build* time, so a
   /// dropped default-endpoint guard NPEs during construction — no request has
-  /// to be issued to observe it. The swap builder's resolved URLs are
-  /// package-visible, so the hosted and local defaults are pinned exactly.
-  /// No key is set, so this also pins that the remote, local, price and token
-  /// clients all build keyless.
+  /// to be issued to observe it. The token builder's resolved URL is
+  /// package-visible, so its hosted default is pinned exactly; the Swap API V2
+  /// builder's are pinned in `JupiterSwapV2ClientTests`.
+  /// No key is set, so this also pins that the price and token clients build
+  /// keyless.
   @Test
   void defaultEndpointsResolveAtBuildTime() {
-    final var remote = JupiterSwapApiClient.build();
-    assertNotNull(remote.createClient());
-    assertEquals(URI.create("https://api.jup.ag/swap/v1/swap"), remote.swapURI);
-    assertEquals(URI.create("https://api.jup.ag/swap/v1/swap-instructions"), remote.swapInstructionsURI);
-    assertEquals("/swap/v1/quote?", remote.quotePath);
-
-    final var local = JupiterSwapApiClient.build();
-    assertNotNull(local.createLocalClient());
-    assertEquals(URI.create("https://localhost:8899/swap"), local.swapURI);
-    assertEquals("/quote?", local.quotePath);
-
     final var price = JupiterPriceClient.build();
     assertNotNull(price.createClient(), "the price client defaults its endpoint");
     final var token = JupiterTokenClient.build();

@@ -35,21 +35,25 @@ its selector byte:
 
 - `0` quote, `1` swap-instructions response, `2` swap instruction, `3` lookup
   tables, `4` swap-ix wrapper, `5` swap-tx, `6` Ultra order, `7` price and
-  token maps, `8` ASR claim envelope, `9` the v1 request records;
+  token maps, `8` ASR claim envelope, `9` nothing;
 - `10` `/swap/v2/build` response, `11` `/swap/v2/order` response, `12` the two
   V2 request parsers, `13` the `/execute` request body round trip and the
   `/execute` result parser.
 
 The modulus went from 10 to 14 when the Swap API V2 parsers joined
-(2026-10-03). The seeds `00`–`09` lead with `0x00`–`0x09`, so each keeps its
-parser.
+(2026-10-03). The seeds `00`–`08` lead with `0x00`–`0x08`, so each keeps its
+parser. `9` selected the v1 request records until they were removed with
+`JupiterSwapApiClient` (2026-11-07), and their `09-quote-request` seed with
+them; it was left empty rather than renumbering `10`–`13` out from under their
+seeds.
 
-`00`–`09` are the test-fixture bodies for the v1 parser families (quote, full
+`00`–`08` are the test-fixture bodies for the v1 parser families (quote, full
 swap-instructions response with a present cleanup, the two field-scan
-orderings, the swap-ix wrapper, swap-tx, ultra order, price/token maps, the ASR
-claim envelope, and the request records), assembled 2026-07-23 from the
-fixtures in `JupiterSwapApiClientTests` / `JupiterSwapInstructionsTests` /
-`ClaimProofTests` — structured JSON is slow to reach from a scratch mutator.
+orderings, the swap-ix wrapper, swap-tx, ultra order, price/token maps and the
+ASR claim envelope), assembled 2026-07-23 from the fixtures in the
+since-removed `JupiterSwapApiClientTests` and in `JupiterSwapInstructionsTests`
+and `ClaimProofTests` — structured JSON is slow to reach from a scratch
+mutator.
 
 The Swap API V2 seeds were copied 2026-10-03, byte for byte, from the text
 block named in brackets in `JupiterSwapV2TestFixtures`, except `10-swap-build`,

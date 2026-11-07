@@ -50,6 +50,8 @@ final class JupiterResponseParserAlignmentTests {
     final byte[] bytes = json.getBytes(UTF_8);
     final var quote = JupiterQuote.parse(bytes, JsonIterator.parse(bytes));
 
+    // the quote keeps the body it was parsed from, unknown fields included
+    assertArrayEquals(bytes, quote.quoteResponseJson());
     assertEquals(WSOL_KEY, quote.inputMint());
     assertEquals(1_000L, quote.inAmount());
     assertEquals(USDC_KEY, quote.outputMint());

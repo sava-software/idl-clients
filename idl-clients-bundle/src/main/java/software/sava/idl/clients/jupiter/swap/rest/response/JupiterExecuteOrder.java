@@ -10,8 +10,8 @@ import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNullElse;
 
-/// The result of an `/execute` call: Swap API V2's `POST /swap/v2/execute`, and the Ultra
-/// `executeOrder(...)`, which shares this parser.
+/// The result of an `/execute` call: Swap API V2's `POST /swap/v2/execute`, which
+/// `JupiterSwapV2Client.execute(...)` calls.
 ///
 /// Jupiter may already have landed the transaction this reports on, so the amount, slot and swap
 /// event mint reads are lenient. An amount (`totalInputAmount`, `totalOutputAmount` or a swap
@@ -26,10 +26,10 @@ import static java.util.Objects.requireNonNullElse;
 /// @param code              0 on success. An integral spelling such as `-1000.0` or `-1e3` reads as -1000, and a JSON
 ///                          null or `""` fails the parse with an `IllegalStateException` naming it, because 0 would
 ///                          read as success. A body with no `code` key reads as 0, so check `status` too. Only a 2xx
-///                          body reaches this parser through `JupiterSwapV2Client.execute` or the Ultra `executeOrder`:
-///                          every non-2xx answer, the documented 400 and 500 bodies of both APIs included, fails the
-///                          returned future before this parser sees it, and any `code` such a body carries is in the
-///                          failure's message only. Both documented 200 bodies carry `code`.
+///                          body reaches this parser through `JupiterSwapV2Client.execute`: every non-2xx answer, the
+///                          documented 400 and 500 bodies included, fails the returned future before this parser sees
+///                          it, and any `code` such a body carries is in the failure's message only. The documented 200
+///                          body carries `code`.
 /// @param totalInputAmount  a u64 read unsigned (`Long.toUnsignedString` / `Long.compareUnsigned` above `Long.MAX_VALUE`); 0 when absent, null or `""`
 /// @param totalOutputAmount a u64 read unsigned (`Long.toUnsignedString` / `Long.compareUnsigned` above `Long.MAX_VALUE`); 0 when absent, null or `""`
 /// @param swapEvents        the swaps Jupiter reports, unmodifiable; never null: empty when absent, as in the
