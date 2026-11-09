@@ -39,7 +39,11 @@ public sealed interface OfferbookError extends ProgramError permits
     OfferbookError.OperatorUnset,
     OfferbookError.YieldWithdrawShortfall,
     OfferbookError.ImmutableYieldMarketField,
-    OfferbookError.YieldDepositNoShares {
+    OfferbookError.YieldDepositNoShares,
+    OfferbookError.CustodyNotConfirmed,
+    OfferbookError.CustodyExpired,
+    OfferbookError.GatedCollectionsFull,
+    OfferbookError.GatedCollectionNotFound {
 
   static OfferbookError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -79,6 +83,10 @@ public sealed interface OfferbookError extends ProgramError permits
       case 6033 -> YieldWithdrawShortfall.INSTANCE;
       case 6034 -> ImmutableYieldMarketField.INSTANCE;
       case 6035 -> YieldDepositNoShares.INSTANCE;
+      case 6036 -> CustodyNotConfirmed.INSTANCE;
+      case 6037 -> CustodyExpired.INSTANCE;
+      case 6038 -> GatedCollectionsFull.INSTANCE;
+      case 6039 -> GatedCollectionNotFound.INSTANCE;
       default -> null;
     };
   }
@@ -332,6 +340,34 @@ public sealed interface OfferbookError extends ProgramError permits
 
     public static final YieldDepositNoShares INSTANCE = new YieldDepositNoShares(
         6035, "Yield Deposit Returned No Shares"
+    );
+  }
+
+  record CustodyNotConfirmed(int code, String msg) implements OfferbookError {
+
+    public static final CustodyNotConfirmed INSTANCE = new CustodyNotConfirmed(
+        6036, "Custody Not Confirmed"
+    );
+  }
+
+  record CustodyExpired(int code, String msg) implements OfferbookError {
+
+    public static final CustodyExpired INSTANCE = new CustodyExpired(
+        6037, "Custody Expired"
+    );
+  }
+
+  record GatedCollectionsFull(int code, String msg) implements OfferbookError {
+
+    public static final GatedCollectionsFull INSTANCE = new GatedCollectionsFull(
+        6038, "Gated Collections Full"
+    );
+  }
+
+  record GatedCollectionNotFound(int code, String msg) implements OfferbookError {
+
+    public static final GatedCollectionNotFound INSTANCE = new GatedCollectionNotFound(
+        6039, "Gated Collection Not Found"
     );
   }
 }

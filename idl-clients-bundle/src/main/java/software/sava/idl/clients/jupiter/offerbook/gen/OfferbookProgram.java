@@ -20,6 +20,7 @@ import software.sava.idl.clients.jupiter.offerbook.gen.types.TokenCollateralOffe
 import software.sava.idl.clients.jupiter.offerbook.gen.types.TokenPrincipalOfferParams;
 import software.sava.idl.clients.jupiter.offerbook.gen.types.UpdateConfigAction;
 import software.sava.idl.clients.jupiter.offerbook.gen.types.UpdateYieldMarketAction;
+import software.sava.idl.clients.jupiter.offerbook.gen.types.UserFeeProfile;
 import software.sava.idl.clients.jupiter.offerbook.gen.types.YieldMarketParams;
 
 import java.util.List;
@@ -28,6 +29,7 @@ import java.util.OptionalLong;
 
 import static java.util.Objects.requireNonNullElse;
 
+import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.accounts.meta.AccountMeta.createRead;
 import static software.sava.core.accounts.meta.AccountMeta.createReadOnlySigner;
 import static software.sava.core.accounts.meta.AccountMeta.createWritableSigner;
@@ -1633,7 +1635,11 @@ public final class OfferbookProgram {
 
   /// @param userKey The user whose escrow is topped up. Marked `mut` because the JupLend
   ///                CPI signs with this PDA as a writable signer.
-  /// @param claimAccountKey enforced by the seeds below, created via CPI on first use
+  /// @param userJlTokenAccountKey Created if missing, as on deposit: a user who opted in but was never
+  ///                              cranked has no share account yet, and the documented no-op must not
+  ///                              revert for them (audit I-02).
+  /// @param claimAccountKey enforced by the seeds below. Only its address is needed: Earn pays out
+  ///                        directly and never writes to it, so it is never created.
   public static List<AccountMeta> escrowYieldWithdrawKeys(final SolanaAccounts solanaAccounts,
                                                           final PublicKey signerKey,
                                                           final PublicKey configKey,
@@ -1687,7 +1693,11 @@ public final class OfferbookProgram {
 
   /// @param userKey The user whose escrow is topped up. Marked `mut` because the JupLend
   ///                CPI signs with this PDA as a writable signer.
-  /// @param claimAccountKey enforced by the seeds below, created via CPI on first use
+  /// @param userJlTokenAccountKey Created if missing, as on deposit: a user who opted in but was never
+  ///                              cranked has no share account yet, and the documented no-op must not
+  ///                              revert for them (audit I-02).
+  /// @param claimAccountKey enforced by the seeds below. Only its address is needed: Earn pays out
+  ///                        directly and never writes to it, so it is never created.
   /// @param requiredAmount: u64
   public static Instruction escrowYieldWithdraw(final AccountMeta invokedOfferbookProgramMeta,
                                                 final SolanaAccounts solanaAccounts,
@@ -1792,7 +1802,11 @@ public final class OfferbookProgram {
 
   /// @param signerUserKey Marked `mut` because the JupLend CPI signs with this PDA as a writable
   ///                      signer.
-  /// @param claimAccountKey enforced by the seeds below, created via CPI on first use
+  /// @param userJlTokenAccountKey Created if missing, as on deposit: a user who opted in but was never
+  ///                              cranked has no share account yet, and the documented no-op must not
+  ///                              revert for them (audit I-02).
+  /// @param claimAccountKey enforced by the seeds below. Only its address is needed: Earn pays out
+  ///                        directly and never writes to it, so it is never created.
   public static List<AccountMeta> escrowYieldWithdrawAllKeys(final SolanaAccounts solanaAccounts,
                                                              final PublicKey signerKey,
                                                              final PublicKey signerUserKey,
@@ -1844,7 +1858,11 @@ public final class OfferbookProgram {
 
   /// @param signerUserKey Marked `mut` because the JupLend CPI signs with this PDA as a writable
   ///                      signer.
-  /// @param claimAccountKey enforced by the seeds below, created via CPI on first use
+  /// @param userJlTokenAccountKey Created if missing, as on deposit: a user who opted in but was never
+  ///                              cranked has no share account yet, and the documented no-op must not
+  ///                              revert for them (audit I-02).
+  /// @param claimAccountKey enforced by the seeds below. Only its address is needed: Earn pays out
+  ///                        directly and never writes to it, so it is never created.
   /// @param minAmountOut: u64
   public static Instruction escrowYieldWithdrawAll(final AccountMeta invokedOfferbookProgramMeta,
                                                    final SolanaAccounts solanaAccounts,
@@ -1945,7 +1963,15 @@ public final class OfferbookProgram {
 
   public static final Discriminator EXTEND_LOAN_DISCRIMINATOR = toDiscriminator(2, 208, 222, 190, 109, 148, 247, 117);
 
-  public static List<AccountMeta> extendLoanKeys(final PublicKey signerKey,
+  /// @param collateralMintKey Collateral accounts, needed only to release surplus collateral after a
+  ///                          paydown (audit L-04). Validated in the handler against the loan.
+  /// @param borrowerCollateralEscrowKey The borrower's collateral escrow, `ATA(signer_user, collateral_mint)`,
+  ///                                    where a partial repayment also releases collateral.
+  /// @param coreAssetKey The collateral asset of a Core NFT loan, required for every one of them:
+  ///                     the asset alone says whether its collection is custody-gated (audit
+  ///                     round 2 M-01). Left out for any other collateral.
+  public static List<AccountMeta> extendLoanKeys(final AccountMeta invokedOfferbookProgramMeta,
+                                                 final PublicKey signerKey,
                                                  final PublicKey signerUserKey,
                                                  final PublicKey lenderKey,
                                                  final PublicKey lenderUserKey,
@@ -1956,6 +1982,11 @@ public final class OfferbookProgram {
                                                  final PublicKey lenderPrincipalEscrowKey,
                                                  final PublicKey protocolFeeTokenAccountKey,
                                                  final PublicKey principalTokenProgramKey,
+                                                 final PublicKey collateralMintKey,
+                                                 final PublicKey loanVaultKey,
+                                                 final PublicKey borrowerCollateralEscrowKey,
+                                                 final PublicKey collateralTokenProgramKey,
+                                                 final PublicKey coreAssetKey,
                                                  final PublicKey eventAuthorityKey,
                                                  final PublicKey programKey) {
     return List.of(
@@ -1970,11 +2001,23 @@ public final class OfferbookProgram {
       createWrite(lenderPrincipalEscrowKey),
       createWrite(protocolFeeTokenAccountKey),
       createRead(principalTokenProgramKey),
+      createRead(requireNonNullElse(collateralMintKey, invokedOfferbookProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(loanVaultKey, invokedOfferbookProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowerCollateralEscrowKey, invokedOfferbookProgramMeta.publicKey())),
+      createRead(requireNonNullElse(collateralTokenProgramKey, invokedOfferbookProgramMeta.publicKey())),
+      createRead(requireNonNullElse(coreAssetKey, invokedOfferbookProgramMeta.publicKey())),
       createRead(eventAuthorityKey),
       createRead(programKey)
     );
   }
 
+  /// @param collateralMintKey Collateral accounts, needed only to release surplus collateral after a
+  ///                          paydown (audit L-04). Validated in the handler against the loan.
+  /// @param borrowerCollateralEscrowKey The borrower's collateral escrow, `ATA(signer_user, collateral_mint)`,
+  ///                                    where a partial repayment also releases collateral.
+  /// @param coreAssetKey The collateral asset of a Core NFT loan, required for every one of them:
+  ///                     the asset alone says whether its collection is custody-gated (audit
+  ///                     round 2 M-01). Left out for any other collateral.
   public static Instruction extendLoan(final AccountMeta invokedOfferbookProgramMeta,
                                        final PublicKey signerKey,
                                        final PublicKey signerUserKey,
@@ -1987,9 +2030,15 @@ public final class OfferbookProgram {
                                        final PublicKey lenderPrincipalEscrowKey,
                                        final PublicKey protocolFeeTokenAccountKey,
                                        final PublicKey principalTokenProgramKey,
+                                       final PublicKey collateralMintKey,
+                                       final PublicKey loanVaultKey,
+                                       final PublicKey borrowerCollateralEscrowKey,
+                                       final PublicKey collateralTokenProgramKey,
+                                       final PublicKey coreAssetKey,
                                        final PublicKey eventAuthorityKey,
                                        final PublicKey programKey) {
     final var keys = extendLoanKeys(
+      invokedOfferbookProgramMeta,
       signerKey,
       signerUserKey,
       lenderKey,
@@ -2001,6 +2050,11 @@ public final class OfferbookProgram {
       lenderPrincipalEscrowKey,
       protocolFeeTokenAccountKey,
       principalTokenProgramKey,
+      collateralMintKey,
+      loanVaultKey,
+      borrowerCollateralEscrowKey,
+      collateralTokenProgramKey,
+      coreAssetKey,
       eventAuthorityKey,
       programKey
     );
@@ -2583,8 +2637,8 @@ public final class OfferbookProgram {
 
   public static final Discriminator REPAY_NON_FUNGIBLE_LOAN_DISCRIMINATOR = toDiscriminator(148, 211, 15, 57, 173, 27, 26, 49);
 
-  /// `amount: None` settles the loan; `Some(x)` pays down `x` of the principal
-  /// and leaves it running, with the collateral still locked.
+  /// Settles the loan in full. `amount` must be `None`: NFT collateral is
+  /// indivisible, so a principal paydown is rejected with `InvalidRepayAmount`.
   ///
   public static List<AccountMeta> repayNonFungibleLoanKeys(final AccountMeta invokedOfferbookProgramMeta,
                                                            final SolanaAccounts solanaAccounts,
@@ -2621,8 +2675,8 @@ public final class OfferbookProgram {
     );
   }
 
-  /// `amount: None` settles the loan; `Some(x)` pays down `x` of the principal
-  /// and leaves it running, with the collateral still locked.
+  /// Settles the loan in full. `amount` must be `None`: NFT collateral is
+  /// indivisible, so a principal paydown is rejected with `InvalidRepayAmount`.
   ///
   /// @param amount: Option<u64>
   public static Instruction repayNonFungibleLoan(final AccountMeta invokedOfferbookProgramMeta,
@@ -2663,8 +2717,8 @@ public final class OfferbookProgram {
     return repayNonFungibleLoan(invokedOfferbookProgramMeta, keys, amount);
   }
 
-  /// `amount: None` settles the loan; `Some(x)` pays down `x` of the principal
-  /// and leaves it running, with the collateral still locked.
+  /// Settles the loan in full. `amount` must be `None`: NFT collateral is
+  /// indivisible, so a principal paydown is rejected with `InvalidRepayAmount`.
   ///
   /// @param amount: Option<u64>
   public static Instruction repayNonFungibleLoan(final AccountMeta invokedOfferbookProgramMeta,
@@ -2934,6 +2988,95 @@ public final class OfferbookProgram {
     }
   }
 
+  public static final Discriminator SET_USER_FEE_PROFILE_DISCRIMINATOR = toDiscriminator(90, 172, 10, 30, 15, 79, 62, 94);
+
+  /// `None` clears the profile: the user pays the config rates again.
+  ///
+  public static List<AccountMeta> setUserFeeProfileKeys(final PublicKey adminKey,
+                                                        final PublicKey configKey,
+                                                        final PublicKey userKey,
+                                                        final PublicKey eventAuthorityKey,
+                                                        final PublicKey programKey) {
+    return List.of(
+      createReadOnlySigner(adminKey),
+      createRead(configKey),
+      createWrite(userKey),
+      createRead(eventAuthorityKey),
+      createRead(programKey)
+    );
+  }
+
+  /// `None` clears the profile: the user pays the config rates again.
+  ///
+  public static Instruction setUserFeeProfile(final AccountMeta invokedOfferbookProgramMeta,
+                                              final PublicKey adminKey,
+                                              final PublicKey configKey,
+                                              final PublicKey userKey,
+                                              final PublicKey eventAuthorityKey,
+                                              final PublicKey programKey,
+                                              final UserFeeProfile profile) {
+    final var keys = setUserFeeProfileKeys(
+      adminKey,
+      configKey,
+      userKey,
+      eventAuthorityKey,
+      programKey
+    );
+    return setUserFeeProfile(invokedOfferbookProgramMeta, keys, profile);
+  }
+
+  /// `None` clears the profile: the user pays the config rates again.
+  ///
+  public static Instruction setUserFeeProfile(final AccountMeta invokedOfferbookProgramMeta,
+                                              final List<AccountMeta> keys,
+                                              final UserFeeProfile profile) {
+    final byte[] _data = new byte[
+    8
+    + (profile == null ? 1 : (1 + profile.l()))
+    ];
+    int i = SET_USER_FEE_PROFILE_DISCRIMINATOR.write(_data, 0);
+    SerDeUtil.writeOptional(1, profile, _data, i);
+
+    return Instruction.createInstruction(invokedOfferbookProgramMeta, keys, _data);
+  }
+
+  public record SetUserFeeProfileIxData(Discriminator discriminator, UserFeeProfile profile) implements SerDe {
+
+    public static SetUserFeeProfileIxData read(final Instruction instruction) {
+      return read(instruction.copyData(), 0);
+    }
+
+    public static final int PROFILE_OFFSET = 9;
+
+    public static SetUserFeeProfileIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final UserFeeProfile profile;
+      if (SerDeUtil.isAbsent(1, _data, i)) {
+        profile = null;
+      } else {
+        ++i;
+        profile = UserFeeProfile.read(_data, i);
+      }
+      return new SetUserFeeProfileIxData(discriminator, profile);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      i += SerDeUtil.writeOptional(1, profile, _data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 8 + (profile == null ? 1 : (1 + profile.l()));
+    }
+  }
+
   public static final Discriminator SET_YIELD_ENABLED_DISCRIMINATOR = toDiscriminator(110, 239, 153, 83, 80, 53, 223, 16);
 
   public static List<AccountMeta> setYieldEnabledKeys(final PublicKey signerKey,
@@ -3004,6 +3147,88 @@ public final class OfferbookProgram {
     @Override
     public int l() {
       return BYTES;
+    }
+  }
+
+  public static final Discriminator SET_YIELD_OPERATOR_DISCRIMINATOR = toDiscriminator(191, 2, 217, 79, 34, 85, 48, 82);
+
+  public static List<AccountMeta> setYieldOperatorKeys(final PublicKey signerKey,
+                                                       final PublicKey signerUserKey,
+                                                       final PublicKey eventAuthorityKey,
+                                                       final PublicKey programKey) {
+    return List.of(
+      createReadOnlySigner(signerKey),
+      createWrite(signerUserKey),
+      createRead(eventAuthorityKey),
+      createRead(programKey)
+    );
+  }
+
+  /// @param operator: Option<publicKey>
+  public static Instruction setYieldOperator(final AccountMeta invokedOfferbookProgramMeta,
+                                             final PublicKey signerKey,
+                                             final PublicKey signerUserKey,
+                                             final PublicKey eventAuthorityKey,
+                                             final PublicKey programKey,
+                                             final PublicKey operator) {
+    final var keys = setYieldOperatorKeys(
+      signerKey,
+      signerUserKey,
+      eventAuthorityKey,
+      programKey
+    );
+    return setYieldOperator(invokedOfferbookProgramMeta, keys, operator);
+  }
+
+  /// @param operator: Option<publicKey>
+  public static Instruction setYieldOperator(final AccountMeta invokedOfferbookProgramMeta,
+                                             final List<AccountMeta> keys,
+                                             final PublicKey operator) {
+    final byte[] _data = new byte[
+    8
+    + (operator == null ? 1 : 33)
+    ];
+    int i = SET_YIELD_OPERATOR_DISCRIMINATOR.write(_data, 0);
+    SerDeUtil.writeOptional(1, operator, _data, i);
+
+    return Instruction.createInstruction(invokedOfferbookProgramMeta, keys, _data);
+  }
+
+  /// @param operator: Option<publicKey>
+  public record SetYieldOperatorIxData(Discriminator discriminator, PublicKey operator) implements SerDe {
+
+    public static SetYieldOperatorIxData read(final Instruction instruction) {
+      return read(instruction.copyData(), 0);
+    }
+
+    public static final int OPERATOR_OFFSET = 9;
+
+    public static SetYieldOperatorIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final PublicKey operator;
+      if (SerDeUtil.isAbsent(1, _data, i)) {
+        operator = null;
+      } else {
+        ++i;
+        operator = readPubKey(_data, i);
+      }
+      return new SetYieldOperatorIxData(discriminator, operator);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      i += SerDeUtil.writeOptional(1, operator, _data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 8 + (operator == null ? 1 : (1 + 32));
     }
   }
 

@@ -17,6 +17,7 @@ public sealed interface OfferbookEvent extends SerDe permits
     LoanExtendabilityUpdated,
     LoanExtended,
     LoanExtendedV2,
+    LoanExtendedV3,
     LoanPartiallyRepaid,
     LoanRepaid,
     LoanRepaidV1,
@@ -36,7 +37,9 @@ public sealed interface OfferbookEvent extends SerDe permits
     ProtocolFee,
     RefereeReward,
     ReferralReward,
-    YieldEnabledUpdated {
+    UserFeeProfileUpdated,
+    YieldEnabledUpdated,
+    YieldOperatorUpdated {
 
   static OfferbookEvent read(final byte[] _data, final int _offset) {
     if (EscrowDeposit.DISCRIMINATOR.equals(_data, _offset)) {
@@ -65,6 +68,8 @@ public sealed interface OfferbookEvent extends SerDe permits
       return LoanExtended.read(_data, _offset);
     } else if (LoanExtendedV2.DISCRIMINATOR.equals(_data, _offset)) {
       return LoanExtendedV2.read(_data, _offset);
+    } else if (LoanExtendedV3.DISCRIMINATOR.equals(_data, _offset)) {
+      return LoanExtendedV3.read(_data, _offset);
     } else if (LoanPartiallyRepaid.DISCRIMINATOR.equals(_data, _offset)) {
       return LoanPartiallyRepaid.read(_data, _offset);
     } else if (LoanRepaid.DISCRIMINATOR.equals(_data, _offset)) {
@@ -103,8 +108,12 @@ public sealed interface OfferbookEvent extends SerDe permits
       return RefereeReward.read(_data, _offset);
     } else if (ReferralReward.DISCRIMINATOR.equals(_data, _offset)) {
       return ReferralReward.read(_data, _offset);
+    } else if (UserFeeProfileUpdated.DISCRIMINATOR.equals(_data, _offset)) {
+      return UserFeeProfileUpdated.read(_data, _offset);
     } else if (YieldEnabledUpdated.DISCRIMINATOR.equals(_data, _offset)) {
       return YieldEnabledUpdated.read(_data, _offset);
+    } else if (YieldOperatorUpdated.DISCRIMINATOR.equals(_data, _offset)) {
+      return YieldOperatorUpdated.read(_data, _offset);
     } else {
       return null;
     }

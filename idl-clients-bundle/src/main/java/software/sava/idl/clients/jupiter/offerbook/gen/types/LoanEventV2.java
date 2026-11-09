@@ -23,9 +23,15 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param collateralAccountBump: u8
 /// @param extendable: u8
 /// @param extensionCount: u8
-/// @param repaidPrincipal: u64 Principal paid down ahead of settlement. `principal_amount` stays the
-///                        amount originally disbursed, so a consumer wanting what is still owed
-///                        must read `principal_amount - repaid_principal + interest`.
+/// @param repaidPrincipal: u64 Principal paid down ahead of settlement in the current period. What is
+///                        still owed is `principal_amount - repaid_principal + interest`.
+///
+///                        Per-period, not lifetime: `principal_amount`, `repaid_principal`,
+///                        `collateral_amount` and `interest` are all rebased at each extension
+///                        (`LoanExtendedV2`), which folds the paydown into `principal_amount` and
+///                        resets this field to 0. A consumer tracking the original disbursement or
+///                        cumulative repayment must keep it from `LoanCreatedV2` and by summing
+///                        `LoanPartiallyRepaid.amount`, not read it off the snapshot.
 public record LoanEventV2(PublicKey lender,
                           PublicKey borrower,
                           PublicKey creator,

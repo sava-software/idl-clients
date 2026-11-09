@@ -11,7 +11,9 @@ import software.sava.rpc.json.http.response.AccountInfo;
 import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
@@ -26,6 +28,9 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param createdAt: u64
 /// @param bump: u8
 /// @param flags: u8
+/// @param originationFeeBps: u16
+/// @param repayFeeBps: u16
+/// @param liquidationFeeBps: u16
 public record User(PublicKey _address,
                    Discriminator discriminator,
                    PublicKey owner,
@@ -41,11 +46,17 @@ public record User(PublicKey _address,
                    int bump,
                    int flags,
                    byte[] padding,
+                   PublicKey yieldOperator,
+                   int originationFeeBps,
+                   int repayFeeBps,
+                   int liquidationFeeBps,
+                   byte[] padding2,
                    byte[] reserved) implements SerDe {
 
   public static final int BYTES = 208;
   public static final int PADDING_LEN = 6;
-  public static final int RESERVED_LEN = 64;
+  public static final int PADDING_2_LEN = 2;
+  public static final int RESERVED_LEN = 24;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(159, 117, 95, 227, 239, 151, 58, 236);
@@ -64,7 +75,12 @@ public record User(PublicKey _address,
   public static final int BUMP_OFFSET = 136;
   public static final int FLAGS_OFFSET = 137;
   public static final int PADDING_OFFSET = 138;
-  public static final int RESERVED_OFFSET = 144;
+  public static final int YIELD_OPERATOR_OFFSET = 144;
+  public static final int ORIGINATION_FEE_BPS_OFFSET = 176;
+  public static final int REPAY_FEE_BPS_OFFSET = 178;
+  public static final int LIQUIDATION_FEE_BPS_OFFSET = 180;
+  public static final int PADDING_2_OFFSET = 182;
+  public static final int RESERVED_OFFSET = 184;
 
   public static Filter createOwnerFilter(final PublicKey owner) {
     return Filter.createMemCompFilter(OWNER_OFFSET, owner);
@@ -130,6 +146,28 @@ public record User(PublicKey _address,
     return Filter.createMemCompFilter(FLAGS_OFFSET, new byte[]{(byte) flags});
   }
 
+  public static Filter createYieldOperatorFilter(final PublicKey yieldOperator) {
+    return Filter.createMemCompFilter(YIELD_OPERATOR_OFFSET, yieldOperator);
+  }
+
+  public static Filter createOriginationFeeBpsFilter(final int originationFeeBps) {
+    final byte[] _data = new byte[2];
+    putInt16LE(_data, 0, originationFeeBps);
+    return Filter.createMemCompFilter(ORIGINATION_FEE_BPS_OFFSET, _data);
+  }
+
+  public static Filter createRepayFeeBpsFilter(final int repayFeeBps) {
+    final byte[] _data = new byte[2];
+    putInt16LE(_data, 0, repayFeeBps);
+    return Filter.createMemCompFilter(REPAY_FEE_BPS_OFFSET, _data);
+  }
+
+  public static Filter createLiquidationFeeBpsFilter(final int liquidationFeeBps) {
+    final byte[] _data = new byte[2];
+    putInt16LE(_data, 0, liquidationFeeBps);
+    return Filter.createMemCompFilter(LIQUIDATION_FEE_BPS_OFFSET, _data);
+  }
+
   public static User read(final byte[] _data, final int _offset) {
     return read(null, _data, _offset);
   }
@@ -190,7 +228,17 @@ public record User(PublicKey _address,
     ++i;
     final var padding = new byte[6];
     i += SerDeUtil.readArray(padding, _data, i);
-    final var reserved = new byte[64];
+    final var yieldOperator = readPubKey(_data, i);
+    i += 32;
+    final var originationFeeBps = Short.toUnsignedInt(getInt16LE(_data, i));
+    i += 2;
+    final var repayFeeBps = Short.toUnsignedInt(getInt16LE(_data, i));
+    i += 2;
+    final var liquidationFeeBps = Short.toUnsignedInt(getInt16LE(_data, i));
+    i += 2;
+    final var padding2 = new byte[2];
+    i += SerDeUtil.readArray(padding2, _data, i);
+    final var reserved = new byte[24];
     SerDeUtil.readArray(reserved, _data, i);
     return new User(_address,
                     discriminator,
@@ -207,6 +255,11 @@ public record User(PublicKey _address,
                     bump,
                     flags,
                     padding,
+                    yieldOperator,
+                    originationFeeBps,
+                    repayFeeBps,
+                    liquidationFeeBps,
+                    padding2,
                     reserved);
   }
 
@@ -238,7 +291,16 @@ public record User(PublicKey _address,
     _data[i] = (byte) flags;
     ++i;
     i += SerDeUtil.writeArrayChecked(padding, 6, _data, i);
-    i += SerDeUtil.writeArrayChecked(reserved, 64, _data, i);
+    yieldOperator.write(_data, i);
+    i += 32;
+    putInt16LE(_data, i, originationFeeBps);
+    i += 2;
+    putInt16LE(_data, i, repayFeeBps);
+    i += 2;
+    putInt16LE(_data, i, liquidationFeeBps);
+    i += 2;
+    i += SerDeUtil.writeArrayChecked(padding2, 2, _data, i);
+    i += SerDeUtil.writeArrayChecked(reserved, 24, _data, i);
     return i - _offset;
   }
 

@@ -26,7 +26,9 @@ public sealed interface UpdateConfigAction extends RustEnum permits
   UpdateConfigAction.SetMaxApy,
   UpdateConfigAction.SetMaxDuration,
   UpdateConfigAction.SetMaxExpiry,
-  UpdateConfigAction.SetOperator {
+  UpdateConfigAction.SetOperator,
+  UpdateConfigAction.AddGatedCollection,
+  UpdateConfigAction.RemoveGatedCollection {
 
   static UpdateConfigAction read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -49,6 +51,8 @@ public sealed interface UpdateConfigAction extends RustEnum permits
       case 14 -> SetMaxDuration.read(_data, i);
       case 15 -> SetMaxExpiry.read(_data, i);
       case 16 -> SetOperator.read(_data, i);
+      case 17 -> AddGatedCollection.read(_data, i);
+      case 18 -> RemoveGatedCollection.read(_data, i);
       default -> null;
     };
   }
@@ -253,6 +257,30 @@ public sealed interface UpdateConfigAction extends RustEnum permits
     @Override
     public int ordinal() {
       return 16;
+    }
+  }
+
+  record AddGatedCollection(PublicKey val) implements EnumPublicKey, UpdateConfigAction {
+
+    public static AddGatedCollection read(final byte[] _data, int i) {
+      return new AddGatedCollection(readPubKey(_data, i));
+    }
+
+    @Override
+    public int ordinal() {
+      return 17;
+    }
+  }
+
+  record RemoveGatedCollection(PublicKey val) implements EnumPublicKey, UpdateConfigAction {
+
+    public static RemoveGatedCollection read(final byte[] _data, int i) {
+      return new RemoveGatedCollection(readPubKey(_data, i));
+    }
+
+    @Override
+    public int ordinal() {
+      return 18;
     }
   }
 }

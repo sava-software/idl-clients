@@ -1,16 +1,16 @@
 {
   "program": "offerbkFMvVfpQhL8ZQ5iromnjct5rz3r52B9ewu3ie",
   "deployed": "metadata",
-  "lastDeploySlot": 466906222,
+  "lastDeploySlot": 467111496,
   "programDataState": "upgradeable",
   "programDataStateSlot": 440077852,
-  "programDataPayloadSha256": "83f9bdd7e6c7e3dfa75e865d2cb93425b106abbc7b17470bbd00c6998885302d",
+  "programDataPayloadSha256": "4ce4b667b9ac0f38c47be8cb23fcd36ac61b415e3c9767b7f0e77159993ed84b",
   "programDataPayloadLength": 1889256,
   "ignorePdas": ["loan","offer","protocol_fee_token_account"],
   "channels": {
     "metadata": {
       "origin": "FS2xtZ5qzmFc5xB24uXVhu67EiWeDegaeAeRk68xNBRF",
-      "hash": "3ea4fa2ea16404a64e98a21f87d1dcaae65d5c30320d611aa6fa74b0804c387c",
+      "hash": "bf8573ce1209e02263105bde7ca89e48ad20a17704c7f77362da94b557d0abd1",
       "matchesDeployed": true,
       "verbatim": "idl.json"
     }

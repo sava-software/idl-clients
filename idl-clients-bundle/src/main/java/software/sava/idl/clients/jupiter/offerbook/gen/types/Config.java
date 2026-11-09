@@ -60,13 +60,15 @@ public record Config(PublicKey _address,
                      int disableRepayment,
                      byte[] padding2,
                      PublicKey operator,
+                     PublicKey[] gatedCollections,
                      byte[] reserved) implements SerDe {
 
   public static final int BYTES = 536;
   public static final int PADDING_LEN = 6;
   public static final int PADDING_1_LEN = 6;
   public static final int PADDING_2_LEN = 2;
-  public static final int RESERVED_LEN = 368;
+  public static final int GATED_COLLECTIONS_LEN = 4;
+  public static final int RESERVED_LEN = 240;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(155, 12, 170, 224, 30, 250, 204, 130);
@@ -94,7 +96,8 @@ public record Config(PublicKey _address,
   public static final int DISABLE_REPAYMENT_OFFSET = 133;
   public static final int PADDING_2_OFFSET = 134;
   public static final int OPERATOR_OFFSET = 136;
-  public static final int RESERVED_OFFSET = 168;
+  public static final int GATED_COLLECTIONS_OFFSET = 168;
+  public static final int RESERVED_OFFSET = 296;
 
   public static Filter createAdminFilter(final PublicKey admin) {
     return Filter.createMemCompFilter(ADMIN_OFFSET, admin);
@@ -274,7 +277,9 @@ public record Config(PublicKey _address,
     i += SerDeUtil.readArray(padding2, _data, i);
     final var operator = readPubKey(_data, i);
     i += 32;
-    final var reserved = new byte[368];
+    final var gatedCollections = new PublicKey[4];
+    i += SerDeUtil.readArray(gatedCollections, _data, i);
+    final var reserved = new byte[240];
     SerDeUtil.readArray(reserved, _data, i);
     return new Config(_address,
                       discriminator,
@@ -300,6 +305,7 @@ public record Config(PublicKey _address,
                       disableRepayment,
                       padding2,
                       operator,
+                      gatedCollections,
                       reserved);
   }
 
@@ -347,7 +353,8 @@ public record Config(PublicKey _address,
     i += SerDeUtil.writeArrayChecked(padding2, 2, _data, i);
     operator.write(_data, i);
     i += 32;
-    i += SerDeUtil.writeArrayChecked(reserved, 368, _data, i);
+    i += SerDeUtil.writeArrayChecked(gatedCollections, 4, _data, i);
+    i += SerDeUtil.writeArrayChecked(reserved, 240, _data, i);
     return i - _offset;
   }
 
