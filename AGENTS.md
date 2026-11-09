@@ -586,7 +586,12 @@ savaGithubPackagesPassword=GITHUB_TOKEN
   `check`; the rules and the update procedure are sava-build's README, "Verifying sava
   artifacts". Check a dependency or policy change with
   `./gradlew --no-daemon --no-configuration-cache check resolveVerificationTools`: a reused
-  configuration-cache entry resolves nothing and so verifies nothing. A new BOM or parent POM
+  configuration-cache entry resolves nothing and so verifies nothing. A policy edit also runs
+  `./gradlew --no-daemon verificationKeyStatus` from the root, which asks the key servers
+  whether a key the policy trusts was revoked or has expired and so sits outside `check`. It
+  fails on a revoked key still trusted without a version, which the README's "Key status"
+  answers by the revocation's reason, and on a key whose status a server left undecided, which
+  only a repeated run, once the servers answer, settles. A new BOM or parent POM
   is validated once more from an empty `GRADLE_USER_HOME`, since a warm cache hides metadata a
   cold one fetches, and an IntelliJ sync with download sources on resolves the Gradle sources
   zip, Groovy's sources and plugin sources jars through the same policy (README steps 4 and
@@ -753,8 +758,9 @@ whose mutated code calls it. Test-only edits owe the suites whose mutated code
 those tests exercise. Doc and comment changes owe no suite. A
 build-script change owes one only when it changes what PIT is given: here, a
 `hardening {}` block, a dependency or the Java version (`gradle/sava.properties`
-pins the BOM and the Java version), or the sava-build pin in
-`settings.gradle.kts`.
+pins the BOM and the Java version), or a sava-build bump whose changed files
+touch the PIT task or what PIT is given, as the compare's file list and its
+build-file patches show (HARDENING.md, "Lifecycle").
 
 **Suite totals are the build's to print**, not this file's: every
 `pitest<Suite>` run ends by printing what the suite detected and what survived,
@@ -763,8 +769,11 @@ the latest full report without running PIT.
 
 **Who owns certification.** CI runs `check`, which includes no mutation suite.
 `:hardeningCertifyAll` (the root manifest over both modules' receipts) and a
-local `fuzzAll` per module are therefore release-checklist items here, not CI's.
-Both refuse, once Git reads clean, any source input the tree does not bind,
+local `fuzzAll` per module are therefore release-checklist items here, not CI's,
+and so is `verificationKeyStatus` from the root, which HARDENING.md names before
+a release wherever a dependency verification policy is committed and which
+`check` never runs, since it asks the key servers. The first two refuse, once
+Git reads clean, any source input the tree does not bind,
 including git-ignored files under `main` or `test` source roots. The local
 drivers live in `scratch`, which neither reads, so certification can run from
 the clean primary checkout (see "Exclusion ownership" below).
