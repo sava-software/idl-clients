@@ -74,9 +74,10 @@ public interface ScopeProgramClient {
   /// pulls an account out of `extra_accounts`: a plain read meta for one of those makes
   /// the handler take the following token's base account as that type's first extra
   /// account — an asset mint for most, the vault's share mint for `Securitize`, the
-  /// klend program for `KlendCTokenExchangeRate`, the canary program for `Canary`, or the market's return
-  /// model storage for `ExponentTranching` — which fails the whole transaction rather
-  /// than just that entry. An `ExponentTranching` token can be refreshed through
+  /// klend program for `KlendCTokenExchangeRate`, the canary program for `Canary` and
+  /// `CanaryBreakers`, or the market's return model storage for `ExponentTranching` —
+  /// which fails the whole transaction rather than just that entry. An
+  /// `ExponentTranching` token can be refreshed through
   /// [#refreshPriceListExtraAccounts(OracleMappings, int\[\], Map)] instead.
   /// Deprecated types still consume their base account before the program rejects
   /// their price, so they also receive one read-only meta.
@@ -136,7 +137,7 @@ public interface ScopeProgramClient {
             + " requires the vault's share mint and asset vault and its RedStone price account as well.");
         case KlendCTokenExchangeRate ->
             throw new IllegalStateException(oracleType + " requires the klend program and lending market as well.");
-        case Canary -> throw new IllegalStateException(oracleType
+        case Canary, CanaryBreakers -> throw new IllegalStateException(oracleType
             + " requires the canary program (CanarFxHDSnbrPmrE79Qq6hL2p7ZMyyV4ZLTKQ6g7tpK on mainnet) as well.");
         case ExponentTranching -> exponentTranchingAccounts(token, priceAccount, exponentTranchingAccounts);
         case Unused,

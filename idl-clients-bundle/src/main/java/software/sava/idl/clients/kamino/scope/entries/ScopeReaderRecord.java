@@ -214,6 +214,7 @@ record ScopeReaderRecord(ScopeEntry[] entries,
     return switch (oracleType) {
       case AdrenaLp -> new AdrenaLp(i, priceAccount, emaTypes);
       case Canary -> new Canary(i, priceAccount, emaTypes);
+      case CanaryBreakers -> new CanaryBreakers(i, priceAccount, emaTypes);
       case CappedFloored -> {
         final var cappedFlooredData = CappedFlooredData.read(generic[i], 0);
         final var sourceEntry = entry(cappedFlooredData.sourceEntry());

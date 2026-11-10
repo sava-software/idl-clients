@@ -218,7 +218,14 @@ public sealed interface Swap extends RustEnum permits
   Swap.DrFraudsworthSplBuy,
   Swap.DrFraudsworthSplSell,
   Swap.DrFraudsworthVaultConvert,
-  Swap.BisonFiMarketBackedV2 {
+  Swap.BisonFiMarketBackedV2,
+  Swap.GoonFiV4,
+  Swap.BisonFiMarketBackedV3,
+  Swap.KipseliV4,
+  Swap.ScorchV2,
+  Swap.TesseraVV3,
+  Swap.QuantumV3,
+  Swap.MeteoraDlmmPro {
 
   static Swap read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -428,6 +435,13 @@ public sealed interface Swap extends RustEnum permits
       case 201 -> DrFraudsworthSplSell.INSTANCE;
       case 202 -> DrFraudsworthVaultConvert.INSTANCE;
       case 203 -> BisonFiMarketBackedV2.read(_data, i);
+      case 204 -> GoonFiV4.read(_data, i);
+      case 205 -> BisonFiMarketBackedV3.read(_data, i);
+      case 206 -> KipseliV4.read(_data, i);
+      case 207 -> ScorchV2.read(_data, i);
+      case 208 -> TesseraVV3.read(_data, i);
+      case 209 -> QuantumV3.read(_data, i);
+      case 210 -> MeteoraDlmmPro.read(_data, i);
       default -> null;
     };
   }
@@ -3668,6 +3682,99 @@ public sealed interface Swap extends RustEnum permits
     @Override
     public int ordinal() {
       return 203;
+    }
+  }
+
+  record GoonFiV4(boolean val) implements EnumBool, Swap {
+
+    public static final GoonFiV4 TRUE = new GoonFiV4(true);
+    public static final GoonFiV4 FALSE = new GoonFiV4(false);
+
+    public static GoonFiV4 read(final byte[] _data, int i) {
+      return _data[i] == 1 ? GoonFiV4.TRUE : GoonFiV4.FALSE;
+    }
+
+    @Override
+    public int ordinal() {
+      return 204;
+    }
+  }
+
+  record BisonFiMarketBackedV3(boolean val) implements EnumBool, Swap {
+
+    public static final BisonFiMarketBackedV3 TRUE = new BisonFiMarketBackedV3(true);
+    public static final BisonFiMarketBackedV3 FALSE = new BisonFiMarketBackedV3(false);
+
+    public static BisonFiMarketBackedV3 read(final byte[] _data, int i) {
+      return _data[i] == 1 ? BisonFiMarketBackedV3.TRUE : BisonFiMarketBackedV3.FALSE;
+    }
+
+    @Override
+    public int ordinal() {
+      return 205;
+    }
+  }
+
+  record KipseliV4(boolean val) implements EnumBool, Swap {
+
+    public static final KipseliV4 TRUE = new KipseliV4(true);
+    public static final KipseliV4 FALSE = new KipseliV4(false);
+
+    public static KipseliV4 read(final byte[] _data, int i) {
+      return _data[i] == 1 ? KipseliV4.TRUE : KipseliV4.FALSE;
+    }
+
+    @Override
+    public int ordinal() {
+      return 206;
+    }
+  }
+
+  record ScorchV2(BigInteger val) implements EnumInt128, Swap {
+
+    public static ScorchV2 read(final byte[] _data, int i) {
+      return new ScorchV2(getUInt128LE(_data, i));
+    }
+
+    @Override
+    public int ordinal() {
+      return 207;
+    }
+  }
+
+  record TesseraVV3(Side val) implements SerDeEnum, Swap {
+
+    public static TesseraVV3 read(final byte[] _data, final int _offset) {
+      return new TesseraVV3(Side.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 208;
+    }
+  }
+
+  record QuantumV3(Side val) implements SerDeEnum, Swap {
+
+    public static QuantumV3 read(final byte[] _data, final int _offset) {
+      return new QuantumV3(Side.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 209;
+    }
+  }
+
+  record MeteoraDlmmPro(RemainingAccountsInfo val) implements SerDeEnum, Swap {
+
+    public static MeteoraDlmmPro read(final byte[] _data, final int _offset) {
+      return new MeteoraDlmmPro(RemainingAccountsInfo.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 210;
     }
   }
 }

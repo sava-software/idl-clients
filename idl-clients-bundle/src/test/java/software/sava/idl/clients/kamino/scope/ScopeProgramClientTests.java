@@ -88,9 +88,9 @@ final class ScopeProgramClientTests {
   /// takes a mint account, so a token of that type anywhere but last in the batch
   /// makes the handler read the *next* token's base account as its mint and fail
   /// the whole transaction. `KlendCTokenExchangeRate` pulls the klend program and
-  /// lending market the same way, `Canary` the canary program it CPIs into, and
-  /// `ExponentTranching` five accounts and then the market's `get_sy_state` list for
-  /// its `update_market` CPI.
+  /// lending market the same way, `Canary` and `CanaryBreakers` the canary program
+  /// they CPI into, and `ExponentTranching` five accounts and then the market's
+  /// `get_sy_state` list for its `update_market` CPI.
   @Test
   void refreshPriceListExtraAccountsRejectsTypesThatConsumeExtraAccounts() {
     for (final var type : EXTRA_ACCOUNT_CONSUMERS) {
@@ -101,12 +101,16 @@ final class ScopeProgramClientTests {
           type.name());
     }
 
-    // Canary's one missing account is a constant, so the rejection names it
-    final var canary = mappings();
-    canary.priceTypes()[1] = (byte) OracleType.Canary.ordinal();
-    final var ex = assertThrows(IllegalStateException.class,
-        () -> ScopeProgramClient.refreshPriceListExtraAccounts(canary, new int[]{1}));
-    assertTrue(ex.getMessage().contains("CanarFxHDSnbrPmrE79Qq6hL2p7ZMyyV4ZLTKQ6g7tpK"), ex.getMessage());
+    // the one account a Canary feed's refresh is missing is a constant, so the rejection
+    // names it, under the type it rejected: a breaker feed runs the same CPI
+    for (final var type : new OracleType[]{OracleType.Canary, OracleType.CanaryBreakers}) {
+      final var canary = mappings();
+      canary.priceTypes()[1] = (byte) type.ordinal();
+      final var ex = assertThrows(IllegalStateException.class,
+          () -> ScopeProgramClient.refreshPriceListExtraAccounts(canary, new int[]{1}));
+      assertEquals(type + " requires the canary program (CanarFxHDSnbrPmrE79Qq6hL2p7ZMyyV4ZLTKQ6g7tpK on mainnet)"
+          + " as well.", ex.getMessage());
+    }
 
     // ExponentTranching's are mostly per market, so the rejection names the two
     // constants and the writability the CPI needs from the outer instruction, which
@@ -151,10 +155,10 @@ final class ScopeProgramClientTests {
     }
   }
 
-  /// Every arm of the program's `refresh_prices` dispatch (Scope 0.44.0,
+  /// Every arm of the program's `refresh_prices` dispatch (Scope 0.45.0,
   /// `oracles/mod.rs::get_non_zero_price`) that takes from `extra_accounts`.
   private static final OracleType[] EXTRA_ACCOUNT_CONSUMERS = {
-      OracleType.Canary,
+      OracleType.Canary, OracleType.CanaryBreakers,
       OracleType.ExponentTranching,
       OracleType.JupiterLpFetch,
       OracleType.KlendCTokenExchangeRate,

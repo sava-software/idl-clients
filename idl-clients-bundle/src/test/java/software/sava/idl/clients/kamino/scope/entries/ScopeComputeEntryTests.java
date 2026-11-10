@@ -781,6 +781,35 @@ final class ScopeComputeEntryTests {
     assertEquals(canary, configured.parse().scopeEntry(9));
   }
 
+  /// `CanaryBreakers` maps a Canary feed exactly as `Canary` does and differs only in
+  /// what its refresh accepts, a price of exactly 0 or 1 at exponent 0, so the reader
+  /// has to keep the two apart: a breaker slot is its own record, never a `Canary`.
+  /// The slot's generic data is never read for the type, and the record has no field
+  /// for a ref price, so neither changes how the entry decodes.
+  @Test
+  void canaryBreakersCarriesTheFeedAndKeepsItsOwnType() {
+    final var entries = new Mappings()
+        .slot(9, OracleType.CanaryBreakers)
+        .bitmask(9, 1) // Ema1h
+        .parse();
+
+    final var breakers = assertInstanceOf(CanaryBreakers.class, entries.scopeEntry(9));
+    assertEquals(9, breakers.index());
+    assertEquals(key(10), breakers.oracle());
+    assertEquals(OracleType.CanaryBreakers, breakers.oracleType());
+    assertEquals(Set.of(EmaType.Ema1h), breakers.emaTypes());
+    assertTrue(breakers.twapEnabled());
+
+    final var configured = new Mappings()
+        .slot(1, OracleType.Securitize)
+        .slot(9, OracleType.CanaryBreakers)
+        .bitmask(9, 1)
+        .refPrice(9, 1)
+        .tolerance(9, 300);
+    Arrays.fill(configured.generic[9], (byte) 0x5A);
+    assertEquals(breakers, configured.parse().scopeEntry(9));
+  }
+
   /// `KlendCTokenExchangeRate` prices a klend cToken's exchange rate: the mapped
   /// account is the klend Reserve, and the mapping stores nothing else for the
   /// type — the refresh reads the rate out of CPI return data — so stray bytes in
@@ -1012,7 +1041,7 @@ final class ScopeComputeEntryTests {
         OracleType.ChainlinkExchangeRate, OracleType.ChainlinkNAV,
         OracleType.RedStone, OracleType.Securitize,
         OracleType.Token2022Multiplier, OracleType.KlendCTokenExchangeRate,
-        OracleType.Canary, OracleType.ExponentTranching
+        OracleType.Canary, OracleType.ExponentTranching, OracleType.CanaryBreakers
     };
     final var mappings = new Mappings();
     for (int i = 0; i < types.length; ++i) {

@@ -27,7 +27,10 @@ public sealed interface CandidateSwap extends RustEnum permits
   CandidateSwap.HumidiFiRouterV2,
   CandidateSwap.HumidiFiRouterV3,
   CandidateSwap.ZeroFiSwapV3,
-  CandidateSwap.BisonFiMarketBackedV2 {
+  CandidateSwap.BisonFiMarketBackedV2,
+  CandidateSwap.GoonFiV4,
+  CandidateSwap.BisonFiMarketBackedV3,
+  CandidateSwap.TesseraVV3 {
 
   static CandidateSwap read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -53,6 +56,9 @@ public sealed interface CandidateSwap extends RustEnum permits
       case 17 -> HumidiFiRouterV3.read(_data, i);
       case 18 -> ZeroFiSwapV3.INSTANCE;
       case 19 -> BisonFiMarketBackedV2.read(_data, i);
+      case 20 -> GoonFiV4.read(_data, i);
+      case 21 -> BisonFiMarketBackedV3.read(_data, i);
+      case 22 -> TesseraVV3.read(_data, i);
       default -> null;
     };
   }
@@ -550,6 +556,48 @@ public sealed interface CandidateSwap extends RustEnum permits
     @Override
     public int ordinal() {
       return 19;
+    }
+  }
+
+  record GoonFiV4(boolean val) implements EnumBool, CandidateSwap {
+
+    public static final GoonFiV4 TRUE = new GoonFiV4(true);
+    public static final GoonFiV4 FALSE = new GoonFiV4(false);
+
+    public static GoonFiV4 read(final byte[] _data, int i) {
+      return _data[i] == 1 ? GoonFiV4.TRUE : GoonFiV4.FALSE;
+    }
+
+    @Override
+    public int ordinal() {
+      return 20;
+    }
+  }
+
+  record BisonFiMarketBackedV3(boolean val) implements EnumBool, CandidateSwap {
+
+    public static final BisonFiMarketBackedV3 TRUE = new BisonFiMarketBackedV3(true);
+    public static final BisonFiMarketBackedV3 FALSE = new BisonFiMarketBackedV3(false);
+
+    public static BisonFiMarketBackedV3 read(final byte[] _data, int i) {
+      return _data[i] == 1 ? BisonFiMarketBackedV3.TRUE : BisonFiMarketBackedV3.FALSE;
+    }
+
+    @Override
+    public int ordinal() {
+      return 21;
+    }
+  }
+
+  record TesseraVV3(Side val) implements SerDeEnum, CandidateSwap {
+
+    public static TesseraVV3 read(final byte[] _data, final int _offset) {
+      return new TesseraVV3(Side.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 22;
     }
   }
 }

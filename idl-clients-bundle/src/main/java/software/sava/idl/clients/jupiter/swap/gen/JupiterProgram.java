@@ -2371,6 +2371,416 @@ public final class JupiterProgram {
     }
   }
 
+  public static final Discriminator ROUTE_WITH_ATTESTATION_DISCRIMINATOR = toDiscriminator(160, 117, 44, 52, 220, 77, 81, 64);
+
+  public static List<AccountMeta> routeWithAttestationKeys(final AccountMeta invokedJupiterProgramMeta,
+                                                           final PublicKey userTransferAuthorityKey,
+                                                           final PublicKey userSourceTokenAccountKey,
+                                                           final PublicKey userDestinationTokenAccountKey,
+                                                           final PublicKey sourceMintKey,
+                                                           final PublicKey destinationMintKey,
+                                                           final PublicKey sourceTokenProgramKey,
+                                                           final PublicKey destinationTokenProgramKey,
+                                                           final PublicKey destinationTokenAccountKey,
+                                                           final PublicKey eventAuthorityKey,
+                                                           final PublicKey programKey) {
+    return List.of(
+      createReadOnlySigner(userTransferAuthorityKey),
+      createWrite(userSourceTokenAccountKey),
+      createWrite(userDestinationTokenAccountKey),
+      createRead(sourceMintKey),
+      createRead(destinationMintKey),
+      createRead(sourceTokenProgramKey),
+      createRead(destinationTokenProgramKey),
+      createWrite(requireNonNullElse(destinationTokenAccountKey, invokedJupiterProgramMeta.publicKey())),
+      createRead(eventAuthorityKey),
+      createRead(programKey)
+    );
+  }
+
+  /// @param inAmount: u64
+  /// @param quotedOutAmount: u64
+  /// @param slippageBps: u16
+  /// @param platformFeeBps: u16
+  /// @param positiveSlippageBps: u16
+  public static Instruction routeWithAttestation(final AccountMeta invokedJupiterProgramMeta,
+                                                 final PublicKey userTransferAuthorityKey,
+                                                 final PublicKey userSourceTokenAccountKey,
+                                                 final PublicKey userDestinationTokenAccountKey,
+                                                 final PublicKey sourceMintKey,
+                                                 final PublicKey destinationMintKey,
+                                                 final PublicKey sourceTokenProgramKey,
+                                                 final PublicKey destinationTokenProgramKey,
+                                                 final PublicKey destinationTokenAccountKey,
+                                                 final PublicKey eventAuthorityKey,
+                                                 final PublicKey programKey,
+                                                 final long inAmount,
+                                                 final long quotedOutAmount,
+                                                 final int slippageBps,
+                                                 final int platformFeeBps,
+                                                 final int positiveSlippageBps,
+                                                 final RoutePlanStepV2[] routePlan,
+                                                 final byte[] attestation) {
+    final var keys = routeWithAttestationKeys(
+      invokedJupiterProgramMeta,
+      userTransferAuthorityKey,
+      userSourceTokenAccountKey,
+      userDestinationTokenAccountKey,
+      sourceMintKey,
+      destinationMintKey,
+      sourceTokenProgramKey,
+      destinationTokenProgramKey,
+      destinationTokenAccountKey,
+      eventAuthorityKey,
+      programKey
+    );
+    return routeWithAttestation(
+      invokedJupiterProgramMeta,
+      keys,
+      inAmount,
+      quotedOutAmount,
+      slippageBps,
+      platformFeeBps,
+      positiveSlippageBps,
+      routePlan,
+      attestation
+    );
+  }
+
+  /// @param inAmount: u64
+  /// @param quotedOutAmount: u64
+  /// @param slippageBps: u16
+  /// @param platformFeeBps: u16
+  /// @param positiveSlippageBps: u16
+  public static Instruction routeWithAttestation(final AccountMeta invokedJupiterProgramMeta,
+                                                 final List<AccountMeta> keys,
+                                                 final long inAmount,
+                                                 final long quotedOutAmount,
+                                                 final int slippageBps,
+                                                 final int platformFeeBps,
+                                                 final int positiveSlippageBps,
+                                                 final RoutePlanStepV2[] routePlan,
+                                                 final byte[] attestation) {
+    final byte[] _data = new byte[30 + SerDeUtil.lenVector(4, routePlan) + SerDeUtil.lenArray(attestation)];
+    int i = ROUTE_WITH_ATTESTATION_DISCRIMINATOR.write(_data, 0);
+    putInt64LE(_data, i, inAmount);
+    i += 8;
+    putInt64LE(_data, i, quotedOutAmount);
+    i += 8;
+    putInt16LE(_data, i, slippageBps);
+    i += 2;
+    putInt16LE(_data, i, platformFeeBps);
+    i += 2;
+    putInt16LE(_data, i, positiveSlippageBps);
+    i += 2;
+    i += SerDeUtil.writeVector(4, routePlan, _data, i);
+    SerDeUtil.writeArrayChecked(attestation, 74, _data, i);
+
+    return Instruction.createInstruction(invokedJupiterProgramMeta, keys, _data);
+  }
+
+  /// @param inAmount: u64
+  /// @param quotedOutAmount: u64
+  /// @param slippageBps: u16
+  /// @param platformFeeBps: u16
+  /// @param positiveSlippageBps: u16
+  public record RouteWithAttestationIxData(Discriminator discriminator,
+                                           long inAmount,
+                                           long quotedOutAmount,
+                                           int slippageBps,
+                                           int platformFeeBps,
+                                           int positiveSlippageBps,
+                                           RoutePlanStepV2[] routePlan,
+                                           byte[] attestation) implements SerDe {
+
+    public static RouteWithAttestationIxData read(final Instruction instruction) {
+      return read(instruction.copyData(), 0);
+    }
+
+    public static final int ATTESTATION_LEN = 74;
+    public static final int IN_AMOUNT_OFFSET = 8;
+    public static final int QUOTED_OUT_AMOUNT_OFFSET = 16;
+    public static final int SLIPPAGE_BPS_OFFSET = 24;
+    public static final int PLATFORM_FEE_BPS_OFFSET = 26;
+    public static final int POSITIVE_SLIPPAGE_BPS_OFFSET = 28;
+    public static final int ROUTE_PLAN_OFFSET = 30;
+
+    public static RouteWithAttestationIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var inAmount = getInt64LE(_data, i);
+      i += 8;
+      final var quotedOutAmount = getInt64LE(_data, i);
+      i += 8;
+      final var slippageBps = Short.toUnsignedInt(getInt16LE(_data, i));
+      i += 2;
+      final var platformFeeBps = Short.toUnsignedInt(getInt16LE(_data, i));
+      i += 2;
+      final var positiveSlippageBps = Short.toUnsignedInt(getInt16LE(_data, i));
+      i += 2;
+      final var routePlan = SerDeUtil.readVector(4, RoutePlanStepV2.class, RoutePlanStepV2::read, _data, i);
+      i += SerDeUtil.lenVector(4, routePlan);
+      final var attestation = new byte[74];
+      SerDeUtil.readArray(attestation, _data, i);
+      return new RouteWithAttestationIxData(discriminator,
+                                            inAmount,
+                                            quotedOutAmount,
+                                            slippageBps,
+                                            platformFeeBps,
+                                            positiveSlippageBps,
+                                            routePlan,
+                                            attestation);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt64LE(_data, i, inAmount);
+      i += 8;
+      putInt64LE(_data, i, quotedOutAmount);
+      i += 8;
+      putInt16LE(_data, i, slippageBps);
+      i += 2;
+      putInt16LE(_data, i, platformFeeBps);
+      i += 2;
+      putInt16LE(_data, i, positiveSlippageBps);
+      i += 2;
+      i += SerDeUtil.writeVector(4, routePlan, _data, i);
+      i += SerDeUtil.writeArrayChecked(attestation, 74, _data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 8 + 8
+           + 8
+           + 2
+           + 2
+           + 2
+           + SerDeUtil.lenVector(4, routePlan)
+           + SerDeUtil.lenArray(attestation);
+    }
+  }
+
+  public static final Discriminator SHARED_ACCOUNTS_ROUTE_WITH_ATTESTATION_DISCRIMINATOR = toDiscriminator(37, 46, 249, 126, 201, 162, 56, 202);
+
+  public static List<AccountMeta> sharedAccountsRouteWithAttestationKeys(final PublicKey programAuthorityKey,
+                                                                         final PublicKey userTransferAuthorityKey,
+                                                                         final PublicKey sourceTokenAccountKey,
+                                                                         final PublicKey programSourceTokenAccountKey,
+                                                                         final PublicKey programDestinationTokenAccountKey,
+                                                                         final PublicKey destinationTokenAccountKey,
+                                                                         final PublicKey sourceMintKey,
+                                                                         final PublicKey destinationMintKey,
+                                                                         final PublicKey sourceTokenProgramKey,
+                                                                         final PublicKey destinationTokenProgramKey,
+                                                                         final PublicKey eventAuthorityKey,
+                                                                         final PublicKey programKey) {
+    return List.of(
+      createRead(programAuthorityKey),
+      createReadOnlySigner(userTransferAuthorityKey),
+      createWrite(sourceTokenAccountKey),
+      createWrite(programSourceTokenAccountKey),
+      createWrite(programDestinationTokenAccountKey),
+      createWrite(destinationTokenAccountKey),
+      createRead(sourceMintKey),
+      createRead(destinationMintKey),
+      createRead(sourceTokenProgramKey),
+      createRead(destinationTokenProgramKey),
+      createRead(eventAuthorityKey),
+      createRead(programKey)
+    );
+  }
+
+  /// @param id: u8
+  /// @param inAmount: u64
+  /// @param quotedOutAmount: u64
+  /// @param slippageBps: u16
+  /// @param platformFeeBps: u16
+  /// @param positiveSlippageBps: u16
+  public static Instruction sharedAccountsRouteWithAttestation(final AccountMeta invokedJupiterProgramMeta,
+                                                               final PublicKey programAuthorityKey,
+                                                               final PublicKey userTransferAuthorityKey,
+                                                               final PublicKey sourceTokenAccountKey,
+                                                               final PublicKey programSourceTokenAccountKey,
+                                                               final PublicKey programDestinationTokenAccountKey,
+                                                               final PublicKey destinationTokenAccountKey,
+                                                               final PublicKey sourceMintKey,
+                                                               final PublicKey destinationMintKey,
+                                                               final PublicKey sourceTokenProgramKey,
+                                                               final PublicKey destinationTokenProgramKey,
+                                                               final PublicKey eventAuthorityKey,
+                                                               final PublicKey programKey,
+                                                               final int id,
+                                                               final long inAmount,
+                                                               final long quotedOutAmount,
+                                                               final int slippageBps,
+                                                               final int platformFeeBps,
+                                                               final int positiveSlippageBps,
+                                                               final RoutePlanStepV2[] routePlan,
+                                                               final byte[] attestation) {
+    final var keys = sharedAccountsRouteWithAttestationKeys(
+      programAuthorityKey,
+      userTransferAuthorityKey,
+      sourceTokenAccountKey,
+      programSourceTokenAccountKey,
+      programDestinationTokenAccountKey,
+      destinationTokenAccountKey,
+      sourceMintKey,
+      destinationMintKey,
+      sourceTokenProgramKey,
+      destinationTokenProgramKey,
+      eventAuthorityKey,
+      programKey
+    );
+    return sharedAccountsRouteWithAttestation(
+      invokedJupiterProgramMeta,
+      keys,
+      id,
+      inAmount,
+      quotedOutAmount,
+      slippageBps,
+      platformFeeBps,
+      positiveSlippageBps,
+      routePlan,
+      attestation
+    );
+  }
+
+  /// @param id: u8
+  /// @param inAmount: u64
+  /// @param quotedOutAmount: u64
+  /// @param slippageBps: u16
+  /// @param platformFeeBps: u16
+  /// @param positiveSlippageBps: u16
+  public static Instruction sharedAccountsRouteWithAttestation(final AccountMeta invokedJupiterProgramMeta,
+                                                               final List<AccountMeta> keys,
+                                                               final int id,
+                                                               final long inAmount,
+                                                               final long quotedOutAmount,
+                                                               final int slippageBps,
+                                                               final int platformFeeBps,
+                                                               final int positiveSlippageBps,
+                                                               final RoutePlanStepV2[] routePlan,
+                                                               final byte[] attestation) {
+    final byte[] _data = new byte[31 + SerDeUtil.lenVector(4, routePlan) + SerDeUtil.lenArray(attestation)];
+    int i = SHARED_ACCOUNTS_ROUTE_WITH_ATTESTATION_DISCRIMINATOR.write(_data, 0);
+    _data[i] = (byte) id;
+    ++i;
+    putInt64LE(_data, i, inAmount);
+    i += 8;
+    putInt64LE(_data, i, quotedOutAmount);
+    i += 8;
+    putInt16LE(_data, i, slippageBps);
+    i += 2;
+    putInt16LE(_data, i, platformFeeBps);
+    i += 2;
+    putInt16LE(_data, i, positiveSlippageBps);
+    i += 2;
+    i += SerDeUtil.writeVector(4, routePlan, _data, i);
+    SerDeUtil.writeArrayChecked(attestation, 74, _data, i);
+
+    return Instruction.createInstruction(invokedJupiterProgramMeta, keys, _data);
+  }
+
+  /// @param id: u8
+  /// @param inAmount: u64
+  /// @param quotedOutAmount: u64
+  /// @param slippageBps: u16
+  /// @param platformFeeBps: u16
+  /// @param positiveSlippageBps: u16
+  public record SharedAccountsRouteWithAttestationIxData(Discriminator discriminator,
+                                                         int id,
+                                                         long inAmount,
+                                                         long quotedOutAmount,
+                                                         int slippageBps,
+                                                         int platformFeeBps,
+                                                         int positiveSlippageBps,
+                                                         RoutePlanStepV2[] routePlan,
+                                                         byte[] attestation) implements SerDe {
+
+    public static SharedAccountsRouteWithAttestationIxData read(final Instruction instruction) {
+      return read(instruction.copyData(), 0);
+    }
+
+    public static final int ATTESTATION_LEN = 74;
+    public static final int ID_OFFSET = 8;
+    public static final int IN_AMOUNT_OFFSET = 9;
+    public static final int QUOTED_OUT_AMOUNT_OFFSET = 17;
+    public static final int SLIPPAGE_BPS_OFFSET = 25;
+    public static final int PLATFORM_FEE_BPS_OFFSET = 27;
+    public static final int POSITIVE_SLIPPAGE_BPS_OFFSET = 29;
+    public static final int ROUTE_PLAN_OFFSET = 31;
+
+    public static SharedAccountsRouteWithAttestationIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var id = _data[i] & 0xFF;
+      ++i;
+      final var inAmount = getInt64LE(_data, i);
+      i += 8;
+      final var quotedOutAmount = getInt64LE(_data, i);
+      i += 8;
+      final var slippageBps = Short.toUnsignedInt(getInt16LE(_data, i));
+      i += 2;
+      final var platformFeeBps = Short.toUnsignedInt(getInt16LE(_data, i));
+      i += 2;
+      final var positiveSlippageBps = Short.toUnsignedInt(getInt16LE(_data, i));
+      i += 2;
+      final var routePlan = SerDeUtil.readVector(4, RoutePlanStepV2.class, RoutePlanStepV2::read, _data, i);
+      i += SerDeUtil.lenVector(4, routePlan);
+      final var attestation = new byte[74];
+      SerDeUtil.readArray(attestation, _data, i);
+      return new SharedAccountsRouteWithAttestationIxData(discriminator,
+                                                          id,
+                                                          inAmount,
+                                                          quotedOutAmount,
+                                                          slippageBps,
+                                                          platformFeeBps,
+                                                          positiveSlippageBps,
+                                                          routePlan,
+                                                          attestation);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      _data[i] = (byte) id;
+      ++i;
+      putInt64LE(_data, i, inAmount);
+      i += 8;
+      putInt64LE(_data, i, quotedOutAmount);
+      i += 8;
+      putInt16LE(_data, i, slippageBps);
+      i += 2;
+      putInt16LE(_data, i, platformFeeBps);
+      i += 2;
+      putInt16LE(_data, i, positiveSlippageBps);
+      i += 2;
+      i += SerDeUtil.writeVector(4, routePlan, _data, i);
+      i += SerDeUtil.writeArrayChecked(attestation, 74, _data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 8 + 1
+           + 8
+           + 8
+           + 2
+           + 2
+           + 2
+           + SerDeUtil.lenVector(4, routePlan)
+           + SerDeUtil.lenArray(attestation);
+    }
+  }
+
   private JupiterProgram() {
   }
 }
