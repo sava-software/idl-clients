@@ -449,17 +449,8 @@
       "module": "bundle",
       "package": "phoenix.ember",
       "program": "EMBERpYNE6ehWmXymZZS2skiFmCa9V5dp14e1iduM5qy",
-      "noSizeFilter": {
-        "EmberState": 104
-      },
       "idlAccountProgramOwner": "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S",
-      "idlType": "anchor",
-      "accountDiscriminators": {
-        "EmberState": "state_account"
-      },
-      "fieldTypes": {
-        "WithdrawParams.amount": {"option": "u64"}
-      }
+      "idlType": "anchor"
     },
     {
       "name": "Phoenix Perpetuals",

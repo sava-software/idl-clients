@@ -1064,88 +1064,56 @@ already generated before the switch. Only `Permission` — the `Initiate`/`Vote`
 it has always been, so a caller composing one now needs the bit values rather than
 the names. Nothing in either IDL referenced any of the four structurally.
 
-#### Phoenix Ember: the IDL's PDA seeds derive accounts that do not exist (2026-08-06)
+#### Phoenix Ember: upstream IDL corrections adopted (2026-11-10)
 
-`PhoenixAccounts` took Ember's state and vault from the generated
-`EmberPDAs.statePDA` / `vaultPDA`, whose seeds are `["state"]` and `["vault"]`
-alone. Both derived addresses have never been created on chain, so every
-`deposit` and `withdraw` the client built named two accounts that do not exist.
+The metadata IDL at `HBWQuFtcu9nKpsZ85QH9LQsWdg3MfHExTvd2tzH8N2JY`
+now describes the deployed withdrawal argument, state discriminator, full state
+layout and PDA seeds. Its normalized hash moved from `e304f2b9…` to `31e1ad49…`;
+the program did not redeploy (`lastDeploySlot` 395020704 and payload SHA-256
+`cbf33bb0…` are unchanged). The client is generated directly from that document,
+with the `fieldTypes`, `accountDiscriminators` and `noSizeFilter` exceptions removed.
 
-The real seeds are `[phoenix_program_id, "state"]` and
-`[phoenix_program_id, "vault"]` against the Ember program — `phoenix_program_id`
-being `EtrnLzgb…`, what this library calls the Eternal program. One Ember
-deployment serves both Phoenix deployments, so an un-keyed state could not work;
-the beta program's state is live at its own address under the same formula. The
-Rust says so (`rise/rust/ix/src/constants.rs::get_ember_state_address`) and a
-live deposit confirms it: Ember owns exactly two accounts, `6ur7v6…` (prod, with
-`EtrnLzgb…` in its trailing field) and `HVpfk2…` (beta, `phDEVv4w…`), and the
-prod deposit `2inFMjAp…` passes `6ur7v6…` in slot 1 and `FKcEb4Td…` in slot 6.
+- `WithdrawParams.amount` is `Option<u64>`, preserving the existing Java
+  `OptionalLong` API and instruction bytes. Before the correction added on
+  2026-09-27, the IDL's `u64` encoding failed every withdrawal. The independent
+  evidence remains in `EmberWithdrawTests`: rise-public `e688686`'s
+  `EmberWithdraw` vector, mainnet withdrawal `24tXGERM…` carrying
+  `Some(121_960_000)`, and the 9-byte `None` form. Both option forms succeeded
+  in the original simulations; the 16-byte `u64` form panicked.
+- `EmberState` declares the deployed discriminator
+  `[142, 206, 11, 177, 63, 157, 55, 98]` and all four pubkeys: authority,
+  input mint, output mint and `phoenixProgram`, the last at offset 104.
+  Its 136-byte layout now supports `SIZE_FILTER`. An unfiltered mainnet
+  `getProgramAccounts` at finalized slot 467907880 returned exactly the two
+  known states, `6ur7v6AXNpnHeEb6xuk7PyezvZ1i5GrgYyWZkNCpzbRz` and
+  `HVpfk2HMkR85rvaXezoNjXfB5J4ds4PurSfi6n4DPm2Z`, both owned by Ember,
+  both 136 bytes and both carrying that discriminator. `EmberStateTests`
+  checks the full layout against the previously captured mainnet fixture.
+- The generated state and vault PDA helpers now take the Phoenix program
+  key before the `"state"` or `"vault"` seed, matching rise-public
+  `673a7df`'s `rust/ix/src/constants.rs` and the known live addresses.
+  `PhoenixAccounts` retains its existing helpers and argument order;
+  `PhoenixClientTests` holds the generated and convenience methods to the
+  same addresses. Callers of the generated helpers must supply the extra key.
 
-Fixed by deriving both in `PhoenixAccounts`, alongside the Eternal
-`globalVaultPDA` that the IDL also fails to declare. `EmberPDAs` is generated and
-untouched; `PhoenixClientTests` asserts the derivations equal the live keys and
-that the IDL's seeds do *not* reach them, so the two cannot be confused again.
+The same IDL changes instruction metas: `Init` gains `phoenixProgram` before
+`tokenProgram` and makes `outputMint` a signer; `Deposit` makes owner a read-only
+signer and state read-only; `Withdraw` makes owner and state read-only, with owner
+no longer declared a signer. Both Phoenix SDKs still request an owner signature
+for withdrawal. `PhoenixClient.withdraw` preserves that behavior explicitly;
+the generated builder follows the IDL and callers using it directly must arrange
+that signature when they need automatic token approval.
 
-This is upstream's own published metadata (`sources.json` resolves the IDL from
-program-metadata account `HBWQuFtc…`, `matchesDeployed: true`) — the check
-confirms the IDL is the one the program published, not that it describes the
-program. **The same IDL is stale about `EmberState` itself**, in two ways, only
-one of which is fixed (2026-08-16):
-
-| | IDL | generated | on chain |
-|---|---|---|---|
-| discriminator | `[0, 208, 11, 177, 63, 157, 55, 98]` | `[142, 206, 11, 177, 63, 157, 55, 98]` | `[142, 206, 11, 177, 63, 157, 55, 98]` |
-| size | 104 | 104 | 136 |
-
-Both live accounts agree, and the trailing 32 bytes are the Phoenix program the
-state is keyed on — a fourth field the IDL does not declare.
-
-The **discriminator is overridden** — `accountDiscriminators` in
-`main_net_programs.json` supplies the seed `state_account`, which the generator
-hashes to the value the program writes, the same one Phoenix's own SDK computes
-in `EmberStateView::load`. Without it `readChecked` threw for 100% of live
-accounts, and the correct value is independently derivable, so carrying it costs
-one line and settles it. `DISCRIMINATOR_FILTER` now matches both live accounts.
-
-The **short layout is deliberately not fixed**. `BYTES` stays 104, so
-`SIZE_FILTER` still asks for a size no account has and a size-filtered scan still
-returns empty; scan on `DISCRIMINATOR_FILTER` instead. A field-list override
-would be a private fork of someone else's account definition maintained forever,
-and Phoenix publishes no IDL in their repo to track — that fix belongs upstream.
-`EmberState.read` returns the right `authority`, `inputMint` and `outputMint`
-(their offsets are unchanged) and drops the fourth key.
-
-`EmberStateTests` pins all of this against a committed mainnet fixture, including
-the shortfall, so if `BYTES` ever becomes 136 the test fails and says upstream
-shipped a corrected IDL.
-
-**The same IDL is stale about `withdraw`'s argument too, and that one is
-corrected (2026-09-27).** It declares `WithdrawParams.amount` as `u64`; the
-deployed program reads `Option<u64>`, `None` meaning the full withdrawal. The
-evidence is independent of the IDL:
-
-- Phoenix's SDK, `Ellipsis-Labs/rise-public` at `e688686`: `rust/ix/src/cpi.rs`
-  declares `EmberWithdrawArgs { amount: Option<u64> }` and writes 9 or 17 bytes,
-  and `instructions.json` carries `"EmberWithdraw": "b712469c946da122010100000000000000"`.
-- Every sampled mainnet withdraw is 17 bytes, the discriminator, `01`, then the
-  amount (`24tXGERM…` carried `Some(121_960_000)`).
-- Simulated against live accounts: `Some(1)` and `None` succeeded, and every
-  16-byte `u64` encoding panicked, whatever its first byte.
-
-So the client generated from the IDL failed on every call. `"fieldTypes":
-{"WithdrawParams.amount": {"option": "u64"}}` in `main_net_programs.json`
-corrects it: `WithdrawParams(OptionalLong amount)`. The correction reaches the
-generated code only. `idl.json` and the channel record stay what Phoenix
-published, `sources.json` records the override on its own line, and
-`idl-change-report-gap.txt` carries it as a standing entry. The generator
-refuses the run once upstream declares the field `Option<u64>` itself, so the
-override cannot outlive its reason; remove it then.
-
-This does not reverse the layout decision above. An argument every call gets
-wrong makes the builder unusable, and correcting it is one checked line,
-where the account's missing fourth key would mean adding a field to someone
-else's definition, which `"fieldTypes"` cannot do. `EmberWithdrawTests` holds
-the encoding to the SDK's vector and the mainnet bytes.
+Unsigned mainnet simulations with a distinct fee payer, an undelegated funded
+phUSD source and `Some(1)` isolate the difference. At slot 467909182 the owner
+nonsigner form succeeded but issued no token CPIs and moved no tokens. At slot
+467909234 the signer control succeeded through Approve, Burn and Transfer,
+burning one raw phUSD unit and crediting one USDC unit. The source was the
+self-owned Phoenix vault `csZXgw2G58hbiWc9ndxaxrQVYVvqdXgQzYLuznEzHJu`;
+`sigVerify: false` set the signer flag for the control without signing or sending
+anything. This demonstrates automatic approval, not all possible delegated
+withdrawal paths. `EmberWithdrawTests` now also holds the convenience wrapper's
+owner signer flag to the SDK and this observed behavior.
 
 #### kvault: the lending-market block was missing entirely (2026-08-06)
 
@@ -1436,6 +1404,25 @@ except where a test is named):
   to its program's last logged `EnableFeature` result), and `padding1` at 776 the native-SOL
   `SpotCollateralMetadata`, which rise-public declares there and a `ConfigureNativeSol` event under
   the current image matches byte for byte.
+
+
+**Republished again on 2026-11-10.** The metadata channel moved from
+`bf441f11…` to `8a0eba45…` and the program from slot 463448625 to 467797957
+(payload SHA-256 `f4075202…`). This regeneration adds `SyncLockedDeposit`,
+`UpdateTraderPreferenceBits` and `WithdrawToTargetLeverage`, event tags 73–75,
+and 241 named errors. `UncrossCrank` also declares a return value; its
+`UncrossCrankReturn` record can decode it, but the generator's known `returns` gap
+means there is no instruction-specific return-data decoder. The movement report
+retains the exact member list and flags the deployment for review; the previous verdict is not evidence of parity
+with this image, and this client refresh does not replace that deployment review.
+
+For callers, `PricesUpdatedEvent.intervalAccumulator` uses the renamed
+`SignedQuoteLotSecondsPerBaseLotUpcasted` (the same `Option<i128>` wire layout),
+`UpdateFundingParametersInstruction` gains three optional constructor arguments,
+and the extended sealed enums require corresponding cases in exhaustive switches.
+The existing handwritten layer does not reference the renamed type or construct
+those funding parameters. The event fixture still covers 35 variants; the new
+tags have structural discriminator coverage, not captured runtime fixtures.
 
 
 ### Bundle-wide staleness sweep (2026-07-19)

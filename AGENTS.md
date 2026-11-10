@@ -282,8 +282,9 @@ which is also why the deployed channel never has one.
 
 **One correction reaches the client without touching `idl.json`.** A program
 whose config declares `"fieldTypes"` (idl-src-gen `ffbb964`) is generated with
-those struct fields' types replaced — Ember's `WithdrawParams.amount`, published
-as `u64` and read by the program as `Option<u64>`. `idl.json` and every channel
+those struct fields' types replaced — as Ember's `WithdrawParams.amount` was
+while published as `u64` and read by the program as `Option<u64>`. Ember fixed
+its IDL on 2026-11-10, and that override was removed. `idl.json` and every channel
 hash stay what upstream published, so the record keeps comparing like with like
 and an upstream fix still shows as movement; the `"fieldTypes"` line in
 `sources.json` and a standing entry in `idl-change-report-gap.txt` are what say

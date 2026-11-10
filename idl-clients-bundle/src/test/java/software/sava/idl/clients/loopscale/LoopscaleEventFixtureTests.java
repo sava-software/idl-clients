@@ -40,8 +40,8 @@ import static org.junit.jupiter.api.Assertions.*;
 ///
 /// A local decoder for the envelope would mean maintaining an event definition nobody
 /// publishes, with nothing upstream to diff it against. That fix belongs upstream.
-/// `EmberStateTests` makes the same call for Ember's short account layout, and the assertions
-/// here are split the same way:
+/// As with Ember's short account layout before its upstream correction, these assertions
+/// distinguish the captured bytes from the gap in the published description:
 ///
 /// - the fixture's own shape, which holds whatever the client declares;
 /// - the tripwire: `readCPI` decodes none of the captured events. Once it decodes one, an IDL

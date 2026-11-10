@@ -54,13 +54,11 @@ public interface PhoenixAccounts {
   /// calls the Eternal program, the name the Rust uses for the same key
   /// (`PROD_PHOENIX_PROGRAM_ID` is `EtrnLzgb…`).
   ///
-  /// **The IDL is wrong here**, and it is the program's own published metadata, so the
-  /// generated `EmberPDAs.statePDA` inherits the error: it declares the seed as `"state"`
-  /// alone, which derives an address that has never existed. One Ember deployment serves
-  /// both Phoenix deployments — mainnet and beta each get their own state, keyed on the
-  /// program — so a single un-keyed account could not work. Seeds taken from the
-  /// program's SDK (`rise/rust/ix/src/constants.rs::get_ember_state_address`) and pinned
-  /// against the live accounts in `PhoenixAccountsTests`.
+  /// One Ember deployment serves both Phoenix deployments, each with its own state.
+  /// Seeds come from the program's SDK
+  /// (`rise/rust/ix/src/constants.rs::get_ember_state_address`) and are pinned
+  /// against live addresses in `PhoenixClientTests`. The IDL corrected its seeds
+  /// on 2026-11-10; the generated helpers now derive the same addresses.
   static ProgramDerivedAddress emberStatePDA(final PublicKey phoenixProgram,
                                              final PublicKey emberProgram) {
     return PublicKey.findProgramAddress(
@@ -72,7 +70,7 @@ public interface PhoenixAccounts {
   /// Ember's token vault for the Phoenix deployment it wraps.
   ///
   /// Seeds `[phoenixProgram, "vault"]`; see [#emberStatePDA(PublicKey, PublicKey)] for
-  /// why the IDL's `"vault"`-only seed does not derive it.
+  /// the source and live-address checks.
   static ProgramDerivedAddress emberVaultPDA(final PublicKey phoenixProgram,
                                              final PublicKey emberProgram) {
     return PublicKey.findProgramAddress(

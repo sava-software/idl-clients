@@ -4,6 +4,7 @@ package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 import software.sava.idl.clients.core.gen.SerDe;
 
 /// Borsh payload for upserting an escrow request.
+/// May be followed by an optional `lastValidSlot: option<u64>`. When present and set, the resulting request expires after that slot; otherwise an existing request keeps its last valid slot and a new request has no expiration.
 ///
 public record UpsertEscrowRequestParams(EscrowParticipantMetadata participantMetadata, EscrowAction action) implements SerDe {
 

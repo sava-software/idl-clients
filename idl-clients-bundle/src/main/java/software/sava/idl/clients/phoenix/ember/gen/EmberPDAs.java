@@ -10,14 +10,34 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 
 public final class EmberPDAs {
 
-  public static ProgramDerivedAddress statePDA(final PublicKey program) {
+  public static ProgramDerivedAddress statePDA(final PublicKey program,
+                                               final PublicKey phoenixProgramAccount) {
     return PublicKey.findProgramAddress(List.of(
+      phoenixProgramAccount.toByteArray(),
       "state".getBytes(US_ASCII)
     ), program);
   }
 
-  public static ProgramDerivedAddress vaultPDA(final PublicKey program) {
+  public static ProgramDerivedAddress state1PDA(final PublicKey program,
+                                                final PublicKey statePhoenixProgramAccount) {
     return PublicKey.findProgramAddress(List.of(
+      statePhoenixProgramAccount.toByteArray(),
+      "state".getBytes(US_ASCII)
+    ), program);
+  }
+
+  public static ProgramDerivedAddress vaultPDA(final PublicKey program,
+                                               final PublicKey phoenixProgramAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      phoenixProgramAccount.toByteArray(),
+      "vault".getBytes(US_ASCII)
+    ), program);
+  }
+
+  public static ProgramDerivedAddress vault1PDA(final PublicKey program,
+                                                final PublicKey statePhoenixProgramAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      statePhoenixProgramAccount.toByteArray(),
       "vault".getBytes(US_ASCII)
     ), program);
   }

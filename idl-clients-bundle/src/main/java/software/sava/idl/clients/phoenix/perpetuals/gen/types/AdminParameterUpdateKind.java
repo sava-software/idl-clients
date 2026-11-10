@@ -34,7 +34,8 @@ public sealed interface AdminParameterUpdateKind extends RustEnum permits
   AdminParameterUpdateKind.RiskFactors,
   AdminParameterUpdateKind.TraderCapOverride,
   AdminParameterUpdateKind.TransferFeeTiers,
-  AdminParameterUpdateKind.DisplayName {
+  AdminParameterUpdateKind.DisplayName,
+  AdminParameterUpdateKind.TraderPreferenceBits {
 
   static AdminParameterUpdateKind read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -61,6 +62,7 @@ public sealed interface AdminParameterUpdateKind extends RustEnum permits
       case 18 -> TraderCapOverride.read(_data, i);
       case 19 -> TransferFeeTiers.read(_data, i);
       case 20 -> DisplayName.read(_data, i);
+      case 21 -> TraderPreferenceBits.read(_data, i);
       default -> null;
     };
   }
@@ -904,6 +906,54 @@ public sealed interface AdminParameterUpdateKind extends RustEnum permits
     @Override
     public int ordinal() {
       return 20;
+    }
+  }
+
+  /// @param previous: u32
+  /// @param _new: u32
+  record TraderPreferenceBits(PublicKey trader,
+                              long previous,
+                              long _new) implements AdminParameterUpdateKind {
+
+    public static final int BYTES = 40;
+
+    public static final int TRADER_OFFSET = 0;
+    public static final int PREVIOUS_OFFSET = 32;
+    public static final int _NEW_OFFSET = 36;
+
+    public static TraderPreferenceBits read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var trader = readPubKey(_data, i);
+      i += 32;
+      final var previous = Integer.toUnsignedLong(getInt32LE(_data, i));
+      i += 4;
+      final var _new = Integer.toUnsignedLong(getInt32LE(_data, i));
+      return new TraderPreferenceBits(trader, previous, _new);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + writeOrdinal(_data, _offset);
+      trader.write(_data, i);
+      i += 32;
+      putInt32LE(_data, i, (int) previous);
+      i += 4;
+      putInt32LE(_data, i, (int) _new);
+      i += 4;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return ordinalBytes() + BYTES;
+    }
+
+    @Override
+    public int ordinal() {
+      return 21;
     }
   }
 }

@@ -27,7 +27,7 @@ public record PricesUpdatedEvent(PublicKey oracleSigner,
                                  Ticks newMarkPrice,
                                  SignedQuoteLotsPerBaseLot cumulativeFundingRate,
                                  SignedQuoteLotsPerBaseLot settledContribution,
-                                 SignedQuoteLotsPerBaseLotUpcasted intervalAccumulator,
+                                 SignedQuoteLotSecondsPerBaseLotUpcasted intervalAccumulator,
                                  long assetSequenceNumber,
                                  long prevAssetSequenceNumberSlot) implements SerDe {
 
@@ -125,13 +125,13 @@ public record PricesUpdatedEvent(PublicKey oracleSigner,
       settledContribution = SignedQuoteLotsPerBaseLot.read(_data, i);
       i += 8;
     }
-    final SignedQuoteLotsPerBaseLotUpcasted intervalAccumulator;
+    final SignedQuoteLotSecondsPerBaseLotUpcasted intervalAccumulator;
     if (SerDeUtil.isAbsent(1, _data, i)) {
       intervalAccumulator = null;
       ++i;
     } else {
       ++i;
-      intervalAccumulator = SignedQuoteLotsPerBaseLotUpcasted.read(_data, i);
+      intervalAccumulator = SignedQuoteLotSecondsPerBaseLotUpcasted.read(_data, i);
       i += 16;
     }
     final var assetSequenceNumber = getInt64LE(_data, i);

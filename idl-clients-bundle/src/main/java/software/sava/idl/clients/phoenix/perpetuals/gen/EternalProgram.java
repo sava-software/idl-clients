@@ -87,12 +87,14 @@ import software.sava.idl.clients.phoenix.perpetuals.gen.types.UpdateSplinePositi
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.UpdateSplinePriceParamsWithOrdering;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.UpdateSplinePriceWithMetadataParams;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.UpdateTraderFeesParams;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.UpdateTraderPreferenceBitsParams;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.UpdateWithdrawParametersParams;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.UpdateWithdrawRateLimitsParams;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.UpsertEscrowRequestParams;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.WithdrawFundsInstruction;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.WithdrawNativeSolAction;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.WithdrawSpotParams;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.WithdrawToTargetLeverageInstruction;
 
 import java.util.List;
 
@@ -3697,6 +3699,77 @@ public final class EternalProgram {
     return Instruction.createInstruction(invokedEternalProgramMeta, keys, SYNC_PARENT_TO_CHILD_DISCRIMINATOR);
   }
 
+  public static final Discriminator SYNC_LOCKED_DEPOSIT_DISCRIMINATOR = toDiscriminator(150, 49, 106, 164, 252, 38, 240, 255);
+
+  /// Copies the parent's remaining locked-deposit notional onto a child (isolated margin) account. Permissionless; loads the active trader buffer so hot accounts are synced.
+  ///
+  /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
+  /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
+  /// @param globalConfigurationKey Global configuration PDA.
+  /// @param traderWalletKey Trader wallet owning both accounts.
+  /// @param parentTraderAccountKey Parent (cross margin) trader account whose remaining lock is copied.
+  /// @param childTraderAccountKey Child (isolated margin) trader account receiving the snapshot.
+  /// @param globalTraderIndexKey Global trader index account.
+  /// @param activeTraderBufferKey Active trader buffer account.
+  public static List<AccountMeta> syncLockedDepositKeys(final PublicKey phoenixProgramKey,
+                                                        final PublicKey phoenixLogAuthorityKey,
+                                                        final PublicKey globalConfigurationKey,
+                                                        final PublicKey traderWalletKey,
+                                                        final PublicKey parentTraderAccountKey,
+                                                        final PublicKey childTraderAccountKey,
+                                                        final PublicKey globalTraderIndexKey,
+                                                        final PublicKey activeTraderBufferKey) {
+    return List.of(
+      createRead(phoenixProgramKey),
+      createRead(phoenixLogAuthorityKey),
+      createRead(globalConfigurationKey),
+      createRead(traderWalletKey),
+      createRead(parentTraderAccountKey),
+      createWrite(childTraderAccountKey),
+      createWrite(globalTraderIndexKey),
+      createWrite(activeTraderBufferKey)
+    );
+  }
+
+  /// Copies the parent's remaining locked-deposit notional onto a child (isolated margin) account. Permissionless; loads the active trader buffer so hot accounts are synced.
+  ///
+  /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
+  /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
+  /// @param globalConfigurationKey Global configuration PDA.
+  /// @param traderWalletKey Trader wallet owning both accounts.
+  /// @param parentTraderAccountKey Parent (cross margin) trader account whose remaining lock is copied.
+  /// @param childTraderAccountKey Child (isolated margin) trader account receiving the snapshot.
+  /// @param globalTraderIndexKey Global trader index account.
+  /// @param activeTraderBufferKey Active trader buffer account.
+  public static Instruction syncLockedDeposit(final AccountMeta invokedEternalProgramMeta,
+                                              final PublicKey phoenixProgramKey,
+                                              final PublicKey phoenixLogAuthorityKey,
+                                              final PublicKey globalConfigurationKey,
+                                              final PublicKey traderWalletKey,
+                                              final PublicKey parentTraderAccountKey,
+                                              final PublicKey childTraderAccountKey,
+                                              final PublicKey globalTraderIndexKey,
+                                              final PublicKey activeTraderBufferKey) {
+    final var keys = syncLockedDepositKeys(
+      phoenixProgramKey,
+      phoenixLogAuthorityKey,
+      globalConfigurationKey,
+      traderWalletKey,
+      parentTraderAccountKey,
+      childTraderAccountKey,
+      globalTraderIndexKey,
+      activeTraderBufferKey
+    );
+    return syncLockedDeposit(invokedEternalProgramMeta, keys);
+  }
+
+  /// Copies the parent's remaining locked-deposit notional onto a child (isolated margin) account. Permissionless; loads the active trader buffer so hot accounts are synced.
+  ///
+  public static Instruction syncLockedDeposit(final AccountMeta invokedEternalProgramMeta,
+                                              final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedEternalProgramMeta, keys, SYNC_LOCKED_DEPOSIT_DISCRIMINATOR);
+  }
+
   public static final Discriminator TRANSFER_COLLATERAL_DISCRIMINATOR = toDiscriminator(157, 163, 63, 27, 242, 72, 251, 97);
 
   /// Transfers collateral between two trader accounts owned by the same wallet.
@@ -4027,6 +4100,7 @@ public final class EternalProgram {
   public static final Discriminator UNCROSS_CRANK_DISCRIMINATOR = toDiscriminator(196, 121, 94, 253, 139, 42, 252, 147);
 
   /// Cranks the orderbook to uncross any crossed orders.
+  /// Returns a fixed 128-byte little-endian UncrossCrankReturn after event logging. Version 1: flags bit 0 indicates bestBidTicks is present, bit 1 indicates bestAskTicks is present; absent sides are zero. Includes post-crank mark/index prices and their update slots, matching Hawkeye price semantics. Padding and reserved words are zero; future flags may assign optional reserved fields. Readers validate magic/version and ignore unknown flags and reserved words. A bounded crank may leave a crossed BBO.
   ///
   /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
   /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
@@ -4057,6 +4131,7 @@ public final class EternalProgram {
   }
 
   /// Cranks the orderbook to uncross any crossed orders.
+  /// Returns a fixed 128-byte little-endian UncrossCrankReturn after event logging. Version 1: flags bit 0 indicates bestBidTicks is present, bit 1 indicates bestAskTicks is present; absent sides are zero. Includes post-crank mark/index prices and their update slots, matching Hawkeye price semantics. Padding and reserved words are zero; future flags may assign optional reserved fields. Readers validate magic/version and ignore unknown flags and reserved words. A bounded crank may leave a crossed BBO.
   ///
   /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
   /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
@@ -4090,6 +4165,7 @@ public final class EternalProgram {
   }
 
   /// Cranks the orderbook to uncross any crossed orders.
+  /// Returns a fixed 128-byte little-endian UncrossCrankReturn after event logging. Version 1: flags bit 0 indicates bestBidTicks is present, bit 1 indicates bestAskTicks is present; absent sides are zero. Includes post-crank mark/index prices and their update slots, matching Hawkeye price semantics. Padding and reserved words are zero; future flags may assign optional reserved fields. Readers validate magic/version and ignore unknown flags and reserved words. A bounded crank may leave a crossed BBO.
   ///
   public static Instruction uncrossCrank(final AccountMeta invokedEternalProgramMeta,
                                          final List<AccountMeta> keys,
@@ -12844,6 +12920,218 @@ public final class EternalProgram {
       int i = _offset + discriminator.length();
       final var params = UpdatePerpDisplayNameInstruction.read(_data, i);
       return new UpdatePerpDisplayNameIxData(discriminator, params);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      i += params.write(_data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator UPDATE_TRADER_PREFERENCE_BITS_DISCRIMINATOR = toDiscriminator(3, 249, 117, 158, 237, 31, 90, 153);
+
+  /// Updates per-account trader preferences. The trader wallet, risk authority, or a trader-management delegate may update any preference. The trader position authority or a wallet-rooted position-authority delegate may update only collateral sweep.
+  ///
+  /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
+  /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
+  /// @param globalConfigurationKey Global configuration PDA.
+  /// @param signerKey Trader wallet, risk authority, trader-management delegate, trader position authority, or wallet-rooted position-authority delegate.
+  /// @param maybePermissionAccountKey Trader-management permission account for a delegated risk signer, or wallet-rooted position-authority permission account; otherwise a placeholder account.
+  /// @param traderAccountKey Trader account whose preference bits are updated.
+  public static List<AccountMeta> updateTraderPreferenceBitsKeys(final PublicKey phoenixProgramKey,
+                                                                 final PublicKey phoenixLogAuthorityKey,
+                                                                 final PublicKey globalConfigurationKey,
+                                                                 final PublicKey signerKey,
+                                                                 final PublicKey maybePermissionAccountKey,
+                                                                 final PublicKey traderAccountKey) {
+    return List.of(
+      createRead(phoenixProgramKey),
+      createRead(phoenixLogAuthorityKey),
+      createRead(globalConfigurationKey),
+      createReadOnlySigner(signerKey),
+      createWrite(maybePermissionAccountKey),
+      createWrite(traderAccountKey)
+    );
+  }
+
+  /// Updates per-account trader preferences. The trader wallet, risk authority, or a trader-management delegate may update any preference. The trader position authority or a wallet-rooted position-authority delegate may update only collateral sweep.
+  ///
+  /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
+  /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
+  /// @param globalConfigurationKey Global configuration PDA.
+  /// @param signerKey Trader wallet, risk authority, trader-management delegate, trader position authority, or wallet-rooted position-authority delegate.
+  /// @param maybePermissionAccountKey Trader-management permission account for a delegated risk signer, or wallet-rooted position-authority permission account; otherwise a placeholder account.
+  /// @param traderAccountKey Trader account whose preference bits are updated.
+  public static Instruction updateTraderPreferenceBits(final AccountMeta invokedEternalProgramMeta,
+                                                       final PublicKey phoenixProgramKey,
+                                                       final PublicKey phoenixLogAuthorityKey,
+                                                       final PublicKey globalConfigurationKey,
+                                                       final PublicKey signerKey,
+                                                       final PublicKey maybePermissionAccountKey,
+                                                       final PublicKey traderAccountKey,
+                                                       final UpdateTraderPreferenceBitsParams params) {
+    final var keys = updateTraderPreferenceBitsKeys(
+      phoenixProgramKey,
+      phoenixLogAuthorityKey,
+      globalConfigurationKey,
+      signerKey,
+      maybePermissionAccountKey,
+      traderAccountKey
+    );
+    return updateTraderPreferenceBits(invokedEternalProgramMeta, keys, params);
+  }
+
+  /// Updates per-account trader preferences. The trader wallet, risk authority, or a trader-management delegate may update any preference. The trader position authority or a wallet-rooted position-authority delegate may update only collateral sweep.
+  ///
+  public static Instruction updateTraderPreferenceBits(final AccountMeta invokedEternalProgramMeta,
+                                                       final List<AccountMeta> keys,
+                                                       final UpdateTraderPreferenceBitsParams params) {
+    final byte[] _data = new byte[8 + params.l()];
+    int i = UPDATE_TRADER_PREFERENCE_BITS_DISCRIMINATOR.write(_data, 0);
+    params.write(_data, i);
+
+    return Instruction.createInstruction(invokedEternalProgramMeta, keys, _data);
+  }
+
+  public record UpdateTraderPreferenceBitsIxData(Discriminator discriminator, UpdateTraderPreferenceBitsParams params) implements SerDe {
+
+    public static UpdateTraderPreferenceBitsIxData read(final Instruction instruction) {
+      return read(instruction.copyData(), 0);
+    }
+
+    public static final int PARAMS_OFFSET = 8;
+
+    public static UpdateTraderPreferenceBitsIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var params = UpdateTraderPreferenceBitsParams.read(_data, i);
+      return new UpdateTraderPreferenceBitsIxData(discriminator, params);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      i += params.write(_data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 8 + params.l();
+    }
+  }
+
+  public static final Discriminator WITHDRAW_TO_TARGET_LEVERAGE_DISCRIMINATOR = toDiscriminator(159, 170, 28, 190, 26, 189, 30, 154);
+
+  /// Transfers collateral above the target leverage from an isolated child trader account to its cross-margin parent.
+  ///
+  /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
+  /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
+  /// @param globalConfigurationKey Global configuration PDA.
+  /// @param traderWalletKey Trader wallet or position authority of the child account.
+  /// @param srcTraderAccountKey Isolated child trader account.
+  /// @param dstTraderAccountKey Cross-margin parent trader account.
+  /// @param perpAssetMapKey Perp asset map for margin calculations.
+  /// @param globalTraderIndexKey Global trader index account.
+  /// @param activeTraderBufferKey Active trader buffer account.
+  public static List<AccountMeta> withdrawToTargetLeverageKeys(final PublicKey phoenixProgramKey,
+                                                               final PublicKey phoenixLogAuthorityKey,
+                                                               final PublicKey globalConfigurationKey,
+                                                               final PublicKey traderWalletKey,
+                                                               final PublicKey srcTraderAccountKey,
+                                                               final PublicKey dstTraderAccountKey,
+                                                               final PublicKey perpAssetMapKey,
+                                                               final PublicKey globalTraderIndexKey,
+                                                               final PublicKey activeTraderBufferKey) {
+    return List.of(
+      createRead(phoenixProgramKey),
+      createRead(phoenixLogAuthorityKey),
+      createRead(globalConfigurationKey),
+      createReadOnlySigner(traderWalletKey),
+      createWrite(srcTraderAccountKey),
+      createWrite(dstTraderAccountKey),
+      createRead(perpAssetMapKey),
+      createWrite(globalTraderIndexKey),
+      createWrite(activeTraderBufferKey)
+    );
+  }
+
+  /// Transfers collateral above the target leverage from an isolated child trader account to its cross-margin parent.
+  ///
+  /// @param phoenixProgramKey Phoenix Eternal program id; logged to assert the correct executable is invoked.
+  /// @param phoenixLogAuthorityKey Phoenix log authority PDA used for emitting on-chain market events.
+  /// @param globalConfigurationKey Global configuration PDA.
+  /// @param traderWalletKey Trader wallet or position authority of the child account.
+  /// @param srcTraderAccountKey Isolated child trader account.
+  /// @param dstTraderAccountKey Cross-margin parent trader account.
+  /// @param perpAssetMapKey Perp asset map for margin calculations.
+  /// @param globalTraderIndexKey Global trader index account.
+  /// @param activeTraderBufferKey Active trader buffer account.
+  public static Instruction withdrawToTargetLeverage(final AccountMeta invokedEternalProgramMeta,
+                                                     final PublicKey phoenixProgramKey,
+                                                     final PublicKey phoenixLogAuthorityKey,
+                                                     final PublicKey globalConfigurationKey,
+                                                     final PublicKey traderWalletKey,
+                                                     final PublicKey srcTraderAccountKey,
+                                                     final PublicKey dstTraderAccountKey,
+                                                     final PublicKey perpAssetMapKey,
+                                                     final PublicKey globalTraderIndexKey,
+                                                     final PublicKey activeTraderBufferKey,
+                                                     final WithdrawToTargetLeverageInstruction params) {
+    final var keys = withdrawToTargetLeverageKeys(
+      phoenixProgramKey,
+      phoenixLogAuthorityKey,
+      globalConfigurationKey,
+      traderWalletKey,
+      srcTraderAccountKey,
+      dstTraderAccountKey,
+      perpAssetMapKey,
+      globalTraderIndexKey,
+      activeTraderBufferKey
+    );
+    return withdrawToTargetLeverage(invokedEternalProgramMeta, keys, params);
+  }
+
+  /// Transfers collateral above the target leverage from an isolated child trader account to its cross-margin parent.
+  ///
+  public static Instruction withdrawToTargetLeverage(final AccountMeta invokedEternalProgramMeta,
+                                                     final List<AccountMeta> keys,
+                                                     final WithdrawToTargetLeverageInstruction params) {
+    final byte[] _data = new byte[8 + params.l()];
+    int i = WITHDRAW_TO_TARGET_LEVERAGE_DISCRIMINATOR.write(_data, 0);
+    params.write(_data, i);
+
+    return Instruction.createInstruction(invokedEternalProgramMeta, keys, _data);
+  }
+
+  public record WithdrawToTargetLeverageIxData(Discriminator discriminator, WithdrawToTargetLeverageInstruction params) implements SerDe {
+
+    public static WithdrawToTargetLeverageIxData read(final Instruction instruction) {
+      return read(instruction.copyData(), 0);
+    }
+
+    public static final int BYTES = 16;
+
+    public static final int PARAMS_OFFSET = 8;
+
+    public static WithdrawToTargetLeverageIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var params = WithdrawToTargetLeverageInstruction.read(_data, i);
+      return new WithdrawToTargetLeverageIxData(discriminator, params);
     }
 
     @Override

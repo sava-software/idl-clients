@@ -84,16 +84,20 @@ final class PhoenixClientImpl implements PhoenixClient {
                               final PublicKey outputTokenAccount,
                               final PublicKey tokenProgram,
                               final WithdrawParams withdrawParams) {
+    // The IDL no longer requests the owner's signature. Preserve automatic approval,
+    // as both Phoenix SDKs do, even when the owner is not the transaction's fee payer.
     return EmberProgram.withdraw(
         accounts.invokedEmberProgram(),
-        owner,
-        accounts.emberStateProgram(),
-        inputMint,
-        outputMint,
-        inputTokenAccount,
-        outputTokenAccount,
-        accounts.emberVaultProgram(),
-        tokenProgram,
+        List.of(
+            AccountMeta.createReadOnlySigner(owner),
+            AccountMeta.createRead(accounts.emberStateProgram()),
+            AccountMeta.createRead(inputMint),
+            AccountMeta.createWrite(outputMint),
+            AccountMeta.createWrite(inputTokenAccount),
+            AccountMeta.createWrite(outputTokenAccount),
+            AccountMeta.createWrite(accounts.emberVaultProgram()),
+            AccountMeta.createRead(tokenProgram)
+        ),
         withdrawParams
     );
   }

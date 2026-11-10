@@ -12,6 +12,7 @@ import software.sava.idl.clients.phoenix.perpetuals.gen.EternalProgram;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.*;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.OptionalInt;
 import java.util.OptionalLong;
 
@@ -111,9 +112,12 @@ final class PhoenixClientWiringTests {
         CLIENT.deposit(OWNER, MINT, EMBER_MINT, TOKEN_ACCOUNT, EMBER_TOKEN_ACCOUNT,
             TOKEN_PROGRAM, new DepositParams(1_000L)));
     assertIx(
-        EmberProgram.withdraw(ACCOUNTS.invokedEmberProgram(), OWNER, ACCOUNTS.emberStateProgram(),
-            MINT, OUTPUT_MINT, TOKEN_ACCOUNT, OUTPUT_TOKEN_ACCOUNT, ACCOUNTS.emberVaultProgram(),
-            TOKEN_PROGRAM, new WithdrawParams(OptionalLong.of(1_000L))),
+        EmberProgram.withdraw(ACCOUNTS.invokedEmberProgram(), List.of(
+            AccountMeta.createReadOnlySigner(OWNER), AccountMeta.createRead(ACCOUNTS.emberStateProgram()),
+            AccountMeta.createRead(MINT), AccountMeta.createWrite(OUTPUT_MINT),
+            AccountMeta.createWrite(TOKEN_ACCOUNT), AccountMeta.createWrite(OUTPUT_TOKEN_ACCOUNT),
+            AccountMeta.createWrite(ACCOUNTS.emberVaultProgram()), AccountMeta.createRead(TOKEN_PROGRAM)
+        ), new WithdrawParams(OptionalLong.of(1_000L))),
         CLIENT.withdraw(OWNER, MINT, OUTPUT_MINT, TOKEN_ACCOUNT, OUTPUT_TOKEN_ACCOUNT,
             TOKEN_PROGRAM, new WithdrawParams(OptionalLong.of(1_000L))));
   }

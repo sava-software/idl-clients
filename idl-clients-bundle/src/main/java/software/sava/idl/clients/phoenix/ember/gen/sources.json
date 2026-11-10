@@ -6,12 +6,10 @@
   "programDataStateSlot": 440077852,
   "programDataPayloadSha256": "cbf33bb02b0f6b30dcc8083e80ee7e3e9565647236b084074fc754aa6753ded0",
   "programDataPayloadLength": 91480,
-  "fieldTypes": {"WithdrawParams.amount":{"option":"u64"}},
-  "noSizeFilter": {"EmberState":104},
   "channels": {
     "metadata": {
       "origin": "HBWQuFtcu9nKpsZ85QH9LQsWdg3MfHExTvd2tzH8N2JY",
-      "hash": "e304f2b9c11c573bdf1314f73d24d17c0aeace2f891d15dc5b09c249ff95746b",
+      "hash": "31e1ad49552a7debb4be10dd671663410b98bf55f5bc68109b967e4526f64ac8",
       "matchesDeployed": true,
       "verbatim": "idl.json"
     }

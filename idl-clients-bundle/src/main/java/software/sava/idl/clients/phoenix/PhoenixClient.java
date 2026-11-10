@@ -49,6 +49,9 @@ public interface PhoenixClient {
                       final PublicKey tokenProgram,
                       final DepositParams depositParams);
 
+  /// Requests the owner's signature so Ember can approve and burn the wrapped tokens,
+  /// including when a separate account pays the transaction fee. The generated builder's
+  /// nonsigner owner does not request that approval and can succeed without withdrawing.
   Instruction withdraw(final PublicKey owner,
                        final PublicKey inputMint,
                        final PublicKey outputMint,

@@ -274,9 +274,8 @@ final class PhoenixClientTests {
   /// Ember's state and vault, pinned against the live mainnet accounts.
   ///
   /// These are the exact keys a real Ember deposit passes in slots 1 and 6 (see
-  /// `2inFMjAp…` on `6ur7v6…`), and they are not what the IDL's declared seeds derive —
-  /// `["state"]` and `["vault"]` alone give addresses that have never been created. The
-  /// program keys its state on the Phoenix deployment it wraps.
+  /// `2inFMjAp…` on `6ur7v6…`). The corrected IDL seeds both PDAs with the Phoenix
+  /// deployment the Ember state wraps.
   @Test
   void emberPdasSeedOnThePhoenixProgram() {
     assertEquals("6ur7v6AXNpnHeEb6xuk7PyezvZ1i5GrgYyWZkNCpzbRz",
@@ -291,16 +290,18 @@ final class PhoenixClientTests {
     assertEquals(ACCOUNTS.emberVaultProgram(),
         PhoenixAccounts.emberVaultPDA(phoenix, ember).publicKey());
 
-    // the seed the IDL declares, which derives neither
-    assertNotEquals(ACCOUNTS.emberStateProgram(), EmberPDAs.statePDA(ember).publicKey());
-    assertNotEquals(ACCOUNTS.emberVaultProgram(), EmberPDAs.vaultPDA(ember).publicKey());
+    // The generated PDA helpers now take the Phoenix program seed and derive the live addresses.
+    assertEquals(ACCOUNTS.emberStateProgram(), EmberPDAs.statePDA(ember, phoenix).publicKey());
+    assertEquals(ACCOUNTS.emberVaultProgram(), EmberPDAs.vaultPDA(ember, phoenix).publicKey());
+    assertEquals(EmberPDAs.statePDA(ember, phoenix).publicKey(), EmberPDAs.state1PDA(ember, phoenix).publicKey());
+    assertEquals(EmberPDAs.vaultPDA(ember, phoenix).publicKey(), EmberPDAs.vault1PDA(ember, phoenix).publicKey());
 
     // one Ember deployment, one state per Phoenix deployment: the beta program's state is
     // live too, at a different address the same formula reaches
-    assertEquals("HVpfk2HMkR85rvaXezoNjXfB5J4ds4PurSfi6n4DPm2Z",
-        PhoenixAccounts.emberStatePDA(
-            PublicKey.fromBase58Encoded("phDEVv4w6BcfkLrLNeXr8HhhgQxnxziVGXpGPcaadMf"),
-            ember).publicKey().toBase58());
+    final var betaPhoenix = PublicKey.fromBase58Encoded("phDEVv4w6BcfkLrLNeXr8HhhgQxnxziVGXpGPcaadMf");
+    final var betaState = PhoenixAccounts.emberStatePDA(betaPhoenix, ember).publicKey();
+    assertEquals("HVpfk2HMkR85rvaXezoNjXfB5J4ds4PurSfi6n4DPm2Z", betaState.toBase58());
+    assertEquals(betaState, EmberPDAs.statePDA(ember, betaPhoenix).publicKey());
   }
 
   /// And they reach the instructions: a deposit puts the state in slot 1 and the vault in

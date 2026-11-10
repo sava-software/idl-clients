@@ -77,7 +77,10 @@ public sealed interface MarketEvent extends RustEnum permits
   MarketEvent.SpotCollateralLiquidated,
   MarketEvent.RestartAcknowledged,
   MarketEvent.AdditionalFeeAccrued,
-  MarketEvent.SpotAssetPriceUpdated {
+  MarketEvent.SpotAssetPriceUpdated,
+  MarketEvent.LockedDepositChanged,
+  MarketEvent.FundingParametersUpdatedWithClamp,
+  MarketEvent.TraderPreferenceBitsUpdated {
 
   static MarketEvent read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -156,6 +159,9 @@ public sealed interface MarketEvent extends RustEnum permits
       case 70 -> RestartAcknowledged.read(_data, i);
       case 71 -> AdditionalFeeAccrued.read(_data, i);
       case 72 -> SpotAssetPriceUpdated.read(_data, i);
+      case 73 -> LockedDepositChanged.read(_data, i);
+      case 74 -> FundingParametersUpdatedWithClamp.read(_data, i);
+      case 75 -> TraderPreferenceBitsUpdated.read(_data, i);
       default -> null;
     };
   }
@@ -1033,6 +1039,42 @@ public sealed interface MarketEvent extends RustEnum permits
     @Override
     public int ordinal() {
       return 72;
+    }
+  }
+
+  record LockedDepositChanged(LockedDepositChangedEvent val) implements SerDeEnum, MarketEvent {
+
+    public static LockedDepositChanged read(final byte[] _data, final int _offset) {
+      return new LockedDepositChanged(LockedDepositChangedEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 73;
+    }
+  }
+
+  record FundingParametersUpdatedWithClamp(FundingParametersUpdatedWithClampEvent val) implements SerDeEnum, MarketEvent {
+
+    public static FundingParametersUpdatedWithClamp read(final byte[] _data, final int _offset) {
+      return new FundingParametersUpdatedWithClamp(FundingParametersUpdatedWithClampEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 74;
+    }
+  }
+
+  record TraderPreferenceBitsUpdated(TraderPreferenceBitsUpdatedEvent val) implements SerDeEnum, MarketEvent {
+
+    public static TraderPreferenceBitsUpdated read(final byte[] _data, final int _offset) {
+      return new TraderPreferenceBitsUpdated(TraderPreferenceBitsUpdatedEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 75;
     }
   }
 }

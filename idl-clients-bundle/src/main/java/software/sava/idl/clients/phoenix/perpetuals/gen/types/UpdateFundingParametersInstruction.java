@@ -9,7 +9,10 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 public record UpdateFundingParametersInstruction(Symbol perpAssetSymbol,
                                                  FundingRateUnitInSeconds fundingIntervalSeconds,
                                                  FundingRateUnitInSeconds fundingPeriodSeconds,
-                                                 SignedQuoteLotsPerBaseLot maxFundingRate) implements SerDe {
+                                                 SignedQuoteLotsPerBaseLot maxFundingRate,
+                                                 HundredthBasisPointsU16 fundingClampCenter,
+                                                 HundredthBasisPointsU16 fundingClampBandRadius,
+                                                 FundingDivisor fundingDivisor) implements SerDe {
 
   public static final int PERP_ASSET_SYMBOL_OFFSET = 0;
   public static final int FUNDING_INTERVAL_SECONDS_OFFSET = 17;
@@ -42,14 +45,44 @@ public record UpdateFundingParametersInstruction(Symbol perpAssetSymbol,
     final SignedQuoteLotsPerBaseLot maxFundingRate;
     if (SerDeUtil.isAbsent(1, _data, i)) {
       maxFundingRate = null;
+      ++i;
     } else {
       ++i;
       maxFundingRate = SignedQuoteLotsPerBaseLot.read(_data, i);
+      i += 8;
+    }
+    final HundredthBasisPointsU16 fundingClampCenter;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      fundingClampCenter = null;
+      ++i;
+    } else {
+      ++i;
+      fundingClampCenter = HundredthBasisPointsU16.read(_data, i);
+      i += 2;
+    }
+    final HundredthBasisPointsU16 fundingClampBandRadius;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      fundingClampBandRadius = null;
+      ++i;
+    } else {
+      ++i;
+      fundingClampBandRadius = HundredthBasisPointsU16.read(_data, i);
+      i += 2;
+    }
+    final FundingDivisor fundingDivisor;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      fundingDivisor = null;
+    } else {
+      ++i;
+      fundingDivisor = FundingDivisor.read(_data, i);
     }
     return new UpdateFundingParametersInstruction(perpAssetSymbol,
                                                   fundingIntervalSeconds,
                                                   fundingPeriodSeconds,
-                                                  maxFundingRate);
+                                                  maxFundingRate,
+                                                  fundingClampCenter,
+                                                  fundingClampBandRadius,
+                                                  fundingDivisor);
   }
 
   @Override
@@ -59,11 +92,20 @@ public record UpdateFundingParametersInstruction(Symbol perpAssetSymbol,
     i += SerDeUtil.writeOptional(1, fundingIntervalSeconds, _data, i);
     i += SerDeUtil.writeOptional(1, fundingPeriodSeconds, _data, i);
     i += SerDeUtil.writeOptional(1, maxFundingRate, _data, i);
+    i += SerDeUtil.writeOptional(1, fundingClampCenter, _data, i);
+    i += SerDeUtil.writeOptional(1, fundingClampBandRadius, _data, i);
+    i += SerDeUtil.writeOptional(1, fundingDivisor, _data, i);
     return i - _offset;
   }
 
   @Override
   public int l() {
-    return perpAssetSymbol.l() + (fundingIntervalSeconds == null ? 1 : (1 + fundingIntervalSeconds.l())) + (fundingPeriodSeconds == null ? 1 : (1 + fundingPeriodSeconds.l())) + (maxFundingRate == null ? 1 : (1 + maxFundingRate.l()));
+    return perpAssetSymbol.l()
+         + (fundingIntervalSeconds == null ? 1 : (1 + fundingIntervalSeconds.l()))
+         + (fundingPeriodSeconds == null ? 1 : (1 + fundingPeriodSeconds.l()))
+         + (maxFundingRate == null ? 1 : (1 + maxFundingRate.l()))
+         + (fundingClampCenter == null ? 1 : (1 + fundingClampCenter.l()))
+         + (fundingClampBandRadius == null ? 1 : (1 + fundingClampBandRadius.l()))
+         + (fundingDivisor == null ? 1 : (1 + fundingDivisor.l()));
   }
 }

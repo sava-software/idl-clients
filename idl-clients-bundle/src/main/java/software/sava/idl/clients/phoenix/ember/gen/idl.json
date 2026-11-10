@@ -6,93 +6,53 @@
     "version": "0.1.0",
     "spec": "0.1.0",
     "description": "Phoenix Ember: a token wrapper program",
-    "address": "EMBERpYNE6ehWmXymZZS2skiFmCa9V5dp14e1iduM5qy"
+    "address": "EMBERpYNE6ehWmXymZZS2skiFmCa9V5dp14e1iduM5qy",
+    "origin": "anchor-compatible",
+    "codama": {
+      "nodesVersion": "1.6.0",
+      "nodesFromAnchorVersion": "1.4.1",
+      "renderersJsVersion": "2.2.0"
+    }
   },
   "instructions": [
     {
       "name": "Init",
-      "discriminator": [
-        220,
-        59,
-        207,
-        236,
-        108,
-        250,
-        47,
-        100
-      ],
+      "discriminator": [220, 59, 207, 236, 108, 250, 47, 100],
       "accounts": [
         {
           "name": "payer",
           "writable": true,
           "signer": true,
-          "docs": [
-            "Fee payer account"
-          ]
+          "docs": ["Fee payer account"]
         },
         {
           "name": "authority",
           "writable": false,
           "signer": false,
-          "docs": [
-            "The state authority for admin actions"
-          ]
+          "docs": ["The state authority for admin actions"]
         },
         {
           "name": "state",
           "writable": true,
           "signer": false,
-          "docs": [
-            "The state account for the token wrapper"
-          ],
+          "docs": ["The state account for the token wrapper"],
           "pda": {
             "seeds": [
               {
+                "kind": "account",
+                "path": "phoenixProgram"
+              },
+              {
                 "kind": "const",
-                "value": [
-                  115,
-                  116,
-                  97,
-                  116,
-                  101
-                ]
+                "value": [115, 116, 97, 116, 101]
               }
             ],
             "program": {
               "kind": "const",
               "value": [
-                198,
-                83,
-                29,
-                115,
-                0,
-                180,
-                85,
-                12,
-                224,
-                1,
-                166,
-                20,
-                58,
-                234,
-                43,
-                8,
-                63,
-                30,
-                176,
-                113,
-                184,
-                86,
-                125,
-                118,
-                14,
-                204,
-                18,
-                87,
-                3,
-                196,
-                103,
-                200
+                198, 83, 29, 115, 0, 180, 85, 12, 224, 1, 166, 20, 58, 234, 43,
+                8, 63, 30, 176, 113, 184, 86, 125, 118, 14, 204, 18, 87, 3, 196,
+                103, 200
               ]
             }
           }
@@ -101,172 +61,94 @@
           "name": "inputMint",
           "writable": false,
           "signer": false,
-          "docs": [
-            "The input mint for the token wrapper"
-          ]
+          "docs": ["The input mint for the token wrapper"]
         },
         {
           "name": "outputMint",
           "writable": true,
-          "signer": false,
-          "docs": [
-            "The output mint for the token wrapper"
-          ]
+          "signer": true,
+          "docs": ["The output mint for the token wrapper"]
         },
         {
           "name": "vault",
           "writable": true,
           "signer": false,
-          "docs": [
-            "The vault account for the token wrapper input mint"
-          ],
+          "docs": ["The vault account for the token wrapper input mint"],
           "pda": {
             "seeds": [
               {
+                "kind": "account",
+                "path": "phoenixProgram"
+              },
+              {
                 "kind": "const",
-                "value": [
-                  118,
-                  97,
-                  117,
-                  108,
-                  116
-                ]
+                "value": [118, 97, 117, 108, 116]
               }
             ],
             "program": {
               "kind": "const",
               "value": [
-                198,
-                83,
-                29,
-                115,
-                0,
-                180,
-                85,
-                12,
-                224,
-                1,
-                166,
-                20,
-                58,
-                234,
-                43,
-                8,
-                63,
-                30,
-                176,
-                113,
-                184,
-                86,
-                125,
-                118,
-                14,
-                204,
-                18,
-                87,
-                3,
-                196,
-                103,
-                200
+                198, 83, 29, 115, 0, 180, 85, 12, 224, 1, 166, 20, 58, 234, 43,
+                8, 63, 30, 176, 113, 184, 86, 125, 118, 14, 204, 18, 87, 3, 196,
+                103, 200
               ]
             }
           }
         },
         {
+          "name": "phoenixProgram",
+          "writable": false,
+          "signer": false,
+          "docs": ["Phoenix Eternal program used as a PDA seed"]
+        },
+        {
           "name": "tokenProgram",
           "writable": false,
           "signer": false,
-          "docs": [
-            "Token program account"
-          ]
+          "docs": ["Token program account"]
         },
         {
           "name": "systemProgram",
           "writable": false,
           "signer": false,
-          "docs": [
-            "System program account"
-          ]
+          "docs": ["System program account"]
         }
       ],
       "args": []
     },
     {
       "name": "Deposit",
-      "discriminator": [
-        242,
-        35,
-        198,
-        137,
-        82,
-        225,
-        242,
-        182
-      ],
+      "discriminator": [242, 35, 198, 137, 82, 225, 242, 182],
       "accounts": [
         {
           "name": "owner",
-          "writable": true,
+          "writable": false,
           "signer": true,
-          "docs": [
-            "The token owner"
-          ]
+          "docs": ["The token owner"]
         },
         {
           "name": "state",
-          "writable": true,
+          "writable": false,
           "signer": false,
-          "docs": [
-            "The state account for the token wrapper"
-          ],
+          "docs": ["The state account for the token wrapper"],
           "pda": {
             "seeds": [
               {
+                "kind": "account",
+                "path": "state.phoenixProgram",
+                "account": "EmberState"
+              },
+              {
                 "kind": "const",
-                "value": [
-                  115,
-                  116,
-                  97,
-                  116,
-                  101
-                ]
+                "value": [115, 116, 97, 116, 101]
               }
             ],
             "program": {
               "kind": "const",
               "value": [
-                198,
-                83,
-                29,
-                115,
-                0,
-                180,
-                85,
-                12,
-                224,
-                1,
-                166,
-                20,
-                58,
-                234,
-                43,
-                8,
-                63,
-                30,
-                176,
-                113,
-                184,
-                86,
-                125,
-                118,
-                14,
-                204,
-                18,
-                87,
-                3,
-                196,
-                103,
-                200
+                198, 83, 29, 115, 0, 180, 85, 12, 224, 1, 166, 20, 58, 234, 43,
+                8, 63, 30, 176, 113, 184, 86, 125, 118, 14, 204, 18, 87, 3, 196,
+                103, 200
               ]
             }
           }
@@ -275,89 +157,49 @@
           "name": "inputMint",
           "writable": false,
           "signer": false,
-          "docs": [
-            "The input mint for the token wrapper"
-          ]
+          "docs": ["The input mint for the token wrapper"]
         },
         {
           "name": "outputMint",
           "writable": true,
           "signer": false,
-          "docs": [
-            "The output mint for the token wrapper"
-          ]
+          "docs": ["The output mint for the token wrapper"]
         },
         {
           "name": "inputTokenAccount",
           "writable": true,
           "signer": false,
-          "docs": [
-            "The input token account owned by the owner"
-          ]
+          "docs": ["The input token account owned by the owner"]
         },
         {
           "name": "outputTokenAccount",
           "writable": true,
           "signer": false,
-          "docs": [
-            "The output token account owned by the owner"
-          ]
+          "docs": ["The output token account owned by the owner"]
         },
         {
           "name": "vault",
           "writable": true,
           "signer": false,
-          "docs": [
-            "The vault account for the token wrapper input mint"
-          ],
+          "docs": ["The vault account for the token wrapper input mint"],
           "pda": {
             "seeds": [
               {
+                "kind": "account",
+                "path": "state.phoenixProgram",
+                "account": "EmberState"
+              },
+              {
                 "kind": "const",
-                "value": [
-                  118,
-                  97,
-                  117,
-                  108,
-                  116
-                ]
+                "value": [118, 97, 117, 108, 116]
               }
             ],
             "program": {
               "kind": "const",
               "value": [
-                198,
-                83,
-                29,
-                115,
-                0,
-                180,
-                85,
-                12,
-                224,
-                1,
-                166,
-                20,
-                58,
-                234,
-                43,
-                8,
-                63,
-                30,
-                176,
-                113,
-                184,
-                86,
-                125,
-                118,
-                14,
-                204,
-                18,
-                87,
-                3,
-                196,
-                103,
-                200
+                198, 83, 29, 115, 0, 180, 85, 12, 224, 1, 166, 20, 58, 234, 43,
+                8, 63, 30, 176, 113, 184, 86, 125, 118, 14, 204, 18, 87, 3, 196,
+                103, 200
               ]
             }
           }
@@ -366,9 +208,7 @@
           "name": "tokenProgram",
           "writable": false,
           "signer": false,
-          "docs": [
-            "Token program account"
-          ]
+          "docs": ["Token program account"]
         }
       ],
       "args": [
@@ -384,80 +224,37 @@
     },
     {
       "name": "Withdraw",
-      "discriminator": [
-        183,
-        18,
-        70,
-        156,
-        148,
-        109,
-        161,
-        34
-      ],
+      "discriminator": [183, 18, 70, 156, 148, 109, 161, 34],
       "accounts": [
         {
           "name": "owner",
-          "writable": true,
-          "signer": true,
-          "docs": [
-            "The token owner"
-          ]
+          "writable": false,
+          "signer": false,
+          "docs": ["The token owner"]
         },
         {
           "name": "state",
-          "writable": true,
+          "writable": false,
           "signer": false,
-          "docs": [
-            "The state account for the token wrapper"
-          ],
+          "docs": ["The state account for the token wrapper"],
           "pda": {
             "seeds": [
               {
+                "kind": "account",
+                "path": "state.phoenixProgram",
+                "account": "EmberState"
+              },
+              {
                 "kind": "const",
-                "value": [
-                  115,
-                  116,
-                  97,
-                  116,
-                  101
-                ]
+                "value": [115, 116, 97, 116, 101]
               }
             ],
             "program": {
               "kind": "const",
               "value": [
-                198,
-                83,
-                29,
-                115,
-                0,
-                180,
-                85,
-                12,
-                224,
-                1,
-                166,
-                20,
-                58,
-                234,
-                43,
-                8,
-                63,
-                30,
-                176,
-                113,
-                184,
-                86,
-                125,
-                118,
-                14,
-                204,
-                18,
-                87,
-                3,
-                196,
-                103,
-                200
+                198, 83, 29, 115, 0, 180, 85, 12, 224, 1, 166, 20, 58, 234, 43,
+                8, 63, 30, 176, 113, 184, 86, 125, 118, 14, 204, 18, 87, 3, 196,
+                103, 200
               ]
             }
           }
@@ -466,89 +263,49 @@
           "name": "inputMint",
           "writable": false,
           "signer": false,
-          "docs": [
-            "The input mint for the token wrapper"
-          ]
+          "docs": ["The input mint for the token wrapper"]
         },
         {
           "name": "outputMint",
           "writable": true,
           "signer": false,
-          "docs": [
-            "The output mint for the token wrapper"
-          ]
+          "docs": ["The output mint for the token wrapper"]
         },
         {
           "name": "inputTokenAccount",
           "writable": true,
           "signer": false,
-          "docs": [
-            "The input token account owned by the owner"
-          ]
+          "docs": ["The input token account owned by the owner"]
         },
         {
           "name": "outputTokenAccount",
           "writable": true,
           "signer": false,
-          "docs": [
-            "The output token account owned by the owner"
-          ]
+          "docs": ["The output token account owned by the owner"]
         },
         {
           "name": "vault",
           "writable": true,
           "signer": false,
-          "docs": [
-            "The vault account for the token wrapper input mint"
-          ],
+          "docs": ["The vault account for the token wrapper input mint"],
           "pda": {
             "seeds": [
               {
+                "kind": "account",
+                "path": "state.phoenixProgram",
+                "account": "EmberState"
+              },
+              {
                 "kind": "const",
-                "value": [
-                  118,
-                  97,
-                  117,
-                  108,
-                  116
-                ]
+                "value": [118, 97, 117, 108, 116]
               }
             ],
             "program": {
               "kind": "const",
               "value": [
-                198,
-                83,
-                29,
-                115,
-                0,
-                180,
-                85,
-                12,
-                224,
-                1,
-                166,
-                20,
-                58,
-                234,
-                43,
-                8,
-                63,
-                30,
-                176,
-                113,
-                184,
-                86,
-                125,
-                118,
-                14,
-                204,
-                18,
-                87,
-                3,
-                196,
-                103,
-                200
+                198, 83, 29, 115, 0, 180, 85, 12, 224, 1, 166, 20, 58, 234, 43,
+                8, 63, 30, 176, 113, 184, 86, 125, 118, 14, 204, 18, 87, 3, 196,
+                103, 200
               ]
             }
           }
@@ -557,9 +314,7 @@
           "name": "tokenProgram",
           "writable": false,
           "signer": false,
-          "docs": [
-            "Token program account"
-          ]
+          "docs": ["Token program account"]
         }
       ],
       "args": [
@@ -577,16 +332,7 @@
   "accounts": [
     {
       "name": "EmberState",
-      "discriminator": [
-        0,
-        208,
-        11,
-        177,
-        63,
-        157,
-        55,
-        98
-      ]
+      "discriminator": [142, 206, 11, 177, 63, 157, 55, 98]
     }
   ],
   "types": [
@@ -609,7 +355,9 @@
         "fields": [
           {
             "name": "amount",
-            "type": "u64"
+            "type": {
+              "option": "u64"
+            }
           }
         ]
       }
@@ -620,20 +368,20 @@
         "kind": "struct",
         "fields": [
           {
-            "name": "discriminant",
-            "type": "u64"
-          },
-          {
             "name": "authority",
-            "type": "publicKey"
+            "type": "pubkey"
           },
           {
             "name": "inputMint",
-            "type": "publicKey"
+            "type": "pubkey"
           },
           {
             "name": "outputMint",
-            "type": "publicKey"
+            "type": "pubkey"
+          },
+          {
+            "name": "phoenixProgram",
+            "type": "pubkey"
           }
         ]
       }

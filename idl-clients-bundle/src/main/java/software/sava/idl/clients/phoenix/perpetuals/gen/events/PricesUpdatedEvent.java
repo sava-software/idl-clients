@@ -4,8 +4,8 @@ package software.sava.idl.clients.phoenix.perpetuals.gen.events;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.programs.Discriminator;
 import software.sava.idl.clients.core.gen.SerDeUtil;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.SignedQuoteLotSecondsPerBaseLotUpcasted;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.SignedQuoteLotsPerBaseLot;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.SignedQuoteLotsPerBaseLotUpcasted;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.SignedTicks;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.Symbol;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.Ticks;
@@ -38,7 +38,7 @@ public record PricesUpdatedEvent(Discriminator discriminator,
                                  Ticks newMarkPrice,
                                  SignedQuoteLotsPerBaseLot cumulativeFundingRate,
                                  SignedQuoteLotsPerBaseLot settledContribution,
-                                 SignedQuoteLotsPerBaseLotUpcasted intervalAccumulator,
+                                 SignedQuoteLotSecondsPerBaseLotUpcasted intervalAccumulator,
                                  long assetSequenceNumber,
                                  long prevAssetSequenceNumberSlot) implements EternalEvent {
 
@@ -139,13 +139,13 @@ public record PricesUpdatedEvent(Discriminator discriminator,
       settledContribution = SignedQuoteLotsPerBaseLot.read(_data, i);
       i += 8;
     }
-    final SignedQuoteLotsPerBaseLotUpcasted intervalAccumulator;
+    final SignedQuoteLotSecondsPerBaseLotUpcasted intervalAccumulator;
     if (SerDeUtil.isAbsent(1, _data, i)) {
       intervalAccumulator = null;
       ++i;
     } else {
       ++i;
-      intervalAccumulator = SignedQuoteLotsPerBaseLotUpcasted.read(_data, i);
+      intervalAccumulator = SignedQuoteLotSecondsPerBaseLotUpcasted.read(_data, i);
       i += 16;
     }
     final var assetSequenceNumber = getInt64LE(_data, i);

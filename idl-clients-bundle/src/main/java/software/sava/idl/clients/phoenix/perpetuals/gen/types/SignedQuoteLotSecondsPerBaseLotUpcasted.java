@@ -8,20 +8,20 @@ import java.math.BigInteger;
 import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 
-/// Upcasted signed quote lots per base lot wrapper.
+/// Upcasted signed quote lots per base lot integrated over seconds.
 ///
-public record SignedQuoteLotsPerBaseLotUpcasted(BigInteger inner) implements SerDe {
+public record SignedQuoteLotSecondsPerBaseLotUpcasted(BigInteger inner) implements SerDe {
 
   public static final int BYTES = 16;
 
   public static final int INNER_OFFSET = 0;
 
-  public static SignedQuoteLotsPerBaseLotUpcasted read(final byte[] _data, final int _offset) {
+  public static SignedQuoteLotSecondsPerBaseLotUpcasted read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
     final var inner = getInt128LE(_data, _offset);
-    return new SignedQuoteLotsPerBaseLotUpcasted(inner);
+    return new SignedQuoteLotSecondsPerBaseLotUpcasted(inner);
   }
 
   @Override

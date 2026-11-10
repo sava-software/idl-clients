@@ -17,15 +17,19 @@ public record EmberState(PublicKey _address,
                          Discriminator discriminator,
                          PublicKey authority,
                          PublicKey inputMint,
-                         PublicKey outputMint) implements SerDe {
+                         PublicKey outputMint,
+                         PublicKey phoenixProgram) implements SerDe {
 
-  public static final int BYTES = 104;
+  public static final int BYTES = 136;
+  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
+
   public static final Discriminator DISCRIMINATOR = toDiscriminator(142, 206, 11, 177, 63, 157, 55, 98);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 
   public static final int AUTHORITY_OFFSET = 8;
   public static final int INPUT_MINT_OFFSET = 40;
   public static final int OUTPUT_MINT_OFFSET = 72;
+  public static final int PHOENIX_PROGRAM_OFFSET = 104;
 
   public static Filter createAuthorityFilter(final PublicKey authority) {
     return Filter.createMemCompFilter(AUTHORITY_OFFSET, authority);
@@ -37,6 +41,10 @@ public record EmberState(PublicKey _address,
 
   public static Filter createOutputMintFilter(final PublicKey outputMint) {
     return Filter.createMemCompFilter(OUTPUT_MINT_OFFSET, outputMint);
+  }
+
+  public static Filter createPhoenixProgramFilter(final PublicKey phoenixProgram) {
+    return Filter.createMemCompFilter(PHOENIX_PROGRAM_OFFSET, phoenixProgram);
   }
 
   public static EmberState read(final byte[] _data, final int _offset) {
@@ -78,7 +86,14 @@ public record EmberState(PublicKey _address,
     final var inputMint = readPubKey(_data, i);
     i += 32;
     final var outputMint = readPubKey(_data, i);
-    return new EmberState(_address, discriminator, authority, inputMint, outputMint);
+    i += 32;
+    final var phoenixProgram = readPubKey(_data, i);
+    return new EmberState(_address,
+                          discriminator,
+                          authority,
+                          inputMint,
+                          outputMint,
+                          phoenixProgram);
   }
 
   @Override
@@ -89,6 +104,8 @@ public record EmberState(PublicKey _address,
     inputMint.write(_data, i);
     i += 32;
     outputMint.write(_data, i);
+    i += 32;
+    phoenixProgram.write(_data, i);
     i += 32;
     return i - _offset;
   }

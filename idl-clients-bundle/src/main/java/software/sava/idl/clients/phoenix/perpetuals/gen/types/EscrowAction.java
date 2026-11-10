@@ -9,7 +9,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 public sealed interface EscrowAction extends RustEnum permits
   EscrowAction.Noop,
-  EscrowAction.Cash {
+  EscrowAction.Cash,
+  EscrowAction.LockedDeposit {
 
   static EscrowAction read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -17,6 +18,7 @@ public sealed interface EscrowAction extends RustEnum permits
     return switch (ordinal) {
       case 0 -> Noop.read(_data, i);
       case 1 -> Cash.read(_data, i);
+      case 2 -> LockedDeposit.read(_data, i);
       default -> null;
     };
   }
@@ -99,6 +101,47 @@ public sealed interface EscrowAction extends RustEnum permits
     @Override
     public int ordinal() {
       return 1;
+    }
+  }
+
+  /// @param amount: u64
+  record LockedDeposit(long amount, byte[] padding0) implements EscrowAction {
+
+    public static final int BYTES = 136;
+    public static final int PADDING_0_LEN = 128;
+
+    public static final int AMOUNT_OFFSET = 0;
+    public static final int PADDING_0_OFFSET = 8;
+
+    public static LockedDeposit read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var amount = getInt64LE(_data, i);
+      i += 8;
+      final var padding0 = new byte[128];
+      SerDeUtil.readArray(padding0, _data, i);
+      return new LockedDeposit(amount, padding0);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + writeOrdinal(_data, _offset);
+      putInt64LE(_data, i, amount);
+      i += 8;
+      i += SerDeUtil.writeArrayChecked(padding0, 128, _data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return ordinalBytes() + BYTES;
+    }
+
+    @Override
+    public int ordinal() {
+      return 2;
     }
   }
 }

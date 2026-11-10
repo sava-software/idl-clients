@@ -24,8 +24,8 @@ import static software.sava.core.encoding.ByteUtil.getInt32LE;
 /// into the `Trader` account, so the generated `Trader.maxPositions()` folds the preference bits
 /// into its high half. The width is unchanged, so every other field still reads correctly.
 ///
-/// The layout is **deliberately not overridden** here, for the reason [EmberStateTests] gives: a
-/// local field-list override is a private fork of someone else's account definition. That fix
+/// The layout is **deliberately not overridden** here: a local field-list override is a private
+/// fork of someone else's account definition. That fix
 /// belongs upstream. Until it lands, read the two halves from the raw bytes at
 /// `Trader.MAX_POSITIONS_OFFSET` and four bytes after it.
 ///

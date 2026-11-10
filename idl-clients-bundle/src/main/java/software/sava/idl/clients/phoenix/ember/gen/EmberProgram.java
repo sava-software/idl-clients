@@ -12,6 +12,7 @@ import software.sava.idl.clients.phoenix.ember.gen.types.WithdrawParams;
 import java.util.List;
 
 import static software.sava.core.accounts.meta.AccountMeta.createRead;
+import static software.sava.core.accounts.meta.AccountMeta.createReadOnlySigner;
 import static software.sava.core.accounts.meta.AccountMeta.createWritableSigner;
 import static software.sava.core.accounts.meta.AccountMeta.createWrite;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
@@ -27,6 +28,7 @@ public final class EmberProgram {
   /// @param inputMintKey The input mint for the token wrapper
   /// @param outputMintKey The output mint for the token wrapper
   /// @param vaultKey The vault account for the token wrapper input mint
+  /// @param phoenixProgramKey Phoenix Eternal program used as a PDA seed
   /// @param tokenProgramKey Token program account
   /// @param systemProgramKey System program account
   public static List<AccountMeta> initKeys(final PublicKey payerKey,
@@ -35,6 +37,7 @@ public final class EmberProgram {
                                            final PublicKey inputMintKey,
                                            final PublicKey outputMintKey,
                                            final PublicKey vaultKey,
+                                           final PublicKey phoenixProgramKey,
                                            final PublicKey tokenProgramKey,
                                            final PublicKey systemProgramKey) {
     return List.of(
@@ -42,8 +45,9 @@ public final class EmberProgram {
       createRead(authorityKey),
       createWrite(stateKey),
       createRead(inputMintKey),
-      createWrite(outputMintKey),
+      createWritableSigner(outputMintKey),
       createWrite(vaultKey),
+      createRead(phoenixProgramKey),
       createRead(tokenProgramKey),
       createRead(systemProgramKey)
     );
@@ -55,6 +59,7 @@ public final class EmberProgram {
   /// @param inputMintKey The input mint for the token wrapper
   /// @param outputMintKey The output mint for the token wrapper
   /// @param vaultKey The vault account for the token wrapper input mint
+  /// @param phoenixProgramKey Phoenix Eternal program used as a PDA seed
   /// @param tokenProgramKey Token program account
   /// @param systemProgramKey System program account
   public static Instruction init(final AccountMeta invokedEmberProgramMeta,
@@ -64,6 +69,7 @@ public final class EmberProgram {
                                  final PublicKey inputMintKey,
                                  final PublicKey outputMintKey,
                                  final PublicKey vaultKey,
+                                 final PublicKey phoenixProgramKey,
                                  final PublicKey tokenProgramKey,
                                  final PublicKey systemProgramKey) {
     final var keys = initKeys(
@@ -73,6 +79,7 @@ public final class EmberProgram {
       inputMintKey,
       outputMintKey,
       vaultKey,
+      phoenixProgramKey,
       tokenProgramKey,
       systemProgramKey
     );
@@ -103,8 +110,8 @@ public final class EmberProgram {
                                               final PublicKey vaultKey,
                                               final PublicKey tokenProgramKey) {
     return List.of(
-      createWritableSigner(ownerKey),
-      createWrite(stateKey),
+      createReadOnlySigner(ownerKey),
+      createRead(stateKey),
       createRead(inputMintKey),
       createWrite(outputMintKey),
       createWrite(inputTokenAccountKey),
@@ -207,8 +214,8 @@ public final class EmberProgram {
                                                final PublicKey vaultKey,
                                                final PublicKey tokenProgramKey) {
     return List.of(
-      createWritableSigner(ownerKey),
-      createWrite(stateKey),
+      createRead(ownerKey),
+      createRead(stateKey),
       createRead(inputMintKey),
       createWrite(outputMintKey),
       createWrite(inputTokenAccountKey),

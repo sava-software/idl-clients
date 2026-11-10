@@ -12,22 +12,8 @@ import java.util.Base64;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/// Ember's published IDL is stale, and this pins how far we go about it.
-///
-/// The generator is faithful to that IDL — upstream is wrong, in two ways. It declares a
-/// discriminator no live account carries, and it models three trailing pubkeys where the program
-/// writes four.
-///
-/// Only the first is fixed here, by an `accountDiscriminators` override in main_net_programs.json,
-/// because a wrong discriminator makes the account undecodable and the correct value is
-/// independently derivable from Phoenix's own SDK. The **short layout is deliberately left
-/// alone**: a local field-list override would mean maintaining a private fork of someone else's
-/// account definition indefinitely, with no upstream IDL in their repo to diff against. That fix
-/// belongs upstream. A caller who needs the fourth key should say so to Phoenix.
-///
-/// So the assertions below are split. The discriminator ones are the contract. The layout ones
-/// record the gap and act as a tripwire: if `BYTES` ever becomes 136, upstream shipped a corrected
-/// IDL, and this class should be rewritten to assert the full layout rather than the shortfall.
+/// Ember's corrected published IDL now describes the deployed discriminator and all four pubkeys.
+/// The captured account remains the independent byte-level oracle for the generated layout.
 final class EmberStateTests {
 
   private static final String ADDRESS = "6ur7v6AXNpnHeEb6xuk7PyezvZ1i5GrgYyWZkNCpzbRz";
@@ -45,75 +31,64 @@ final class EmberStateTests {
     }
   }
 
-  /// The fixture is the ground truth, so this holds regardless of what the client declares. It is
-  /// here so a failure downstream is unambiguously the client's and not a stale capture.
+  /// The fixture is ground truth, independently of what the generated IDL declares.
   @Test
   void theCapturedAccountCarriesTheDeployedDiscriminator() {
     final byte[] data = accountData();
-    assertEquals(136, data.length, "8 + four pubkeys, not the IDL's 8 + three");
+    assertEquals(136, data.length, "8-byte discriminator plus four pubkeys");
     for (int i = 0; i < DEPLOYED_DISCRIMINATOR.length; i++) {
       assertEquals(DEPLOYED_DISCRIMINATOR[i], data[i] & 0xFF, "discriminator byte " + i);
     }
   }
 
-  /// The override earns its keep here: this is the constant the stale IDL got wrong, and the one
-  /// value in the file that main_net_programs.json now supplies.
+  /// The generated discriminator now agrees with the captured deployed bytes.
   @Test
   void theDeclaredDiscriminatorMatchesTheDeployedProgram() {
     assertEquals(8, EmberState.DISCRIMINATOR.length());
     for (int i = 0; i < DEPLOYED_DISCRIMINATOR.length; i++) {
       assertEquals(DEPLOYED_DISCRIMINATOR[i], EmberState.DISCRIMINATOR.data()[i] & 0xFF,
-          "declared discriminator byte " + i);
+          "discriminator byte " + i);
     }
   }
 
-  /// What the override bought: the checked path decodes a live account again. Between the
-  /// `readChecked` regeneration and the override this threw for 100% of live accounts.
+  /// The checked path accepts the captured account and reads every declared key.
   @Test
   void aRealAccountDecodesThroughTheCheckedPath() {
     final byte[] data = accountData();
     final var state = EmberState.readChecked(PublicKey.fromBase58Encoded(ADDRESS), data, 0);
     assertNotNull(state);
 
-    assertEquals(8, EmberState.AUTHORITY_OFFSET);
-    assertEquals(40, EmberState.INPUT_MINT_OFFSET);
-    assertEquals(72, EmberState.OUTPUT_MINT_OFFSET);
-
     assertEquals("E11ipYYCnbbRnhsEaYetRLjkS5KM7Ld7BPbdMGVacmD3", state.authority().toBase58());
     assertEquals("EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v", state.inputMint().toBase58(), "USDC");
     assertEquals("PhUsd11YkbjSaWjFncfAAmatntsjx3MgDR9B6g1ks3A", state.outputMint().toBase58());
+    assertEquals("EtrnLzgbS7nMMy5fbD42kXiUzGg8XQzJ972Xtk1cjWih", state.phoenixProgram().toBase58());
   }
 
-  /// The gap we are choosing not to close, stated exactly so it cannot be mistaken for an
-  /// oversight. The record stops one pubkey short of the account, and that key is really there.
-  ///
-  /// Asserted on the raw bytes rather than through an accessor because the record has no field
-  /// for it — that is the point.
+  /// The generated field offsets and values match the captured account byte for byte.
   @Test
-  void theRecordStopsOnePubkeyShortOfTheAccount() {
+  void theRecordCoversAllFourPubkeys() {
     final byte[] data = accountData();
 
-    assertEquals(104, EmberState.BYTES, "what the stale IDL declares; see the class javadoc");
+    assertEquals(136, EmberState.BYTES);
     assertEquals(136, data.length, "what the program writes");
-    assertEquals(EmberState.BYTES + PublicKey.PUBLIC_KEY_LENGTH, data.length,
-        "the shortfall is exactly one undeclared trailing pubkey");
-
-    final var trailing = PublicKey.readPubKey(data, EmberState.BYTES);
-    assertEquals("EtrnLzgbS7nMMy5fbD42kXiUzGg8XQzJ972Xtk1cjWih", trailing.toBase58());
+    assertEquals(8, EmberState.AUTHORITY_OFFSET);
+    assertEquals(40, EmberState.INPUT_MINT_OFFSET);
+    assertEquals(72, EmberState.OUTPUT_MINT_OFFSET);
+    assertEquals(104, EmberState.PHOENIX_PROGRAM_OFFSET);
+    assertEquals("EtrnLzgbS7nMMy5fbD42kXiUzGg8XQzJ972Xtk1cjWih",
+        PublicKey.readPubKey(data, EmberState.PHOENIX_PROGRAM_OFFSET).toBase58());
+    final var state = EmberState.read(data, 0);
+    final byte[] encoded = new byte[EmberState.BYTES];
+    assertEquals(EmberState.BYTES, state.write(encoded, 0));
+    assertArrayEquals(data, encoded, "generated reader and writer preserve the captured account");
   }
 
-  /// The practical consequence: a `dataSize` filter built from the short `BYTES` asks the RPC for
-  /// a size no Ember account has, so the record carries no `SIZE_FILTER`. The config withholds it
-  /// (`"noSizeFilter"` in `main_net_programs.json`, held to `BYTES` 104), and a scan filters on
-  /// `DISCRIMINATOR_FILTER` instead. When the IDL is fixed and `BYTES` moves, the generator refuses
-  /// the stale entry, which is the cue to re-measure and drop it.
+  /// The generated size filter now matches live state accounts.
   @Test
-  void theRecordCarriesNoSizeFilter() {
-    assertNotEquals(accountData().length, EmberState.BYTES,
-        "a dataSize filter from BYTES would match no live account");
-    assertThrows(NoSuchFieldException.class, () -> EmberState.class.getField("SIZE_FILTER"),
-        "the size filter is withheld by config");
-    assertEquals(Filter.createMemCompFilter(0, EmberState.DISCRIMINATOR.data()), EmberState.DISCRIMINATOR_FILTER,
-        "the filter a scan uses instead");
+  void theRecordCarriesTheLiveSizeFilter() {
+    assertEquals(accountData().length, EmberState.BYTES);
+    assertEquals(Filter.createDataSizeFilter(136), EmberState.SIZE_FILTER);
+    assertEquals(Filter.createMemCompFilter(0, EmberState.DISCRIMINATOR.data()),
+        EmberState.DISCRIMINATOR_FILTER);
   }
 }
