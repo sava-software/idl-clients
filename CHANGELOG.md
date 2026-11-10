@@ -1,5 +1,29 @@
 # Changelog
 
+## [25.20.0](https://github.com/sava-software/idl-clients/compare/25.19.14...25.20.0) (2026-11-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* **jupiter:** JupiterSwapApiClient, JupiterQuoteRequest, JupiterSwapRequest, JupiterUltraOrderRequest, JupiterUltraOrderRequestRecord, PriorityFeeLamports and JitoTip are removed; use JupiterSwapV2Client. quote(...) then swapInstructions(...) becomes buildSwap(...); quote(...) for a price becomes order(...) without a taker; swap(...) becomes order(...) with a taker then execute(...), or buildSwap(...) to assemble the transaction yourself; ultraOrder(...) becomes order(...), executeOrder(...) becomes execute(...), and dexLabelToProgramIdMap() becomes programIdToLabel(), keyed by program id. JupiterQuoteRequest and JupiterSwapRequest become JupiterSwapBuildRequest, which sends slippageBps(0) as a 0 bps tolerance where JupiterQuoteRequest sent nothing and left Jupiter's default of 50 in force: call defaultSlippage() to keep that default. A quote moved to JupiterSwapOrderRequest has no default of 50 at all: unset, Jupiter estimates the slippage itself, so call slippageBps(50) to keep 50. JupiterUltraOrderRequest becomes JupiterSwapOrderRequest: build() is buildRequest(), amount(BigInteger) is amount(long), referralFeeBps(n) is referralFee(n), excludeRouter/excludeDex are excludeRouters/excludeDexes, and closeAuthority has no equivalent. A priority fee or Jito tip moves to priorityFeeLamports(...) or jitoTipLamports(...) on JupiterSwapOrderRequest together with broadcastFeeType(...): Jupiter ignores a fee or tip sent without one, so the request refuses it. jitoTipLamports(...) takes no payer, so a JitoTip payer has no equivalent there. buildSwap(...) takes no Jito tip at all: its tipAmount(...) is Jupiter's /submit tip, paid to Jupiter's own tip receivers, so add your own transfer to a Jito tip account from whichever account should pay it. The deprecation notes in 25.19.14 map every other parameter. Two cases have no replacement. One is an ExactOut swap whose instructions go into a transaction of your own: buildSwap(...) is ExactIn only, and order(...) with swapMode(SwapMode.ExactOut), which Jupiter answers although its spec documents only ExactIn, returns a transaction Jupiter has assembled, to which you cannot add instructions; the 25.19.10 notes said to keep quote(...) and swapInstructions(...) for this case, and they are removed too. The other is a self-hosted Metis Swap API binary: createLocalClient(), which called its unprefixed /quote, /swap and /swap-instructions paths, is removed with the client, and JupiterSwapV2Client calls only /swap/v2 paths.
+
+### Features
+
+* add Kamino Scope's CanaryBreakers entry and follow Jupiter Swap's republished IDL ([184f716](https://github.com/sava-software/idl-clients/commit/184f71631e9d519376270596a3626c345a6282b2))
+* **jupiter:** remove the deprecated Metis v1 and Ultra client ([276fc1c](https://github.com/sava-software/idl-clients/commit/276fc1ce0212015804ba9b022859b84f52c65f3b))
+* **neutral-trade:** support tokenized bundle switches ([4c4995e](https://github.com/sava-software/idl-clients/commit/4c4995e54b4ce36a3cbdd06689a7696e0364f888))
+* **offerbook:** follow the republished IDL, so extend_loan passes its collateral accounts ([9a8835a](https://github.com/sava-software/idl-clients/commit/9a8835a825211b2cfdbb6f89eacfd465f6cf80cf))
+
+
+### Bug Fixes
+
+* **build:** upgrade to Gradle 9.9 and scope plugin repositories ([cd12c7f](https://github.com/sava-software/idl-clients/commit/cd12c7fef4d851e36a27bfdb3a9904a4c0ba7e0b))
+
+
+### Miscellaneous Chores
+
+* release 25.20.0 ([9c935f4](https://github.com/sava-software/idl-clients/commit/9c935f4497b5f641811f2ed228fda27394f59113))
+
 ## [25.19.14](https://github.com/sava-software/idl-clients/compare/25.19.13...25.19.14) (2026-11-05)
 
 
