@@ -593,10 +593,15 @@ savaGithubPackagesPassword=GITHUB_TOKEN
   answers by the revocation's reason, and on a key whose status a server left undecided, which
   only a repeated run, once the servers answer, settles. A new BOM or parent POM
   is validated once more from an empty `GRADLE_USER_HOME`, since a warm cache hides metadata a
-  cold one fetches, and an IntelliJ sync with download sources on resolves the Gradle sources
-  zip, Groovy's sources and plugin sources jars through the same policy (README steps 4 and
-  5). A refusal names each refused artifact and the reason, and the README's step 2 says what
-  to do: a bump under a key listed as unauthenticated in
+  cold one fetches (README step 4). No IDE sync is owed after a policy change, and a session
+  never asks for one. IntelliJ's sync is the only run that resolves the Gradle sources zip,
+  the embedded Kotlin libraries' sources and an unsigned module's sources jar, through the
+  same policy, so a trim keeps the rules and pins that admit them; a refusal shows in the
+  sync output (the closing paragraph of the README's "Adopting and updating"). A session
+  that removes or narrows one of those rules, adds or moves an unsigned module's pin without
+  its sources jar's, or bumps the wrapper says so in its report. A command-line refusal
+  names each refused artifact and the reason, and the README's step 2 says what to do: a
+  bump under a key listed as unauthenticated in
   `gradle/verification/version-scoped-keys.txt` (the PIT and ArcMutate signers) is checked and
   then the version on its rule moves, unless its line gives a reason to stop, and a publisher
   source found later widens the rule to the group or module the key signs and takes the key
