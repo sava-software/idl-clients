@@ -2366,6 +2366,119 @@ public final class NtbundleProgram {
     }
   }
 
+  public static final Discriminator REQUEST_TOKEN_SWITCH_DISCRIMINATOR = toDiscriminator(187, 232, 234, 24, 215, 96, 20, 53);
+
+  public static List<AccountMeta> requestTokenSwitchKeys(final PublicKey tokenWithdrawalRequestUserKey,
+                                                         final PublicKey tokenWithdrawalRequestUserBundleAccountKey,
+                                                         final PublicKey tokenWithdrawalRequestBundleAccountKey,
+                                                         final PublicKey tokenWithdrawalRequestBundleTempDataKey,
+                                                         final PublicKey tokenWithdrawalRequestOracleDataKey,
+                                                         final PublicKey tokenWithdrawalRequestTokenizedBundleDepositorKey,
+                                                         final PublicKey tokenWithdrawalRequestMintKey,
+                                                         final PublicKey tokenWithdrawalRequestSourceTokenAccountKey,
+                                                         final PublicKey tokenWithdrawalRequestTokenProgramKey,
+                                                         final PublicKey targetBundleAccountKey,
+                                                         final PublicKey targetUserBundleAccountKey) {
+    return List.of(
+      createWritableSigner(tokenWithdrawalRequestUserKey),
+      createWrite(tokenWithdrawalRequestUserBundleAccountKey),
+      createWrite(tokenWithdrawalRequestBundleAccountKey),
+      createWrite(tokenWithdrawalRequestBundleTempDataKey),
+      createRead(tokenWithdrawalRequestOracleDataKey),
+      createWrite(tokenWithdrawalRequestTokenizedBundleDepositorKey),
+      createWrite(tokenWithdrawalRequestMintKey),
+      createWrite(tokenWithdrawalRequestSourceTokenAccountKey),
+      createRead(tokenWithdrawalRequestTokenProgramKey),
+      createRead(targetBundleAccountKey),
+      createRead(targetUserBundleAccountKey)
+    );
+  }
+
+  /// @param tokensToBurn: u64
+  public static Instruction requestTokenSwitch(final AccountMeta invokedNtbundleProgramMeta,
+                                               final PublicKey tokenWithdrawalRequestUserKey,
+                                               final PublicKey tokenWithdrawalRequestUserBundleAccountKey,
+                                               final PublicKey tokenWithdrawalRequestBundleAccountKey,
+                                               final PublicKey tokenWithdrawalRequestBundleTempDataKey,
+                                               final PublicKey tokenWithdrawalRequestOracleDataKey,
+                                               final PublicKey tokenWithdrawalRequestTokenizedBundleDepositorKey,
+                                               final PublicKey tokenWithdrawalRequestMintKey,
+                                               final PublicKey tokenWithdrawalRequestSourceTokenAccountKey,
+                                               final PublicKey tokenWithdrawalRequestTokenProgramKey,
+                                               final PublicKey targetBundleAccountKey,
+                                               final PublicKey targetUserBundleAccountKey,
+                                               final long tokensToBurn,
+                                               final BigInteger minSharesOut) {
+    final var keys = requestTokenSwitchKeys(
+      tokenWithdrawalRequestUserKey,
+      tokenWithdrawalRequestUserBundleAccountKey,
+      tokenWithdrawalRequestBundleAccountKey,
+      tokenWithdrawalRequestBundleTempDataKey,
+      tokenWithdrawalRequestOracleDataKey,
+      tokenWithdrawalRequestTokenizedBundleDepositorKey,
+      tokenWithdrawalRequestMintKey,
+      tokenWithdrawalRequestSourceTokenAccountKey,
+      tokenWithdrawalRequestTokenProgramKey,
+      targetBundleAccountKey,
+      targetUserBundleAccountKey
+    );
+    return requestTokenSwitch(invokedNtbundleProgramMeta, keys, tokensToBurn, minSharesOut);
+  }
+
+  /// @param tokensToBurn: u64
+  public static Instruction requestTokenSwitch(final AccountMeta invokedNtbundleProgramMeta,
+                                               final List<AccountMeta> keys,
+                                               final long tokensToBurn,
+                                               final BigInteger minSharesOut) {
+    final byte[] _data = new byte[32];
+    int i = REQUEST_TOKEN_SWITCH_DISCRIMINATOR.write(_data, 0);
+    putInt64LE(_data, i, tokensToBurn);
+    i += 8;
+    putInt128LE(_data, i, minSharesOut);
+
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
+  }
+
+  /// @param tokensToBurn: u64
+  public record RequestTokenSwitchIxData(Discriminator discriminator, long tokensToBurn, BigInteger minSharesOut) implements SerDe {
+
+    public static RequestTokenSwitchIxData read(final Instruction instruction) {
+      return read(instruction.copyData(), 0);
+    }
+
+    public static final int BYTES = 32;
+
+    public static final int TOKENS_TO_BURN_OFFSET = 8;
+    public static final int MIN_SHARES_OUT_OFFSET = 16;
+
+    public static RequestTokenSwitchIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var tokensToBurn = getInt64LE(_data, i);
+      i += 8;
+      final var minSharesOut = getUInt128LE(_data, i);
+      return new RequestTokenSwitchIxData(discriminator, tokensToBurn, minSharesOut);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt64LE(_data, i, tokensToBurn);
+      i += 8;
+      putInt128LE(_data, i, minSharesOut);
+      i += 16;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
   public static final Discriminator REQUEST_TOKEN_WITHDRAWAL_DISCRIMINATOR = toDiscriminator(138, 108, 216, 213, 7, 119, 182, 63);
 
   public static List<AccountMeta> requestTokenWithdrawalKeys(final PublicKey userKey,

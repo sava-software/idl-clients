@@ -248,10 +248,62 @@ public final class NtbundlePDAs {
     ), program);
   }
 
+  public static ProgramDerivedAddress targetUserBundleAccount2PDA(final PublicKey program,
+                                                                  final PublicKey tokenWithdrawalRequestUserAccount,
+                                                                  final PublicKey targetBundleAccountAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      "USER_BUNDLE".getBytes(US_ASCII),
+      tokenWithdrawalRequestUserAccount.toByteArray(),
+      targetBundleAccountAccount.toByteArray()
+    ), program);
+  }
+
   public static ProgramDerivedAddress tokenAuthorityPDA(final PublicKey program,
                                                         final PublicKey bundleAccountAccount) {
     return PublicKey.findProgramAddress(List.of(
       "TOKENIZED_BUNDLE_TOKEN_AUTHORITY".getBytes(US_ASCII),
+      bundleAccountAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress tokenWithdrawalRequestBundleTempDataPDA(final PublicKey program,
+                                                                              final PublicKey bundleAccountAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      "BUNDLE_TEMP_DATA".getBytes(US_ASCII),
+      bundleAccountAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress tokenWithdrawalRequestMintPDA(final PublicKey program,
+                                                                    final PublicKey bundleAccountAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      "TOKENIZED_BUNDLE_MINT".getBytes(US_ASCII),
+      bundleAccountAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress tokenWithdrawalRequestOracleDataPDA(final PublicKey program,
+                                                                          final PublicKey bundleAccountAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      "ORACLE".getBytes(US_ASCII),
+      bundleAccountAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress tokenWithdrawalRequestTokenizedBundleDepositorPDA(final PublicKey program,
+                                                                                        final PublicKey bundleAccountAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      "TOKENIZED_BUNDLE_DEPOSITOR".getBytes(US_ASCII),
+      bundleAccountAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress tokenWithdrawalRequestUserBundleAccountPDA(final PublicKey program,
+                                                                                 final PublicKey userAccount,
+                                                                                 final PublicKey bundleAccountAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      "USER_BUNDLE".getBytes(US_ASCII),
+      userAccount.toByteArray(),
       bundleAccountAccount.toByteArray()
     ), program);
   }

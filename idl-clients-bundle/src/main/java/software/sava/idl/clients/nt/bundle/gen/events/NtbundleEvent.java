@@ -59,6 +59,7 @@ public sealed interface NtbundleEvent extends SerDe permits
     StrategyAdded,
     StrategyEnabled,
     StrategyRemoved,
+    TokenSwitchRequested,
     TokenWithdrawalRequested,
     TokenizedBundleDepositorInitialized,
     UserBundleAccountClosed,
@@ -183,6 +184,8 @@ public sealed interface NtbundleEvent extends SerDe permits
       return StrategyEnabled.read(_data, _offset);
     } else if (StrategyRemoved.DISCRIMINATOR.equals(_data, _offset)) {
       return StrategyRemoved.read(_data, _offset);
+    } else if (TokenSwitchRequested.DISCRIMINATOR.equals(_data, _offset)) {
+      return TokenSwitchRequested.read(_data, _offset);
     } else if (TokenWithdrawalRequested.DISCRIMINATOR.equals(_data, _offset)) {
       return TokenWithdrawalRequested.read(_data, _offset);
     } else if (TokenizedBundleDepositorInitialized.DISCRIMINATOR.equals(_data, _offset)) {
