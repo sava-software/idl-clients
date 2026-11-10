@@ -68,7 +68,7 @@ so local drivers cannot change the mutant population and need no recompile or cl
 
 ## Mutator sets and their trials
 
-Every suite runs PIT's `STRONGER` group, which `StandardMutatorGroups` in the PIT 1.30.0 jar
+Every suite runs PIT's `STRONGER` group, which `StandardMutatorGroups` in the PIT 1.30.2 jar
 defines as `DEFAULTS` (`CONDITIONALS_BOUNDARY`, `INCREMENTS`, `INVERT_NEGS`, `MATH`, `RETURNS`,
 `VOID_METHOD_CALLS`, `REMOVE_CONDITIONALS_ORDER_ELSE` and `REMOVE_CONDITIONALS_EQUAL_ELSE`) plus
 `REMOVE_CONDITIONALS_ORDER_IF`, `REMOVE_CONDITIONALS_EQUAL_IF` and `EXPERIMENTAL_SWITCH`. Neither

@@ -9,7 +9,7 @@
          <trusted-key id="01870AD9C9DFBB1F3502D06FB89447F3AD5E2ABF" group="^software[.]sava($|([.].*))" regex="true"/>
          <trusted-key id="10F3C7A02ECA55E502BADCF3991EFB94DB91127D" group="org.ow2" name="ow2"/>
          <trusted-key id="18CD85CBC5C1DB1684C5E59FA8E3B39F19E1CCE7">
-            <trusting group="org.pitest" version="1.30.0"/>
+            <trusting group="org.pitest" version="1.30.2"/>
             <trusting group="org.pitest" name="pitest-junit5-plugin" version="1.2.3"/>
          </trusted-key>
          <trusted-key id="1BD97A6A154E7810EE0BC832E2F38302C8075E3D" group="org.gradle.toolchains" name="foojay-resolver" version="1.0.0"/>
@@ -30,7 +30,7 @@
          <trusted-key id="7B121B76A7ED6CE6E60AD51784E913A8E3A748C0" group="org.bouncycastle" name="bcprov-jdk18on"/>
          <trusted-key id="84789D24DF77A32433CE1F079EB80E92EB2135B1" group="org.apache" name="apache"/>
          <trusted-key id="A5BD02B93E7A40482EB1D66A5F69AD087600B22C" group="org.ow2.asm"/>
-         <trusted-key id="AC1A3DD4471FE0F6EA28300F1BA25353622A192B" group="com.arcmutate" version="1.7.2"/>
+         <trusted-key id="AC1A3DD4471FE0F6EA28300F1BA25353622A192B" group="com.arcmutate" version="1.7.3"/>
          <trusted-key id="BDB5FA4FE719D787FB3D3197F6D4A1D411E9D1AE" group="com.google.guava"/>
          <trusted-key id="C3259D20DAEC4ACE6D57CC83340B090F727518D8" group="com.google.j2objc" name="j2objc-annotations"/>
          <trusted-key id="CF4B3A3F53BEF9A2CE2CBFB895962C5E716C39AA" group="com.autonomousapps"/>
