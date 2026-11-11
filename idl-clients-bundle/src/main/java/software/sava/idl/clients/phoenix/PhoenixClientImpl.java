@@ -7,6 +7,14 @@ import software.sava.core.tx.Instruction;
 import software.sava.idl.clients.phoenix.ember.gen.EmberProgram;
 import software.sava.idl.clients.phoenix.ember.gen.types.DepositParams;
 import software.sava.idl.clients.phoenix.ember.gen.types.WithdrawParams;
+import software.sava.idl.clients.phoenix.hawkeye.gen.HawkeyeProgram;
+import software.sava.idl.clients.phoenix.hawkeye.gen.types.ViewAssetParams;
+import software.sava.idl.clients.phoenix.hawkeye.gen.types.ViewAssetReturn;
+import software.sava.idl.clients.phoenix.hawkeye.gen.types.ViewBboReturn;
+import software.sava.idl.clients.phoenix.hawkeye.gen.types.ViewFundingReturn;
+import software.sava.idl.clients.phoenix.hawkeye.gen.types.ViewLiquidationPriceReturn;
+import software.sava.idl.clients.phoenix.hawkeye.gen.types.ViewMarginReturn;
+import software.sava.idl.clients.phoenix.hawkeye.gen.types.ViewOrderQuoteReturn;
 import software.sava.idl.clients.phoenix.perpetuals.gen.EternalProgram;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.CancelConditionalOrderInstruction;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.CancelEscrowRequestParams;
@@ -27,10 +35,25 @@ import software.sava.idl.clients.phoenix.perpetuals.gen.types.RegisterTraderPara
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.TransferCollateralInstruction;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.UpsertEscrowRequestParams;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.WithdrawFundsInstruction;
+import software.sava.idl.clients.spl.system.gen.SystemProgram;
 
 import java.util.List;
 
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.idl.clients.phoenix.hawkeye.gen.HawkeyeProgram.ViewOrderQuoteIxData.ORDER_PACKET_OFFSET;
+import static software.sava.idl.clients.phoenix.hawkeye.gen.HawkeyeProgram.ViewOrderQuoteIxData.REFERENCE_PRICE_TICKS_OFFSET;
+
 final class PhoenixClientImpl implements PhoenixClient {
+
+  /// What each view's return data opens with, `sha256("return:phoenix_hawkeye_<view>")[0..8]`
+  /// read as a little-endian u64: the `magicU64` Hawkeye's IDL publishes for each return type.
+  private static final long VIEW_MARGIN_RETURN_MAGIC = 0x955F5B9D3DFF253FL;
+  private static final long VIEW_ASSET_RETURN_MAGIC = 0xDB58FFF8285E1DB9L;
+  private static final long VIEW_LIQUIDATION_PRICE_RETURN_MAGIC = 0xD23D34B160EF6841L;
+  private static final long VIEW_BBO_RETURN_MAGIC = 0xEFCA1FA31FA74171L;
+  private static final long VIEW_FUNDING_RETURN_MAGIC = 0x32A963EEA226DC18L;
+  private static final long VIEW_ORDER_QUOTE_RETURN_MAGIC = 0x1529CF1C5CB66F88L;
 
   private final SolanaAccounts solanaAccounts;
   private final PhoenixAccounts accounts;
@@ -703,6 +726,210 @@ final class PhoenixClientImpl implements PhoenixClient {
         accounts.globalTraderIndex(),
         accounts.activeTraderBuffer(),
         params
+    );
+  }
+
+  private PublicKey hawkeyeProgramId() {
+    return accounts.invokedHawkeyeProgram().publicKey();
+  }
+
+  private static ViewAssetParams asset(final long assetId) {
+    return new ViewAssetParams(assetId, new byte[ViewAssetParams.PADDING_LEN]);
+  }
+
+  @Override
+  public Instruction viewMargin(final PublicKey traderAccountKey,
+                                final PublicKey perpAssetMapKey) {
+    return HawkeyeProgram.viewMargin(
+        accounts.invokedHawkeyeProgram(),
+        eternalProgramId(),
+        accounts.eternalGlobalConfig(),
+        accounts.globalTraderIndex(),
+        accounts.activeTraderBuffer(),
+        perpAssetMapKey,
+        traderAccountKey
+    );
+  }
+
+  @Override
+  public Instruction viewMarginForAsset(final PublicKey traderAccountKey,
+                                        final PublicKey perpAssetMapKey,
+                                        final long assetId) {
+    return HawkeyeProgram.viewMarginForAsset(
+        accounts.invokedHawkeyeProgram(),
+        eternalProgramId(),
+        accounts.eternalGlobalConfig(),
+        accounts.globalTraderIndex(),
+        accounts.activeTraderBuffer(),
+        perpAssetMapKey,
+        traderAccountKey,
+        asset(assetId)
+    );
+  }
+
+  @Override
+  public Instruction viewLiquidationPrice(final PublicKey traderAccountKey,
+                                          final PublicKey perpAssetMapKey,
+                                          final long assetId) {
+    return HawkeyeProgram.viewLiquidationPrice(
+        accounts.invokedHawkeyeProgram(),
+        eternalProgramId(),
+        accounts.eternalGlobalConfig(),
+        accounts.globalTraderIndex(),
+        accounts.activeTraderBuffer(),
+        perpAssetMapKey,
+        traderAccountKey,
+        asset(assetId)
+    );
+  }
+
+  @Override
+  public Instruction viewFunding(final PublicKey traderAccountKey,
+                                 final PublicKey perpAssetMapKey,
+                                 final long assetId) {
+    return HawkeyeProgram.viewFunding(
+        accounts.invokedHawkeyeProgram(),
+        eternalProgramId(),
+        accounts.eternalGlobalConfig(),
+        accounts.globalTraderIndex(),
+        accounts.activeTraderBuffer(),
+        perpAssetMapKey,
+        traderAccountKey,
+        asset(assetId)
+    );
+  }
+
+  @Override
+  public Instruction viewBbo(final PublicKey perpAssetMapKey,
+                             final PublicKey orderbookKey,
+                             final PublicKey splinesKey) {
+    return HawkeyeProgram.viewBbo(
+        accounts.invokedHawkeyeProgram(),
+        eternalProgramId(),
+        accounts.eternalGlobalConfig(),
+        accounts.globalTraderIndex(),
+        accounts.activeTraderBuffer(),
+        perpAssetMapKey,
+        orderbookKey,
+        splinesKey
+    );
+  }
+
+  @Override
+  public Instruction createOrderQuoteScratchAccount(final PublicKey payerKey,
+                                                    final PublicKey scratchKey,
+                                                    final long space) {
+    return SystemProgram.createAccount(
+        solanaAccounts.invokedSystemProgram(),
+        payerKey,
+        scratchKey,
+        0,
+        space,
+        hawkeyeProgramId()
+    );
+  }
+
+  /// Hawkeye's IDL declares its own copy of Eternal's order packet, which the generated builder
+  /// takes. The program reads the Borsh bytes Eternal's placement instructions carry, and
+  /// Phoenix's SDK serializes one `OrderPacket` for both
+  /// (`rise/rust/ix/src/hawkeye.rs::create_hawkeye_view_order_quote_ix`), so the packet a
+  /// caller would place is written as it is: the discriminator, the reference price, the packet.
+  @Override
+  public Instruction viewOrderQuote(final PublicKey traderAccountKey,
+                                    final PublicKey perpAssetMapKey,
+                                    final PublicKey orderbookKey,
+                                    final PublicKey splinesKey,
+                                    final PublicKey scratchKey,
+                                    final long referencePriceTicks,
+                                    final OrderPacket orderPacket) {
+    final var keys = HawkeyeProgram.viewOrderQuoteKeys(
+        eternalProgramId(),
+        accounts.eternalGlobalConfig(),
+        accounts.globalTraderIndex(),
+        accounts.activeTraderBuffer(),
+        perpAssetMapKey,
+        orderbookKey,
+        splinesKey,
+        traderAccountKey,
+        scratchKey
+    );
+    final byte[] data = new byte[ORDER_PACKET_OFFSET + orderPacket.l()];
+    HawkeyeProgram.VIEW_ORDER_QUOTE_DISCRIMINATOR.write(data, 0);
+    putInt64LE(data, REFERENCE_PRICE_TICKS_OFFSET, referencePriceTicks);
+    orderPacket.write(data, ORDER_PACKET_OFFSET);
+    return Instruction.createInstruction(accounts.invokedHawkeyeProgram(), keys, data);
+  }
+
+  /// The return data of `view`, once it is known to be Hawkeye's and to be one whole record of
+  /// the expected kind.
+  private byte[] returned(final String view,
+                          final PublicKey returnProgramKey,
+                          final byte[] returnData,
+                          final int bytes,
+                          final long magic) {
+    if (returnProgramKey == null || returnData == null) {
+      throw new IllegalStateException(view + " returned no data.");
+    }
+    final var hawkeyeProgram = hawkeyeProgramId();
+    if (!hawkeyeProgram.equals(returnProgramKey)) {
+      throw new IllegalStateException(String.format(
+          "%s expects return data from %s, not %s.", view, hawkeyeProgram, returnProgramKey
+      ));
+    }
+    if (returnData.length != bytes) {
+      throw new IllegalStateException(String.format(
+          "%s returns %d bytes, not %d.", view, bytes, returnData.length
+      ));
+    }
+    final long returnedMagic = getInt64LE(returnData, 0);
+    if (returnedMagic != magic) {
+      throw new IllegalStateException(String.format(
+          "%s return data opens with magic %s, not %s.",
+          view, Long.toUnsignedString(magic), Long.toUnsignedString(returnedMagic)
+      ));
+    }
+    return returnData;
+  }
+
+  @Override
+  public ViewMarginReturn readViewMargin(final PublicKey returnProgramKey, final byte[] returnData) {
+    return ViewMarginReturn.read(
+        returned("viewMargin", returnProgramKey, returnData, ViewMarginReturn.BYTES, VIEW_MARGIN_RETURN_MAGIC), 0
+    );
+  }
+
+  @Override
+  public ViewAssetReturn readViewMarginForAsset(final PublicKey returnProgramKey, final byte[] returnData) {
+    return ViewAssetReturn.read(
+        returned("viewMarginForAsset", returnProgramKey, returnData, ViewAssetReturn.BYTES, VIEW_ASSET_RETURN_MAGIC), 0
+    );
+  }
+
+  @Override
+  public ViewLiquidationPriceReturn readViewLiquidationPrice(final PublicKey returnProgramKey, final byte[] returnData) {
+    return ViewLiquidationPriceReturn.read(
+        returned("viewLiquidationPrice", returnProgramKey, returnData, ViewLiquidationPriceReturn.BYTES, VIEW_LIQUIDATION_PRICE_RETURN_MAGIC), 0
+    );
+  }
+
+  @Override
+  public ViewFundingReturn readViewFunding(final PublicKey returnProgramKey, final byte[] returnData) {
+    return ViewFundingReturn.read(
+        returned("viewFunding", returnProgramKey, returnData, ViewFundingReturn.BYTES, VIEW_FUNDING_RETURN_MAGIC), 0
+    );
+  }
+
+  @Override
+  public ViewBboReturn readViewBbo(final PublicKey returnProgramKey, final byte[] returnData) {
+    return ViewBboReturn.read(
+        returned("viewBbo", returnProgramKey, returnData, ViewBboReturn.BYTES, VIEW_BBO_RETURN_MAGIC), 0
+    );
+  }
+
+  @Override
+  public ViewOrderQuoteReturn readViewOrderQuote(final PublicKey returnProgramKey, final byte[] returnData) {
+    return ViewOrderQuoteReturn.read(
+        returned("viewOrderQuote", returnProgramKey, returnData, ViewOrderQuoteReturn.BYTES, VIEW_ORDER_QUOTE_RETURN_MAGIC), 0
     );
   }
 }

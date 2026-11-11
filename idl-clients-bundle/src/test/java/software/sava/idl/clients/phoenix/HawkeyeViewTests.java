@@ -44,6 +44,9 @@ import static org.junit.jupiter.api.Assertions.*;
 /// `globalTraderIndex` and `activeTraderBuffer` was one account then, its header, which is all the
 /// typed builders can pass; with more, a caller flattens every member into the list overload.
 ///
+/// These tests hold the generated builders and records. `PhoenixHawkeyeClientTests` holds
+/// [PhoenixClient], which supplies the shared accounts and makes those checks, to the same vectors.
+///
 /// The last vector is Phoenix's own: the order-quote parity vector its Rust and TypeScript SDKs
 /// share (`Ellipsis-Labs/rise-public` at `673a7df`, `rust/ix/src/hawkeye.rs`,
 /// `decodes_order_quote_parity_vector`).
@@ -51,17 +54,17 @@ final class HawkeyeViewTests {
 
   private static final HexFormat HEX = HexFormat.of();
 
-  private static final PublicKey HAWKEYE = PublicKey.fromBase58Encoded("RiSeVw3ZjNfsaXPRb4mgaqYaEEt41pNNJoDvVh7pgQj");
+  static final PublicKey HAWKEYE = PublicKey.fromBase58Encoded("RiSeVw3ZjNfsaXPRb4mgaqYaEEt41pNNJoDvVh7pgQj");
   private static final AccountMeta INVOKED_HAWKEYE = AccountMeta.createInvoked(HAWKEYE);
-  private static final PublicKey ETERNAL = PhoenixAccounts.MAIN_NET.invokedEternalProgram().publicKey();
-  private static final PublicKey GLOBAL_CONFIGURATION = PublicKey.fromBase58Encoded("2zskx2iyCvb6Stg7RBZkt1f6MrF4dpYtMG3yMvKwqtUZ");
-  private static final PublicKey GLOBAL_TRADER_INDEX = PublicKey.fromBase58Encoded("HCrPXLByGqRh2szQi3gj7oRdRVBNi1gccAyn4CQCT3HK");
-  private static final PublicKey ACTIVE_TRADER_BUFFER = PublicKey.fromBase58Encoded("2U32rSzzrQS3eVmGHsnbw5kcqKF3wQXpHGd3hMq5YJok");
-  private static final PublicKey PERP_ASSET_MAP = PublicKey.fromBase58Encoded("2nHGAaEw3D5dd4hVueaUNoygkQFmoeKqRQWnSPqSMFUC");
-  private static final PublicKey TRADER = PublicKey.fromBase58Encoded("HMvgP5p9oPz8PiKGXiEdYzZDnK7SwqDmfBRib6UUuQUk");
-  private static final PublicKey SOL_ORDERBOOK = PublicKey.fromBase58Encoded("71Si24E4uc3oCaPbPZTozC1ptSNNqygjjebxSmErSsC2");
-  private static final PublicKey SOL_SPLINE_COLLECTION = PublicKey.fromBase58Encoded("EVhkquLbfm5rDRXtZu9FoyDSXX5mYq2EYU6yD8zfKEqM");
-  private static final PublicKey SCRATCH = PublicKey.fromBase58Encoded("APvQa8nybkJiAuuJXjSjiMrHamjKZErXJmCmpDyUPL8U");
+  static final PublicKey ETERNAL = PhoenixAccounts.MAIN_NET.invokedEternalProgram().publicKey();
+  static final PublicKey GLOBAL_CONFIGURATION = PublicKey.fromBase58Encoded("2zskx2iyCvb6Stg7RBZkt1f6MrF4dpYtMG3yMvKwqtUZ");
+  static final PublicKey GLOBAL_TRADER_INDEX = PublicKey.fromBase58Encoded("HCrPXLByGqRh2szQi3gj7oRdRVBNi1gccAyn4CQCT3HK");
+  static final PublicKey ACTIVE_TRADER_BUFFER = PublicKey.fromBase58Encoded("2U32rSzzrQS3eVmGHsnbw5kcqKF3wQXpHGd3hMq5YJok");
+  static final PublicKey PERP_ASSET_MAP = PublicKey.fromBase58Encoded("2nHGAaEw3D5dd4hVueaUNoygkQFmoeKqRQWnSPqSMFUC");
+  static final PublicKey TRADER = PublicKey.fromBase58Encoded("HMvgP5p9oPz8PiKGXiEdYzZDnK7SwqDmfBRib6UUuQUk");
+  static final PublicKey SOL_ORDERBOOK = PublicKey.fromBase58Encoded("71Si24E4uc3oCaPbPZTozC1ptSNNqygjjebxSmErSsC2");
+  static final PublicKey SOL_SPLINE_COLLECTION = PublicKey.fromBase58Encoded("EVhkquLbfm5rDRXtZu9FoyDSXX5mYq2EYU6yD8zfKEqM");
+  static final PublicKey SCRATCH = PublicKey.fromBase58Encoded("APvQa8nybkJiAuuJXjSjiMrHamjKZErXJmCmpDyUPL8U");
 
   private static final ViewAssetParams SOL = new ViewAssetParams(0, new byte[4]);
 
@@ -78,12 +81,34 @@ final class HawkeyeViewTests {
     assertEquals(HAWKEYE, ix.programId().publicKey());
   }
 
-  private static final List<PublicKey> TRADER_VIEW_ACCOUNTS = List.of(
+  static final List<PublicKey> TRADER_VIEW_ACCOUNTS = List.of(
       ETERNAL, GLOBAL_CONFIGURATION, GLOBAL_TRADER_INDEX, ACTIVE_TRADER_BUFFER, PERP_ASSET_MAP, TRADER
   );
 
+  // What mainnet returned, as hex: slots 468097932 to 468098902.
+  static final String MARGIN_RETURN =
+      "3f25ff3d9d5b5f950100450000000000262171b5540000001bbade7256000000e138fbaa17000000202eb78205000000"
+          + "3a81e3c73e0000009bc0f1631f000000c93a4e0e2f0000006cb3608e0c000000b459304706000000f5986dbd01000000"
+          + "f5986dbd010000000000000000000000";
+  static final String ASSET_RETURN =
+      "b91d5e28f8ff58db00000000010001000000000000000000e6e6ffffffffffffec38594b01000000c120000000000000"
+          + "47330d0000000000d893d6befeffffffc4cc2f0a00000000c4cc2f0a0000000000000000000000004004281b00000000"
+          + "2002940d0000000030035e140000000040676e0500000000a033b70200000000";
+  static final String LIQUIDATION_PRICE_RETURN =
+      "4168ef60b1343dd200000000010001025ba3030000000000c12000000000000047330d0000000000571ce76c56000000"
+          + "4362ec621f000000";
+  static final String FUNDING_RETURN =
+      "18dc26a2ee63a932000000000100030058a1231e000000000000000000000000dcd1010000000000b9a3030000000000";
+  static final String BBO_RETURN =
+      "7141a71fa31fcaef0100030000000000c020000000000000c120000000000000c120000000000000c220000000000000"
+          + "919be61b00000000919be61b00000000";
+  static final String ORDER_QUOTE_RETURN =
+      "886fb65c1ccf29150100050100000000569fe61b0000000064000000000000006400000000000000c0affe0400000000"
+          + "92720000000000000000000000000000000000000000000070c90c000000000000000000000000000000000000000000"
+          + "640000000000000000000000000000000000000000000000";
+
   /// The magic a view's return data opens with, from the name its IDL publishes.
-  private static byte[] magic(final String view) {
+  static byte[] magic(final String view) {
     try {
       final var digest = MessageDigest.getInstance("SHA-256").digest(("return:phoenix_hawkeye_" + view).getBytes(US_ASCII));
       return Arrays.copyOf(digest, 8);
@@ -204,12 +229,7 @@ final class HawkeyeViewTests {
 
   @Test
   void aMarginReturnReadsAsMainnetAnsweredIt() {
-    final byte[] data = returned(
-        "3f25ff3d9d5b5f950100450000000000262171b5540000001bbade7256000000e138fbaa17000000202eb78205000000"
-            + "3a81e3c73e0000009bc0f1631f000000c93a4e0e2f0000006cb3608e0c000000b459304706000000f5986dbd01000000"
-            + "f5986dbd010000000000000000000000",
-        "margin", ViewMarginReturn.BYTES
-    );
+    final byte[] data = returned(MARGIN_RETURN, "margin", ViewMarginReturn.BYTES);
     final var margin = ViewMarginReturn.read(data, 0);
     assertEquals(1, margin.version());
     assertEquals(69, margin.positionCount());
@@ -232,12 +252,7 @@ final class HawkeyeViewTests {
   /// A short position: the base lots and the position's value are negative.
   @Test
   void anAssetReturnReadsAsMainnetAnsweredIt() {
-    final byte[] data = returned(
-        "b91d5e28f8ff58db00000000010001000000000000000000e6e6ffffffffffffec38594b01000000c120000000000000"
-            + "47330d0000000000d893d6befeffffffc4cc2f0a00000000c4cc2f0a0000000000000000000000004004281b00000000"
-            + "2002940d0000000030035e140000000040676e0500000000a033b70200000000",
-        "asset", ViewAssetReturn.BYTES
-    );
+    final byte[] data = returned(ASSET_RETURN, "asset", ViewAssetReturn.BYTES);
     final var asset = ViewAssetReturn.read(data, 0);
     assertEquals(0, asset.assetId());
     assertEquals(1, asset.version());
@@ -259,11 +274,7 @@ final class HawkeyeViewTests {
 
   @Test
   void aLiquidationPriceReturnReadsAsMainnetAnsweredIt() {
-    final byte[] data = returned(
-        "4168ef60b1343dd200000000010001025ba3030000000000c12000000000000047330d0000000000571ce76c56000000"
-            + "4362ec621f000000",
-        "liquidation_price", ViewLiquidationPriceReturn.BYTES
-    );
+    final byte[] data = returned(LIQUIDATION_PRICE_RETURN, "liquidation_price", ViewLiquidationPriceReturn.BYTES);
     final var liquidation = ViewLiquidationPriceReturn.read(data, 0);
     assertEquals(0, liquidation.assetId());
     assertEquals(1, liquidation.version());
@@ -279,10 +290,7 @@ final class HawkeyeViewTests {
   /// Flags 3: both totals are present, bit 0 the accumulated and bit 1 the unsettled.
   @Test
   void aFundingReturnReadsAsMainnetAnsweredIt() {
-    final byte[] data = returned(
-        "18dc26a2ee63a932000000000100030058a1231e000000000000000000000000dcd1010000000000b9a3030000000000",
-        "funding", ViewFundingReturn.BYTES
-    );
+    final byte[] data = returned(FUNDING_RETURN, "funding", ViewFundingReturn.BYTES);
     final var funding = ViewFundingReturn.read(data, 0);
     assertEquals(0, funding.assetId());
     assertEquals(1, funding.version());
@@ -296,11 +304,7 @@ final class HawkeyeViewTests {
   /// Flags 3: a bid and an ask are both present, bit 0 the bid and bit 1 the ask.
   @Test
   void aBboReturnReadsAsMainnetAnsweredIt() {
-    final byte[] data = returned(
-        "7141a71fa31fcaef0100030000000000c020000000000000c120000000000000c120000000000000c220000000000000"
-            + "919be61b00000000919be61b00000000",
-        "bbo", ViewBboReturn.BYTES
-    );
+    final byte[] data = returned(BBO_RETURN, "bbo", ViewBboReturn.BYTES);
     final var bbo = ViewBboReturn.read(data, 0);
     assertEquals(1, bbo.version());
     assertEquals(3, bbo.flags());
@@ -317,12 +321,7 @@ final class HawkeyeViewTests {
   /// since no reference price was given.
   @Test
   void anOrderQuoteReturnReadsAsMainnetAnsweredIt() {
-    final byte[] data = returned(
-        "886fb65c1ccf29150100050100000000569fe61b0000000064000000000000006400000000000000c0affe0400000000"
-            + "92720000000000000000000000000000000000000000000070c90c000000000000000000000000000000000000000000"
-            + "640000000000000000000000000000000000000000000000",
-        "order_quote", ViewOrderQuoteReturn.BYTES
-    );
+    final byte[] data = returned(ORDER_QUOTE_RETURN, "order_quote", ViewOrderQuoteReturn.BYTES);
     final var quote = ViewOrderQuoteReturn.read(data, 0);
     assertEquals(1, quote.version());
     assertEquals(5, quote.flags());

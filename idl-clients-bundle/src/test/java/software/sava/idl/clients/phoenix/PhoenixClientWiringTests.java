@@ -8,8 +8,11 @@ import software.sava.core.tx.Instruction;
 import software.sava.idl.clients.phoenix.ember.gen.EmberProgram;
 import software.sava.idl.clients.phoenix.ember.gen.types.DepositParams;
 import software.sava.idl.clients.phoenix.ember.gen.types.WithdrawParams;
+import software.sava.idl.clients.phoenix.hawkeye.gen.HawkeyeProgram;
+import software.sava.idl.clients.phoenix.hawkeye.gen.types.ViewAssetParams;
 import software.sava.idl.clients.phoenix.perpetuals.gen.EternalProgram;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.*;
+import software.sava.idl.clients.spl.system.gen.SystemProgram;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,9 +22,9 @@ import java.util.OptionalLong;
 import static org.junit.jupiter.api.Assertions.*;
 
 /// Pins every remaining PhoenixClient builder to the generated `EmberProgram`
-/// / `EternalProgram` call it delegates to, with the client-supplied constants
-/// (program id, log authority, global config, trader index, active trader
-/// buffer, system program) spelled out on the mirror side. The generated
+/// / `EternalProgram` / `HawkeyeProgram` call it delegates to, with the
+/// client-supplied constants (program id, log authority, global config, trader
+/// index, active trader buffer, system program) spelled out on the mirror side. The generated
 /// builders' parameter names are the reference per slot; several conditional
 /// and escrow instructions take the caller's keys in a *different* order than
 /// the client method declares them, which is exactly the transposition these
@@ -62,6 +65,7 @@ final class PhoenixClientWiringTests {
   private static final PublicKey TRADER_ESCROW = key(0x26);
   private static final PublicKey TOKEN_PROGRAM = key(0x27);
   private static final PublicKey FUNDER = key(0x28);
+  private static final PublicKey SCRATCH = key(0x29);
 
   private static final AccountMeta INVOKED = ACCOUNTS.invokedEternalProgram();
   private static final PublicKey ETERNAL = ACCOUNTS.invokedEternalProgram().publicKey();
@@ -70,6 +74,7 @@ final class PhoenixClientWiringTests {
   private static final PublicKey TRADER_INDEX = ACCOUNTS.globalTraderIndex();
   private static final PublicKey ACTIVE_BUFFER = ACCOUNTS.activeTraderBuffer();
   private static final PublicKey SYSTEM = SOLANA_ACCOUNTS.systemProgram();
+  private static final AccountMeta INVOKED_HAWKEYE = ACCOUNTS.invokedHawkeyeProgram();
 
   private static final TriggerOrderParams GREATER =
       new TriggerOrderParams(Direction.GreaterThan, Side.Bid, StopLossOrderKind.IOC, 100L, 101L);
@@ -269,5 +274,51 @@ final class PhoenixClientWiringTests {
             TRADER_INDEX, ACTIVE_BUFFER, upsert),
         CLIENT.upsertEscrowRequest(OWNER, TRADER_ACCOUNT, PERMISSION, RECEIVER_WALLET,
             RECEIVER_TRADER, RECEIVER_ESCROW, PERP_ASSET_MAP, upsert));
+  }
+
+  /// Hawkeye's views take the Eternal program, its global config and the two group
+  /// headers from the client, and no log authority. The trader follows the perp
+  /// asset map in the trader views and the market's two accounts in the quote.
+  @Test
+  void hawkeyeViewBindings() {
+    final var client = PhoenixClient.createClient(SOLANA_ACCOUNTS, ACCOUNTS);
+    final var asset = new ViewAssetParams(7L, new byte[ViewAssetParams.PADDING_LEN]);
+    assertIx(
+        HawkeyeProgram.viewMargin(INVOKED_HAWKEYE, ETERNAL, CONFIG, TRADER_INDEX, ACTIVE_BUFFER,
+            PERP_ASSET_MAP, TRADER_ACCOUNT),
+        client.viewMargin(TRADER_ACCOUNT, PERP_ASSET_MAP));
+    assertIx(
+        HawkeyeProgram.viewMarginForAsset(INVOKED_HAWKEYE, ETERNAL, CONFIG, TRADER_INDEX, ACTIVE_BUFFER,
+            PERP_ASSET_MAP, TRADER_ACCOUNT, asset),
+        client.viewMarginForAsset(TRADER_ACCOUNT, PERP_ASSET_MAP, 7L));
+    assertIx(
+        HawkeyeProgram.viewLiquidationPrice(INVOKED_HAWKEYE, ETERNAL, CONFIG, TRADER_INDEX, ACTIVE_BUFFER,
+            PERP_ASSET_MAP, TRADER_ACCOUNT, asset),
+        client.viewLiquidationPrice(TRADER_ACCOUNT, PERP_ASSET_MAP, 7L));
+    assertIx(
+        HawkeyeProgram.viewFunding(INVOKED_HAWKEYE, ETERNAL, CONFIG, TRADER_INDEX, ACTIVE_BUFFER,
+            PERP_ASSET_MAP, TRADER_ACCOUNT, asset),
+        client.viewFunding(TRADER_ACCOUNT, PERP_ASSET_MAP, 7L));
+    assertIx(
+        HawkeyeProgram.viewBbo(INVOKED_HAWKEYE, ETERNAL, CONFIG, TRADER_INDEX, ACTIVE_BUFFER,
+            PERP_ASSET_MAP, ORDERBOOK, SPLINES),
+        client.viewBbo(PERP_ASSET_MAP, ORDERBOOK, SPLINES));
+    assertIx(
+        SystemProgram.createAccount(SOLANA_ACCOUNTS.invokedSystemProgram(), PAYER, SCRATCH, 0L, 4_096L,
+            INVOKED_HAWKEYE.publicKey()),
+        client.createOrderQuoteScratchAccount(PAYER, SCRATCH, 4_096L));
+
+    // LIMIT_PACKET in the types Hawkeye's IDL declares for the same packet
+    final var hawkeyePacket = new software.sava.idl.clients.phoenix.hawkeye.gen.types.OrderPacketKind.PostOnly(
+        software.sava.idl.clients.phoenix.hawkeye.gen.types.Side.Bid,
+        new software.sava.idl.clients.phoenix.hawkeye.gen.types.Ticks(100L),
+        new software.sava.idl.clients.phoenix.hawkeye.gen.types.BaseLots(5L),
+        new byte[software.sava.idl.clients.phoenix.hawkeye.gen.types.OrderPacketKind.PostOnly.CLIENT_ORDER_ID_LEN],
+        false, OptionalLong.of(9L),
+        new software.sava.idl.clients.phoenix.hawkeye.gen.types.OrderFlags(0), false);
+    assertIx(
+        HawkeyeProgram.viewOrderQuote(INVOKED_HAWKEYE, ETERNAL, CONFIG, TRADER_INDEX, ACTIVE_BUFFER,
+            PERP_ASSET_MAP, ORDERBOOK, SPLINES, TRADER_ACCOUNT, SCRATCH, 101L, hawkeyePacket),
+        client.viewOrderQuote(TRADER_ACCOUNT, PERP_ASSET_MAP, ORDERBOOK, SPLINES, SCRATCH, 101L, LIMIT_PACKET));
   }
 }

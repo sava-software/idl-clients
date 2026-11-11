@@ -609,7 +609,9 @@ A third shape is not a remaining account at all, and has not shipped as a defect
   header's `num_arenas` is 1, as both were on mainnet at slot 468102136. Past
   that, the caller flattens the groups into the builder's `List<AccountMeta>`
   overload; `extraAccounts` would append them after the last declared account,
-  which is the wrong place. How the program reads a group of more than one, and
+  which is the wrong place. `PhoenixClient` passes the same one key, the header
+  `PhoenixAccounts` derives, for Eternal's instructions and Hawkeye's views
+  alike, so it too holds only while each group is one account. How the program reads a group of more than one, and
   how a second arena's address is derived, could not be established while none
   exists.
 

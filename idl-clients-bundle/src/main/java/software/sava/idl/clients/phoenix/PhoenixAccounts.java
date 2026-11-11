@@ -15,12 +15,14 @@ public interface PhoenixAccounts {
       "EMBERpYNE6ehWmXymZZS2skiFmCa9V5dp14e1iduM5qy",
       "PhUsd11YkbjSaWjFncfAAmatntsjx3MgDR9B6g1ks3A",
       "EtrnLzgbS7nMMy5fbD42kXiUzGg8XQzJ972Xtk1cjWih",
+      "RiSeVw3ZjNfsaXPRb4mgaqYaEEt41pNNJoDvVh7pgQj",
       "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
   );
 
   static PhoenixAccounts createAccounts(final PublicKey emberProgram,
                                         final PublicKey emberUSDCMint,
                                         final PublicKey eternalProgram,
+                                        final PublicKey hawkeyeProgram,
                                         final PublicKey usdcMint) {
     return new PhoenixAccountsRecord(
         AccountMeta.createInvoked(emberProgram),
@@ -32,10 +34,44 @@ public interface PhoenixAccounts {
         EternalPDAs.phoenixLogAuthorityPDA(eternalProgram).publicKey(),
         EternalPDAs.globalTraderIndexHeaderPDA(eternalProgram).publicKey(),
         EternalPDAs.activeTraderBufferHeaderPDA(eternalProgram).publicKey(),
+        AccountMeta.createInvoked(hawkeyeProgram),
         usdcMint
     );
   }
 
+  /// With the Hawkeye program of [#MAIN_NET], the one Hawkeye deployment Phoenix's SDKs name
+  /// (`HAWKEYE_PROGRAM_ID` in `rise/rust/ix/src/hawkeye.rs`). Hawkeye is given the Phoenix
+  /// program whose accounts it reads; that it serves a deployment other than mainnet's has
+  /// not been tried.
+  static PhoenixAccounts createAccounts(final PublicKey emberProgram,
+                                        final PublicKey emberUSDCMint,
+                                        final PublicKey eternalProgram,
+                                        final PublicKey usdcMint) {
+    return createAccounts(
+        emberProgram,
+        emberUSDCMint,
+        eternalProgram,
+        MAIN_NET.invokedHawkeyeProgram().publicKey(),
+        usdcMint
+    );
+  }
+
+  static PhoenixAccounts createAccounts(final String emberProgram,
+                                        final String emberUSDCMint,
+                                        final String eternalProgram,
+                                        final String hawkeyeProgram,
+                                        final String usdcMint) {
+    return createAccounts(
+        PublicKey.fromBase58Encoded(emberProgram),
+        PublicKey.fromBase58Encoded(emberUSDCMint),
+        PublicKey.fromBase58Encoded(eternalProgram),
+        PublicKey.fromBase58Encoded(hawkeyeProgram),
+        PublicKey.fromBase58Encoded(usdcMint)
+    );
+  }
+
+  /// With the Hawkeye program of [#MAIN_NET]; see
+  /// [#createAccounts(PublicKey, PublicKey, PublicKey, PublicKey)].
   static PhoenixAccounts createAccounts(final String emberProgram,
                                         final String emberUSDCMint,
                                         final String eternalProgram,
@@ -113,6 +149,10 @@ public interface PhoenixAccounts {
   PublicKey globalTraderIndex();
 
   PublicKey activeTraderBuffer();
+
+  /// Phoenix Hawkeye, the program whose view instructions read Eternal's accounts and answer
+  /// through return data.
+  AccountMeta invokedHawkeyeProgram();
 
   PublicKey usdcMint();
 }
