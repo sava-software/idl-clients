@@ -453,6 +453,15 @@
       "idlType": "anchor"
     },
     {
+      "name": "Phoenix Hawkeye",
+      "source": "idl-clients-bundle",
+      "module": "bundle",
+      "package": "phoenix.hawkeye",
+      "program": "RiSeVw3ZjNfsaXPRb4mgaqYaEEt41pNNJoDvVh7pgQj",
+      "idlAccountProgramOwner": "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S",
+      "idlType": "anchor"
+    },
+    {
       "name": "Phoenix Perpetuals",
       "source": "idl-clients-bundle",
       "module": "bundle",

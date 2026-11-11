@@ -1,0 +1,1356 @@
+{
+  "version": "0.1.0",
+  "address": "RiSeVw3ZjNfsaXPRb4mgaqYaEEt41pNNJoDvVh7pgQj",
+  "metadata": {
+    "name": "Hawkeye",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Phoenix Hawkeye: read-only view program for Phoenix Eternal margin, liquidation, BBO, funding state, and order matching quotes",
+    "address": "RiSeVw3ZjNfsaXPRb4mgaqYaEEt41pNNJoDvVh7pgQj",
+    "origin": "anchor-compatible",
+    "codama": {
+      "nodesVersion": "1.6.0",
+      "nodesFromAnchorVersion": "1.4.1",
+      "renderersJsVersion": "2.2.0"
+    },
+    "hawkeye": {
+      "returnDataVersion": 1,
+      "returnData": [
+        {
+          "instruction": "ViewMargin",
+          "type": "ViewMarginReturn",
+          "magic": "return:phoenix_hawkeye_margin",
+          "magicBytes": [63, 37, 255, 61, 157, 91, 95, 149],
+          "magicU64": "10763422365346899263",
+          "size": 112
+        },
+        {
+          "instruction": "ViewMarginForAsset",
+          "type": "ViewAssetReturn",
+          "magic": "return:phoenix_hawkeye_asset",
+          "magicBytes": [185, 29, 94, 40, 248, 255, 88, 219],
+          "magicU64": "15805664333550984633",
+          "size": 128
+        },
+        {
+          "instruction": "ViewLiquidationPrice",
+          "type": "ViewLiquidationPriceReturn",
+          "magic": "return:phoenix_hawkeye_liquidation_price",
+          "magicBytes": [65, 104, 239, 96, 177, 52, 61, 210],
+          "magicU64": "15149322657984374849",
+          "size": 56
+        },
+        {
+          "instruction": "ViewBbo",
+          "type": "ViewBboReturn",
+          "magic": "return:phoenix_hawkeye_bbo",
+          "magicBytes": [113, 65, 167, 31, 163, 31, 202, 239],
+          "magicU64": "17278657705831514481",
+          "size": 64
+        },
+        {
+          "instruction": "ViewFunding",
+          "type": "ViewFundingReturn",
+          "magic": "return:phoenix_hawkeye_funding",
+          "magicBytes": [24, 220, 38, 162, 238, 99, 169, 50],
+          "magicU64": "3650558849534319640",
+          "size": 48
+        },
+        {
+          "instruction": "ViewOrderQuote",
+          "type": "ViewOrderQuoteReturn",
+          "magic": "return:phoenix_hawkeye_order_quote",
+          "magicBytes": [136, 111, 182, 92, 28, 207, 41, 21],
+          "magicU64": "1524977669563117448",
+          "size": 120
+        }
+      ],
+      "flags": {
+        "ViewOrderQuoteReturn": {
+          "hasFill": 1,
+          "hasSlippage": 2,
+          "hasEffectiveSize": 4
+        },
+        "ViewBboReturn": {
+          "hasBid": 1,
+          "hasAsk": 2
+        },
+        "ViewFundingReturn": {
+          "hasAccumulatedFunding": 1,
+          "hasUnsettledFunding": 2
+        }
+      }
+    }
+  },
+  "docs": [
+    "Manual Anchor-compatible IDL for the Phoenix Hawkeye view program.",
+    "Instruction data uses an eight-byte little-endian Phoenix discriminator followed by repr(C) POD params, except ViewOrderQuote which takes a u64 reference price followed by a Borsh OrderPacket.",
+    "Return data is raw repr(C) POD bytes. Decode the first eight bytes as little-endian magic, then decode the matching return struct in types[].",
+    "GlobalTraderIndex and ActiveTraderBuffer are variable-length account groups. Flatten every account from the exchange cache at the documented position before appending the remaining accounts."
+  ],
+  "instructions": [
+    {
+      "name": "ViewMargin",
+      "docs": [
+        "Computes aggregate trader margin, risk, collateral, PnL, funding, and limit-order margin.",
+        "Sets return data to ViewMarginReturn."
+      ],
+      "discriminator": [178, 10, 124, 173, 236, 210, 117, 6],
+      "accounts": [
+        {
+          "name": "phoenixProgram",
+          "writable": false,
+          "signer": false,
+          "docs": [
+            "Phoenix Eternal program account. All following Phoenix state accounts must be owned by this program id."
+          ]
+        },
+        {
+          "name": "globalConfiguration",
+          "writable": false,
+          "signer": false,
+          "docs": ["Phoenix global configuration account."]
+        },
+        {
+          "name": "globalTraderIndex",
+          "writable": false,
+          "signer": false,
+          "docs": [
+            "Variable-length GlobalTraderIndex account group from the exchange cache.",
+            "Flatten all group accounts here in cache order before the ActiveTraderBuffer accounts."
+          ]
+        },
+        {
+          "name": "activeTraderBuffer",
+          "writable": false,
+          "signer": false,
+          "docs": [
+            "Variable-length ActiveTraderBuffer account group from the exchange cache.",
+            "Flatten all group accounts here in cache order before the PerpAssetMap account."
+          ]
+        },
+        {
+          "name": "perpAssetMap",
+          "writable": false,
+          "signer": false,
+          "docs": ["Phoenix PerpAssetMap account."]
+        },
+        {
+          "name": "trader",
+          "writable": false,
+          "signer": false,
+          "docs": ["Phoenix trader account to inspect."]
+        }
+      ],
+      "args": [],
+      "returns": {
+        "defined": {
+          "name": "ViewMarginReturn"
+        }
+      }
+    },
+    {
+      "name": "ViewMarginForAsset",
+      "docs": [
+        "Computes per-asset trader position, PnL, funding, and margin, including limit-order margin.",
+        "Sets return data to ViewAssetReturn."
+      ],
+      "discriminator": [32, 18, 175, 254, 161, 237, 77, 155],
+      "accounts": [
+        {
+          "name": "phoenixProgram",
+          "writable": false,
+          "signer": false,
+          "docs": [
+            "Phoenix Eternal program account. All following Phoenix state accounts must be owned by this program id."
+          ]
+        },
+        {
+          "name": "globalConfiguration",
+          "writable": false,
+          "signer": false,
+          "docs": ["Phoenix global configuration account."]
+        },
+        {
+          "name": "globalTraderIndex",
+          "writable": false,
+          "signer": false,
+          "docs": [
+            "Variable-length GlobalTraderIndex account group from the exchange cache.",
+            "Flatten all group accounts here in cache order before the ActiveTraderBuffer accounts."
+          ]
+        },
+        {
+          "name": "activeTraderBuffer",
+          "writable": false,
+          "signer": false,
+          "docs": [
+            "Variable-length ActiveTraderBuffer account group from the exchange cache.",
+            "Flatten all group accounts here in cache order before the PerpAssetMap account."
+          ]
+        },
+        {
+          "name": "perpAssetMap",
+          "writable": false,
+          "signer": false,
+          "docs": ["Phoenix PerpAssetMap account."]
+        },
+        {
+          "name": "trader",
+          "writable": false,
+          "signer": false,
+          "docs": ["Phoenix trader account to inspect."]
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "ViewAssetParams"
+            }
+          }
+        }
+      ],
+      "returns": {
+        "defined": {
+          "name": "ViewAssetReturn"
+        }
+      }
+    },
+    {
+      "name": "ViewLiquidationPrice",
+      "docs": [
+        "Computes liquidation price for a trader position on one asset.",
+        "Sets return data to ViewLiquidationPriceReturn."
+      ],
+      "discriminator": [249, 201, 188, 96, 44, 104, 68, 20],
+      "accounts": [
+        {
+          "name": "phoenixProgram",
+          "writable": false,
+          "signer": false,
+          "docs": [
+            "Phoenix Eternal program account. All following Phoenix state accounts must be owned by this program id."
+          ]
+        },
+        {
+          "name": "globalConfiguration",
+          "writable": false,
+          "signer": false,
+          "docs": ["Phoenix global configuration account."]
+        },
+        {
+          "name": "globalTraderIndex",
+          "writable": false,
+          "signer": false,
+          "docs": [
+            "Variable-length GlobalTraderIndex account group from the exchange cache.",
+            "Flatten all group accounts here in cache order before the ActiveTraderBuffer accounts."
+          ]
+        },
+        {
+          "name": "activeTraderBuffer",
+          "writable": false,
+          "signer": false,
+          "docs": [
+            "Variable-length ActiveTraderBuffer account group from the exchange cache.",
+            "Flatten all group accounts here in cache order before the PerpAssetMap account."
+          ]
+        },
+        {
+          "name": "perpAssetMap",
+          "writable": false,
+          "signer": false,
+          "docs": ["Phoenix PerpAssetMap account."]
+        },
+        {
+          "name": "trader",
+          "writable": false,
+          "signer": false,
+          "docs": ["Phoenix trader account to inspect."]
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "ViewAssetParams"
+            }
+          }
+        }
+      ],
+      "returns": {
+        "defined": {
+          "name": "ViewLiquidationPriceReturn"
+        }
+      }
+    },
+    {
+      "name": "ViewBbo",
+      "docs": [
+        "Computes a read-only best bid and best ask after book liquidity, spline uncrossing, spline max-position limits, and spline risk checks.",
+        "Sets return data to ViewBboReturn."
+      ],
+      "discriminator": [55, 95, 35, 45, 83, 175, 18, 82],
+      "accounts": [
+        {
+          "name": "phoenixProgram",
+          "writable": false,
+          "signer": false,
+          "docs": [
+            "Phoenix Eternal program account. All following Phoenix state accounts must be owned by this program id."
+          ]
+        },
+        {
+          "name": "globalConfiguration",
+          "writable": false,
+          "signer": false,
+          "docs": ["Phoenix global configuration account."]
+        },
+        {
+          "name": "globalTraderIndex",
+          "writable": false,
+          "signer": false,
+          "docs": [
+            "Variable-length GlobalTraderIndex account group from the exchange cache.",
+            "Flatten all group accounts here in cache order before the ActiveTraderBuffer accounts."
+          ]
+        },
+        {
+          "name": "activeTraderBuffer",
+          "writable": false,
+          "signer": false,
+          "docs": [
+            "Variable-length ActiveTraderBuffer account group from the exchange cache.",
+            "Flatten all group accounts here in cache order before the PerpAssetMap account."
+          ]
+        },
+        {
+          "name": "perpAssetMap",
+          "writable": false,
+          "signer": false,
+          "docs": ["Phoenix PerpAssetMap account."]
+        },
+        {
+          "name": "orderbook",
+          "writable": false,
+          "signer": false,
+          "docs": ["Phoenix orderbook account for the market to inspect."]
+        },
+        {
+          "name": "splineCollection",
+          "writable": false,
+          "signer": false,
+          "docs": [
+            "Phoenix spline collection account for the market to inspect."
+          ]
+        }
+      ],
+      "args": [],
+      "returns": {
+        "defined": {
+          "name": "ViewBboReturn"
+        }
+      }
+    },
+    {
+      "name": "ViewFunding",
+      "docs": [
+        "Computes funding details for a trader and asset.",
+        "Sets return data to ViewFundingReturn."
+      ],
+      "discriminator": [194, 19, 142, 73, 250, 88, 167, 191],
+      "accounts": [
+        {
+          "name": "phoenixProgram",
+          "writable": false,
+          "signer": false,
+          "docs": [
+            "Phoenix Eternal program account. All following Phoenix state accounts must be owned by this program id."
+          ]
+        },
+        {
+          "name": "globalConfiguration",
+          "writable": false,
+          "signer": false,
+          "docs": ["Phoenix global configuration account."]
+        },
+        {
+          "name": "globalTraderIndex",
+          "writable": false,
+          "signer": false,
+          "docs": [
+            "Variable-length GlobalTraderIndex account group from the exchange cache.",
+            "Flatten all group accounts here in cache order before the ActiveTraderBuffer accounts."
+          ]
+        },
+        {
+          "name": "activeTraderBuffer",
+          "writable": false,
+          "signer": false,
+          "docs": [
+            "Variable-length ActiveTraderBuffer account group from the exchange cache.",
+            "Flatten all group accounts here in cache order before the PerpAssetMap account."
+          ]
+        },
+        {
+          "name": "perpAssetMap",
+          "writable": false,
+          "signer": false,
+          "docs": ["Phoenix PerpAssetMap account."]
+        },
+        {
+          "name": "trader",
+          "writable": false,
+          "signer": false,
+          "docs": ["Phoenix trader account to inspect."]
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "ViewAssetParams"
+            }
+          }
+        }
+      ],
+      "returns": {
+        "defined": {
+          "name": "ViewFundingReturn"
+        }
+      }
+    },
+    {
+      "name": "ViewOrderQuote",
+      "docs": [
+        "Quotes the existing matching engine against copied state. Does not predict taker margin or authority checks.",
+        "Returns fills, gross notional, fees, posted and unfilled quantities, average price, optional slippage, effective size, posted price, outcome and rejection reason.",
+        "cancelExisting returns unsupported. Expected matching rejections return successfully with zero retained fills, fees and posts; malformed input, invalid accounts and runtime failures remain instruction errors."
+      ],
+      "discriminator": [200, 175, 151, 81, 254, 171, 248, 44],
+      "accounts": [
+        {
+          "name": "phoenixProgram",
+          "writable": false,
+          "signer": false,
+          "docs": [
+            "Phoenix Eternal program account. All following Phoenix state accounts must be owned by this program id."
+          ]
+        },
+        {
+          "name": "globalConfiguration",
+          "writable": false,
+          "signer": false,
+          "docs": ["Phoenix global configuration account."]
+        },
+        {
+          "name": "globalTraderIndex",
+          "writable": false,
+          "signer": false,
+          "docs": [
+            "Variable-length GlobalTraderIndex account group from the exchange cache.",
+            "Flatten all group accounts here in cache order before the ActiveTraderBuffer accounts."
+          ]
+        },
+        {
+          "name": "activeTraderBuffer",
+          "writable": false,
+          "signer": false,
+          "docs": [
+            "Variable-length ActiveTraderBuffer account group from the exchange cache.",
+            "Flatten all group accounts here in cache order before the PerpAssetMap account."
+          ]
+        },
+        {
+          "name": "perpAssetMap",
+          "writable": false,
+          "signer": false,
+          "docs": ["Phoenix PerpAssetMap account."]
+        },
+        {
+          "name": "orderbook",
+          "writable": false,
+          "signer": false,
+          "docs": ["Phoenix orderbook account for the market to inspect."]
+        },
+        {
+          "name": "splineCollection",
+          "writable": false,
+          "signer": false,
+          "docs": [
+            "Phoenix spline collection account for the market to inspect."
+          ]
+        },
+        {
+          "name": "trader",
+          "writable": false,
+          "signer": false,
+          "docs": [
+            "Phoenix trader account used for fees, positions, and self-trade behavior."
+          ]
+        },
+        {
+          "name": "scratch",
+          "writable": true,
+          "signer": false,
+          "docs": [
+            "Zero-lamport Hawkeye-owned buffer, allocated by a preceding top-level System instruction in the same transaction. Closed on success.",
+            "Must fit aligned copies of all source accounts and arena growth for taker activation and spline positions. Insufficient capacity fails the instruction."
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "referencePriceTicks",
+          "type": "u64",
+          "docs": [
+            "Zero omits slippage; otherwise slippage is measured against this price, excluding fees."
+          ]
+        },
+        {
+          "name": "orderPacket",
+          "docs": [
+            "OrderPacket contains only its kind field, so its Borsh encoding is identical to OrderPacketKind."
+          ],
+          "type": {
+            "defined": {
+              "name": "OrderPacketKind"
+            }
+          }
+        }
+      ],
+      "returns": {
+        "defined": {
+          "name": "ViewOrderQuoteReturn"
+        }
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "ViewAssetParams",
+      "docs": [
+        "repr(C) asset parameter payload.",
+        "Instruction data layout after discriminator: assetId:u32, padding:[u8;4]."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "assetId",
+            "type": "u32"
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": ["u8", 4]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "ViewMarginReturn",
+      "docs": [
+        "Return data for ViewMargin. Size: 112 bytes.",
+        "riskState values: 0=Healthy, 1=Unhealthy, 2=Underwater, 3=ZeroCollateralNoPositions.",
+        "riskTier values: 0=Safe, 1=AtRisk, 2=Cancellable, 3=Liquidatable, 4=BackstopLiquidatable, 5=HighRisk."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "magic",
+            "docs": [
+              "Little-endian u64 magic for return:phoenix_hawkeye_margin."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "version",
+            "type": "u16"
+          },
+          {
+            "name": "positionCount",
+            "type": "u16"
+          },
+          {
+            "name": "riskState",
+            "type": "u8"
+          },
+          {
+            "name": "riskTier",
+            "type": "u8"
+          },
+          {
+            "name": "isLiquidatable",
+            "docs": ["0=false, 1=true."],
+            "type": "u8"
+          },
+          {
+            "name": "padding",
+            "type": "u8"
+          },
+          {
+            "name": "collateralQuoteLots",
+            "type": "i64"
+          },
+          {
+            "name": "effectiveCollateralQuoteLots",
+            "type": "i64"
+          },
+          {
+            "name": "freeCollateralQuoteLots",
+            "type": "i64"
+          },
+          {
+            "name": "withdrawableCollateralQuoteLots",
+            "type": "u64"
+          },
+          {
+            "name": "initialMarginQuoteLots",
+            "type": "u64"
+          },
+          {
+            "name": "maintenanceMarginQuoteLots",
+            "type": "u64"
+          },
+          {
+            "name": "cancelMarginQuoteLots",
+            "type": "u64"
+          },
+          {
+            "name": "backstopMarginQuoteLots",
+            "type": "u64"
+          },
+          {
+            "name": "highRiskMarginQuoteLots",
+            "type": "u64"
+          },
+          {
+            "name": "unrealizedPnlQuoteLots",
+            "type": "i64"
+          },
+          {
+            "name": "discountedUnrealizedPnlQuoteLots",
+            "type": "i64"
+          },
+          {
+            "name": "unsettledFundingQuoteLots",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ViewAssetReturn",
+      "docs": [
+        "Return data for ViewMarginForAsset. Size: 128 bytes.",
+        "riskState values: 0=Healthy, 1=Unhealthy, 2=Underwater, 3=ZeroCollateralNoPositions.",
+        "riskTier values: 0=Safe, 1=AtRisk, 2=Cancellable, 3=Liquidatable, 4=BackstopLiquidatable, 5=HighRisk."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "magic",
+            "docs": [
+              "Little-endian u64 magic for return:phoenix_hawkeye_asset."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "assetId",
+            "type": "u32"
+          },
+          {
+            "name": "version",
+            "type": "u16"
+          },
+          {
+            "name": "hasPositionOrOrders",
+            "docs": ["0=false, 1=true."],
+            "type": "u8"
+          },
+          {
+            "name": "padding",
+            "type": "u8"
+          },
+          {
+            "name": "riskState",
+            "type": "u8"
+          },
+          {
+            "name": "riskTier",
+            "type": "u8"
+          },
+          {
+            "name": "padding1",
+            "type": {
+              "array": ["u8", 6]
+            }
+          },
+          {
+            "name": "baseLots",
+            "type": "i64"
+          },
+          {
+            "name": "virtualQuoteLots",
+            "type": "i64"
+          },
+          {
+            "name": "markPriceTicks",
+            "type": "u64"
+          },
+          {
+            "name": "entryPriceQuoteLotsPerBaseLot",
+            "type": "u64"
+          },
+          {
+            "name": "positionValueQuoteLots",
+            "type": "i64"
+          },
+          {
+            "name": "unrealizedPnlQuoteLots",
+            "type": "i64"
+          },
+          {
+            "name": "discountedUnrealizedPnlQuoteLots",
+            "type": "i64"
+          },
+          {
+            "name": "unsettledFundingQuoteLots",
+            "type": "i64"
+          },
+          {
+            "name": "initialMarginQuoteLots",
+            "type": "u64"
+          },
+          {
+            "name": "maintenanceMarginQuoteLots",
+            "type": "u64"
+          },
+          {
+            "name": "cancelMarginQuoteLots",
+            "type": "u64"
+          },
+          {
+            "name": "backstopMarginQuoteLots",
+            "type": "u64"
+          },
+          {
+            "name": "highRiskMarginQuoteLots",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ViewLiquidationPriceReturn",
+      "docs": [
+        "Return data for ViewLiquidationPrice. Size: 56 bytes.",
+        "status values: 0=NoPosition, 1=Found, 2=AlreadyLiquidatable, 3=NoPriceInBounds.",
+        "side values: 0=NoneOrFlat, 1=Long, 2=Short."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "magic",
+            "docs": [
+              "Little-endian u64 magic for return:phoenix_hawkeye_liquidation_price."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "assetId",
+            "type": "u32"
+          },
+          {
+            "name": "version",
+            "type": "u16"
+          },
+          {
+            "name": "status",
+            "type": "u8"
+          },
+          {
+            "name": "side",
+            "type": "u8"
+          },
+          {
+            "name": "liquidationPriceTicks",
+            "docs": ["Zero when status has no liquidation price."],
+            "type": "u64"
+          },
+          {
+            "name": "markPriceTicks",
+            "type": "u64"
+          },
+          {
+            "name": "entryPriceQuoteLotsPerBaseLot",
+            "type": "u64"
+          },
+          {
+            "name": "effectiveCollateralQuoteLots",
+            "type": "i64"
+          },
+          {
+            "name": "maintenanceMarginQuoteLots",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ViewBboReturn",
+      "docs": [
+        "Return data for ViewBbo. Size: 64 bytes.",
+        "flags bit 0 means bestBidTicks is present. flags bit 1 means bestAskTicks is present.",
+        "When the corresponding flag is not set, bestBidTicks or bestAskTicks is zero and should be treated as None."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "magic",
+            "docs": ["Little-endian u64 magic for return:phoenix_hawkeye_bbo."],
+            "type": "u64"
+          },
+          {
+            "name": "version",
+            "type": "u16"
+          },
+          {
+            "name": "flags",
+            "type": "u8"
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": ["u8", 5]
+            }
+          },
+          {
+            "name": "bestBidTicks",
+            "type": "u64"
+          },
+          {
+            "name": "bestAskTicks",
+            "type": "u64"
+          },
+          {
+            "name": "markPriceTicks",
+            "type": "u64"
+          },
+          {
+            "name": "indexPriceTicks",
+            "type": "u64"
+          },
+          {
+            "name": "markPriceLastUpdatedSlot",
+            "type": "u64"
+          },
+          {
+            "name": "indexPriceLastUpdatedSlot",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ViewFundingReturn",
+      "docs": [
+        "Return data for ViewFunding. Size: 48 bytes.",
+        "flags bit 0 means totalAccumulatedFundingQuoteLots is present. flags bit 1 means totalUnsettledFundingQuoteLots is present.",
+        "When a funding flag is not set, the corresponding quote-lots field is zero and should be treated as None.",
+        "Funding rates are signed micro-basis-points to avoid floating point arithmetic. Divide by 10000 to get basis points."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "magic",
+            "docs": [
+              "Little-endian u64 magic for return:phoenix_hawkeye_funding."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "assetId",
+            "type": "u32"
+          },
+          {
+            "name": "version",
+            "type": "u16"
+          },
+          {
+            "name": "flags",
+            "type": "u8"
+          },
+          {
+            "name": "padding",
+            "type": "u8"
+          },
+          {
+            "name": "totalAccumulatedFundingQuoteLots",
+            "type": "i64"
+          },
+          {
+            "name": "totalUnsettledFundingQuoteLots",
+            "type": "i64"
+          },
+          {
+            "name": "currentFundingRateMicroBps",
+            "type": "i64"
+          },
+          {
+            "name": "projected1hFundingRateMicroBps",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ViewOrderQuoteReturn",
+      "docs": [
+        "Size: 120 bytes. flags: bit 0 average price, bit 1 slippage, bit 2 effective size present. side: 0=bid, 1=ask.",
+        "filledQuoteLots is gross, excluding fees. unfilledBaseLots includes any posted remainder.",
+        "Average price rounds down to quote lots per base lot. Slippage is signed basis points rounded toward zero; positive means adverse execution.",
+        "Matching acceptance does not establish taker margin or authority checks. Expected rejections return success with zero retained fills, fees and posts.",
+        "effectiveBaseLots is the size after reduce-only clamping; absent for rejected, unsupported or expired orders. postedPriceTicks is valid when postedBaseLots is nonzero and includes post-only sliding.",
+        "outcome: 0=accepted, 1=rejected, 2=unsupported. Use placement limits to enforce execution constraints.",
+        "rejectionReason: 0=none, 1=cancelExisting, 2=invalidOrderPacket, 3=minimumFillNotMet, 4=selfTradeAbort, 5=postOnlyCross, 6=reduceOnlyIncreaseExposure, 7=tooManyLimitOrders, 8=insufficientAggression, 9=invalidTimeInForce, 10=zeroPrice, 11=zeroSize, 12=outsideExecutionPriceBand, 13=expired."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "magic",
+            "type": "u64"
+          },
+          {
+            "name": "version",
+            "type": "u16"
+          },
+          {
+            "name": "flags",
+            "type": "u8"
+          },
+          {
+            "name": "side",
+            "type": "u8"
+          },
+          {
+            "name": "assetId",
+            "type": "u32"
+          },
+          {
+            "name": "slot",
+            "type": "u64"
+          },
+          {
+            "name": "requestedBaseLots",
+            "type": "u64"
+          },
+          {
+            "name": "filledBaseLots",
+            "type": "u64"
+          },
+          {
+            "name": "filledQuoteLots",
+            "type": "u64"
+          },
+          {
+            "name": "feeQuoteLots",
+            "type": "u64"
+          },
+          {
+            "name": "postedBaseLots",
+            "type": "u64"
+          },
+          {
+            "name": "unfilledBaseLots",
+            "type": "u64"
+          },
+          {
+            "name": "averagePriceQuoteLotsPerBaseLot",
+            "type": "u64"
+          },
+          {
+            "name": "referencePriceTicks",
+            "type": "u64"
+          },
+          {
+            "name": "slippageBps",
+            "type": "i64"
+          },
+          {
+            "name": "effectiveBaseLots",
+            "type": "u64"
+          },
+          {
+            "name": "postedPriceTicks",
+            "type": "u64"
+          },
+          {
+            "name": "outcome",
+            "type": "u8"
+          },
+          {
+            "name": "rejectionReason",
+            "type": "u8"
+          },
+          {
+            "name": "_padding",
+            "type": {
+              "array": ["u8", 6]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "OrderPacket",
+      "docs": [
+        "Serialized parameters for Phoenix order placement instructions."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "kind",
+            "type": {
+              "defined": {
+                "name": "OrderPacketKind"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "OrderPacketKind",
+      "docs": [
+        "Supported order variants accepted by the Phoenix matching engine."
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "PostOnly",
+            "fields": [
+              {
+                "name": "side",
+                "type": {
+                  "defined": {
+                    "name": "Side"
+                  }
+                }
+              },
+              {
+                "name": "priceInTicks",
+                "type": {
+                  "defined": {
+                    "name": "Ticks"
+                  }
+                }
+              },
+              {
+                "name": "numBaseLots",
+                "type": {
+                  "defined": {
+                    "name": "BaseLots"
+                  }
+                }
+              },
+              {
+                "name": "clientOrderId",
+                "type": {
+                  "array": ["u8", 16]
+                }
+              },
+              {
+                "name": "slide",
+                "type": "bool"
+              },
+              {
+                "name": "lastValidSlot",
+                "type": {
+                  "option": "u64"
+                }
+              },
+              {
+                "name": "orderFlags",
+                "type": {
+                  "defined": {
+                    "name": "OrderFlags"
+                  }
+                }
+              },
+              {
+                "name": "cancelExisting",
+                "type": "bool"
+              }
+            ]
+          },
+          {
+            "name": "Limit",
+            "fields": [
+              {
+                "name": "side",
+                "type": {
+                  "defined": {
+                    "name": "Side"
+                  }
+                }
+              },
+              {
+                "name": "priceInTicks",
+                "type": {
+                  "defined": {
+                    "name": "Ticks"
+                  }
+                }
+              },
+              {
+                "name": "numBaseLots",
+                "type": {
+                  "defined": {
+                    "name": "BaseLots"
+                  }
+                }
+              },
+              {
+                "name": "selfTradeBehavior",
+                "type": {
+                  "defined": {
+                    "name": "SelfTradeBehavior"
+                  }
+                }
+              },
+              {
+                "name": "matchLimit",
+                "type": {
+                  "option": "u64"
+                }
+              },
+              {
+                "name": "clientOrderId",
+                "type": {
+                  "array": ["u8", 16]
+                }
+              },
+              {
+                "name": "lastValidSlot",
+                "type": {
+                  "option": "u64"
+                }
+              },
+              {
+                "name": "orderFlags",
+                "type": {
+                  "defined": {
+                    "name": "OrderFlags"
+                  }
+                }
+              },
+              {
+                "name": "cancelExisting",
+                "type": "bool"
+              }
+            ]
+          },
+          {
+            "name": "ImmediateOrCancel",
+            "fields": [
+              {
+                "name": "side",
+                "type": {
+                  "defined": {
+                    "name": "Side"
+                  }
+                }
+              },
+              {
+                "name": "priceInTicks",
+                "type": {
+                  "option": {
+                    "defined": {
+                      "name": "Ticks"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "numBaseLots",
+                "type": {
+                  "defined": {
+                    "name": "BaseLots"
+                  }
+                }
+              },
+              {
+                "name": "numQuoteLots",
+                "type": {
+                  "option": {
+                    "defined": {
+                      "name": "QuoteLots"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "minBaseLotsToFill",
+                "type": {
+                  "defined": {
+                    "name": "BaseLots"
+                  }
+                }
+              },
+              {
+                "name": "minQuoteLotsToFill",
+                "type": {
+                  "defined": {
+                    "name": "QuoteLots"
+                  }
+                }
+              },
+              {
+                "name": "selfTradeBehavior",
+                "type": {
+                  "defined": {
+                    "name": "SelfTradeBehavior"
+                  }
+                }
+              },
+              {
+                "name": "matchLimit",
+                "type": {
+                  "option": "u64"
+                }
+              },
+              {
+                "name": "clientOrderId",
+                "type": {
+                  "array": ["u8", 16]
+                }
+              },
+              {
+                "name": "lastValidSlot",
+                "type": {
+                  "option": "u64"
+                }
+              },
+              {
+                "name": "orderFlags",
+                "type": {
+                  "defined": {
+                    "name": "OrderFlags"
+                  }
+                }
+              },
+              {
+                "name": "cancelExisting",
+                "type": "bool"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Side",
+      "docs": ["Trading direction for an order."],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Bid"
+          },
+          {
+            "name": "Ask"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Ticks",
+      "docs": ["Discrete price unit measured in quote lots per base lot."],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "inner",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "BaseLots",
+      "docs": ["Quantity wrapper representing discrete base lots."],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "inner",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "OrderFlags",
+      "docs": [
+        "Bitmask flags applied to an order: bit 7 reduce-only, bit 6 stop-loss, bit 5 conditional-order, bit 4 stop-loss-direction, bit 3 clear-on-position-flip."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "flags",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SelfTradeBehavior",
+      "docs": [
+        "Policy for handling matches against the submitting trader's resting orders."
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Abort"
+          },
+          {
+            "name": "CancelProvide"
+          },
+          {
+            "name": "DecrementTake"
+          }
+        ]
+      }
+    },
+    {
+      "name": "QuoteLots",
+      "docs": ["Quantity wrapper representing discrete quote lots."],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "inner",
+            "type": "u64"
+          }
+        ]
+      }
+    }
+  ]
+}
