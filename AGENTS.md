@@ -141,8 +141,8 @@ An Anchor instruction may declare `"returns"`, the type the program hands back t
 surfaces along with the producing program id. `idl-src-gen` ignores the field, so no
 decoder is generated for it and consumers Borsh-decode the payload by hand.
 
-**Scope, as of 2026-09-03** — 45 declarations across 8 generated packages, which is **45 unique
-instructions across 8 on-chain programs**: `kamino.staging.lend` is Kamino Lend's staging
+**Scope, as of 2026-11-11** — 54 declarations across 10 generated packages, which is **54 unique
+instructions across 10 on-chain programs**: `kamino.staging.lend` is Kamino Lend's staging
 deployment, a second program address serving the same two declarations. A staged `next/`
 client, by contrast, duplicates its program's declarations at the *same* address — the two
 counts coincided when `kamino.lend.next` was retired — so count packages when sizing the
@@ -151,13 +151,15 @@ generator work and program addresses when describing the gap on chain.
 | instructions | program |
 |---:|---|
 | 18 | `exponent` |
-| 12 | `jupiter.swap` |
+| 14 | `jupiter.swap` |
 | 6 | `jupiter.lend` |
+| 6 | `phoenix.hawkeye` — every instruction it has: a view program, whose only answer is return data |
 | 3 | `jupiter.perpetuals` |
 | 2 | `kamino.lend` |
 | 2 | `kamino.staging.lend` — the staging deployment, a second address |
 | 1 | `cctp.message_transmitter.v2` |
 | 1 | `oracles.pyth.lazer` |
+| 1 | `phoenix.perpetuals` |
 
 Re-measure rather than trusting this table:
 

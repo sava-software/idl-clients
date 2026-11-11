@@ -599,6 +599,20 @@ Two shapes worth recognising, because both have already shipped as defects:
   nothing and the mint must be **absent**. Getting it wrong fails with
   `T22MintRequired`.
 
+A third shape is not a remaining account at all, and has not shipped as a defect:
+
+- **A declared account that is a group.** Phoenix declares `globalTraderIndex` and
+  `activeTraderBuffer` as one account each, in the middle of the list, and both
+  are variable-length groups: the header, then every additional arena, flattened
+  in place (the Hawkeye IDL's own docs say so; the SDK takes each as a list). The
+  typed builders pass one key for each, which is the whole group only while each
+  header's `num_arenas` is 1, as both were on mainnet at slot 468102136. Past
+  that, the caller flattens the groups into the builder's `List<AccountMeta>`
+  overload; `extraAccounts` would append them after the last declared account,
+  which is the wrong place. How the program reads a group of more than one, and
+  how a second arena's address is derived, could not be established while none
+  exists.
+
 When adding a helper, derive the layout from the Rust handler, cite the file in
 the javadoc, and validate what you can at build time rather than leaving the
 caller an opaque on-chain error.
