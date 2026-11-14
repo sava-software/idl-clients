@@ -1468,6 +1468,17 @@ the program on that day, the 468612424 image.
   lengths and to the SDK's payload for the 18-byte one, which was not found on chain.
   `UpdateSplineParameters` has no second form: the program refuses its ordering fields cut off
   ("UpdateSplineParametersParamsWithOrdering::try_from_slice failed").
+- The spline updates' sixth account. The IDL declares an optional orderbook on
+  `UpdateSplinePrice`, `UpdateSplinePriceWithMetadata` and `UpdateSplineParameters`, and the
+  generated builders always send six accounts, the program id standing in when the orderbook is
+  null, where every update found on chain and both SDKs pass five. Built by the generated
+  builders and simulated on mainnet at slots 469337059 to 469343285, all three succeed with
+  five accounts, with the program id sixth and with the market's orderbook sixth
+  (`SplineCollectionHeader.market`), and `UpdateSplinePrice` with an unrelated sysvar sixth as
+  well. Either sixth account leaves the splines account holding the price the two price
+  updates sent, and the parameters update logs its success. The sixth account costs 13 to 19
+  compute units and nothing else observed.
+  `splineUpdatesPassTheProgramWhereTheOrderbookIsLeftOut` pins the shape that was simulated.
 
 
 ### Bundle-wide staleness sweep (2026-07-19)
