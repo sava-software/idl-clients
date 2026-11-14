@@ -1,5 +1,22 @@
 # Changelog
 
+## [25.20.1](https://github.com/sava-software/idl-clients/compare/25.20.0...25.20.1) (2026-11-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* **phoenix:** `PhoenixAccountsRecord` takes the invoked Hawkeye program after `activeTraderBuffer`, so code that constructs the record itself passes one more argument. An implementation of `PhoenixAccounts` adds `invokedHawkeyeProgram()`, and an implementation of `PhoenixClient` adds the six views, `createOrderQuoteScratchAccount` and the six readers. Code that uses `PhoenixAccounts.MAIN_NET`, `PhoenixAccounts.createAccounts` and `PhoenixClient.createClient` compiles unchanged.
+
+### Features
+
+* **phoenix:** add the Phoenix Hawkeye client ([116bb92](https://github.com/sava-software/idl-clients/commit/116bb929a6286b39a6531edec54a6bb2311b0f53))
+* **phoenix:** build and read Hawkeye's views from PhoenixClient ([e0d7e75](https://github.com/sava-software/idl-clients/commit/e0d7e754ce280c55d84b92c113949511d417e9ab))
+
+
+### Bug Fixes
+
+* adopt Phoenix's corrected Ember and perpetuals IDLs ([c306217](https://github.com/sava-software/idl-clients/commit/c30621748f8760a7665730beed240112ed7b16ec))
+
 ## [25.20.0](https://github.com/sava-software/idl-clients/compare/25.19.14...25.20.0) (2026-11-10)
 
 
