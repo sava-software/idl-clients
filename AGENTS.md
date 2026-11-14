@@ -594,8 +594,8 @@ savaGithubPackagesPassword=GITHUB_TOKEN
   since sava-build 21.8.8 the dependency-analysis plugin loads only under that property
   (`settings.gradle.kts`), so this is the run that resolves and verifies its chain. The run
   that writes or trims the policy needs `-PdependencyAudit` too: without the property it sees
-  none of the chain and drops the rules the audit needs (sava-build's README, "Dependency
-  analysis"). A policy edit also runs
+  none of the chain, so a new or trimmed policy can omit the rules the audit needs (sava-build's
+  README, "Dependency analysis"). A policy edit also runs
   `./gradlew --no-daemon verificationKeyStatus` from the root, which asks the key servers
   whether a key the policy trusts was revoked or has expired and so sits outside `check`. It
   fails on a revoked key still trusted without a version, which the README's "Key status"
