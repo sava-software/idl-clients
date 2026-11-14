@@ -38,7 +38,8 @@ client, the clients of non-mainnet deployments (`kamino.staging.lend`,
 `phoenix.dev.perpetuals`; see "Generated is not the same as published" in
 `AGENTS.md`), and the javadoc of generated packages. Local `Integ` drivers live in
 the git-ignored `src/scratch/java` tree of a separate `scratch` JvmTestSuite, with
-its test task disabled and dependency analysis ignoring that source set. They are
+its test task disabled and the dependency audit (`-PdependencyAudit`, the only build
+that analyses dependencies) ignoring that source set. They are
 outside the published `main` sources and the PIT and Jazzer classpaths, so they
 need no class, jar, sources-jar or javadoc exclusions.
 Generated sources carry the IDL's own documentation as `///` comments,
@@ -95,6 +96,16 @@ Central only by dispatch.
    checklist in `AGENTS.md`, and confirm that the dependencies in its published
    POMs are also available on Central. A build resolving dependencies from
    GitHub Packages does not establish that Central consumers can resolve them.
+   Run the module-directive scope check as well, which no CI job runs since
+   sava-build 21.8.8 stopped shipping the dependency-analysis plugin:
+
+   ```shell
+   ./gradlew -PdependencyAudit checkModuleDirectivesScope
+   ```
+
+   It fails on a `requires` that should be `requires transitive` or that the
+   module never uses. The property puts the plugin on the settings classpath for
+   that invocation alone, so the release build itself never loads it.
 2. In **Actions → Upload Maven Central Release → Run workflow**, use `main`
    for the workflow branch, enter the release tag, and select `fix` or `monthly`.
    The workflow checks out the tag, verifies its release manifest, runs `check`,

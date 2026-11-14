@@ -54,9 +54,24 @@ pluginManagement {
   }
 }
 
+// sava-build does not ship the dependency-analysis plugin. '-PdependencyAudit' puts it on the
+// settings classpath for that invocation alone, where sava-build's check.dependencies wires
+// 'checkModuleDirectivesScope' into 'check'; an ordinary build, a release build among them,
+// resolves and loads nothing of it. The version is the one sava-build is tested against
+// ('dependency-analysis-gradle-plugin' in its gradle/libs.versions.toml).
+buildscript {
+  if (providers.gradleProperty("dependencyAudit").isPresent) {
+    dependencies { classpath("com.autonomousapps:dependency-analysis-gradle-plugin:3.19.2") }
+  }
+}
+
 plugins {
-  id("software.sava.build") version "21.8.7"
-  id("software.sava.build.feature.jdk-provisioning") version "21.8.7"
+  id("software.sava.build") version "21.8.8"
+  id("software.sava.build.feature.jdk-provisioning") version "21.8.8"
+}
+
+if (providers.gradleProperty("dependencyAudit").isPresent) {
+  apply(plugin = "com.autonomousapps.build-health")
 }
 
 javaModules {

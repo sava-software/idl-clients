@@ -62,8 +62,9 @@ All three exclude:
   matches.
 
 Local `Integ` drivers live in git-ignored `src/scratch/java`, outside `main` and `test`,
-in the separate `scratch` JvmTestSuite. Its test task is disabled and dependency analysis
-ignores the source set. Scratch sources never enter the PIT or Jazzer recompile or classpath,
+in the separate `scratch` JvmTestSuite. Its test task is disabled, and the dependency audit
+(`-PdependencyAudit`, the only build that analyses dependencies) ignores the source set.
+Scratch sources never enter the PIT or Jazzer recompile or classpath,
 so local drivers cannot change the mutant population and need no recompile or class exclusions.
 
 ## Mutator sets and their trials

@@ -21,10 +21,14 @@ testing {
   }
 }
 
-dependencyAnalysis {
-  issues {
-    // the scratch suite is git-ignored local code: analysing it would make check compile it
-    ignoreSourceSet("scratch")
+// Dependency analysis runs only under -PdependencyAudit (settings.gradle.kts), so the plugin's
+// typed block would not compile in an ordinary build.
+pluginManager.withPlugin("com.autonomousapps.dependency-analysis") {
+  extensions.getByName("dependencyAnalysis").withGroovyBuilder {
+    "issues" {
+      // the scratch suite is git-ignored local code: analysing it would make the audit compile it
+      "ignoreSourceSet"("scratch")
+    }
   }
 }
 
