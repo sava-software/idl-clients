@@ -1444,6 +1444,30 @@ the program on that day, the 468612424 image.
   that moves tokens; with no excess to move, both variants succeed and charge nothing.
   `theIdlStillLacksWithdrawSpotWithFee` fails on the regeneration that brings a generated
   builder, which is when the hand-held discriminator goes.
+- The short `UpdateSplinePrice`. Under `2d9bc83425d6bb8c` the program takes the declared
+  `UpdateSplinePriceParamsWithOrdering` (43 bytes with the discriminator, 51 with an update
+  slot) and its first three fields alone (18 and 26), which rise-public still builds as
+  `UpdateSplinePriceParams` (`rust/ix/src/spline.rs::create_update_spline_price_ix`). Simulated
+  on mainnet between slots 469335405 and 469344443, with the splines account read back, the
+  program splits them by length. Up to 26 bytes is the short form, read from the front with
+  the rest ignored: without an update slot every length from 18 to 26 writes the price and 8,
+  16 and 17 panic; with one 26 writes it and 25 panics. Anything longer must be the ordered
+  form exactly, 43 bytes without a slot and 51 with, which write it too, and 27, 34, 35, 42,
+  44, 50 and 52 fail "Invalid instruction data length for UpdateSplinePriceParamsWithOrdering",
+  as does 43 with a slot. The short form is its own path:
+  it is refused on an update slot older than the stored one, and it neither checks nor advances
+  the stored price sequence number (after a 51-byte update at sequence 2^62 and a 26-byte one,
+  a 51-byte update at sequence 5 fails and one at 2^62 + 1 succeeds). No form emits an event. In
+  the fourteen slots 468967795-468967803 and 468968754-468968758 mainnet carried 39 26-byte
+  updates, nine of them executed in successful transactions, beside 204 51-byte ones. Every
+  short one came from one signer, `EibQ2VYpzj18qSdEBkmxWVzde7FzamTxVG9rZyY689Yj`, whose last
+  transaction is at slot 469319225 and whose balance, 652,866 lamports at slot 469335008,
+  cannot pay another fee and stay rent-exempt, so the one sender seen had stopped by then. The
+  generated reader throws on it (`generatedReaderDoesNotReadTheShortForm`);
+  `SplinePriceUpdate.read` reads both, pinned to an executed instruction for three of the four
+  lengths and to the SDK's payload for the 18-byte one, which was not found on chain.
+  `UpdateSplineParameters` has no second form: the program refuses its ordering fields cut off
+  ("UpdateSplineParametersParamsWithOrdering::try_from_slice failed").
 
 
 ### Bundle-wide staleness sweep (2026-07-19)
