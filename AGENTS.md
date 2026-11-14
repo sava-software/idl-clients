@@ -592,8 +592,10 @@ savaGithubPackagesPassword=GITHUB_TOKEN
   configuration-cache entry resolves nothing and so verifies nothing. Follow it with
   `./gradlew --no-daemon --no-configuration-cache -PdependencyAudit checkModuleDirectivesScope`:
   since sava-build 21.8.8 the dependency-analysis plugin loads only under that property
-  (`settings.gradle.kts`), so this is the one run that resolves its chain, and a policy written
-  or trimmed without it loses the rules the audit needs. A policy edit also runs
+  (`settings.gradle.kts`), so this is the run that resolves and verifies its chain. The run
+  that writes or trims the policy needs `-PdependencyAudit` too: without the property it sees
+  none of the chain and drops the rules the audit needs (sava-build's README, "Dependency
+  analysis"). A policy edit also runs
   `./gradlew --no-daemon verificationKeyStatus` from the root, which asks the key servers
   whether a key the policy trusts was revoked or has expired and so sits outside `check`. It
   fails on a revoked key still trusted without a version, which the README's "Key status"
