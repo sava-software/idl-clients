@@ -96,8 +96,9 @@ Central only by dispatch.
    checklist in `AGENTS.md`, and confirm that the dependencies in its published
    POMs are also available on Central. A build resolving dependencies from
    GitHub Packages does not establish that Central consumers can resolve them.
-   Run the module-directive scope check as well, which no CI job runs since
-   sava-build 21.8.8 stopped shipping the dependency-analysis plugin:
+   No CI job runs the module-directive scope check since sava-build 21.8.8
+   stopped shipping the dependency-analysis plugin. Run it by hand before a
+   release PR is merged, and here, on a checkout of the tag, if that was missed:
 
    ```shell
    ./gradlew -PdependencyAudit checkModuleDirectivesScope
@@ -105,7 +106,9 @@ Central only by dispatch.
 
    It fails on a `requires` that should be `requires transitive` or that the
    module never uses. The property puts the plugin on the settings classpath for
-   that invocation alone, so the release build itself never loads it.
+   that invocation alone, so the release build itself never loads it. GitHub
+   Packages already has the tag by this step, so a failure found here is fixed
+   in a later release.
 2. In **Actions → Upload Maven Central Release → Run workflow**, use `main`
    for the workflow branch, enter the release tag, and select `fix` or `monthly`.
    The workflow checks out the tag, verifies its release manifest, runs `check`,
