@@ -1424,6 +1424,27 @@ The existing handwritten layer does not reference the renamed type or construct
 those funding parameters. The event fixture still covers 35 variants; the new
 tags have structural discriminator coverage, not captured runtime fixtures.
 
+**Beyond the document (2026-11-14).** What the program takes and the published document does
+not declare. No regeneration reaches it, so each is recorded here with what was tried against
+the program on that day, the 468612424 image.
+
+- `WithdrawSpotWithFee`, `sha256("global:withdraw_spot_with_fee")[0..8]` = `8751d829fd49bfe0`.
+  rise-public names it since Rust 0.9.5 / TS 0.7.13 (2026-11-12) and builds it as `WithdrawSpot`
+  under that discriminator (`rust/ix/src/spot.rs::withdraw_spot_ix`). Five mainnet transactions
+  between slots 468634547 and 468648838 carry it at top level and succeeded, each with the
+  fourteen accounts of the IDL's `WithdrawSpot` in its order and flags and with its action as
+  the arguments. `PhoenixClient.withdrawSpotWithFee` is pinned to two of them, and
+  `PhoenixAccounts.traderWalletPDA` (`["wallet", traderAccount]`, rise-public
+  `constants.rs::get_trader_wallet_address`) to the wallets and custody accounts they passed.
+  Simulated with one trader's accounts and action, the two withdrawals differ in one event: the
+  fee variant adds `TraderFundsWithdrawnFeePayment` carrying 500000, the `withdrawalFee` of each
+  deployment's `WithdrawQueueHeader` (dev's `enqueueingFee` is 0, so it is not that field).
+  Mainnet now registers a spot asset, cbBTC, in the asset map's slot 99. Not established: which
+  balance pays the fee (the SDK says quote collateral), and the fee on an `AllExcess` withdrawal
+  that moves tokens; with no excess to move, both variants succeed and charge nothing.
+  `theIdlStillLacksWithdrawSpotWithFee` fails on the regeneration that brings a generated
+  builder, which is when the hand-held discriminator goes.
+
 
 ### Bundle-wide staleness sweep (2026-07-19)
 

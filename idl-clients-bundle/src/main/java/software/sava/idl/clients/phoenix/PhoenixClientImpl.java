@@ -3,6 +3,7 @@ package software.sava.idl.clients.phoenix;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.SolanaAccounts;
 import software.sava.core.accounts.meta.AccountMeta;
+import software.sava.core.programs.Discriminator;
 import software.sava.core.tx.Instruction;
 import software.sava.idl.clients.phoenix.ember.gen.EmberProgram;
 import software.sava.idl.clients.phoenix.ember.gen.types.DepositParams;
@@ -35,14 +36,17 @@ import software.sava.idl.clients.phoenix.perpetuals.gen.types.RegisterTraderPara
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.TransferCollateralInstruction;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.UpsertEscrowRequestParams;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.WithdrawFundsInstruction;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.WithdrawSpotParams;
 import software.sava.idl.clients.spl.system.gen.SystemProgram;
 
 import java.util.List;
 
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
 import static software.sava.idl.clients.phoenix.hawkeye.gen.HawkeyeProgram.ViewOrderQuoteIxData.ORDER_PACKET_OFFSET;
 import static software.sava.idl.clients.phoenix.hawkeye.gen.HawkeyeProgram.ViewOrderQuoteIxData.REFERENCE_PRICE_TICKS_OFFSET;
+import static software.sava.idl.clients.phoenix.perpetuals.gen.EternalProgram.WithdrawSpotIxData;
 
 final class PhoenixClientImpl implements PhoenixClient {
 
@@ -54,6 +58,11 @@ final class PhoenixClientImpl implements PhoenixClient {
   private static final long VIEW_BBO_RETURN_MAGIC = 0xEFCA1FA31FA74171L;
   private static final long VIEW_FUNDING_RETURN_MAGIC = 0x32A963EEA226DC18L;
   private static final long VIEW_ORDER_QUOTE_RETURN_MAGIC = 0x1529CF1C5CB66F88L;
+
+  /// `sha256("global:withdraw_spot_with_fee")[0..8]`: the program dispatches on it and the IDL
+  /// does not declare the instruction, so the generated `EternalProgram` has no constant for it.
+  private static final Discriminator WITHDRAW_SPOT_WITH_FEE_DISCRIMINATOR =
+      toDiscriminator(135, 81, 216, 41, 253, 73, 191, 224);
 
   private final SolanaAccounts solanaAccounts;
   private final PhoenixAccounts accounts;
@@ -191,6 +200,39 @@ final class PhoenixClientImpl implements PhoenixClient {
         withdrawQueueKey,
         params
     );
+  }
+
+  @Override
+  public Instruction withdrawSpotWithFee(final PublicKey signerWalletKey,
+                                         final PublicKey traderAccountKey,
+                                         final PublicKey perpAssetMapKey,
+                                         final PublicKey mintKey,
+                                         final PublicKey traderPhoenixWalletKey,
+                                         final PublicKey custodyTokenAccountKey,
+                                         final PublicKey destinationTokenAccountKey,
+                                         final PublicKey tokenProgramKey,
+                                         final PublicKey withdrawQueueKey,
+                                         final WithdrawSpotParams params) {
+    final var keys = EternalProgram.withdrawSpotKeys(
+        eternalProgramId(),
+        accounts.eternalLogAuthority(),
+        accounts.eternalGlobalConfig(),
+        signerWalletKey,
+        traderAccountKey,
+        perpAssetMapKey,
+        mintKey,
+        traderPhoenixWalletKey,
+        custodyTokenAccountKey,
+        destinationTokenAccountKey,
+        tokenProgramKey,
+        withdrawQueueKey,
+        accounts.globalTraderIndex(),
+        accounts.activeTraderBuffer()
+    );
+    final byte[] data = new byte[WithdrawSpotIxData.PARAMS_OFFSET + params.l()];
+    WITHDRAW_SPOT_WITH_FEE_DISCRIMINATOR.write(data, 0);
+    params.write(data, WithdrawSpotIxData.PARAMS_OFFSET);
+    return Instruction.createInstruction(accounts.invokedEternalProgram(), keys, data);
   }
 
   @Override

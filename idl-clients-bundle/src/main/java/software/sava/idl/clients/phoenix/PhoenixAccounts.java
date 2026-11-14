@@ -132,6 +132,25 @@ public interface PhoenixAccounts {
     return globalVaultPDA(mint, invokedEternalProgram().publicKey());
   }
 
+  /// A trader's wallet, held by the Eternal (perpetuals) program: the owner of the token
+  /// accounts that hold the trader's SPL spot collateral. Each is the wallet's associated
+  /// token account for the asset's mint under the SPL Token program.
+  ///
+  /// Seeds `["wallet", traderAccount]`, the trader *account* and not the authority that signs
+  /// for it. The IDL declares no seeds for `traderPhoenixWallet`, so they are taken from the
+  /// program's own SDK (`rise/rust/ix/src/constants.rs::get_trader_wallet_address`) and
+  /// pinned against live addresses in `PhoenixClientTests`.
+  static ProgramDerivedAddress traderWalletPDA(final PublicKey traderAccount, final PublicKey eternalProgram) {
+    return PublicKey.findProgramAddress(
+        List.of("wallet".getBytes(US_ASCII), traderAccount.toByteArray()),
+        eternalProgram
+    );
+  }
+
+  default ProgramDerivedAddress traderWalletPDA(final PublicKey traderAccount) {
+    return traderWalletPDA(traderAccount, invokedEternalProgram().publicKey());
+  }
+
   AccountMeta invokedEmberProgram();
 
   PublicKey emberStateProgram();

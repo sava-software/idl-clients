@@ -14,11 +14,14 @@ import software.sava.idl.clients.phoenix.perpetuals.gen.EternalProgram;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.*;
 import software.sava.idl.clients.spl.system.gen.SystemProgram;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.OptionalInt;
 import java.util.OptionalLong;
 
+import static java.nio.charset.StandardCharsets.US_ASCII;
 import static org.junit.jupiter.api.Assertions.*;
 
 /// Pins every remaining PhoenixClient builder to the generated `EmberProgram`
@@ -66,6 +69,8 @@ final class PhoenixClientWiringTests {
   private static final PublicKey TOKEN_PROGRAM = key(0x27);
   private static final PublicKey FUNDER = key(0x28);
   private static final PublicKey SCRATCH = key(0x29);
+  private static final PublicKey TRADER_WALLET = key(0x2A);
+  private static final PublicKey WITHDRAW_QUEUE = key(0x2B);
 
   private static final AccountMeta INVOKED = ACCOUNTS.invokedEternalProgram();
   private static final PublicKey ETERNAL = ACCOUNTS.invokedEternalProgram().publicKey();
@@ -320,5 +325,48 @@ final class PhoenixClientWiringTests {
         HawkeyeProgram.viewOrderQuote(INVOKED_HAWKEYE, ETERNAL, CONFIG, TRADER_INDEX, ACTIVE_BUFFER,
             PERP_ASSET_MAP, ORDERBOOK, SPLINES, TRADER_ACCOUNT, SCRATCH, 101L, hawkeyePacket),
         client.viewOrderQuote(TRADER_ACCOUNT, PERP_ASSET_MAP, ORDERBOOK, SPLINES, SCRATCH, 101L, LIMIT_PACKET));
+  }
+
+  /// `WithdrawSpotWithFee` is not in the IDL, so there is no generated builder to mirror. What
+  /// Phoenix's SDK and the program's own transactions show is `WithdrawSpot` under another
+  /// discriminator: the generated `withdrawSpot`'s accounts and argument bytes, behind
+  /// `sha256("global:withdraw_spot_with_fee")[0..8]`, for each of the three actions.
+  @Test
+  void withdrawSpotWithFeeIsWithdrawSpotUnderItsOwnDiscriminator() throws NoSuchAlgorithmException {
+    final byte[] discriminator = Arrays.copyOf(
+        MessageDigest.getInstance("SHA-256").digest("global:withdraw_spot_with_fee".getBytes(US_ASCII)), 8);
+
+    final var actions = List.of(
+        WithdrawCollateralAction.AllExcess.INSTANCE,
+        new WithdrawCollateralAction.WithExcess(1_000L),
+        new WithdrawCollateralAction.WithoutExcess(2_000L));
+    final int[] dataLengths = {9, 17, 17};
+    for (int a = 0; a < dataLengths.length; ++a) {
+      final var params = new WithdrawSpotParams(actions.get(a));
+      final var withdrawSpot = EternalProgram.withdrawSpot(INVOKED, ETERNAL, LOG, CONFIG, OWNER, TRADER_ACCOUNT,
+          PERP_ASSET_MAP, MINT, TRADER_WALLET, TOKEN_ACCOUNT, OUTPUT_TOKEN_ACCOUNT, TOKEN_PROGRAM, WITHDRAW_QUEUE,
+          TRADER_INDEX, ACTIVE_BUFFER, params);
+      final var withFee = CLIENT.withdrawSpotWithFee(OWNER, TRADER_ACCOUNT, PERP_ASSET_MAP, MINT, TRADER_WALLET,
+          TOKEN_ACCOUNT, OUTPUT_TOKEN_ACCOUNT, TOKEN_PROGRAM, WITHDRAW_QUEUE, params);
+
+      final byte[] expected = withdrawSpot.data();
+      assertEquals(dataLengths[a], expected.length);
+      System.arraycopy(discriminator, 0, expected, 0, discriminator.length);
+      assertIx(
+          Instruction.createInstruction(INVOKED, withdrawSpot.accounts(), expected),
+          withFee);
+      assertFalse(EternalProgram.WITHDRAW_SPOT_DISCRIMINATOR.equals(withFee.data(), 0));
+    }
+  }
+
+  /// Once the IDL declares the instruction, the generated `EternalProgram` has a builder and a
+  /// discriminator for it, and `PhoenixClientImpl` should call that builder in place of holding
+  /// a discriminator of its own.
+  @Test
+  void theIdlStillLacksWithdrawSpotWithFee() {
+    assertThrows(
+        NoSuchFieldException.class,
+        () -> EternalProgram.class.getField("WITHDRAW_SPOT_WITH_FEE_DISCRIMINATOR"));
+    assertNotNull(assertDoesNotThrow(() -> EternalProgram.class.getField("WITHDRAW_SPOT_DISCRIMINATOR")));
   }
 }

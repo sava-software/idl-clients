@@ -10,7 +10,10 @@ import software.sava.idl.clients.phoenix.ember.gen.types.DepositParams;
 import software.sava.idl.clients.phoenix.perpetuals.gen.EternalPDAs;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.DepositFundsInstruction;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.RegisterTraderParams;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.WithdrawCollateralAction;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.WithdrawFundsInstruction;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.WithdrawSpotParams;
+import software.sava.idl.clients.spl.associated_token.gen.AssociatedTokenPDAs;
 
 import java.util.Arrays;
 import java.util.HexFormat;
@@ -212,6 +215,112 @@ final class PhoenixClientTests {
     assertEquals(1L, params.traderPreferenceBits());
     assertEquals(0, params.traderPdaIndex());
     assertEquals(74, params.traderSubaccountIndex());
+  }
+
+  /// The IDL has no `WithdrawSpotWithFee`, so the builder is pinned to the instruction two
+  /// mainnet transactions carried, both successful: `2qdM12V6x1UDx6PLABm8afNtDRRJpZXE5okELvYTNB6rmXTGPMj5c9M8t7BPPeTGxLYtz2r2qkTiZ3ab3gT6zk4F`
+  /// (slot 468634547, instruction 3) and `29gnKRPHBaJEtF3fyEEcm1eAeAxpCChorJPsynjUZGkVZy7D8pARMe7pmHydtdsiBUScYhL422fjgmzspwafvvrx`
+  /// (slot 468642412, instruction 12). Each withdraws cbBTC from accounted collateral; neither
+  /// signer pays its transaction's fee, so the message flags are the instruction's own.
+  @Test
+  void withdrawSpotWithFeeBuildsWhatMainnetWithdrawalsSent() {
+    final var cbBtc = PublicKey.fromBase58Encoded("cbbtcf3aa214zXHbiAZQwf4122FBYbraNdFqgw4iMij");
+    final var perpAssetMap = PublicKey.fromBase58Encoded("2nHGAaEw3D5dd4hVueaUNoygkQFmoeKqRQWnSPqSMFUC");
+    final var withdrawQueue = PublicKey.fromBase58Encoded("3c3NTwpg7yW91FxijkHBXwVH1xUifun3Z8TC5eW5Si3K");
+
+    final var signer = PublicKey.fromBase58Encoded("HMnZ3bFVSe644Dvrig6N6KciuwvvBCMyVQXYLm9Z9odt");
+    final var trader = PublicKey.fromBase58Encoded("8KEgf2BjLVHr9BTcwuPPBp9aK5aeaJcVfsE94cDnFS6L");
+    final var wallet = PublicKey.fromBase58Encoded("7kg8GCjD9izEWcpzifaCK4qZxghzr7kFbHJqRodsQFhq");
+    final var custody = PublicKey.fromBase58Encoded("55ZZ1g9b4tSQhmSJ1xghgUehyC3fVy9fwR5FjUaj6avt");
+    final var destination = PublicKey.fromBase58Encoded("3F5Wk59putAYhQS4tK1HPx1SnFd3pKkAeZnXoA2nycoj");
+
+    final var ix = CLIENT.withdrawSpotWithFee(
+        signer, trader, perpAssetMap, cbBtc, wallet, custody, destination,
+        SOLANA_ACCOUNTS.tokenProgram(), withdrawQueue,
+        new WithdrawSpotParams(new WithdrawCollateralAction.WithoutExcess(16_816L)));
+
+    assertEquals(ETERNAL_PROGRAM, ix.programId().publicKey());
+    assertArrayEquals(HexFormat.of().parseHex("8751d829fd49bfe002b041000000000000"), ix.data());
+    assertEquals(
+        List.of(
+            AccountMeta.createRead(ETERNAL_PROGRAM),
+            AccountMeta.createRead(PublicKey.fromBase58Encoded("GdxfTLSsdSY37G6fZoYtdGDSfgFnbT2EmRpuePZxWShS")),
+            AccountMeta.createWrite(PublicKey.fromBase58Encoded("2zskx2iyCvb6Stg7RBZkt1f6MrF4dpYtMG3yMvKwqtUZ")),
+            AccountMeta.createReadOnlySigner(signer),
+            AccountMeta.createWrite(trader),
+            AccountMeta.createWrite(perpAssetMap),
+            AccountMeta.createRead(cbBtc),
+            AccountMeta.createRead(wallet),
+            AccountMeta.createWrite(custody),
+            AccountMeta.createWrite(destination),
+            AccountMeta.createRead(PublicKey.fromBase58Encoded("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA")),
+            AccountMeta.createWrite(withdrawQueue),
+            AccountMeta.createWrite(GLOBAL_TRADER_INDEX_HEADER),
+            AccountMeta.createWrite(ACTIVE_TRADER_BUFFER_HEADER)
+        ),
+        ix.accounts());
+
+    final var second = CLIENT.withdrawSpotWithFee(
+        PublicKey.fromBase58Encoded("DHGD2WhpnB5pNATv5uLTyXZph5EhNcViTi9yZLAhZDie"),
+        PublicKey.fromBase58Encoded("JEG9siu6eEWcM53KEj55z8YLqnUwGvTtm5sLkbju2kFS"),
+        perpAssetMap, cbBtc,
+        PublicKey.fromBase58Encoded("FaQykJ6FsYxQFXKq7SLqrfVTyK7jgX3h5gF7RgpoYUnc"),
+        PublicKey.fromBase58Encoded("Ht7iNxZCUcguQMrr88zLNwchjdcfDZRb92ReRt13rePo"),
+        PublicKey.fromBase58Encoded("2LbbJjDUr8fFdHm6h7D68Yjby1HYaaLDi9XP7mcG7q89"),
+        SOLANA_ACCOUNTS.tokenProgram(), withdrawQueue,
+        new WithdrawSpotParams(new WithdrawCollateralAction.WithoutExcess(881L)));
+    assertArrayEquals(HexFormat.of().parseHex("8751d829fd49bfe0027103000000000000"), second.data());
+    assertEquals(
+        List.of(
+            "EtrnLzgbS7nMMy5fbD42kXiUzGg8XQzJ972Xtk1cjWih",
+            "GdxfTLSsdSY37G6fZoYtdGDSfgFnbT2EmRpuePZxWShS",
+            "2zskx2iyCvb6Stg7RBZkt1f6MrF4dpYtMG3yMvKwqtUZ",
+            "DHGD2WhpnB5pNATv5uLTyXZph5EhNcViTi9yZLAhZDie",
+            "JEG9siu6eEWcM53KEj55z8YLqnUwGvTtm5sLkbju2kFS",
+            "2nHGAaEw3D5dd4hVueaUNoygkQFmoeKqRQWnSPqSMFUC",
+            "cbbtcf3aa214zXHbiAZQwf4122FBYbraNdFqgw4iMij",
+            "FaQykJ6FsYxQFXKq7SLqrfVTyK7jgX3h5gF7RgpoYUnc",
+            "Ht7iNxZCUcguQMrr88zLNwchjdcfDZRb92ReRt13rePo",
+            "2LbbJjDUr8fFdHm6h7D68Yjby1HYaaLDi9XP7mcG7q89",
+            "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "3c3NTwpg7yW91FxijkHBXwVH1xUifun3Z8TC5eW5Si3K",
+            "HCrPXLByGqRh2szQi3gj7oRdRVBNi1gccAyn4CQCT3HK",
+            "2U32rSzzrQS3eVmGHsnbw5kcqKF3wQXpHGd3hMq5YJok"
+        ),
+        keys(second).stream().map(PublicKey::toBase58).toList());
+  }
+
+  /// The trader wallet is `["wallet", traderAccount]` under the Eternal program, and a spot
+  /// asset's custody account is that wallet's associated token account. Both are pinned to the
+  /// accounts the two withdrawals above passed, which the program accepted as its own.
+  @Test
+  void traderWalletIsSeededOnTheTraderAccount() {
+    final var cbBtc = PublicKey.fromBase58Encoded("cbbtcf3aa214zXHbiAZQwf4122FBYbraNdFqgw4iMij");
+
+    final var wallet = ACCOUNTS.traderWalletPDA(
+        PublicKey.fromBase58Encoded("8KEgf2BjLVHr9BTcwuPPBp9aK5aeaJcVfsE94cDnFS6L")).publicKey();
+    assertEquals(PublicKey.fromBase58Encoded("7kg8GCjD9izEWcpzifaCK4qZxghzr7kFbHJqRodsQFhq"), wallet);
+    assertEquals(
+        PublicKey.fromBase58Encoded("55ZZ1g9b4tSQhmSJ1xghgUehyC3fVy9fwR5FjUaj6avt"),
+        AssociatedTokenPDAs.associatedTokenPDA(
+            SOLANA_ACCOUNTS.associatedTokenAccountProgram(), wallet, SOLANA_ACCOUNTS.tokenProgram(), cbBtc
+        ).publicKey());
+
+    final var secondWallet = PhoenixAccounts.traderWalletPDA(
+        PublicKey.fromBase58Encoded("JEG9siu6eEWcM53KEj55z8YLqnUwGvTtm5sLkbju2kFS"), ETERNAL_PROGRAM).publicKey();
+    assertEquals(PublicKey.fromBase58Encoded("FaQykJ6FsYxQFXKq7SLqrfVTyK7jgX3h5gF7RgpoYUnc"), secondWallet);
+    assertEquals(
+        PublicKey.fromBase58Encoded("Ht7iNxZCUcguQMrr88zLNwchjdcfDZRb92ReRt13rePo"),
+        AssociatedTokenPDAs.associatedTokenPDA(
+            SOLANA_ACCOUNTS.associatedTokenAccountProgram(), secondWallet, SOLANA_ACCOUNTS.tokenProgram(), cbBtc
+        ).publicKey());
+
+    // seeded on the program it is given, not on mainnet's
+    assertNotEquals(
+        secondWallet,
+        PhoenixAccounts.traderWalletPDA(
+            PublicKey.fromBase58Encoded("JEG9siu6eEWcM53KEj55z8YLqnUwGvTtm5sLkbju2kFS"),
+            PublicKey.fromBase58Encoded("phDEVv4w6BcfkLrLNeXr8HhhgQxnxziVGXpGPcaadMf")).publicKey());
   }
 
   @Test

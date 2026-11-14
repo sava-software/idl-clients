@@ -30,6 +30,7 @@ import software.sava.idl.clients.phoenix.perpetuals.gen.types.RegisterTraderPara
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.TransferCollateralInstruction;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.UpsertEscrowRequestParams;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.WithdrawFundsInstruction;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.WithdrawSpotParams;
 
 public interface PhoenixClient {
 
@@ -94,6 +95,42 @@ public interface PhoenixClient {
                             final PublicKey tokenProgramKey,
                             final PublicKey withdrawQueueKey,
                             final WithdrawFundsInstruction params);
+
+  /// Withdraws SPL spot collateral as the generated `EternalProgram.withdrawSpot` does, and
+  /// also charges the withdrawal fee, the `withdrawalFee` of the withdraw queue's
+  /// `WithdrawQueueHeader`, in quote lots. Phoenix's SDK says the fee is taken from the
+  /// trader's quote collateral.
+  ///
+  /// The program has this instruction and its published IDL does not, so there is no generated
+  /// builder for it. It takes `WithdrawSpot`'s accounts and arguments under its own
+  /// discriminator, `sha256("global:withdraw_spot_with_fee")[0..8]`, as Phoenix's SDK builds it
+  /// (`rise/rust/ix/src/spot.rs::create_withdraw_spot_with_fee_ix`) and as mainnet
+  /// transactions have sent it since 2026-11-12.
+  ///
+  /// `globalTraderIndex` and `activeTraderBuffer` are each passed as the header alone, which is
+  /// the whole group while the header's `num_arenas` is 1; see
+  /// [#viewMargin(PublicKey, PublicKey)].
+  ///
+  /// @param signerWalletKey            the trader's authority, which signs
+  /// @param perpAssetMapKey            `GlobalConfiguration.perpAssetMapKey`
+  /// @param mintKey                    the spot asset's mint
+  /// @param traderPhoenixWalletKey     the trader's wallet, derive with
+  ///                                   [PhoenixAccounts#traderWalletPDA(PublicKey)]
+  /// @param custodyTokenAccountKey     that wallet's associated token account for the mint,
+  ///                                   which the withdrawal is taken from
+  /// @param destinationTokenAccountKey a token account of the same mint other than the
+  ///                                   custody account
+  /// @param withdrawQueueKey           `GlobalConfiguration.withdrawQueueKey`
+  Instruction withdrawSpotWithFee(final PublicKey signerWalletKey,
+                                  final PublicKey traderAccountKey,
+                                  final PublicKey perpAssetMapKey,
+                                  final PublicKey mintKey,
+                                  final PublicKey traderPhoenixWalletKey,
+                                  final PublicKey custodyTokenAccountKey,
+                                  final PublicKey destinationTokenAccountKey,
+                                  final PublicKey tokenProgramKey,
+                                  final PublicKey withdrawQueueKey,
+                                  final WithdrawSpotParams params);
 
   Instruction delegateTrader(final PublicKey traderWalletKey,
                              final PublicKey traderAccountKey,
