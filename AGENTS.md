@@ -589,7 +589,11 @@ savaGithubPackagesPassword=GITHUB_TOKEN
   `check`; the rules and the update procedure are sava-build's README, "Verifying sava
   artifacts". Check a dependency or policy change with
   `./gradlew --no-daemon --no-configuration-cache check resolveVerificationTools`: a reused
-  configuration-cache entry resolves nothing and so verifies nothing. A policy edit also runs
+  configuration-cache entry resolves nothing and so verifies nothing. Follow it with
+  `./gradlew --no-daemon --no-configuration-cache -PdependencyAudit checkModuleDirectivesScope`:
+  since sava-build 21.8.8 the dependency-analysis plugin loads only under that property
+  (`settings.gradle.kts`), so this is the one run that resolves its chain, and a policy written
+  or trimmed without it loses the rules the audit needs. A policy edit also runs
   `./gradlew --no-daemon verificationKeyStatus` from the root, which asks the key servers
   whether a key the policy trusts was revoked or has expired and so sits outside `check`. It
   fails on a revoked key still trusted without a version, which the README's "Key status"
@@ -780,7 +784,12 @@ the latest full report without running PIT.
 local `fuzzAll` per module are therefore release-checklist items here, not CI's,
 and so is `verificationKeyStatus` from the root, which HARDENING.md names before
 a release wherever a dependency verification policy is committed and which
-`check` never runs, since it asks the key servers. The first two refuse, once
+`check` never runs, since it asks the key servers. So is the module-directive
+scope check, `./gradlew --no-daemon -PdependencyAudit checkModuleDirectivesScope`,
+before a release PR is merged: it fails on a `requires` that should be `requires
+transitive` or on a library a module requires and never uses, and since
+sava-build 21.8.8 `check` runs it only under that property, which no CI job
+passes. The first two refuse, once
 Git reads clean, any source input the tree does not bind,
 including git-ignored files under `main` or `test` source roots. The local
 drivers live in `scratch`, which neither reads, so certification can run from
@@ -873,8 +882,9 @@ added after it was written. Generated `**.gen.*` code is excluded everywhere
 execution tests are what check it). Each hardened module registers a git-ignored
 `scratch` JvmTestSuite at `src/scratch/java`; the bundle's `Integ.java` drivers
 keep the packages they exercise and their package-private access. Its test task
-is disabled and dependency analysis ignores the source set, so `check` does not
-compile or run it. PIT, Jazzer and certification read only `main` and `test`,
+is disabled, and the dependency audit (`-PdependencyAudit`, the only build that
+analyses dependencies) ignores the source set, so neither `check` nor the audit
+compiles or runs it. PIT, Jazzer and certification read only `main` and `test`,
 and published artifacts use `main`, so the drivers need no recompile, mutation
 or packaging exclusion.
 Generated exclusions are declared to the ownership audit as
