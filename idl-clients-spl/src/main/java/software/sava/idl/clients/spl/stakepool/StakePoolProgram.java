@@ -764,10 +764,9 @@ public final class StakePoolProgram {
   ///                         already uses it for stake deposits when no authority is given, and
   ///                         given explicitly it also becomes the SOL deposit authority, which
   ///                         nothing can sign for, so no SOL deposit can succeed until the manager
-  ///                         clears it: `SetFundingAuthority` for SOL deposits, sent without a
-  ///                         new authority account, which the generated
-  ///                         `gen.StakePoolProgram.setFundingAuthority` builds when given a
-  ///                         `null` authority.
+  ///                         clears it, with
+  ///                         [#setFundingAuthority(AccountMeta, PublicKey, PublicKey, PublicKey, FundingType)]
+  ///                         for SOL deposits and a `null` authority.
   public static Instruction initialize(final AccountMeta invokedStakePoolProgram,
                                        final PublicKey newStakePool,
                                        final PublicKey manager,
