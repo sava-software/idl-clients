@@ -7,6 +7,6 @@ nobody took. The standing disagreements live beside this file, at its name with 
 before the extension. Ordered by program and channel, and carrying no timestamp, so
 consecutive runs are worth diffing against each other.
 
-== Movement (1) ==
+== Movement (0) ==
 
-Stake Pool: the program was redeployed at slot 469669929, up from 429882117, and no IDL channel moved with it; the stored program image changed: 1080464 payload bytes, was 1080464 — review required
+Nothing moved since the last generation.
