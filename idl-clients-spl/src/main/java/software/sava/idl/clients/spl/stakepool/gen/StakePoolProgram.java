@@ -35,7 +35,7 @@ public final class StakePoolProgram {
   ///
   /// @param stakePoolKey New stake pool to create
   /// @param validatorListKey Uninitialized validator stake list storage account
-  /// @param reserveStakeKey Reserve stake account; must be initialized with zero balance and both authorities set to the pool withdraw authority
+  /// @param reserveStakeKey Reserve stake account; must be initialized, with no lockup and both authorities set to the pool withdraw authority. Lamports it holds above its rent-exempt minimum are minted as pool tokens to the manager fee account
   /// @param poolMintKey Pool token mint; must have zero supply and be owned by the withdraw authority
   /// @param managerFeeAccountKey Pool account to deposit the generated fee for the manager
   /// @param depositAuthorityKey Deposit authority that must sign all deposits; defaults to the derived deposit authority, making deposits permissionless
@@ -56,8 +56,8 @@ public final class StakePoolProgram {
     keys.add(createRead(stakePoolWithdrawAuthorityKey));
     keys.add(createWrite(validatorListKey));
     keys.add(createRead(reserveStakeKey));
-    keys.add(createRead(poolMintKey));
-    keys.add(createRead(managerFeeAccountKey));
+    keys.add(createWrite(poolMintKey));
+    keys.add(createWrite(managerFeeAccountKey));
     keys.add(createRead(tokenProgramKey));
     if (depositAuthorityKey != null) {
       keys.add(createRead(depositAuthorityKey));
@@ -69,7 +69,7 @@ public final class StakePoolProgram {
   ///
   /// @param stakePoolKey New stake pool to create
   /// @param validatorListKey Uninitialized validator stake list storage account
-  /// @param reserveStakeKey Reserve stake account; must be initialized with zero balance and both authorities set to the pool withdraw authority
+  /// @param reserveStakeKey Reserve stake account; must be initialized, with no lockup and both authorities set to the pool withdraw authority. Lamports it holds above its rent-exempt minimum are minted as pool tokens to the manager fee account
   /// @param poolMintKey Pool token mint; must have zero supply and be owned by the withdraw authority
   /// @param managerFeeAccountKey Pool account to deposit the generated fee for the manager
   /// @param depositAuthorityKey Deposit authority that must sign all deposits; defaults to the derived deposit authority, making deposits permissionless

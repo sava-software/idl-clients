@@ -33,14 +33,19 @@ public final class StakePoolProgram {
     //   4. '[w]' Uninitialized validator stake list storage account
     //   5. '[]' Reserve stake account must be initialized, have zero balance,
     //      and staker / withdrawer authority set to pool withdraw authority.
-    //   6. '[]' Pool token mint. Must have zero supply, owned by withdraw
+    //   6. '[w]' Pool token mint. Must have zero supply, owned by withdraw
     //      authority.
-    //   7. '[]' Pool account to deposit the generated fee for manager.
+    //   7. '[w]' Pool account to deposit the generated fee for manager.
     //   8. '[]' Token program id
     //   9. '[]' (Optional) Deposit authority that must sign all deposits.
     //      Defaults to the program address generated using
     //      'find_deposit_authority_program_address', making deposits
     //      permissionless.
+    //
+    //   The Rust doc comment lists 6 and 7 as '[]' and asks for a zero balance
+    //   on 5. The processor accepts a reserve holding more than its rent-exempt
+    //   minimum and mints that surplus to 7 as pool tokens, which needs 6 and 7
+    //   writable, as the Rust instruction builder sends them.
     Initialize {
       // Fee assessed as percentage of perceived rewards
 //      fee: Fee,
@@ -745,6 +750,11 @@ public final class StakePoolProgram {
     );
   }
 
+  /// Initializes a new stake pool.
+  ///
+  /// The pool token mint and the manager's fee account are writable because the program mints
+  /// to them: any lamports the reserve holds above its rent-exempt minimum become the pool's
+  /// first pool tokens, paid to the fee account.
   public static Instruction initialize(final AccountMeta invokedStakePoolProgram,
                                        final PublicKey newStakePool,
                                        final PublicKey manager,
@@ -771,8 +781,8 @@ public final class StakePoolProgram {
         createRead(stakePoolWithdrawAuthority.publicKey()),
         createWrite(uninitializedValidatorStakeList),
         createRead(reserveStakeAccount),
-        createRead(poolTokenMint),
-        createRead(feeAccount),
+        createWrite(poolTokenMint),
+        createWrite(feeAccount),
         createRead(tokenProgram),
         createRead(depositAuthority)
     );

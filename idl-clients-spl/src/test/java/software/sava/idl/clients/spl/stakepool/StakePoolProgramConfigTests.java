@@ -118,14 +118,16 @@ final class StakePoolProgramConfigTests {
     assertAccount(accounts.get(3), WITHDRAW_AUTHORITY, false, false);
     assertAccount(accounts.get(4), validatorList, true, false);
     assertAccount(accounts.get(5), reserveStakeAccount, false, false);
-    // NOTE: the Rust builder fn initialize marks the pool mint and the manager fee
-    // account writable (AccountMeta::new) and the optional deposit authority as a
-    // signer, while the StakePoolInstruction::Initialize doc comment lists all
-    // three as read-only non-signers. The Java builder follows the doc comment;
-    // these assertions pin that behavior.
-    assertAccount(accounts.get(6), poolTokenMint, false, false);
-    assertAccount(accounts.get(7), feeAccount, false, false);
+    // The StakePoolInstruction::Initialize doc comment lists the pool mint and the
+    // manager fee account as read-only, but process_initialize mints the reserve's
+    // lamports above its rent-exempt minimum to the fee account, a CPI that fails
+    // with a privilege escalation unless both are writable. The Rust builder
+    // fn initialize marks both AccountMeta::new, and so does this one.
+    assertAccount(accounts.get(6), poolTokenMint, true, false);
+    assertAccount(accounts.get(7), feeAccount, true, false);
     assertAccount(accounts.get(8), tokenProgram, false, false);
+    // The Rust builder also marks a custom deposit authority as a signer. The
+    // processor only reads its key, so no signature is asked for here.
     assertAccount(accounts.get(9), depositAuthority, false, false);
   }
 
@@ -179,8 +181,8 @@ final class StakePoolProgramConfigTests {
     assertAccount(accounts.get(3), WITHDRAW_AUTHORITY, false, false);
     assertAccount(accounts.get(4), validatorList, true, false);
     assertAccount(accounts.get(5), reserveStakeAccount, false, false);
-    assertAccount(accounts.get(6), poolTokenMint, false, false);
-    assertAccount(accounts.get(7), feeAccount, false, false);
+    assertAccount(accounts.get(6), poolTokenMint, true, false);
+    assertAccount(accounts.get(7), feeAccount, true, false);
     assertAccount(accounts.get(8), tokenProgram, false, false);
     // find_deposit_authority_program_address([STAKE_POOL, "deposit"]).
     assertAccount(accounts.get(9), DEPOSIT_AUTHORITY, false, false);

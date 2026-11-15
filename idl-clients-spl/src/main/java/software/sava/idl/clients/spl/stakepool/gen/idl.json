@@ -71,13 +71,13 @@
             "isSigner": false,
             "isOptional": false,
             "docs": [
-              "Reserve stake account; must be initialized with zero balance and both authorities set to the pool withdraw authority"
+              "Reserve stake account; must be initialized, with no lockup and both authorities set to the pool withdraw authority. Lamports it holds above its rent-exempt minimum are minted as pool tokens to the manager fee account"
             ]
           },
           {
             "kind": "instructionAccountNode",
             "name": "poolMint",
-            "isWritable": false,
+            "isWritable": true,
             "isSigner": false,
             "isOptional": false,
             "docs": [
@@ -87,7 +87,7 @@
           {
             "kind": "instructionAccountNode",
             "name": "managerFeeAccount",
-            "isWritable": false,
+            "isWritable": true,
             "isSigner": false,
             "isOptional": false,
             "docs": [
