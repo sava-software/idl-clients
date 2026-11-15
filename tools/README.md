@@ -357,10 +357,10 @@ refresh is a commit of its own, and what it may take depends on the crate:
   on, and not a patch that brings a new minor or major of another of them with it.
 - Every other crate moves to its newest compatible release.
 
-Either kind of release is taken only after it has been public for a waiting period: a
-compromised release is usually found and withdrawn within days, so the newest one is
-the one nobody has looked at yet. A release still inside its wait is passed over for
-the newest one that is not, transitive picks included.
+Either kind of release is taken only after it has been public for a waiting period,
+which gives a problem with it time to surface before it is built here. A release still
+inside its wait is passed over for the newest one that is not, transitive picks
+included.
 
 A refresh is accepted when the graph holds no release known to be compromised, the tool
 builds with `--locked`, and `--check` still passes. A refresh leaves the
