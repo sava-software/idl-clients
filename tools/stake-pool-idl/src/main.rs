@@ -40,8 +40,8 @@
 //! Usage, from the repository root:
 //!
 //! ```shell
-//! cargo run --manifest-path tools/stake-pool-idl/Cargo.toml -- idls/spl_stake_pool.json
-//! cargo run --manifest-path tools/stake-pool-idl/Cargo.toml -- --check idls/spl_stake_pool.json
+//! cargo run --locked --manifest-path tools/stake-pool-idl/Cargo.toml -- idls/spl_stake_pool.json
+//! cargo run --locked --manifest-path tools/stake-pool-idl/Cargo.toml -- --check idls/spl_stake_pool.json
 //! ```
 //!
 //! The first writes the file; `--check` derives it and fails if the file on disk differs.

@@ -301,9 +301,9 @@ the corpus grows, and review the diff.
 
 ```shell
 # derive the IDL, then regenerate the client from it with idl-src-gen as usual
-cargo run --manifest-path tools/stake-pool-idl/Cargo.toml -- idls/spl_stake_pool.json
+cargo run --locked --manifest-path tools/stake-pool-idl/Cargo.toml -- idls/spl_stake_pool.json
 # derive it and fail if the committed file differs
-cargo run --manifest-path tools/stake-pool-idl/Cargo.toml -- --check idls/spl_stake_pool.json
+cargo run --locked --manifest-path tools/stake-pool-idl/Cargo.toml -- --check idls/spl_stake_pool.json
 ```
 
 Not a check: this is where `idls/spl_stake_pool.json` comes from, and **that file is
@@ -347,6 +347,23 @@ deploy**: move the version to the deployed release, `cargo update -p spl-stake-p
 derive, regenerate, and review the diff like any regeneration. Cargo writes its build
 output to `tools/stake-pool-idl/target/` unless `CARGO_TARGET_DIR` says otherwise; that
 directory is ignored.
+
+**The lock file moves only on purpose.** Both commands pass `--locked`, so a lock that
+no longer satisfies `Cargo.toml` stops the build instead of being rewritten by it. A
+refresh is a commit of its own, and what it may take depends on the crate:
+
+- The `solana-*` and `spl-*` crates are the graph `spl-stake-pool` was released with, so
+  they move with the pin. Between deploys they take patch releases on the line they are
+  on, and not a patch that brings a new minor or major of another of them with it.
+- Every other crate moves to its newest compatible release, once that release has been
+  public long enough for a bad one to have been noticed and withdrawn. A release still
+  inside that wait is passed over for the newest one that is not, transitive picks
+  included.
+
+A refresh is accepted when the graph holds no release known to be compromised, the tool
+builds with `--locked`, and `--check` still passes: the lock is not part of what the
+IDL is derived from, so a refresh that changes the derived file is a finding, not
+something to regenerate through.
 
 Measured **2026-11-15**, when this replaced the hand-maintained file, with crate 2.2.0
 (source identical to the `program@v2.2.0` tag, `diff -r`):
