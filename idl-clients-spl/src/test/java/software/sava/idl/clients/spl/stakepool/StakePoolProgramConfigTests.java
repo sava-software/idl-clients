@@ -578,6 +578,34 @@ final class StakePoolProgramConfigTests {
     assertEquals(2, StakePoolProgram.FundingType.SolWithdraw.ordinal());
   }
 
+  /// `process_set_funding_authority` reads the third account as optional. Absent, it stores
+  /// `None` for a SOL deposit or SOL withdraw authority and the derived deposit address for
+  /// the stake deposit authority, and that is the only way to clear one: any account sent
+  /// there becomes the authority. So a `null` authority must send the pool and the manager
+  /// and nothing else.
+  @Test
+  void setFundingAuthorityWithoutANewAuthoritySendsNone() {
+    final var manager = key(2);
+
+    for (final var fundingType : StakePoolProgram.FundingType.values()) {
+      final var ix = StakePoolProgram.setFundingAuthority(
+          INVOKED_PROGRAM,
+          STAKE_POOL,
+          manager,
+          null,
+          fundingType
+      );
+
+      assertEquals(INVOKED_PROGRAM, ix.programId());
+      assertArrayEquals(new byte[]{15, (byte) fundingType.ordinal()}, ix.data());
+
+      final var accounts = ix.accounts();
+      assertEquals(2, accounts.size());
+      assertAccount(accounts.get(0), STAKE_POOL, true, false);
+      assertAccount(accounts.get(1), manager, false, true);
+    }
+  }
+
   @Test
   void createTokenMetadata() {
     final var manager = key(2);

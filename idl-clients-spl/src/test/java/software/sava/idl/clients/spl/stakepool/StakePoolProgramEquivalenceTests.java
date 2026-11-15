@@ -398,6 +398,22 @@ final class StakePoolProgramEquivalenceTests {
     );
   }
 
+  /// The new authority is optional in the IDL, and leaving it out is how an authority is
+  /// cleared: both clients given `null` must send the pool and the manager only.
+  @Test
+  void setFundingAuthorityWithoutANewAuthority() {
+    final var handWritten = StakePoolProgram.setFundingAuthority(
+        INVOKED, STAKE_POOL, MANAGER, null, StakePoolProgram.FundingType.SolDeposit
+    );
+    assertEquals(2, handWritten.accounts().size());
+    assertEquivalent(
+        handWritten,
+        software.sava.idl.clients.spl.stakepool.gen.StakePoolProgram.setFundingAuthority(
+            INVOKED, STAKE_POOL, MANAGER, null, FundingType.solDeposit
+        )
+    );
+  }
+
   @Test
   void withdrawSol() {
     assertEquivalent(

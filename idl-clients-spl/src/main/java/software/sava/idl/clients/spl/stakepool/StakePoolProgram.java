@@ -1153,16 +1153,22 @@ public final class StakePoolProgram {
     SolWithdraw,
   }
 
+  /// (Manager only) Sets the pool's stake deposit, SOL deposit or SOL withdraw authority.
+  ///
+  /// @param newAuthority the new authority, or `null` to send none. Without one the program
+  ///                     clears a SOL deposit or SOL withdraw authority, leaving that operation
+  ///                     permissionless, and resets the stake deposit authority to the pool's
+  ///                     derived address.
   public static Instruction setFundingAuthority(final AccountMeta invokedStakePoolProgram,
                                                 final PublicKey stakePool,
                                                 final PublicKey manager,
                                                 final PublicKey newAuthority,
                                                 final FundingType fundingType) {
-    final var keys = List.of(
-        createWrite(stakePool),
-        createReadOnlySigner(manager),
-        createRead(newAuthority)
-    );
+    final var stakePoolMeta = createWrite(stakePool);
+    final var managerMeta = createReadOnlySigner(manager);
+    final var keys = newAuthority == null
+        ? List.of(stakePoolMeta, managerMeta)
+        : List.of(stakePoolMeta, managerMeta, createRead(newAuthority));
 
     final byte[] data = new byte[2];
     Instructions.SetFundingAuthority.write(data);
