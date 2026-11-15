@@ -1,5 +1,30 @@
 # Changelog
 
+## [25.20.1](https://github.com/sava-software/idl-clients/compare/25.20.0...25.20.1) (2026-11-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* **spl:** the generated `StakePoolProgram.initialize` and `initializeKeys` now mark a custom deposit authority as a signer, as upstream's builder does, so a transaction built from them needs that authority's signature. The program does not require it. To set an authority that cannot sign the transaction, such as an address another program derives, use the hand-written `StakePoolProgram.initialize`, which still sends the authority unsigned, or pass `null` and set it afterwards with `setFundingAuthority`, once for stake deposits and once for SOL deposits, since `initialize` sets both.
+* **phoenix:** `PhoenixAccountsRecord` takes the invoked Hawkeye program after `activeTraderBuffer`, so code that constructs the record itself passes one more argument. An implementation of `PhoenixAccounts` adds `invokedHawkeyeProgram()`, and an implementation of `PhoenixClient` adds the six views, `createOrderQuoteScratchAccount` and the six readers. Code that uses `PhoenixAccounts.MAIN_NET`, `PhoenixAccounts.createAccounts` and `PhoenixClient.createClient` compiles unchanged.
+
+### Features
+
+* **phoenix:** add the Phoenix Hawkeye client ([116bb92](https://github.com/sava-software/idl-clients/commit/116bb929a6286b39a6531edec54a6bb2311b0f53))
+* **phoenix:** build and read Hawkeye's views from PhoenixClient ([e0d7e75](https://github.com/sava-software/idl-clients/commit/e0d7e754ce280c55d84b92c113949511d417e9ab))
+* **phoenix:** build WithdrawSpotWithFee and derive the trader wallet ([79310fe](https://github.com/sava-software/idl-clients/commit/79310febcee66a51bf21aa4a621982283a9f058a))
+* **phoenix:** read UpdateSplinePrice in both forms the program takes ([04bcc51](https://github.com/sava-software/idl-clients/commit/04bcc5178efff37cb486ca76fdd7dd1782207001))
+
+
+### Bug Fixes
+
+* adopt Phoenix's corrected Ember and perpetuals IDLs ([c306217](https://github.com/sava-software/idl-clients/commit/c30621748f8760a7665730beed240112ed7b16ec))
+* **spl:** a stake pool initialized without a deposit authority accepts SOL deposits ([e8c834e](https://github.com/sava-software/idl-clients/commit/e8c834e7da4f8f1530745e24e492e9b178f46709))
+* **spl:** clear a stake pool funding authority ([a1c9f6b](https://github.com/sava-software/idl-clients/commit/a1c9f6b2740c67d4795900e48b2754bd043312a9))
+* **spl:** deposit and withdraw SOL on a stake pool that has a SOL authority ([2cc597b](https://github.com/sava-software/idl-clients/commit/2cc597ba80b56d7a90396c2aeef218240963e2a3))
+* **spl:** generate the Stake Pool client from the program's own instruction builders ([93bcfd4](https://github.com/sava-software/idl-clients/commit/93bcfd44c61280b37b3b1dc7f4dd44847ba45fba))
+* **spl:** initialize a stake pool whose reserve holds more than its rent-exempt minimum ([8268920](https://github.com/sava-software/idl-clients/commit/82689205baa5a02b234480e0b7fad6bcaefab60c))
+
 ## [25.20.0](https://github.com/sava-software/idl-clients/compare/25.19.14...25.20.0) (2026-11-10)
 
 
