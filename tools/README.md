@@ -355,15 +355,18 @@ refresh is a commit of its own, and what it may take depends on the crate:
 - The `solana-*` and `spl-*` crates are the graph `spl-stake-pool` was released with, so
   they move with the pin. Between deploys they take patch releases on the line they are
   on, and not a patch that brings a new minor or major of another of them with it.
-- Every other crate moves to its newest compatible release, once that release has been
-  public long enough for a bad one to have been noticed and withdrawn. A release still
-  inside that wait is passed over for the newest one that is not, transitive picks
-  included.
+- Every other crate moves to its newest compatible release.
+
+Either kind of release is taken only after it has been public for a waiting period: a
+compromised release is usually found and withdrawn within days, so the newest one is
+the one nobody has looked at yet. A release still inside its wait is passed over for
+the newest one that is not, transitive picks included.
 
 A refresh is accepted when the graph holds no release known to be compromised, the tool
-builds with `--locked`, and `--check` still passes: the lock is not part of what the
-IDL is derived from, so a refresh that changes the derived file is a finding, not
-something to regenerate through.
+builds with `--locked`, and `--check` still passes. A refresh leaves the
+`spl-stake-pool` entry alone, and that entry is the only part of the lock written into
+the file, so a refresh that changes the derived file is a finding, not something to
+regenerate through.
 
 Measured **2026-11-15**, when this replaced the hand-maintained file, with crate 2.2.0
 (source identical to the `program@v2.2.0` tag, `diff -r`):
