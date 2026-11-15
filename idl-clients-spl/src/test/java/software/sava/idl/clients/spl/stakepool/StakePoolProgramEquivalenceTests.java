@@ -14,12 +14,15 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/// Every instruction built by the generated client (from `idls/spl_stake_pool.json`) must be
-/// byte-identical — program id, account metas in order, and data — to the hand-written
-/// {@link StakePoolProgram}, which predates it and encodes the interface independently from
-/// the SPL instruction.rs builders. A failure here means either the IDL or the hand-written
-/// client has drifted from the on-chain interface; neither may be "fixed" to match the other
-/// without consulting the SPL program source.
+/// Every instruction built by the generated client must be byte-identical — program id,
+/// account metas in order, and data — to the hand-written {@link StakePoolProgram}, which
+/// predates it and was written from the program's source by hand. The generated client comes
+/// from `idls/spl_stake_pool.json`, which `tools/stake-pool-idl` derives from what the
+/// program's own instruction builders return, so a failure here means the hand-written
+/// client disagrees with upstream's builders. The hand-written side is then what gets
+/// checked against the program's source: the IDL is never edited to make this pass.
+///
+/// One account differs on purpose, and `initialize` pins it.
 final class StakePoolProgramEquivalenceTests {
 
   private static final SolanaAccounts SOLANA_ACCOUNTS = SolanaAccounts.MAIN_NET;
@@ -66,23 +69,34 @@ final class StakePoolProgramEquivalenceTests {
     assertArrayEquals(handWritten.data(), generated.data());
   }
 
+  /// The one account the two clients treat differently. Upstream's `fn initialize` asks a
+  /// custom deposit authority to sign, so the client generated from it does. The program does
+  /// not: `process_initialize` only stores the key. The hand-written builder asks for no
+  /// signature, which is what lets an authority that cannot sign a transaction, such as an
+  /// address another program derives, be set at initialization. Everything else is identical.
   @Test
   void initialize() {
     final var fee = new StakePoolState.Fee(1_000, 25);
     final var withdrawalFee = new StakePoolState.Fee(1_000, 5);
     final var depositFee = new StakePoolState.Fee(1_000, 3);
-    assertEquivalent(
-        StakePoolProgram.initialize(
-            INVOKED, STAKE_POOL, MANAGER, STAKER, VALIDATOR_LIST, RESERVE_STAKE, POOL_MINT,
-            MANAGER_FEE_ACCOUNT, TOKEN_PROGRAM, CUSTOM_DEPOSIT_AUTHORITY,
-            fee, withdrawalFee, depositFee, 50, 2_950
-        ),
-        software.sava.idl.clients.spl.stakepool.gen.StakePoolProgram.initialize(
-            INVOKED, STAKE_POOL, MANAGER, STAKER, WITHDRAW_AUTHORITY, VALIDATOR_LIST, RESERVE_STAKE,
-            POOL_MINT, MANAGER_FEE_ACCOUNT, TOKEN_PROGRAM, CUSTOM_DEPOSIT_AUTHORITY,
-            new Fee(1_000, 25), new Fee(1_000, 5), new Fee(1_000, 3), 50, 2_950
-        )
+    final var handWritten = StakePoolProgram.initialize(
+        INVOKED, STAKE_POOL, MANAGER, STAKER, VALIDATOR_LIST, RESERVE_STAKE, POOL_MINT,
+        MANAGER_FEE_ACCOUNT, TOKEN_PROGRAM, CUSTOM_DEPOSIT_AUTHORITY,
+        fee, withdrawalFee, depositFee, 50, 2_950
     );
+    final var generated = software.sava.idl.clients.spl.stakepool.gen.StakePoolProgram.initialize(
+        INVOKED, STAKE_POOL, MANAGER, STAKER, WITHDRAW_AUTHORITY, VALIDATOR_LIST, RESERVE_STAKE,
+        POOL_MINT, MANAGER_FEE_ACCOUNT, TOKEN_PROGRAM, CUSTOM_DEPOSIT_AUTHORITY,
+        new Fee(1_000, 25), new Fee(1_000, 5), new Fee(1_000, 3), 50, 2_950
+    );
+
+    assertEquals(handWritten.programId(), generated.programId());
+    assertArrayEquals(handWritten.data(), generated.data());
+    assertEquals(10, handWritten.accounts().size());
+    assertEquals(10, generated.accounts().size());
+    assertEquals(handWritten.accounts().subList(0, 9), generated.accounts().subList(0, 9));
+    assertEquals(AccountMeta.createRead(CUSTOM_DEPOSIT_AUTHORITY), handWritten.accounts().get(9));
+    assertEquals(AccountMeta.createReadOnlySigner(CUSTOM_DEPOSIT_AUTHORITY), generated.accounts().get(9));
   }
 
   /// The deposit authority is optional, and omitting it is what makes a pool permissionless:
@@ -221,7 +235,7 @@ final class StakePoolProgramEquivalenceTests {
   }
 
   /// The IDL declares the deposit authority `isSigner: "either"`, so the generated client takes
-  /// `depositAuthorityIsSigner` from the caller. The hand-written client decides it itself: a
+  /// `stakePoolDepositAuthorityIsSigner` from the caller. The hand-written client decides it itself: a
   /// signer exactly when the authority is not the pool's derived `[pool, "deposit"]` address, a
   /// PDA the program signs for and a transaction never can. Both pool shapes are compared, and
   /// the account at index 2 is pinned for each.

@@ -1,0 +1,20 @@
+[package]
+name = "stake-pool-idl"
+version = "0.0.0"
+edition = "2021"
+publish = false
+description = "Derives idls/spl_stake_pool.json from the published spl-stake-pool crate"
+
+# Standalone on purpose: not a member of any workspace, like the other tools here.
+[workspace]
+
+[dependencies]
+# The exact program release the IDL describes. This line is the pin: to follow a deploy,
+# move it to the deployed release, `cargo update -p spl-stake-pool`, and derive again.
+spl-stake-pool = { version = "=2.2.0", features = ["no-entrypoint"] }
+
+borsh = { version = "1.6.1", features = ["unstable__schema"] }
+num-traits = "0.2"
+serde_json = { version = "1", features = ["preserve_order"] }
+solana-instruction = "3.4.0"
+solana-pubkey = "4.2.0"

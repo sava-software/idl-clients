@@ -6,7 +6,7 @@ import software.sava.idl.clients.core.gen.SerDe;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
-/// Fee rate as a ratio: fee = amount * numerator / denominator; 0 denominator means no fee
+/// Fee rate as a ratio, minted on `UpdateStakePoolBalance` as a proportion of the rewards If either the numerator or the denominator is 0, the fee is considered to be 0
 ///
 /// @param denominator: u64
 /// @param numerator: u64

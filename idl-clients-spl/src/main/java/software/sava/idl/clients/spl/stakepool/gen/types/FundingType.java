@@ -4,7 +4,7 @@ package software.sava.idl.clients.spl.stakepool.gen.types;
 import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
-/// The type of authority to update with setFundingAuthority
+/// Defines which authority to update in the `SetFundingAuthority` instruction
 public enum FundingType implements SerDe {
 
   stakeDeposit,

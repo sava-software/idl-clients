@@ -30,7 +30,7 @@
 !/gradle/**
 
 # IDLs committed beside the config: a program's `idlFile` in main_net_programs.json (Stake
-# Pool's, and since 2026-10-13 Marginfi V2's 0.1.12 release IDL) and the managed stores of
+# Pool's, which tools/stake-pool-idl derives and nobody edits) and the managed stores of
 # store-only programs (`idlDirectory`). The rule stays: a new file here would otherwise be
 # swallowed silently.
 !/idls/**
@@ -45,6 +45,16 @@
 # stake-vectors.mjs renders the committed Stake reference encodings from upstream's own
 # generated JS client; committed because the script is the provenance of a tracked fixture.
 !/tools/*.mjs
+# stake-pool-idl derives idls/spl_stake_pool.json from the published spl-stake-pool crate.
+# A standalone cargo package, not a Gradle module, for the same reasons as the scripts above.
+# Its lock file is tracked: it holds the crate to the registry checksum the IDL is stamped
+# with. Its build output goes wherever CARGO_TARGET_DIR points and is never re-included.
+!/tools/stake-pool-idl/
+/tools/stake-pool-idl/*
+!/tools/stake-pool-idl/Cargo.toml
+!/tools/stake-pool-idl/Cargo.lock
+!/tools/stake-pool-idl/src/
+!/tools/stake-pool-idl/src/*.rs
 
 # Both reports idl-src-gen emits from one run: the movement events this run saw, and the
 # standing gap dashboard beside it. The gap file needs its own rule — it is named by the

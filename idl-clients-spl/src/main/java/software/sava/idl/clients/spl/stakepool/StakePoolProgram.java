@@ -244,8 +244,13 @@ public final class StakePoolProgram {
 
     //   Cleans up validator stake account entries marked as 'ReadyForRemoval'
     //
-    //   0. '[]' Stake pool
+    //   0. '[w]' Stake pool
     //   1. '[w]' Validator stake list storage account
+    //
+    //   The Rust doc comment lists 0 as '[]'. Since program 2.0.4 the processor,
+    //   given a writable stake pool, also resets a preferred deposit or withdraw
+    //   validator that is no longer an active entry of the list, and the Rust
+    //   instruction builder sends it writable.
     CleanupRemovedValidatorEntries,
 
     //   Deposit some stake into the pool. The output is a "pool" token
@@ -1097,10 +1102,14 @@ public final class StakePoolProgram {
     return Instruction.createInstruction(invokedStakePoolProgram, Arrays.asList(keys), data);
   }
 
+  /// Removes the validator list entries marked ready for removal.
+  ///
+  /// The stake pool is writable: only then does the program also clear a preferred deposit or
+  /// preferred withdraw validator that is no longer an active entry of the list.
   public static Instruction cleanupRemovedValidatorEntries(final AccountMeta invokedStakePoolProgram,
                                                            final PublicKey stakePool,
                                                            final PublicKey validatorListStorageAccount) {
-    final var keys = List.of(createRead(stakePool), createWrite(validatorListStorageAccount));
+    final var keys = List.of(createWrite(stakePool), createWrite(validatorListStorageAccount));
     return Instruction.createInstruction(invokedStakePoolProgram, keys, Instructions.CleanupRemovedValidatorEntries);
   }
 

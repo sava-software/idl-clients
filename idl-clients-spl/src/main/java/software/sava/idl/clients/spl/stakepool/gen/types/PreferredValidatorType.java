@@ -4,6 +4,7 @@ package software.sava.idl.clients.spl.stakepool.gen.types;
 import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
+/// Defines which validator vote account is set during the `SetPreferredValidator` instruction
 public enum PreferredValidatorType implements SerDe {
 
   deposit,

@@ -286,7 +286,7 @@ public sealed interface StakePoolError extends ProgramError permits
   record InvalidMintFreezeAuthority(int code, String msg) implements StakePoolError {
 
     public static final InvalidMintFreezeAuthority INSTANCE = new InvalidMintFreezeAuthority(
-        26, "The mint has an invalid freeze authority"
+        26, "DEPRECATED AND UNUSED: the program now allows freeze authorities"
     );
   }
 

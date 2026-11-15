@@ -54,7 +54,13 @@ both calling instructions and reading/deserializing on-chain data. It contains:
 
 Within a program's package, `gen/` is generated code — **never hand-edit it**.
 Fixes to generated output belong in the idl-src-gen generator; then regenerate.
-Everything outside `gen/` is hand-written and safe to edit.
+Everything outside `gen/` is hand-written and safe to edit, except the IDLs under
+`idls/`, which a client is generated from. The managed stores there are idl-src-gen's
+to write, and `idls/spl_stake_pool.json` is generated too: Stake Pool publishes no
+IDL, so `tools/stake-pool-idl` derives one from what the published `spl-stake-pool`
+crate's own instruction builders return. That file is **never hand-edited**. A wrong
+flag in it is fixed in the tool, or by moving the tool to another crate version, and
+then derived and regenerated; `tools/README.md` has the commands.
 
 ## Why the hand-written layer exists (IDL limitations)
 
@@ -643,7 +649,10 @@ hardened modules they live under `src/scratch/java`, in the package they exercis
 
 `tools/` holds standalone scripts for checks otherwise re-derived by hand, and the
 rule for what belongs there is that it needs something outside the repository — a
-check that does not is a test. `GroundTruth.java` diffs a generated client's account
+check that does not is a test. One of them writes what a client is generated from:
+`stake-pool-idl` derives `idls/spl_stake_pool.json` from the published
+`spl-stake-pool` crate, because that program publishes no IDL.
+`GroundTruth.java` diffs a generated client's account
 order against the program's Rust; `stake-vectors.mjs` and `token2022-vectors.mjs`
 run against a `solana-program/stake` or `solana-program/token-2022` checkout to
 regenerate the reference encodings `StakeReferenceEncodingTests` and

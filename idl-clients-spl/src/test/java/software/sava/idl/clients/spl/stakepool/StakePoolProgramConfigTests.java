@@ -436,11 +436,13 @@ final class StakePoolProgramConfigTests {
 
     final var accounts = ix.accounts();
     assertEquals(2, accounts.size());
-    // NOTE: the Rust builder fn cleanup_removed_validator_entries marks the stake
-    // pool writable (AccountMeta::new), while the enum doc comment lists it
-    // read-only and the processor only reads it. The Java builder follows the doc
-    // comment; pinned as-is.
-    assertAccount(accounts.get(0), STAKE_POOL, false, false);
+    // The enum doc comment lists the stake pool read-only. Since program 2.0.4 the
+    // Rust builder fn cleanup_removed_validator_entries marks it writable
+    // (AccountMeta::new), and process_cleanup_removed_validator_entries resets a
+    // preferred validator that is no longer an active entry of the list only inside
+    // `if stake_pool_info.is_writable`: sent read-only, the instruction succeeds
+    // and leaves a stale preferred validator in place.
+    assertAccount(accounts.get(0), STAKE_POOL, true, false);
     assertAccount(accounts.get(1), validatorList, true, false);
   }
 

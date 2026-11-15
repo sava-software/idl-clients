@@ -31,14 +31,18 @@ public final class StakePoolProgram {
 
   public static final Discriminator INITIALIZE_DISCRIMINATOR = toDiscriminator(0);
 
-  /// Initializes a new StakePool.
+  /// Initializes a new `StakePool`.
   ///
-  /// @param stakePoolKey New stake pool to create
+  /// @param stakePoolKey New `StakePool` to create.
+  /// @param managerKey Manager
+  /// @param stakerKey Staker
+  /// @param stakePoolWithdrawAuthorityKey Stake pool withdraw authority
   /// @param validatorListKey Uninitialized validator stake list storage account
-  /// @param reserveStakeKey Reserve stake account; must be initialized, with no lockup and both authorities set to the pool withdraw authority. Lamports it holds above its rent-exempt minimum are minted as pool tokens to the manager fee account
-  /// @param poolMintKey Pool token mint; must have zero supply and be owned by the withdraw authority
-  /// @param managerFeeAccountKey Pool account to deposit the generated fee for the manager
-  /// @param depositAuthorityKey Custom deposit authority, which must then sign every stake deposit and every SOL deposit; omit it for permissionless deposits. Never the derived deposit authority, which the program already uses for stake deposits when this is omitted: sent here it also becomes the SOL deposit authority, which nothing can sign for
+  /// @param reserveStakeKey Reserve stake account must be initialized, have zero balance, and staker / withdrawer authority set to pool withdraw authority.
+  /// @param poolMintKey Pool token mint. Must have zero supply, owned by withdraw authority.
+  /// @param managerPoolAccountKey Pool account to deposit the generated fee for manager.
+  /// @param tokenProgramIdKey Token program id
+  /// @param depositAuthorityKey (Optional) Deposit authority that must sign all deposits. Defaults to the program address generated using `find_deposit_authority_program_address`, making deposits permissionless.
   public static List<AccountMeta> initializeKeys(final PublicKey stakePoolKey,
                                                  final PublicKey managerKey,
                                                  final PublicKey stakerKey,
@@ -46,8 +50,8 @@ public final class StakePoolProgram {
                                                  final PublicKey validatorListKey,
                                                  final PublicKey reserveStakeKey,
                                                  final PublicKey poolMintKey,
-                                                 final PublicKey managerFeeAccountKey,
-                                                 final PublicKey tokenProgramKey,
+                                                 final PublicKey managerPoolAccountKey,
+                                                 final PublicKey tokenProgramIdKey,
                                                  final PublicKey depositAuthorityKey) {
     final var keys = new ArrayList<AccountMeta>(10);
     keys.add(createWrite(stakePoolKey));
@@ -57,26 +61,30 @@ public final class StakePoolProgram {
     keys.add(createWrite(validatorListKey));
     keys.add(createRead(reserveStakeKey));
     keys.add(createWrite(poolMintKey));
-    keys.add(createWrite(managerFeeAccountKey));
-    keys.add(createRead(tokenProgramKey));
+    keys.add(createWrite(managerPoolAccountKey));
+    keys.add(createRead(tokenProgramIdKey));
     if (depositAuthorityKey != null) {
-      keys.add(createRead(depositAuthorityKey));
+      keys.add(createReadOnlySigner(depositAuthorityKey));
     }
     return keys;
   }
 
-  /// Initializes a new StakePool.
+  /// Initializes a new `StakePool`.
   ///
-  /// @param stakePoolKey New stake pool to create
+  /// @param stakePoolKey New `StakePool` to create.
+  /// @param managerKey Manager
+  /// @param stakerKey Staker
+  /// @param stakePoolWithdrawAuthorityKey Stake pool withdraw authority
   /// @param validatorListKey Uninitialized validator stake list storage account
-  /// @param reserveStakeKey Reserve stake account; must be initialized, with no lockup and both authorities set to the pool withdraw authority. Lamports it holds above its rent-exempt minimum are minted as pool tokens to the manager fee account
-  /// @param poolMintKey Pool token mint; must have zero supply and be owned by the withdraw authority
-  /// @param managerFeeAccountKey Pool account to deposit the generated fee for the manager
-  /// @param depositAuthorityKey Custom deposit authority, which must then sign every stake deposit and every SOL deposit; omit it for permissionless deposits. Never the derived deposit authority, which the program already uses for stake deposits when this is omitted: sent here it also becomes the SOL deposit authority, which nothing can sign for
+  /// @param reserveStakeKey Reserve stake account must be initialized, have zero balance, and staker / withdrawer authority set to pool withdraw authority.
+  /// @param poolMintKey Pool token mint. Must have zero supply, owned by withdraw authority.
+  /// @param managerPoolAccountKey Pool account to deposit the generated fee for manager.
+  /// @param tokenProgramIdKey Token program id
+  /// @param depositAuthorityKey (Optional) Deposit authority that must sign all deposits. Defaults to the program address generated using `find_deposit_authority_program_address`, making deposits permissionless.
   /// @param fee Fee assessed as percentage of perceived rewards
   /// @param withdrawalFee Fee charged per withdrawal as percentage of withdrawal
   /// @param depositFee Fee charged per deposit as percentage of deposit
-  /// @param referralFee: u8 Percentage 0-100 of deposit fee that goes to the referrer
+  /// @param referralFee: u8 Percentage 0-100 of `deposit_fee` that goes to referrer
   /// @param maxValidators: u32 Maximum expected number of validators
   public static Instruction initialize(final AccountMeta invokedStakePoolProgramMeta,
                                        final PublicKey stakePoolKey,
@@ -86,8 +94,8 @@ public final class StakePoolProgram {
                                        final PublicKey validatorListKey,
                                        final PublicKey reserveStakeKey,
                                        final PublicKey poolMintKey,
-                                       final PublicKey managerFeeAccountKey,
-                                       final PublicKey tokenProgramKey,
+                                       final PublicKey managerPoolAccountKey,
+                                       final PublicKey tokenProgramIdKey,
                                        final PublicKey depositAuthorityKey,
                                        final Fee fee,
                                        final Fee withdrawalFee,
@@ -102,8 +110,8 @@ public final class StakePoolProgram {
       validatorListKey,
       reserveStakeKey,
       poolMintKey,
-      managerFeeAccountKey,
-      tokenProgramKey,
+      managerPoolAccountKey,
+      tokenProgramIdKey,
       depositAuthorityKey
     );
     return initialize(
@@ -117,12 +125,12 @@ public final class StakePoolProgram {
     );
   }
 
-  /// Initializes a new StakePool.
+  /// Initializes a new `StakePool`.
   ///
   /// @param fee Fee assessed as percentage of perceived rewards
   /// @param withdrawalFee Fee charged per withdrawal as percentage of withdrawal
   /// @param depositFee Fee charged per deposit as percentage of deposit
-  /// @param referralFee: u8 Percentage 0-100 of deposit fee that goes to the referrer
+  /// @param referralFee: u8 Percentage 0-100 of `deposit_fee` that goes to referrer
   /// @param maxValidators: u32 Maximum expected number of validators
   public static Instruction initialize(final AccountMeta invokedStakePoolProgramMeta,
                                        final List<AccountMeta> keys,
@@ -143,12 +151,12 @@ public final class StakePoolProgram {
     return Instruction.createInstruction(invokedStakePoolProgramMeta, keys, _data);
   }
 
-  /// Initializes a new StakePool.
+  /// Initializes a new `StakePool`.
   ///
   /// @param fee Fee assessed as percentage of perceived rewards
   /// @param withdrawalFee Fee charged per withdrawal as percentage of withdrawal
   /// @param depositFee Fee charged per deposit as percentage of deposit
-  /// @param referralFee: u8 Percentage 0-100 of deposit fee that goes to the referrer
+  /// @param referralFee: u8 Percentage 0-100 of `deposit_fee` that goes to referrer
   /// @param maxValidators: u32 Maximum expected number of validators
   public record InitializeIxData(int discriminator,
                                  Fee fee,
@@ -218,26 +226,33 @@ public final class StakePoolProgram {
 
   public static final Discriminator ADD_VALIDATOR_TO_POOL_DISCRIMINATOR = toDiscriminator(1);
 
-  /// (Staker only) Adds a stake account delegated to a validator to the pool's list of managed validators.
+  /// (Staker only) Adds stake account delegated to validator to the pool's list of managed validators.
+  /// The stake account will have the rent-exempt amount plus `max( crate::MINIMUM_ACTIVE_STAKE, solana_stake_interface::tools::get_minimum_delegation() )`. It is funded from the stake pool reserve.
+  /// User data: optional non-zero `u32` seed used for generating the validator stake address
   ///
-  /// @param validatorStakeAccountKey Stake account to add to the pool
-  /// @param validatorVoteAccountKey Validator this stake account will be delegated to
+  /// @param stakePoolKey Stake pool
+  /// @param stakerKey Staker
+  /// @param reserveKey Reserve stake account
+  /// @param stakePoolWithdrawKey Stake pool withdraw authority
+  /// @param validatorListKey Validator stake list storage account
+  /// @param stakeKey Stake account to add to the pool
+  /// @param validatorKey Validator this stake account will be delegated to
   public static List<AccountMeta> addValidatorToPoolKeys(final SolanaAccounts solanaAccounts,
                                                          final PublicKey stakePoolKey,
                                                          final PublicKey stakerKey,
-                                                         final PublicKey reserveStakeKey,
-                                                         final PublicKey stakePoolWithdrawAuthorityKey,
+                                                         final PublicKey reserveKey,
+                                                         final PublicKey stakePoolWithdrawKey,
                                                          final PublicKey validatorListKey,
-                                                         final PublicKey validatorStakeAccountKey,
-                                                         final PublicKey validatorVoteAccountKey) {
+                                                         final PublicKey stakeKey,
+                                                         final PublicKey validatorKey) {
     return List.of(
       createWrite(stakePoolKey),
       createReadOnlySigner(stakerKey),
-      createWrite(reserveStakeKey),
-      createRead(stakePoolWithdrawAuthorityKey),
+      createWrite(reserveKey),
+      createRead(stakePoolWithdrawKey),
       createWrite(validatorListKey),
-      createWrite(validatorStakeAccountKey),
-      createRead(validatorVoteAccountKey),
+      createWrite(stakeKey),
+      createRead(validatorKey),
       createRead(solanaAccounts.rentSysVar()),
       createRead(solanaAccounts.clockSysVar()),
       createRead(solanaAccounts.stakeHistorySysVar()),
@@ -247,37 +262,46 @@ public final class StakePoolProgram {
     );
   }
 
-  /// (Staker only) Adds a stake account delegated to a validator to the pool's list of managed validators.
+  /// (Staker only) Adds stake account delegated to validator to the pool's list of managed validators.
+  /// The stake account will have the rent-exempt amount plus `max( crate::MINIMUM_ACTIVE_STAKE, solana_stake_interface::tools::get_minimum_delegation() )`. It is funded from the stake pool reserve.
+  /// User data: optional non-zero `u32` seed used for generating the validator stake address
   ///
-  /// @param validatorStakeAccountKey Stake account to add to the pool
-  /// @param validatorVoteAccountKey Validator this stake account will be delegated to
-  /// @param seed: u32 Optional non-zero u32 seed used for generating the validator stake address
+  /// @param stakePoolKey Stake pool
+  /// @param stakerKey Staker
+  /// @param reserveKey Reserve stake account
+  /// @param stakePoolWithdrawKey Stake pool withdraw authority
+  /// @param validatorListKey Validator stake list storage account
+  /// @param stakeKey Stake account to add to the pool
+  /// @param validatorKey Validator this stake account will be delegated to
+  /// @param seed: u32
   public static Instruction addValidatorToPool(final AccountMeta invokedStakePoolProgramMeta,
                                                final SolanaAccounts solanaAccounts,
                                                final PublicKey stakePoolKey,
                                                final PublicKey stakerKey,
-                                               final PublicKey reserveStakeKey,
-                                               final PublicKey stakePoolWithdrawAuthorityKey,
+                                               final PublicKey reserveKey,
+                                               final PublicKey stakePoolWithdrawKey,
                                                final PublicKey validatorListKey,
-                                               final PublicKey validatorStakeAccountKey,
-                                               final PublicKey validatorVoteAccountKey,
+                                               final PublicKey stakeKey,
+                                               final PublicKey validatorKey,
                                                final long seed) {
     final var keys = addValidatorToPoolKeys(
       solanaAccounts,
       stakePoolKey,
       stakerKey,
-      reserveStakeKey,
-      stakePoolWithdrawAuthorityKey,
+      reserveKey,
+      stakePoolWithdrawKey,
       validatorListKey,
-      validatorStakeAccountKey,
-      validatorVoteAccountKey
+      stakeKey,
+      validatorKey
     );
     return addValidatorToPool(invokedStakePoolProgramMeta, keys, seed);
   }
 
-  /// (Staker only) Adds a stake account delegated to a validator to the pool's list of managed validators.
+  /// (Staker only) Adds stake account delegated to validator to the pool's list of managed validators.
+  /// The stake account will have the rent-exempt amount plus `max( crate::MINIMUM_ACTIVE_STAKE, solana_stake_interface::tools::get_minimum_delegation() )`. It is funded from the stake pool reserve.
+  /// User data: optional non-zero `u32` seed used for generating the validator stake address
   ///
-  /// @param seed: u32 Optional non-zero u32 seed used for generating the validator stake address
+  /// @param seed: u32
   public static Instruction addValidatorToPool(final AccountMeta invokedStakePoolProgramMeta,
                                                final List<AccountMeta> keys,
                                                final long seed) {
@@ -288,9 +312,11 @@ public final class StakePoolProgram {
     return Instruction.createInstruction(invokedStakePoolProgramMeta, keys, _data);
   }
 
-  /// (Staker only) Adds a stake account delegated to a validator to the pool's list of managed validators.
+  /// (Staker only) Adds stake account delegated to validator to the pool's list of managed validators.
+  /// The stake account will have the rent-exempt amount plus `max( crate::MINIMUM_ACTIVE_STAKE, solana_stake_interface::tools::get_minimum_delegation() )`. It is funded from the stake pool reserve.
+  /// User data: optional non-zero `u32` seed used for generating the validator stake address
   ///
-  /// @param seed: u32 Optional non-zero u32 seed used for generating the validator stake address
+  /// @param seed: u32
   public record AddValidatorToPoolIxData(int discriminator, long seed) implements SerDe {
 
     public static AddValidatorToPoolIxData read(final Instruction instruction) {
@@ -332,54 +358,65 @@ public final class StakePoolProgram {
 
   public static final Discriminator REMOVE_VALIDATOR_FROM_POOL_DISCRIMINATOR = toDiscriminator(2);
 
-  /// (Staker only) Removes a validator from the pool, deactivating its stake.
+  /// (Staker only) Removes validator from the pool, deactivating its stake
+  /// Only succeeds if the validator stake account has the minimum of `max(crate::MINIMUM_ACTIVE_STAKE, solana_stake_interface::tools::get_minimum_delegation())`.   plus the rent-exempt amount.
   ///
-  /// @param validatorStakeAccountKey Stake account to remove from the pool
+  /// @param stakePoolKey Stake pool
+  /// @param stakerKey Staker
+  /// @param stakePoolWithdrawKey Stake pool withdraw authority
+  /// @param validatorListKey Validator stake list storage account
+  /// @param stakeAccountKey Stake account to remove from the pool
   /// @param transientStakeAccountKey Transient stake account, to deactivate if necessary
   public static List<AccountMeta> removeValidatorFromPoolKeys(final SolanaAccounts solanaAccounts,
                                                               final PublicKey stakePoolKey,
                                                               final PublicKey stakerKey,
-                                                              final PublicKey stakePoolWithdrawAuthorityKey,
+                                                              final PublicKey stakePoolWithdrawKey,
                                                               final PublicKey validatorListKey,
-                                                              final PublicKey validatorStakeAccountKey,
+                                                              final PublicKey stakeAccountKey,
                                                               final PublicKey transientStakeAccountKey) {
     return List.of(
       createWrite(stakePoolKey),
       createReadOnlySigner(stakerKey),
-      createRead(stakePoolWithdrawAuthorityKey),
+      createRead(stakePoolWithdrawKey),
       createWrite(validatorListKey),
-      createWrite(validatorStakeAccountKey),
+      createWrite(stakeAccountKey),
       createWrite(transientStakeAccountKey),
       createRead(solanaAccounts.clockSysVar()),
       createRead(solanaAccounts.stakeProgram())
     );
   }
 
-  /// (Staker only) Removes a validator from the pool, deactivating its stake.
+  /// (Staker only) Removes validator from the pool, deactivating its stake
+  /// Only succeeds if the validator stake account has the minimum of `max(crate::MINIMUM_ACTIVE_STAKE, solana_stake_interface::tools::get_minimum_delegation())`.   plus the rent-exempt amount.
   ///
-  /// @param validatorStakeAccountKey Stake account to remove from the pool
+  /// @param stakePoolKey Stake pool
+  /// @param stakerKey Staker
+  /// @param stakePoolWithdrawKey Stake pool withdraw authority
+  /// @param validatorListKey Validator stake list storage account
+  /// @param stakeAccountKey Stake account to remove from the pool
   /// @param transientStakeAccountKey Transient stake account, to deactivate if necessary
   public static Instruction removeValidatorFromPool(final AccountMeta invokedStakePoolProgramMeta,
                                                     final SolanaAccounts solanaAccounts,
                                                     final PublicKey stakePoolKey,
                                                     final PublicKey stakerKey,
-                                                    final PublicKey stakePoolWithdrawAuthorityKey,
+                                                    final PublicKey stakePoolWithdrawKey,
                                                     final PublicKey validatorListKey,
-                                                    final PublicKey validatorStakeAccountKey,
+                                                    final PublicKey stakeAccountKey,
                                                     final PublicKey transientStakeAccountKey) {
     final var keys = removeValidatorFromPoolKeys(
       solanaAccounts,
       stakePoolKey,
       stakerKey,
-      stakePoolWithdrawAuthorityKey,
+      stakePoolWithdrawKey,
       validatorListKey,
-      validatorStakeAccountKey,
+      stakeAccountKey,
       transientStakeAccountKey
     );
     return removeValidatorFromPool(invokedStakePoolProgramMeta, keys);
   }
 
-  /// (Staker only) Removes a validator from the pool, deactivating its stake.
+  /// (Staker only) Removes validator from the pool, deactivating its stake
+  /// Only succeeds if the validator stake account has the minimum of `max(crate::MINIMUM_ACTIVE_STAKE, solana_stake_interface::tools::get_minimum_delegation())`.   plus the rent-exempt amount.
   ///
   public static Instruction removeValidatorFromPool(final AccountMeta invokedStakePoolProgramMeta,
                                                     final List<AccountMeta> keys) {
@@ -389,7 +426,8 @@ public final class StakePoolProgram {
     return Instruction.createInstruction(invokedStakePoolProgramMeta, keys, _data);
   }
 
-  /// (Staker only) Removes a validator from the pool, deactivating its stake.
+  /// (Staker only) Removes validator from the pool, deactivating its stake
+  /// Only succeeds if the validator stake account has the minimum of `max(crate::MINIMUM_ACTIVE_STAKE, solana_stake_interface::tools::get_minimum_delegation())`.   plus the rent-exempt amount.
   ///
   public record RemoveValidatorFromPoolIxData(int discriminator) implements SerDe {
 
@@ -425,24 +463,32 @@ public final class StakePoolProgram {
 
   public static final Discriminator DECREASE_VALIDATOR_STAKE_DISCRIMINATOR = toDiscriminator(3);
 
-  /// Deprecated since 0.7.0; use decreaseValidatorStakeWithReserve. (Staker only) Decrease active stake on a validator, eventually moving it to the reserve.
+  /// NOTE: This instruction has been deprecated since version 0.7.0. Please use `DecreaseValidatorStakeWithReserve` instead.
+  /// (Staker only) Decrease active stake on a validator, eventually moving it to the reserve
+  /// Internally, this instruction splits a validator stake account into its corresponding transient stake account and deactivates it.
+  /// In order to rebalance the pool without taking custody, the staker needs a way of reducing the stake on a stake account. This instruction splits some amount of stake, up to the total activated stake, from the canonical validator stake account, into its "transient" stake account.
+  /// The instruction only succeeds if the transient stake account does not exist. The amount of lamports to move must be at least rent-exemption plus `max(crate::MINIMUM_ACTIVE_STAKE, solana_stake_interface::tools::get_minimum_delegation())`.
   ///
-  /// @param validatorStakeAccountKey Canonical stake account to split from
-  /// @param transientStakeAccountKey Transient stake account to receive the split
+  /// @param stakePoolKey Stake pool
+  /// @param stakerKey Stake pool staker
+  /// @param stakePoolWithdrawAuthorityKey Stake pool withdraw authority
+  /// @param validatorListKey Validator list
+  /// @param validatorStakeKey Canonical stake account to split from
+  /// @param transientStakeKey Transient stake account to receive split
   public static List<AccountMeta> decreaseValidatorStakeKeys(final SolanaAccounts solanaAccounts,
                                                              final PublicKey stakePoolKey,
                                                              final PublicKey stakerKey,
                                                              final PublicKey stakePoolWithdrawAuthorityKey,
                                                              final PublicKey validatorListKey,
-                                                             final PublicKey validatorStakeAccountKey,
-                                                             final PublicKey transientStakeAccountKey) {
+                                                             final PublicKey validatorStakeKey,
+                                                             final PublicKey transientStakeKey) {
     return List.of(
       createRead(stakePoolKey),
       createReadOnlySigner(stakerKey),
       createRead(stakePoolWithdrawAuthorityKey),
       createWrite(validatorListKey),
-      createWrite(validatorStakeAccountKey),
-      createWrite(transientStakeAccountKey),
+      createWrite(validatorStakeKey),
+      createWrite(transientStakeKey),
       createRead(solanaAccounts.clockSysVar()),
       createRead(solanaAccounts.rentSysVar()),
       createRead(solanaAccounts.systemProgram()),
@@ -450,20 +496,28 @@ public final class StakePoolProgram {
     );
   }
 
-  /// Deprecated since 0.7.0; use decreaseValidatorStakeWithReserve. (Staker only) Decrease active stake on a validator, eventually moving it to the reserve.
+  /// NOTE: This instruction has been deprecated since version 0.7.0. Please use `DecreaseValidatorStakeWithReserve` instead.
+  /// (Staker only) Decrease active stake on a validator, eventually moving it to the reserve
+  /// Internally, this instruction splits a validator stake account into its corresponding transient stake account and deactivates it.
+  /// In order to rebalance the pool without taking custody, the staker needs a way of reducing the stake on a stake account. This instruction splits some amount of stake, up to the total activated stake, from the canonical validator stake account, into its "transient" stake account.
+  /// The instruction only succeeds if the transient stake account does not exist. The amount of lamports to move must be at least rent-exemption plus `max(crate::MINIMUM_ACTIVE_STAKE, solana_stake_interface::tools::get_minimum_delegation())`.
   ///
-  /// @param validatorStakeAccountKey Canonical stake account to split from
-  /// @param transientStakeAccountKey Transient stake account to receive the split
-  /// @param lamports: u64 Amount of lamports to split into the transient stake account
-  /// @param transientStakeSeed: u64 Seed used to create the transient stake account
+  /// @param stakePoolKey Stake pool
+  /// @param stakerKey Stake pool staker
+  /// @param stakePoolWithdrawAuthorityKey Stake pool withdraw authority
+  /// @param validatorListKey Validator list
+  /// @param validatorStakeKey Canonical stake account to split from
+  /// @param transientStakeKey Transient stake account to receive split
+  /// @param lamports: u64 amount of lamports to split into the transient stake account
+  /// @param transientStakeSeed: u64 seed used to create transient stake account
   public static Instruction decreaseValidatorStake(final AccountMeta invokedStakePoolProgramMeta,
                                                    final SolanaAccounts solanaAccounts,
                                                    final PublicKey stakePoolKey,
                                                    final PublicKey stakerKey,
                                                    final PublicKey stakePoolWithdrawAuthorityKey,
                                                    final PublicKey validatorListKey,
-                                                   final PublicKey validatorStakeAccountKey,
-                                                   final PublicKey transientStakeAccountKey,
+                                                   final PublicKey validatorStakeKey,
+                                                   final PublicKey transientStakeKey,
                                                    final long lamports,
                                                    final long transientStakeSeed) {
     final var keys = decreaseValidatorStakeKeys(
@@ -472,8 +526,8 @@ public final class StakePoolProgram {
       stakerKey,
       stakePoolWithdrawAuthorityKey,
       validatorListKey,
-      validatorStakeAccountKey,
-      transientStakeAccountKey
+      validatorStakeKey,
+      transientStakeKey
     );
     return decreaseValidatorStake(
       invokedStakePoolProgramMeta,
@@ -483,10 +537,14 @@ public final class StakePoolProgram {
     );
   }
 
-  /// Deprecated since 0.7.0; use decreaseValidatorStakeWithReserve. (Staker only) Decrease active stake on a validator, eventually moving it to the reserve.
+  /// NOTE: This instruction has been deprecated since version 0.7.0. Please use `DecreaseValidatorStakeWithReserve` instead.
+  /// (Staker only) Decrease active stake on a validator, eventually moving it to the reserve
+  /// Internally, this instruction splits a validator stake account into its corresponding transient stake account and deactivates it.
+  /// In order to rebalance the pool without taking custody, the staker needs a way of reducing the stake on a stake account. This instruction splits some amount of stake, up to the total activated stake, from the canonical validator stake account, into its "transient" stake account.
+  /// The instruction only succeeds if the transient stake account does not exist. The amount of lamports to move must be at least rent-exemption plus `max(crate::MINIMUM_ACTIVE_STAKE, solana_stake_interface::tools::get_minimum_delegation())`.
   ///
-  /// @param lamports: u64 Amount of lamports to split into the transient stake account
-  /// @param transientStakeSeed: u64 Seed used to create the transient stake account
+  /// @param lamports: u64 amount of lamports to split into the transient stake account
+  /// @param transientStakeSeed: u64 seed used to create transient stake account
   public static Instruction decreaseValidatorStake(final AccountMeta invokedStakePoolProgramMeta,
                                                    final List<AccountMeta> keys,
                                                    final long lamports,
@@ -500,10 +558,14 @@ public final class StakePoolProgram {
     return Instruction.createInstruction(invokedStakePoolProgramMeta, keys, _data);
   }
 
-  /// Deprecated since 0.7.0; use decreaseValidatorStakeWithReserve. (Staker only) Decrease active stake on a validator, eventually moving it to the reserve.
+  /// NOTE: This instruction has been deprecated since version 0.7.0. Please use `DecreaseValidatorStakeWithReserve` instead.
+  /// (Staker only) Decrease active stake on a validator, eventually moving it to the reserve
+  /// Internally, this instruction splits a validator stake account into its corresponding transient stake account and deactivates it.
+  /// In order to rebalance the pool without taking custody, the staker needs a way of reducing the stake on a stake account. This instruction splits some amount of stake, up to the total activated stake, from the canonical validator stake account, into its "transient" stake account.
+  /// The instruction only succeeds if the transient stake account does not exist. The amount of lamports to move must be at least rent-exemption plus `max(crate::MINIMUM_ACTIVE_STAKE, solana_stake_interface::tools::get_minimum_delegation())`.
   ///
-  /// @param lamports: u64 Amount of lamports to split into the transient stake account
-  /// @param transientStakeSeed: u64 Seed used to create the transient stake account
+  /// @param lamports: u64 amount of lamports to split into the transient stake account
+  /// @param transientStakeSeed: u64 seed used to create transient stake account
   public record DecreaseValidatorStakeIxData(int discriminator,
                                              long lamports,
                                              long transientStakeSeed) implements SerDe {
@@ -552,27 +614,39 @@ public final class StakePoolProgram {
 
   public static final Discriminator INCREASE_VALIDATOR_STAKE_DISCRIMINATOR = toDiscriminator(4);
 
-  /// (Staker only) Increase stake on a validator from the reserve account.
+  /// (Staker only) Increase stake on a validator from the reserve account
+  /// Internally, this instruction splits reserve stake into a transient stake account and delegate to the appropriate validator. `UpdateValidatorListBalance` will do the work of merging once it's ready.
+  /// This instruction only succeeds if the transient stake account does not exist. The minimum amount to move is rent-exemption plus `max(crate::MINIMUM_ACTIVE_STAKE, solana_stake_interface::tools::get_minimum_delegation())`.
+  /// User data: amount of lamports to increase on the given validator.
+  /// The actual amount split into the transient stake account is: `lamports + stake_rent_exemption`.
+  /// The rent-exemption of the stake account is withdrawn back to the reserve after it is merged.
   ///
-  /// @param validatorVoteAccountKey Validator vote account to delegate to
+  /// @param stakePoolKey Stake pool
+  /// @param stakerKey Stake pool staker
+  /// @param stakePoolWithdrawAuthorityKey Stake pool withdraw authority
+  /// @param validatorListKey Validator list
+  /// @param reserveStakeKey Stake pool reserve stake
+  /// @param transientStakeKey Transient stake account
+  /// @param validatorStakeKey Validator stake account
+  /// @param validatorKey Validator vote account to delegate to
   public static List<AccountMeta> increaseValidatorStakeKeys(final SolanaAccounts solanaAccounts,
                                                              final PublicKey stakePoolKey,
                                                              final PublicKey stakerKey,
                                                              final PublicKey stakePoolWithdrawAuthorityKey,
                                                              final PublicKey validatorListKey,
                                                              final PublicKey reserveStakeKey,
-                                                             final PublicKey transientStakeAccountKey,
-                                                             final PublicKey validatorStakeAccountKey,
-                                                             final PublicKey validatorVoteAccountKey) {
+                                                             final PublicKey transientStakeKey,
+                                                             final PublicKey validatorStakeKey,
+                                                             final PublicKey validatorKey) {
     return List.of(
       createRead(stakePoolKey),
       createReadOnlySigner(stakerKey),
       createRead(stakePoolWithdrawAuthorityKey),
       createWrite(validatorListKey),
       createWrite(reserveStakeKey),
-      createWrite(transientStakeAccountKey),
-      createRead(validatorStakeAccountKey),
-      createRead(validatorVoteAccountKey),
+      createWrite(transientStakeKey),
+      createRead(validatorStakeKey),
+      createRead(validatorKey),
       createRead(solanaAccounts.clockSysVar()),
       createRead(solanaAccounts.rentSysVar()),
       createRead(solanaAccounts.stakeHistorySysVar()),
@@ -582,11 +656,23 @@ public final class StakePoolProgram {
     );
   }
 
-  /// (Staker only) Increase stake on a validator from the reserve account.
+  /// (Staker only) Increase stake on a validator from the reserve account
+  /// Internally, this instruction splits reserve stake into a transient stake account and delegate to the appropriate validator. `UpdateValidatorListBalance` will do the work of merging once it's ready.
+  /// This instruction only succeeds if the transient stake account does not exist. The minimum amount to move is rent-exemption plus `max(crate::MINIMUM_ACTIVE_STAKE, solana_stake_interface::tools::get_minimum_delegation())`.
+  /// User data: amount of lamports to increase on the given validator.
+  /// The actual amount split into the transient stake account is: `lamports + stake_rent_exemption`.
+  /// The rent-exemption of the stake account is withdrawn back to the reserve after it is merged.
   ///
-  /// @param validatorVoteAccountKey Validator vote account to delegate to
-  /// @param lamports: u64 Amount of lamports to increase on the given validator
-  /// @param transientStakeSeed: u64 Seed used to create the transient stake account
+  /// @param stakePoolKey Stake pool
+  /// @param stakerKey Stake pool staker
+  /// @param stakePoolWithdrawAuthorityKey Stake pool withdraw authority
+  /// @param validatorListKey Validator list
+  /// @param reserveStakeKey Stake pool reserve stake
+  /// @param transientStakeKey Transient stake account
+  /// @param validatorStakeKey Validator stake account
+  /// @param validatorKey Validator vote account to delegate to
+  /// @param lamports: u64 amount of lamports to increase on the given validator
+  /// @param transientStakeSeed: u64 seed used to create transient stake account
   public static Instruction increaseValidatorStake(final AccountMeta invokedStakePoolProgramMeta,
                                                    final SolanaAccounts solanaAccounts,
                                                    final PublicKey stakePoolKey,
@@ -594,9 +680,9 @@ public final class StakePoolProgram {
                                                    final PublicKey stakePoolWithdrawAuthorityKey,
                                                    final PublicKey validatorListKey,
                                                    final PublicKey reserveStakeKey,
-                                                   final PublicKey transientStakeAccountKey,
-                                                   final PublicKey validatorStakeAccountKey,
-                                                   final PublicKey validatorVoteAccountKey,
+                                                   final PublicKey transientStakeKey,
+                                                   final PublicKey validatorStakeKey,
+                                                   final PublicKey validatorKey,
                                                    final long lamports,
                                                    final long transientStakeSeed) {
     final var keys = increaseValidatorStakeKeys(
@@ -606,9 +692,9 @@ public final class StakePoolProgram {
       stakePoolWithdrawAuthorityKey,
       validatorListKey,
       reserveStakeKey,
-      transientStakeAccountKey,
-      validatorStakeAccountKey,
-      validatorVoteAccountKey
+      transientStakeKey,
+      validatorStakeKey,
+      validatorKey
     );
     return increaseValidatorStake(
       invokedStakePoolProgramMeta,
@@ -618,10 +704,15 @@ public final class StakePoolProgram {
     );
   }
 
-  /// (Staker only) Increase stake on a validator from the reserve account.
+  /// (Staker only) Increase stake on a validator from the reserve account
+  /// Internally, this instruction splits reserve stake into a transient stake account and delegate to the appropriate validator. `UpdateValidatorListBalance` will do the work of merging once it's ready.
+  /// This instruction only succeeds if the transient stake account does not exist. The minimum amount to move is rent-exemption plus `max(crate::MINIMUM_ACTIVE_STAKE, solana_stake_interface::tools::get_minimum_delegation())`.
+  /// User data: amount of lamports to increase on the given validator.
+  /// The actual amount split into the transient stake account is: `lamports + stake_rent_exemption`.
+  /// The rent-exemption of the stake account is withdrawn back to the reserve after it is merged.
   ///
-  /// @param lamports: u64 Amount of lamports to increase on the given validator
-  /// @param transientStakeSeed: u64 Seed used to create the transient stake account
+  /// @param lamports: u64 amount of lamports to increase on the given validator
+  /// @param transientStakeSeed: u64 seed used to create transient stake account
   public static Instruction increaseValidatorStake(final AccountMeta invokedStakePoolProgramMeta,
                                                    final List<AccountMeta> keys,
                                                    final long lamports,
@@ -635,10 +726,15 @@ public final class StakePoolProgram {
     return Instruction.createInstruction(invokedStakePoolProgramMeta, keys, _data);
   }
 
-  /// (Staker only) Increase stake on a validator from the reserve account.
+  /// (Staker only) Increase stake on a validator from the reserve account
+  /// Internally, this instruction splits reserve stake into a transient stake account and delegate to the appropriate validator. `UpdateValidatorListBalance` will do the work of merging once it's ready.
+  /// This instruction only succeeds if the transient stake account does not exist. The minimum amount to move is rent-exemption plus `max(crate::MINIMUM_ACTIVE_STAKE, solana_stake_interface::tools::get_minimum_delegation())`.
+  /// User data: amount of lamports to increase on the given validator.
+  /// The actual amount split into the transient stake account is: `lamports + stake_rent_exemption`.
+  /// The rent-exemption of the stake account is withdrawn back to the reserve after it is merged.
   ///
-  /// @param lamports: u64 Amount of lamports to increase on the given validator
-  /// @param transientStakeSeed: u64 Seed used to create the transient stake account
+  /// @param lamports: u64 amount of lamports to increase on the given validator
+  /// @param transientStakeSeed: u64 seed used to create transient stake account
   public record IncreaseValidatorStakeIxData(int discriminator,
                                              long lamports,
                                              long transientStakeSeed) implements SerDe {
@@ -687,32 +783,42 @@ public final class StakePoolProgram {
 
   public static final Discriminator SET_PREFERRED_VALIDATOR_DISCRIMINATOR = toDiscriminator(5);
 
-  /// (Staker only) Set the preferred deposit or withdraw stake account for the stake pool.
+  /// (Staker only) Set the preferred deposit or withdraw stake account for the stake pool
+  /// In order to avoid users abusing the stake pool as a free conversion between SOL staked on different validators, the staker can force all deposits and/or withdraws to go to one chosen account, or unset that account.
+  /// Fails if the validator is not part of the stake pool.
   ///
-  public static List<AccountMeta> setPreferredValidatorKeys(final PublicKey stakePoolKey,
+  /// @param stakePoolAddressKey Stake pool
+  /// @param stakerKey Stake pool staker
+  /// @param validatorListAddressKey Validator list
+  public static List<AccountMeta> setPreferredValidatorKeys(final PublicKey stakePoolAddressKey,
                                                             final PublicKey stakerKey,
-                                                            final PublicKey validatorListKey) {
+                                                            final PublicKey validatorListAddressKey) {
     return List.of(
-      createWrite(stakePoolKey),
+      createWrite(stakePoolAddressKey),
       createReadOnlySigner(stakerKey),
-      createRead(validatorListKey)
+      createRead(validatorListAddressKey)
     );
   }
 
-  /// (Staker only) Set the preferred deposit or withdraw stake account for the stake pool.
+  /// (Staker only) Set the preferred deposit or withdraw stake account for the stake pool
+  /// In order to avoid users abusing the stake pool as a free conversion between SOL staked on different validators, the staker can force all deposits and/or withdraws to go to one chosen account, or unset that account.
+  /// Fails if the validator is not part of the stake pool.
   ///
+  /// @param stakePoolAddressKey Stake pool
+  /// @param stakerKey Stake pool staker
+  /// @param validatorListAddressKey Validator list
   /// @param validatorType Affected operation (deposit or withdraw)
-  /// @param validatorVoteAddress Validator vote account that deposits or withdraws must go through; unset with None
+  /// @param validatorVoteAddress Validator vote account that deposits or withdraws must go through, unset with None
   public static Instruction setPreferredValidator(final AccountMeta invokedStakePoolProgramMeta,
-                                                  final PublicKey stakePoolKey,
+                                                  final PublicKey stakePoolAddressKey,
                                                   final PublicKey stakerKey,
-                                                  final PublicKey validatorListKey,
+                                                  final PublicKey validatorListAddressKey,
                                                   final PreferredValidatorType validatorType,
                                                   final PublicKey validatorVoteAddress) {
     final var keys = setPreferredValidatorKeys(
-      stakePoolKey,
+      stakePoolAddressKey,
       stakerKey,
-      validatorListKey
+      validatorListAddressKey
     );
     return setPreferredValidator(
       invokedStakePoolProgramMeta,
@@ -722,10 +828,12 @@ public final class StakePoolProgram {
     );
   }
 
-  /// (Staker only) Set the preferred deposit or withdraw stake account for the stake pool.
+  /// (Staker only) Set the preferred deposit or withdraw stake account for the stake pool
+  /// In order to avoid users abusing the stake pool as a free conversion between SOL staked on different validators, the staker can force all deposits and/or withdraws to go to one chosen account, or unset that account.
+  /// Fails if the validator is not part of the stake pool.
   ///
   /// @param validatorType Affected operation (deposit or withdraw)
-  /// @param validatorVoteAddress Validator vote account that deposits or withdraws must go through; unset with None
+  /// @param validatorVoteAddress Validator vote account that deposits or withdraws must go through, unset with None
   public static Instruction setPreferredValidator(final AccountMeta invokedStakePoolProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final PreferredValidatorType validatorType,
@@ -741,10 +849,12 @@ public final class StakePoolProgram {
     return Instruction.createInstruction(invokedStakePoolProgramMeta, keys, _data);
   }
 
-  /// (Staker only) Set the preferred deposit or withdraw stake account for the stake pool.
+  /// (Staker only) Set the preferred deposit or withdraw stake account for the stake pool
+  /// In order to avoid users abusing the stake pool as a free conversion between SOL staked on different validators, the staker can force all deposits and/or withdraws to go to one chosen account, or unset that account.
+  /// Fails if the validator is not part of the stake pool.
   ///
   /// @param validatorType Affected operation (deposit or withdraw)
-  /// @param validatorVoteAddress Validator vote account that deposits or withdraws must go through; unset with None
+  /// @param validatorVoteAddress Validator vote account that deposits or withdraws must go through, unset with None
   public record SetPreferredValidatorIxData(int discriminator,
                                             PreferredValidatorType validatorType,
                                             PublicKey validatorVoteAddress) implements SerDe {
@@ -795,17 +905,23 @@ public final class StakePoolProgram {
 
   public static final Discriminator UPDATE_VALIDATOR_LIST_BALANCE_DISCRIMINATOR = toDiscriminator(6);
 
-  /// Updates balances of validator and transient stake accounts in the pool. Pairs of validator and transient stake accounts follow as remaining accounts.
+  /// Updates balances of validator and transient stake accounts in the pool
+  /// While going through the pairs of validator and transient stake accounts, if the transient stake is inactive, it is merged into the reserve stake account. If the transient stake is active and has matching credits observed, it is merged into the canonical validator stake account. In all other states, nothing is done, and the balance is simply added to the canonical stake account balance.
+  /// Followed by: N pairs of validator and transient stake accounts
   ///
+  /// @param stakePoolKey Stake pool
+  /// @param stakePoolWithdrawAuthorityKey Stake pool withdraw authority
+  /// @param validatorListAddressKey Validator stake list storage account
+  /// @param reserveStakeKey Reserve stake account
   public static List<AccountMeta> updateValidatorListBalanceKeys(final SolanaAccounts solanaAccounts,
                                                                  final PublicKey stakePoolKey,
                                                                  final PublicKey stakePoolWithdrawAuthorityKey,
-                                                                 final PublicKey validatorListKey,
+                                                                 final PublicKey validatorListAddressKey,
                                                                  final PublicKey reserveStakeKey) {
     return List.of(
       createRead(stakePoolKey),
       createRead(stakePoolWithdrawAuthorityKey),
-      createWrite(validatorListKey),
+      createWrite(validatorListAddressKey),
       createWrite(reserveStakeKey),
       createRead(solanaAccounts.clockSysVar()),
       createRead(solanaAccounts.stakeHistorySysVar()),
@@ -813,15 +929,21 @@ public final class StakePoolProgram {
     );
   }
 
-  /// Updates balances of validator and transient stake accounts in the pool. Pairs of validator and transient stake accounts follow as remaining accounts.
+  /// Updates balances of validator and transient stake accounts in the pool
+  /// While going through the pairs of validator and transient stake accounts, if the transient stake is inactive, it is merged into the reserve stake account. If the transient stake is active and has matching credits observed, it is merged into the canonical validator stake account. In all other states, nothing is done, and the balance is simply added to the canonical stake account balance.
+  /// Followed by: N pairs of validator and transient stake accounts
   ///
+  /// @param stakePoolKey Stake pool
+  /// @param stakePoolWithdrawAuthorityKey Stake pool withdraw authority
+  /// @param validatorListAddressKey Validator stake list storage account
+  /// @param reserveStakeKey Reserve stake account
   /// @param startIndex: u32 Index to start updating on the validator list
-  /// @param noMerge If true, do not try merging transient stake accounts into the reserve or validator stake account
+  /// @param noMerge If true, don't try merging transient stake accounts into the reserve or validator stake account.  Useful for testing or if a particular stake account is in a bad state, but we still want to update
   public static Instruction updateValidatorListBalance(final AccountMeta invokedStakePoolProgramMeta,
                                                        final SolanaAccounts solanaAccounts,
                                                        final PublicKey stakePoolKey,
                                                        final PublicKey stakePoolWithdrawAuthorityKey,
-                                                       final PublicKey validatorListKey,
+                                                       final PublicKey validatorListAddressKey,
                                                        final PublicKey reserveStakeKey,
                                                        final long startIndex,
                                                        final boolean noMerge) {
@@ -829,7 +951,7 @@ public final class StakePoolProgram {
       solanaAccounts,
       stakePoolKey,
       stakePoolWithdrawAuthorityKey,
-      validatorListKey,
+      validatorListAddressKey,
       reserveStakeKey
     );
     return updateValidatorListBalance(
@@ -840,10 +962,12 @@ public final class StakePoolProgram {
     );
   }
 
-  /// Updates balances of validator and transient stake accounts in the pool. Pairs of validator and transient stake accounts follow as remaining accounts.
+  /// Updates balances of validator and transient stake accounts in the pool
+  /// While going through the pairs of validator and transient stake accounts, if the transient stake is inactive, it is merged into the reserve stake account. If the transient stake is active and has matching credits observed, it is merged into the canonical validator stake account. In all other states, nothing is done, and the balance is simply added to the canonical stake account balance.
+  /// Followed by: N pairs of validator and transient stake accounts
   ///
   /// @param startIndex: u32 Index to start updating on the validator list
-  /// @param noMerge If true, do not try merging transient stake accounts into the reserve or validator stake account
+  /// @param noMerge If true, don't try merging transient stake accounts into the reserve or validator stake account.  Useful for testing or if a particular stake account is in a bad state, but we still want to update
   public static Instruction updateValidatorListBalance(final AccountMeta invokedStakePoolProgramMeta,
                                                        final List<AccountMeta> keys,
                                                        final long startIndex,
@@ -857,10 +981,12 @@ public final class StakePoolProgram {
     return Instruction.createInstruction(invokedStakePoolProgramMeta, keys, _data);
   }
 
-  /// Updates balances of validator and transient stake accounts in the pool. Pairs of validator and transient stake accounts follow as remaining accounts.
+  /// Updates balances of validator and transient stake accounts in the pool
+  /// While going through the pairs of validator and transient stake accounts, if the transient stake is inactive, it is merged into the reserve stake account. If the transient stake is active and has matching credits observed, it is merged into the canonical validator stake account. In all other states, nothing is done, and the balance is simply added to the canonical stake account balance.
+  /// Followed by: N pairs of validator and transient stake accounts
   ///
   /// @param startIndex: u32 Index to start updating on the validator list
-  /// @param noMerge If true, do not try merging transient stake accounts into the reserve or validator stake account
+  /// @param noMerge If true, don't try merging transient stake accounts into the reserve or validator stake account.  Useful for testing or if a particular stake account is in a bad state, but we still want to update
   public record UpdateValidatorListBalanceIxData(int discriminator,
                                                  long startIndex,
                                                  boolean noMerge) implements SerDe {
@@ -909,49 +1035,63 @@ public final class StakePoolProgram {
 
   public static final Discriminator UPDATE_STAKE_POOL_BALANCE_DISCRIMINATOR = toDiscriminator(7);
 
-  /// Updates total pool balance based on balances in the reserve and validator list.
+  /// Updates total pool balance based on balances in the reserve and validator list
   ///
+  /// @param stakePoolKey Stake pool
+  /// @param withdrawAuthorityKey Stake pool withdraw authority
+  /// @param validatorListStorageKey Validator stake list storage account
+  /// @param reserveStakeKey Reserve stake account
+  /// @param managerFeeAccountKey Account to receive pool fee tokens
+  /// @param stakePoolMintKey Pool mint account
+  /// @param tokenProgramIdKey Pool token program
   public static List<AccountMeta> updateStakePoolBalanceKeys(final PublicKey stakePoolKey,
-                                                             final PublicKey stakePoolWithdrawAuthorityKey,
-                                                             final PublicKey validatorListKey,
+                                                             final PublicKey withdrawAuthorityKey,
+                                                             final PublicKey validatorListStorageKey,
                                                              final PublicKey reserveStakeKey,
                                                              final PublicKey managerFeeAccountKey,
-                                                             final PublicKey poolMintKey,
-                                                             final PublicKey tokenProgramKey) {
+                                                             final PublicKey stakePoolMintKey,
+                                                             final PublicKey tokenProgramIdKey) {
     return List.of(
       createWrite(stakePoolKey),
-      createRead(stakePoolWithdrawAuthorityKey),
-      createWrite(validatorListKey),
+      createRead(withdrawAuthorityKey),
+      createWrite(validatorListStorageKey),
       createRead(reserveStakeKey),
       createWrite(managerFeeAccountKey),
-      createWrite(poolMintKey),
-      createRead(tokenProgramKey)
+      createWrite(stakePoolMintKey),
+      createRead(tokenProgramIdKey)
     );
   }
 
-  /// Updates total pool balance based on balances in the reserve and validator list.
+  /// Updates total pool balance based on balances in the reserve and validator list
   ///
+  /// @param stakePoolKey Stake pool
+  /// @param withdrawAuthorityKey Stake pool withdraw authority
+  /// @param validatorListStorageKey Validator stake list storage account
+  /// @param reserveStakeKey Reserve stake account
+  /// @param managerFeeAccountKey Account to receive pool fee tokens
+  /// @param stakePoolMintKey Pool mint account
+  /// @param tokenProgramIdKey Pool token program
   public static Instruction updateStakePoolBalance(final AccountMeta invokedStakePoolProgramMeta,
                                                    final PublicKey stakePoolKey,
-                                                   final PublicKey stakePoolWithdrawAuthorityKey,
-                                                   final PublicKey validatorListKey,
+                                                   final PublicKey withdrawAuthorityKey,
+                                                   final PublicKey validatorListStorageKey,
                                                    final PublicKey reserveStakeKey,
                                                    final PublicKey managerFeeAccountKey,
-                                                   final PublicKey poolMintKey,
-                                                   final PublicKey tokenProgramKey) {
+                                                   final PublicKey stakePoolMintKey,
+                                                   final PublicKey tokenProgramIdKey) {
     final var keys = updateStakePoolBalanceKeys(
       stakePoolKey,
-      stakePoolWithdrawAuthorityKey,
-      validatorListKey,
+      withdrawAuthorityKey,
+      validatorListStorageKey,
       reserveStakeKey,
       managerFeeAccountKey,
-      poolMintKey,
-      tokenProgramKey
+      stakePoolMintKey,
+      tokenProgramIdKey
     );
     return updateStakePoolBalance(invokedStakePoolProgramMeta, keys);
   }
 
-  /// Updates total pool balance based on balances in the reserve and validator list.
+  /// Updates total pool balance based on balances in the reserve and validator list
   ///
   public static Instruction updateStakePoolBalance(final AccountMeta invokedStakePoolProgramMeta,
                                                    final List<AccountMeta> keys) {
@@ -961,7 +1101,7 @@ public final class StakePoolProgram {
     return Instruction.createInstruction(invokedStakePoolProgramMeta, keys, _data);
   }
 
-  /// Updates total pool balance based on balances in the reserve and validator list.
+  /// Updates total pool balance based on balances in the reserve and validator list
   ///
   public record UpdateStakePoolBalanceIxData(int discriminator) implements SerDe {
 
@@ -997,29 +1137,33 @@ public final class StakePoolProgram {
 
   public static final Discriminator CLEANUP_REMOVED_VALIDATOR_ENTRIES_DISCRIMINATOR = toDiscriminator(8);
 
-  /// Cleans up validator stake account entries marked as ReadyForRemoval.
+  /// Cleans up validator stake account entries marked as `ReadyForRemoval`
   ///
+  /// @param stakePoolKey Stake pool
+  /// @param validatorListStorageKey Validator stake list storage account
   public static List<AccountMeta> cleanupRemovedValidatorEntriesKeys(final PublicKey stakePoolKey,
-                                                                     final PublicKey validatorListKey) {
+                                                                     final PublicKey validatorListStorageKey) {
     return List.of(
-      createRead(stakePoolKey),
-      createWrite(validatorListKey)
+      createWrite(stakePoolKey),
+      createWrite(validatorListStorageKey)
     );
   }
 
-  /// Cleans up validator stake account entries marked as ReadyForRemoval.
+  /// Cleans up validator stake account entries marked as `ReadyForRemoval`
   ///
+  /// @param stakePoolKey Stake pool
+  /// @param validatorListStorageKey Validator stake list storage account
   public static Instruction cleanupRemovedValidatorEntries(final AccountMeta invokedStakePoolProgramMeta,
                                                            final PublicKey stakePoolKey,
-                                                           final PublicKey validatorListKey) {
+                                                           final PublicKey validatorListStorageKey) {
     final var keys = cleanupRemovedValidatorEntriesKeys(
       stakePoolKey,
-      validatorListKey
+      validatorListStorageKey
     );
     return cleanupRemovedValidatorEntries(invokedStakePoolProgramMeta, keys);
   }
 
-  /// Cleans up validator stake account entries marked as ReadyForRemoval.
+  /// Cleans up validator stake account entries marked as `ReadyForRemoval`
   ///
   public static Instruction cleanupRemovedValidatorEntries(final AccountMeta invokedStakePoolProgramMeta,
                                                            final List<AccountMeta> keys) {
@@ -1029,7 +1173,7 @@ public final class StakePoolProgram {
     return Instruction.createInstruction(invokedStakePoolProgramMeta, keys, _data);
   }
 
-  /// Cleans up validator stake account entries marked as ReadyForRemoval.
+  /// Cleans up validator stake account entries marked as `ReadyForRemoval`
   ///
   public record CleanupRemovedValidatorEntriesIxData(int discriminator) implements SerDe {
 
@@ -1066,91 +1210,106 @@ public final class StakePoolProgram {
   public static final Discriminator DEPOSIT_STAKE_DISCRIMINATOR = toDiscriminator(9);
 
   /// Deposit some stake into the pool. The output is a "pool" token representing ownership into the pool. Inputs are converted to the current ratio.
+  /// This instruction MUST be included within the same Transaction as the stake program's `Authorize` instruction that assigns ownership of the stake account to the stake pool. Otherwise another party can deposit the stake account and receive pool tokens destined for someone else.
   ///
-  /// @param depositAuthorityKey Stake pool deposit authority; must sign when the pool uses a custom deposit authority
-  /// @param depositAuthorityIsSigner whether the `depositAuthority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
-  /// @param depositStakeAccountKey Stake account to join the pool; its withdraw authority must first be set to the stake pool deposit authority
-  /// @param validatorStakeAccountKey Validator stake account to merge the deposited stake into
-  /// @param reserveStakeKey Reserve stake account, to withdraw the rent exempt reserve
-  /// @param destinationPoolAccountKey User account to receive pool tokens
-  /// @param referralPoolAccountKey Account to receive a portion of pool fee tokens as referral fees
+  /// @param stakePoolKey Stake pool
+  /// @param validatorListStorageKey Validator stake list storage account
+  /// @param stakePoolDepositAuthorityKey Stake pool deposit authority
+  /// @param stakePoolDepositAuthorityIsSigner whether the `stakePoolDepositAuthority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
+  /// @param stakePoolWithdrawAuthorityKey Stake pool withdraw authority
+  /// @param depositStakeAddressKey Stake account to join the pool (withdraw authority for the stake account should be first set to the stake pool deposit authority)
+  /// @param validatorStakeAccountKey Validator stake account for the stake account to be merged with
+  /// @param reserveStakeAccountKey Reserve stake account, to withdraw rent exempt reserve
+  /// @param poolTokensToKey User account to receive pool tokens
+  /// @param managerFeeAccountKey Account to receive pool fee tokens
+  /// @param referrerPoolTokensAccountKey Account to receive a portion of pool fee tokens as referral fees
+  /// @param poolMintKey Pool token mint account
+  /// @param tokenProgramIdKey Pool token program id,
   public static List<AccountMeta> depositStakeKeys(final SolanaAccounts solanaAccounts,
                                                    final PublicKey stakePoolKey,
-                                                   final PublicKey validatorListKey,
-                                                   final PublicKey depositAuthorityKey,
-                                                   final boolean depositAuthorityIsSigner,
+                                                   final PublicKey validatorListStorageKey,
+                                                   final PublicKey stakePoolDepositAuthorityKey,
+                                                   final boolean stakePoolDepositAuthorityIsSigner,
                                                    final PublicKey stakePoolWithdrawAuthorityKey,
-                                                   final PublicKey depositStakeAccountKey,
+                                                   final PublicKey depositStakeAddressKey,
                                                    final PublicKey validatorStakeAccountKey,
-                                                   final PublicKey reserveStakeKey,
-                                                   final PublicKey destinationPoolAccountKey,
+                                                   final PublicKey reserveStakeAccountKey,
+                                                   final PublicKey poolTokensToKey,
                                                    final PublicKey managerFeeAccountKey,
-                                                   final PublicKey referralPoolAccountKey,
+                                                   final PublicKey referrerPoolTokensAccountKey,
                                                    final PublicKey poolMintKey,
-                                                   final PublicKey tokenProgramKey) {
+                                                   final PublicKey tokenProgramIdKey) {
     return List.of(
       createWrite(stakePoolKey),
-      createWrite(validatorListKey),
-      depositAuthorityIsSigner ? createReadOnlySigner(depositAuthorityKey) : createRead(depositAuthorityKey),
+      createWrite(validatorListStorageKey),
+      stakePoolDepositAuthorityIsSigner ? createReadOnlySigner(stakePoolDepositAuthorityKey) : createRead(stakePoolDepositAuthorityKey),
       createRead(stakePoolWithdrawAuthorityKey),
-      createWrite(depositStakeAccountKey),
+      createWrite(depositStakeAddressKey),
       createWrite(validatorStakeAccountKey),
-      createWrite(reserveStakeKey),
-      createWrite(destinationPoolAccountKey),
+      createWrite(reserveStakeAccountKey),
+      createWrite(poolTokensToKey),
       createWrite(managerFeeAccountKey),
-      createWrite(referralPoolAccountKey),
+      createWrite(referrerPoolTokensAccountKey),
       createWrite(poolMintKey),
       createRead(solanaAccounts.clockSysVar()),
       createRead(solanaAccounts.stakeHistorySysVar()),
-      createRead(tokenProgramKey),
+      createRead(tokenProgramIdKey),
       createRead(solanaAccounts.stakeProgram())
     );
   }
 
   /// Deposit some stake into the pool. The output is a "pool" token representing ownership into the pool. Inputs are converted to the current ratio.
+  /// This instruction MUST be included within the same Transaction as the stake program's `Authorize` instruction that assigns ownership of the stake account to the stake pool. Otherwise another party can deposit the stake account and receive pool tokens destined for someone else.
   ///
-  /// @param depositAuthorityKey Stake pool deposit authority; must sign when the pool uses a custom deposit authority
-  /// @param depositAuthorityIsSigner whether the `depositAuthority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
-  /// @param depositStakeAccountKey Stake account to join the pool; its withdraw authority must first be set to the stake pool deposit authority
-  /// @param validatorStakeAccountKey Validator stake account to merge the deposited stake into
-  /// @param reserveStakeKey Reserve stake account, to withdraw the rent exempt reserve
-  /// @param destinationPoolAccountKey User account to receive pool tokens
-  /// @param referralPoolAccountKey Account to receive a portion of pool fee tokens as referral fees
+  /// @param stakePoolKey Stake pool
+  /// @param validatorListStorageKey Validator stake list storage account
+  /// @param stakePoolDepositAuthorityKey Stake pool deposit authority
+  /// @param stakePoolDepositAuthorityIsSigner whether the `stakePoolDepositAuthority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
+  /// @param stakePoolWithdrawAuthorityKey Stake pool withdraw authority
+  /// @param depositStakeAddressKey Stake account to join the pool (withdraw authority for the stake account should be first set to the stake pool deposit authority)
+  /// @param validatorStakeAccountKey Validator stake account for the stake account to be merged with
+  /// @param reserveStakeAccountKey Reserve stake account, to withdraw rent exempt reserve
+  /// @param poolTokensToKey User account to receive pool tokens
+  /// @param managerFeeAccountKey Account to receive pool fee tokens
+  /// @param referrerPoolTokensAccountKey Account to receive a portion of pool fee tokens as referral fees
+  /// @param poolMintKey Pool token mint account
+  /// @param tokenProgramIdKey Pool token program id,
   public static Instruction depositStake(final AccountMeta invokedStakePoolProgramMeta,
                                          final SolanaAccounts solanaAccounts,
                                          final PublicKey stakePoolKey,
-                                         final PublicKey validatorListKey,
-                                         final PublicKey depositAuthorityKey,
-                                         final boolean depositAuthorityIsSigner,
+                                         final PublicKey validatorListStorageKey,
+                                         final PublicKey stakePoolDepositAuthorityKey,
+                                         final boolean stakePoolDepositAuthorityIsSigner,
                                          final PublicKey stakePoolWithdrawAuthorityKey,
-                                         final PublicKey depositStakeAccountKey,
+                                         final PublicKey depositStakeAddressKey,
                                          final PublicKey validatorStakeAccountKey,
-                                         final PublicKey reserveStakeKey,
-                                         final PublicKey destinationPoolAccountKey,
+                                         final PublicKey reserveStakeAccountKey,
+                                         final PublicKey poolTokensToKey,
                                          final PublicKey managerFeeAccountKey,
-                                         final PublicKey referralPoolAccountKey,
+                                         final PublicKey referrerPoolTokensAccountKey,
                                          final PublicKey poolMintKey,
-                                         final PublicKey tokenProgramKey) {
+                                         final PublicKey tokenProgramIdKey) {
     final var keys = depositStakeKeys(
       solanaAccounts,
       stakePoolKey,
-      validatorListKey,
-      depositAuthorityKey,
-      depositAuthorityIsSigner,
+      validatorListStorageKey,
+      stakePoolDepositAuthorityKey,
+      stakePoolDepositAuthorityIsSigner,
       stakePoolWithdrawAuthorityKey,
-      depositStakeAccountKey,
+      depositStakeAddressKey,
       validatorStakeAccountKey,
-      reserveStakeKey,
-      destinationPoolAccountKey,
+      reserveStakeAccountKey,
+      poolTokensToKey,
       managerFeeAccountKey,
-      referralPoolAccountKey,
+      referrerPoolTokensAccountKey,
       poolMintKey,
-      tokenProgramKey
+      tokenProgramIdKey
     );
     return depositStake(invokedStakePoolProgramMeta, keys);
   }
 
   /// Deposit some stake into the pool. The output is a "pool" token representing ownership into the pool. Inputs are converted to the current ratio.
+  /// This instruction MUST be included within the same Transaction as the stake program's `Authorize` instruction that assigns ownership of the stake account to the stake pool. Otherwise another party can deposit the stake account and receive pool tokens destined for someone else.
   ///
   public static Instruction depositStake(final AccountMeta invokedStakePoolProgramMeta,
                                          final List<AccountMeta> keys) {
@@ -1161,6 +1320,7 @@ public final class StakePoolProgram {
   }
 
   /// Deposit some stake into the pool. The output is a "pool" token representing ownership into the pool. Inputs are converted to the current ratio.
+  /// This instruction MUST be included within the same Transaction as the stake program's `Authorize` instruction that assigns ownership of the stake account to the stake pool. Otherwise another party can deposit the stake account and receive pool tokens destined for someone else.
   ///
   public record DepositStakeIxData(int discriminator) implements SerDe {
 
@@ -1197,83 +1357,110 @@ public final class StakePoolProgram {
   public static final Discriminator WITHDRAW_STAKE_DISCRIMINATOR = toDiscriminator(10);
 
   /// Withdraw the token from the pool at the current ratio.
+  /// Succeeds if the stake account has enough SOL to cover the desired amount of pool tokens, and if the withdrawal keeps the total staked amount above the minimum of rent-exempt amount plus `max( crate::MINIMUM_ACTIVE_STAKE, solana_stake_interface::tools::get_minimum_delegation() )`.
+  /// When allowing withdrawals, the order of priority goes:
+  /// * preferred withdraw validator stake account (if set) * validator stake accounts * transient stake accounts * reserve stake account OR totally remove validator stake accounts
+  /// A user can freely withdraw from a validator stake account, and if they are all at the minimum, then they can withdraw from transient stake accounts, and if they are all at minimum, then they can withdraw from the reserve or remove any validator from the pool.
+  /// User data: amount of pool tokens to withdraw
   ///
-  /// @param splitStakeSourceKey Validator or reserve stake account to split
-  /// @param destinationStakeAccountKey Uninitialized stake account to receive the withdrawal
-  /// @param destinationStakeAuthorityKey User account to set as the new withdraw authority
-  /// @param transferAuthorityKey Transfer authority for the pool token account
-  /// @param sourcePoolAccountKey User account with pool tokens to burn from
+  /// @param stakePoolKey Stake pool
+  /// @param validatorListStorageKey Validator stake list storage account
+  /// @param stakePoolWithdrawKey Stake pool withdraw authority
+  /// @param stakeToSplitKey Validator or reserve stake account to split
+  /// @param stakeToReceiveKey Uninitialized stake account to receive withdrawal
+  /// @param userStakeAuthorityKey User account to set as a new withdraw authority
+  /// @param userTransferAuthorityKey User transfer authority, for pool token account
+  /// @param userPoolTokenAccountKey User account with pool tokens to burn from
+  /// @param managerFeeAccountKey Account to receive pool fee tokens
+  /// @param poolMintKey Pool token mint account
+  /// @param tokenProgramIdKey Pool token program id
   public static List<AccountMeta> withdrawStakeKeys(final SolanaAccounts solanaAccounts,
                                                     final PublicKey stakePoolKey,
-                                                    final PublicKey validatorListKey,
-                                                    final PublicKey stakePoolWithdrawAuthorityKey,
-                                                    final PublicKey splitStakeSourceKey,
-                                                    final PublicKey destinationStakeAccountKey,
-                                                    final PublicKey destinationStakeAuthorityKey,
-                                                    final PublicKey transferAuthorityKey,
-                                                    final PublicKey sourcePoolAccountKey,
+                                                    final PublicKey validatorListStorageKey,
+                                                    final PublicKey stakePoolWithdrawKey,
+                                                    final PublicKey stakeToSplitKey,
+                                                    final PublicKey stakeToReceiveKey,
+                                                    final PublicKey userStakeAuthorityKey,
+                                                    final PublicKey userTransferAuthorityKey,
+                                                    final PublicKey userPoolTokenAccountKey,
                                                     final PublicKey managerFeeAccountKey,
                                                     final PublicKey poolMintKey,
-                                                    final PublicKey tokenProgramKey) {
+                                                    final PublicKey tokenProgramIdKey) {
     return List.of(
       createWrite(stakePoolKey),
-      createWrite(validatorListKey),
-      createRead(stakePoolWithdrawAuthorityKey),
-      createWrite(splitStakeSourceKey),
-      createWrite(destinationStakeAccountKey),
-      createRead(destinationStakeAuthorityKey),
-      createReadOnlySigner(transferAuthorityKey),
-      createWrite(sourcePoolAccountKey),
+      createWrite(validatorListStorageKey),
+      createRead(stakePoolWithdrawKey),
+      createWrite(stakeToSplitKey),
+      createWrite(stakeToReceiveKey),
+      createRead(userStakeAuthorityKey),
+      createReadOnlySigner(userTransferAuthorityKey),
+      createWrite(userPoolTokenAccountKey),
       createWrite(managerFeeAccountKey),
       createWrite(poolMintKey),
       createRead(solanaAccounts.clockSysVar()),
-      createRead(tokenProgramKey),
+      createRead(tokenProgramIdKey),
       createRead(solanaAccounts.stakeProgram())
     );
   }
 
   /// Withdraw the token from the pool at the current ratio.
+  /// Succeeds if the stake account has enough SOL to cover the desired amount of pool tokens, and if the withdrawal keeps the total staked amount above the minimum of rent-exempt amount plus `max( crate::MINIMUM_ACTIVE_STAKE, solana_stake_interface::tools::get_minimum_delegation() )`.
+  /// When allowing withdrawals, the order of priority goes:
+  /// * preferred withdraw validator stake account (if set) * validator stake accounts * transient stake accounts * reserve stake account OR totally remove validator stake accounts
+  /// A user can freely withdraw from a validator stake account, and if they are all at the minimum, then they can withdraw from transient stake accounts, and if they are all at minimum, then they can withdraw from the reserve or remove any validator from the pool.
+  /// User data: amount of pool tokens to withdraw
   ///
-  /// @param splitStakeSourceKey Validator or reserve stake account to split
-  /// @param destinationStakeAccountKey Uninitialized stake account to receive the withdrawal
-  /// @param destinationStakeAuthorityKey User account to set as the new withdraw authority
-  /// @param transferAuthorityKey Transfer authority for the pool token account
-  /// @param sourcePoolAccountKey User account with pool tokens to burn from
-  /// @param poolTokensIn: u64 Amount of pool tokens to withdraw
+  /// @param stakePoolKey Stake pool
+  /// @param validatorListStorageKey Validator stake list storage account
+  /// @param stakePoolWithdrawKey Stake pool withdraw authority
+  /// @param stakeToSplitKey Validator or reserve stake account to split
+  /// @param stakeToReceiveKey Uninitialized stake account to receive withdrawal
+  /// @param userStakeAuthorityKey User account to set as a new withdraw authority
+  /// @param userTransferAuthorityKey User transfer authority, for pool token account
+  /// @param userPoolTokenAccountKey User account with pool tokens to burn from
+  /// @param managerFeeAccountKey Account to receive pool fee tokens
+  /// @param poolMintKey Pool token mint account
+  /// @param tokenProgramIdKey Pool token program id
+  /// @param poolTokensIn: u64
   public static Instruction withdrawStake(final AccountMeta invokedStakePoolProgramMeta,
                                           final SolanaAccounts solanaAccounts,
                                           final PublicKey stakePoolKey,
-                                          final PublicKey validatorListKey,
-                                          final PublicKey stakePoolWithdrawAuthorityKey,
-                                          final PublicKey splitStakeSourceKey,
-                                          final PublicKey destinationStakeAccountKey,
-                                          final PublicKey destinationStakeAuthorityKey,
-                                          final PublicKey transferAuthorityKey,
-                                          final PublicKey sourcePoolAccountKey,
+                                          final PublicKey validatorListStorageKey,
+                                          final PublicKey stakePoolWithdrawKey,
+                                          final PublicKey stakeToSplitKey,
+                                          final PublicKey stakeToReceiveKey,
+                                          final PublicKey userStakeAuthorityKey,
+                                          final PublicKey userTransferAuthorityKey,
+                                          final PublicKey userPoolTokenAccountKey,
                                           final PublicKey managerFeeAccountKey,
                                           final PublicKey poolMintKey,
-                                          final PublicKey tokenProgramKey,
+                                          final PublicKey tokenProgramIdKey,
                                           final long poolTokensIn) {
     final var keys = withdrawStakeKeys(
       solanaAccounts,
       stakePoolKey,
-      validatorListKey,
-      stakePoolWithdrawAuthorityKey,
-      splitStakeSourceKey,
-      destinationStakeAccountKey,
-      destinationStakeAuthorityKey,
-      transferAuthorityKey,
-      sourcePoolAccountKey,
+      validatorListStorageKey,
+      stakePoolWithdrawKey,
+      stakeToSplitKey,
+      stakeToReceiveKey,
+      userStakeAuthorityKey,
+      userTransferAuthorityKey,
+      userPoolTokenAccountKey,
       managerFeeAccountKey,
       poolMintKey,
-      tokenProgramKey
+      tokenProgramIdKey
     );
     return withdrawStake(invokedStakePoolProgramMeta, keys, poolTokensIn);
   }
 
   /// Withdraw the token from the pool at the current ratio.
+  /// Succeeds if the stake account has enough SOL to cover the desired amount of pool tokens, and if the withdrawal keeps the total staked amount above the minimum of rent-exempt amount plus `max( crate::MINIMUM_ACTIVE_STAKE, solana_stake_interface::tools::get_minimum_delegation() )`.
+  /// When allowing withdrawals, the order of priority goes:
+  /// * preferred withdraw validator stake account (if set) * validator stake accounts * transient stake accounts * reserve stake account OR totally remove validator stake accounts
+  /// A user can freely withdraw from a validator stake account, and if they are all at the minimum, then they can withdraw from transient stake accounts, and if they are all at minimum, then they can withdraw from the reserve or remove any validator from the pool.
+  /// User data: amount of pool tokens to withdraw
   ///
-  /// @param poolTokensIn: u64 Amount of pool tokens to withdraw
+  /// @param poolTokensIn: u64
   public static Instruction withdrawStake(final AccountMeta invokedStakePoolProgramMeta,
                                           final List<AccountMeta> keys,
                                           final long poolTokensIn) {
@@ -1285,8 +1472,13 @@ public final class StakePoolProgram {
   }
 
   /// Withdraw the token from the pool at the current ratio.
+  /// Succeeds if the stake account has enough SOL to cover the desired amount of pool tokens, and if the withdrawal keeps the total staked amount above the minimum of rent-exempt amount plus `max( crate::MINIMUM_ACTIVE_STAKE, solana_stake_interface::tools::get_minimum_delegation() )`.
+  /// When allowing withdrawals, the order of priority goes:
+  /// * preferred withdraw validator stake account (if set) * validator stake accounts * transient stake accounts * reserve stake account OR totally remove validator stake accounts
+  /// A user can freely withdraw from a validator stake account, and if they are all at the minimum, then they can withdraw from transient stake accounts, and if they are all at minimum, then they can withdraw from the reserve or remove any validator from the pool.
+  /// User data: amount of pool tokens to withdraw
   ///
-  /// @param poolTokensIn: u64 Amount of pool tokens to withdraw
+  /// @param poolTokensIn: u64
   public record WithdrawStakeIxData(int discriminator, long poolTokensIn) implements SerDe {
 
     public static WithdrawStakeIxData read(final Instruction instruction) {
@@ -1328,37 +1520,45 @@ public final class StakePoolProgram {
 
   public static final Discriminator SET_MANAGER_DISCRIMINATOR = toDiscriminator(11);
 
-  /// (Manager only) Update manager.
+  /// (Manager only) Update manager
   ///
+  /// @param stakePoolKey Stake pool
+  /// @param managerKey Manager
+  /// @param newManagerKey New manager
+  /// @param newFeeReceiverKey New manager fee account
   public static List<AccountMeta> setManagerKeys(final PublicKey stakePoolKey,
                                                  final PublicKey managerKey,
                                                  final PublicKey newManagerKey,
-                                                 final PublicKey newManagerFeeAccountKey) {
+                                                 final PublicKey newFeeReceiverKey) {
     return List.of(
       createWrite(stakePoolKey),
       createReadOnlySigner(managerKey),
       createReadOnlySigner(newManagerKey),
-      createRead(newManagerFeeAccountKey)
+      createRead(newFeeReceiverKey)
     );
   }
 
-  /// (Manager only) Update manager.
+  /// (Manager only) Update manager
   ///
+  /// @param stakePoolKey Stake pool
+  /// @param managerKey Manager
+  /// @param newManagerKey New manager
+  /// @param newFeeReceiverKey New manager fee account
   public static Instruction setManager(final AccountMeta invokedStakePoolProgramMeta,
                                        final PublicKey stakePoolKey,
                                        final PublicKey managerKey,
                                        final PublicKey newManagerKey,
-                                       final PublicKey newManagerFeeAccountKey) {
+                                       final PublicKey newFeeReceiverKey) {
     final var keys = setManagerKeys(
       stakePoolKey,
       managerKey,
       newManagerKey,
-      newManagerFeeAccountKey
+      newFeeReceiverKey
     );
     return setManager(invokedStakePoolProgramMeta, keys);
   }
 
-  /// (Manager only) Update manager.
+  /// (Manager only) Update manager
   ///
   public static Instruction setManager(final AccountMeta invokedStakePoolProgramMeta,
                                        final List<AccountMeta> keys) {
@@ -1368,7 +1568,7 @@ public final class StakePoolProgram {
     return Instruction.createInstruction(invokedStakePoolProgramMeta, keys, _data);
   }
 
-  /// (Manager only) Update manager.
+  /// (Manager only) Update manager
   ///
   public record SetManagerIxData(int discriminator) implements SerDe {
 
@@ -1404,8 +1604,10 @@ public final class StakePoolProgram {
 
   public static final Discriminator SET_FEE_DISCRIMINATOR = toDiscriminator(12);
 
-  /// (Manager only) Update fee.
+  /// (Manager only) Update fee
   ///
+  /// @param stakePoolKey Stake pool
+  /// @param managerKey Manager
   public static List<AccountMeta> setFeeKeys(final PublicKey stakePoolKey,
                                              final PublicKey managerKey) {
     return List.of(
@@ -1414,8 +1616,10 @@ public final class StakePoolProgram {
     );
   }
 
-  /// (Manager only) Update fee.
+  /// (Manager only) Update fee
   ///
+  /// @param stakePoolKey Stake pool
+  /// @param managerKey Manager
   /// @param fee Type of fee to update and value to update it to
   public static Instruction setFee(final AccountMeta invokedStakePoolProgramMeta,
                                    final PublicKey stakePoolKey,
@@ -1428,7 +1632,7 @@ public final class StakePoolProgram {
     return setFee(invokedStakePoolProgramMeta, keys, fee);
   }
 
-  /// (Manager only) Update fee.
+  /// (Manager only) Update fee
   ///
   /// @param fee Type of fee to update and value to update it to
   public static Instruction setFee(final AccountMeta invokedStakePoolProgramMeta,
@@ -1441,7 +1645,7 @@ public final class StakePoolProgram {
     return Instruction.createInstruction(invokedStakePoolProgramMeta, keys, _data);
   }
 
-  /// (Manager only) Update fee.
+  /// (Manager only) Update fee
   ///
   /// @param fee Type of fee to update and value to update it to
   public record SetFeeIxData(int discriminator, FeeType fee) implements SerDe {
@@ -1482,9 +1686,11 @@ public final class StakePoolProgram {
 
   public static final Discriminator SET_STAKER_DISCRIMINATOR = toDiscriminator(13);
 
-  /// (Manager or staker only) Update staker.
+  /// (Manager or staker only) Update staker
   ///
+  /// @param stakePoolKey Stake pool
   /// @param setStakerAuthorityKey Manager or current staker
+  /// @param newStakerKey New staker pubkey
   public static List<AccountMeta> setStakerKeys(final PublicKey stakePoolKey,
                                                 final PublicKey setStakerAuthorityKey,
                                                 final PublicKey newStakerKey) {
@@ -1495,9 +1701,11 @@ public final class StakePoolProgram {
     );
   }
 
-  /// (Manager or staker only) Update staker.
+  /// (Manager or staker only) Update staker
   ///
+  /// @param stakePoolKey Stake pool
   /// @param setStakerAuthorityKey Manager or current staker
+  /// @param newStakerKey New staker pubkey
   public static Instruction setStaker(final AccountMeta invokedStakePoolProgramMeta,
                                       final PublicKey stakePoolKey,
                                       final PublicKey setStakerAuthorityKey,
@@ -1510,7 +1718,7 @@ public final class StakePoolProgram {
     return setStaker(invokedStakePoolProgramMeta, keys);
   }
 
-  /// (Manager or staker only) Update staker.
+  /// (Manager or staker only) Update staker
   ///
   public static Instruction setStaker(final AccountMeta invokedStakePoolProgramMeta,
                                       final List<AccountMeta> keys) {
@@ -1520,7 +1728,7 @@ public final class StakePoolProgram {
     return Instruction.createInstruction(invokedStakePoolProgramMeta, keys, _data);
   }
 
-  /// (Manager or staker only) Update staker.
+  /// (Manager or staker only) Update staker
   ///
   public record SetStakerIxData(int discriminator) implements SerDe {
 
@@ -1558,33 +1766,38 @@ public final class StakePoolProgram {
 
   /// Deposit SOL directly into the pool's reserve account. The output is a "pool" token representing ownership into the pool. Inputs are converted to the current ratio.
   ///
-  /// @param reserveStakeKey Reserve stake account, to deposit SOL into
-  /// @param fundingAccountKey Account providing the lamports to be deposited into the pool
-  /// @param destinationPoolAccountKey User account to receive pool tokens
-  /// @param referralPoolAccountKey Account to receive a portion of the fee as referral fees
-  /// @param solDepositAuthorityKey Stake pool SOL deposit authority, required when the pool restricts SOL deposits
+  /// @param stakePoolKey Stake pool
+  /// @param stakePoolWithdrawAuthorityKey Stake pool withdraw authority
+  /// @param reserveStakeAccountKey Reserve stake account, to deposit SOL
+  /// @param lamportsFromKey Account providing the lamports to be deposited into the pool
+  /// @param poolTokensToKey User account to receive pool tokens
+  /// @param managerFeeAccountKey Account to receive fee tokens
+  /// @param referrerPoolTokensAccountKey Account to receive a portion of fee as referral fees
+  /// @param poolMintKey Pool token mint account
+  /// @param tokenProgramIdKey Token program id
+  /// @param solDepositAuthorityKey (Optional) Stake pool sol deposit authority.
   public static List<AccountMeta> depositSolKeys(final SolanaAccounts solanaAccounts,
                                                  final PublicKey stakePoolKey,
                                                  final PublicKey stakePoolWithdrawAuthorityKey,
-                                                 final PublicKey reserveStakeKey,
-                                                 final PublicKey fundingAccountKey,
-                                                 final PublicKey destinationPoolAccountKey,
+                                                 final PublicKey reserveStakeAccountKey,
+                                                 final PublicKey lamportsFromKey,
+                                                 final PublicKey poolTokensToKey,
                                                  final PublicKey managerFeeAccountKey,
-                                                 final PublicKey referralPoolAccountKey,
+                                                 final PublicKey referrerPoolTokensAccountKey,
                                                  final PublicKey poolMintKey,
-                                                 final PublicKey tokenProgramKey,
+                                                 final PublicKey tokenProgramIdKey,
                                                  final PublicKey solDepositAuthorityKey) {
     final var keys = new ArrayList<AccountMeta>(11);
     keys.add(createWrite(stakePoolKey));
     keys.add(createRead(stakePoolWithdrawAuthorityKey));
-    keys.add(createWrite(reserveStakeKey));
-    keys.add(createWritableSigner(fundingAccountKey));
-    keys.add(createWrite(destinationPoolAccountKey));
+    keys.add(createWrite(reserveStakeAccountKey));
+    keys.add(createWritableSigner(lamportsFromKey));
+    keys.add(createWrite(poolTokensToKey));
     keys.add(createWrite(managerFeeAccountKey));
-    keys.add(createWrite(referralPoolAccountKey));
+    keys.add(createWrite(referrerPoolTokensAccountKey));
     keys.add(createWrite(poolMintKey));
     keys.add(createRead(solanaAccounts.systemProgram()));
-    keys.add(createRead(tokenProgramKey));
+    keys.add(createRead(tokenProgramIdKey));
     if (solDepositAuthorityKey != null) {
       keys.add(createReadOnlySigner(solDepositAuthorityKey));
     }
@@ -1593,36 +1806,41 @@ public final class StakePoolProgram {
 
   /// Deposit SOL directly into the pool's reserve account. The output is a "pool" token representing ownership into the pool. Inputs are converted to the current ratio.
   ///
-  /// @param reserveStakeKey Reserve stake account, to deposit SOL into
-  /// @param fundingAccountKey Account providing the lamports to be deposited into the pool
-  /// @param destinationPoolAccountKey User account to receive pool tokens
-  /// @param referralPoolAccountKey Account to receive a portion of the fee as referral fees
-  /// @param solDepositAuthorityKey Stake pool SOL deposit authority, required when the pool restricts SOL deposits
-  /// @param lamportsIn: u64 Amount of lamports to deposit into the reserve
+  /// @param stakePoolKey Stake pool
+  /// @param stakePoolWithdrawAuthorityKey Stake pool withdraw authority
+  /// @param reserveStakeAccountKey Reserve stake account, to deposit SOL
+  /// @param lamportsFromKey Account providing the lamports to be deposited into the pool
+  /// @param poolTokensToKey User account to receive pool tokens
+  /// @param managerFeeAccountKey Account to receive fee tokens
+  /// @param referrerPoolTokensAccountKey Account to receive a portion of fee as referral fees
+  /// @param poolMintKey Pool token mint account
+  /// @param tokenProgramIdKey Token program id
+  /// @param solDepositAuthorityKey (Optional) Stake pool sol deposit authority.
+  /// @param lamportsIn: u64
   public static Instruction depositSol(final AccountMeta invokedStakePoolProgramMeta,
                                        final SolanaAccounts solanaAccounts,
                                        final PublicKey stakePoolKey,
                                        final PublicKey stakePoolWithdrawAuthorityKey,
-                                       final PublicKey reserveStakeKey,
-                                       final PublicKey fundingAccountKey,
-                                       final PublicKey destinationPoolAccountKey,
+                                       final PublicKey reserveStakeAccountKey,
+                                       final PublicKey lamportsFromKey,
+                                       final PublicKey poolTokensToKey,
                                        final PublicKey managerFeeAccountKey,
-                                       final PublicKey referralPoolAccountKey,
+                                       final PublicKey referrerPoolTokensAccountKey,
                                        final PublicKey poolMintKey,
-                                       final PublicKey tokenProgramKey,
+                                       final PublicKey tokenProgramIdKey,
                                        final PublicKey solDepositAuthorityKey,
                                        final long lamportsIn) {
     final var keys = depositSolKeys(
       solanaAccounts,
       stakePoolKey,
       stakePoolWithdrawAuthorityKey,
-      reserveStakeKey,
-      fundingAccountKey,
-      destinationPoolAccountKey,
+      reserveStakeAccountKey,
+      lamportsFromKey,
+      poolTokensToKey,
       managerFeeAccountKey,
-      referralPoolAccountKey,
+      referrerPoolTokensAccountKey,
       poolMintKey,
-      tokenProgramKey,
+      tokenProgramIdKey,
       solDepositAuthorityKey
     );
     return depositSol(invokedStakePoolProgramMeta, keys, lamportsIn);
@@ -1630,7 +1848,7 @@ public final class StakePoolProgram {
 
   /// Deposit SOL directly into the pool's reserve account. The output is a "pool" token representing ownership into the pool. Inputs are converted to the current ratio.
   ///
-  /// @param lamportsIn: u64 Amount of lamports to deposit into the reserve
+  /// @param lamportsIn: u64
   public static Instruction depositSol(final AccountMeta invokedStakePoolProgramMeta,
                                        final List<AccountMeta> keys,
                                        final long lamportsIn) {
@@ -1643,7 +1861,7 @@ public final class StakePoolProgram {
 
   /// Deposit SOL directly into the pool's reserve account. The output is a "pool" token representing ownership into the pool. Inputs are converted to the current ratio.
   ///
-  /// @param lamportsIn: u64 Amount of lamports to deposit into the reserve
+  /// @param lamportsIn: u64
   public record DepositSolIxData(int discriminator, long lamportsIn) implements SerDe {
 
     public static DepositSolIxData read(final Instruction instruction) {
@@ -1687,31 +1905,35 @@ public final class StakePoolProgram {
 
   /// (Manager only) Update SOL deposit, stake deposit, or SOL withdrawal authority.
   ///
-  /// @param newAuthorityKey New authority pubkey; omit to unset
+  /// @param stakePoolKey Stake pool
+  /// @param managerKey Manager
+  /// @param newSolDepositAuthorityKey New authority pubkey or none
   public static List<AccountMeta> setFundingAuthorityKeys(final PublicKey stakePoolKey,
                                                           final PublicKey managerKey,
-                                                          final PublicKey newAuthorityKey) {
+                                                          final PublicKey newSolDepositAuthorityKey) {
     final var keys = new ArrayList<AccountMeta>(3);
     keys.add(createWrite(stakePoolKey));
     keys.add(createReadOnlySigner(managerKey));
-    if (newAuthorityKey != null) {
-      keys.add(createRead(newAuthorityKey));
+    if (newSolDepositAuthorityKey != null) {
+      keys.add(createRead(newSolDepositAuthorityKey));
     }
     return keys;
   }
 
   /// (Manager only) Update SOL deposit, stake deposit, or SOL withdrawal authority.
   ///
-  /// @param newAuthorityKey New authority pubkey; omit to unset
+  /// @param stakePoolKey Stake pool
+  /// @param managerKey Manager
+  /// @param newSolDepositAuthorityKey New authority pubkey or none
   public static Instruction setFundingAuthority(final AccountMeta invokedStakePoolProgramMeta,
                                                 final PublicKey stakePoolKey,
                                                 final PublicKey managerKey,
-                                                final PublicKey newAuthorityKey,
+                                                final PublicKey newSolDepositAuthorityKey,
                                                 final FundingType fundingType) {
     final var keys = setFundingAuthorityKeys(
       stakePoolKey,
       managerKey,
-      newAuthorityKey
+      newSolDepositAuthorityKey
     );
     return setFundingAuthority(invokedStakePoolProgramMeta, keys, fundingType);
   }
@@ -1772,35 +1994,40 @@ public final class StakePoolProgram {
 
   /// Withdraw SOL directly from the pool's reserve account. Fails if the reserve does not have enough SOL.
   ///
-  /// @param transferAuthorityKey Transfer authority for the pool token account
-  /// @param sourcePoolAccountKey User account to burn pool tokens from
-  /// @param reserveStakeKey Reserve stake account, to withdraw SOL from
-  /// @param destinationSystemAccountKey System account receiving the lamports from the reserve
-  /// @param solWithdrawAuthorityKey Stake pool SOL withdraw authority, required when the pool restricts SOL withdrawals
+  /// @param stakePoolKey Stake pool
+  /// @param stakePoolWithdrawAuthorityKey Stake pool withdraw authority
+  /// @param userTransferAuthorityKey User transfer authority, for pool token account
+  /// @param poolTokensFromKey User account to burn pool tokens
+  /// @param reserveStakeAccountKey Reserve stake account, to withdraw SOL
+  /// @param lamportsToKey Account receiving the lamports from the reserve, must be a system account
+  /// @param managerFeeAccountKey Account to receive pool fee tokens
+  /// @param poolMintKey Pool token mint account
+  /// @param tokenProgramIdKey Token program id
+  /// @param solWithdrawAuthorityKey (Optional) Stake pool sol withdraw authority
   public static List<AccountMeta> withdrawSolKeys(final SolanaAccounts solanaAccounts,
                                                   final PublicKey stakePoolKey,
                                                   final PublicKey stakePoolWithdrawAuthorityKey,
-                                                  final PublicKey transferAuthorityKey,
-                                                  final PublicKey sourcePoolAccountKey,
-                                                  final PublicKey reserveStakeKey,
-                                                  final PublicKey destinationSystemAccountKey,
+                                                  final PublicKey userTransferAuthorityKey,
+                                                  final PublicKey poolTokensFromKey,
+                                                  final PublicKey reserveStakeAccountKey,
+                                                  final PublicKey lamportsToKey,
                                                   final PublicKey managerFeeAccountKey,
                                                   final PublicKey poolMintKey,
-                                                  final PublicKey tokenProgramKey,
+                                                  final PublicKey tokenProgramIdKey,
                                                   final PublicKey solWithdrawAuthorityKey) {
     final var keys = new ArrayList<AccountMeta>(13);
     keys.add(createWrite(stakePoolKey));
     keys.add(createRead(stakePoolWithdrawAuthorityKey));
-    keys.add(createReadOnlySigner(transferAuthorityKey));
-    keys.add(createWrite(sourcePoolAccountKey));
-    keys.add(createWrite(reserveStakeKey));
-    keys.add(createWrite(destinationSystemAccountKey));
+    keys.add(createReadOnlySigner(userTransferAuthorityKey));
+    keys.add(createWrite(poolTokensFromKey));
+    keys.add(createWrite(reserveStakeAccountKey));
+    keys.add(createWrite(lamportsToKey));
     keys.add(createWrite(managerFeeAccountKey));
     keys.add(createWrite(poolMintKey));
     keys.add(createRead(solanaAccounts.clockSysVar()));
     keys.add(createRead(solanaAccounts.stakeHistorySysVar()));
     keys.add(createRead(solanaAccounts.stakeProgram()));
-    keys.add(createRead(tokenProgramKey));
+    keys.add(createRead(tokenProgramIdKey));
     if (solWithdrawAuthorityKey != null) {
       keys.add(createReadOnlySigner(solWithdrawAuthorityKey));
     }
@@ -1809,36 +2036,41 @@ public final class StakePoolProgram {
 
   /// Withdraw SOL directly from the pool's reserve account. Fails if the reserve does not have enough SOL.
   ///
-  /// @param transferAuthorityKey Transfer authority for the pool token account
-  /// @param sourcePoolAccountKey User account to burn pool tokens from
-  /// @param reserveStakeKey Reserve stake account, to withdraw SOL from
-  /// @param destinationSystemAccountKey System account receiving the lamports from the reserve
-  /// @param solWithdrawAuthorityKey Stake pool SOL withdraw authority, required when the pool restricts SOL withdrawals
-  /// @param poolTokensIn: u64 Pool tokens to burn in exchange for lamports
+  /// @param stakePoolKey Stake pool
+  /// @param stakePoolWithdrawAuthorityKey Stake pool withdraw authority
+  /// @param userTransferAuthorityKey User transfer authority, for pool token account
+  /// @param poolTokensFromKey User account to burn pool tokens
+  /// @param reserveStakeAccountKey Reserve stake account, to withdraw SOL
+  /// @param lamportsToKey Account receiving the lamports from the reserve, must be a system account
+  /// @param managerFeeAccountKey Account to receive pool fee tokens
+  /// @param poolMintKey Pool token mint account
+  /// @param tokenProgramIdKey Token program id
+  /// @param solWithdrawAuthorityKey (Optional) Stake pool sol withdraw authority
+  /// @param poolTokensIn: u64
   public static Instruction withdrawSol(final AccountMeta invokedStakePoolProgramMeta,
                                         final SolanaAccounts solanaAccounts,
                                         final PublicKey stakePoolKey,
                                         final PublicKey stakePoolWithdrawAuthorityKey,
-                                        final PublicKey transferAuthorityKey,
-                                        final PublicKey sourcePoolAccountKey,
-                                        final PublicKey reserveStakeKey,
-                                        final PublicKey destinationSystemAccountKey,
+                                        final PublicKey userTransferAuthorityKey,
+                                        final PublicKey poolTokensFromKey,
+                                        final PublicKey reserveStakeAccountKey,
+                                        final PublicKey lamportsToKey,
                                         final PublicKey managerFeeAccountKey,
                                         final PublicKey poolMintKey,
-                                        final PublicKey tokenProgramKey,
+                                        final PublicKey tokenProgramIdKey,
                                         final PublicKey solWithdrawAuthorityKey,
                                         final long poolTokensIn) {
     final var keys = withdrawSolKeys(
       solanaAccounts,
       stakePoolKey,
       stakePoolWithdrawAuthorityKey,
-      transferAuthorityKey,
-      sourcePoolAccountKey,
-      reserveStakeKey,
-      destinationSystemAccountKey,
+      userTransferAuthorityKey,
+      poolTokensFromKey,
+      reserveStakeAccountKey,
+      lamportsToKey,
       managerFeeAccountKey,
       poolMintKey,
-      tokenProgramKey,
+      tokenProgramIdKey,
       solWithdrawAuthorityKey
     );
     return withdrawSol(invokedStakePoolProgramMeta, keys, poolTokensIn);
@@ -1846,7 +2078,7 @@ public final class StakePoolProgram {
 
   /// Withdraw SOL directly from the pool's reserve account. Fails if the reserve does not have enough SOL.
   ///
-  /// @param poolTokensIn: u64 Pool tokens to burn in exchange for lamports
+  /// @param poolTokensIn: u64
   public static Instruction withdrawSol(final AccountMeta invokedStakePoolProgramMeta,
                                         final List<AccountMeta> keys,
                                         final long poolTokensIn) {
@@ -1859,7 +2091,7 @@ public final class StakePoolProgram {
 
   /// Withdraw SOL directly from the pool's reserve account. Fails if the reserve does not have enough SOL.
   ///
-  /// @param poolTokensIn: u64 Pool tokens to burn in exchange for lamports
+  /// @param poolTokensIn: u64
   public record WithdrawSolIxData(int discriminator, long poolTokensIn) implements SerDe {
 
     public static WithdrawSolIxData read(final Instruction instruction) {
@@ -1901,9 +2133,15 @@ public final class StakePoolProgram {
 
   public static final Discriminator CREATE_TOKEN_METADATA_DISCRIMINATOR = toDiscriminator(17);
 
-  /// Create token metadata for the stake-pool token in the metaplex-token program.
+  /// Create token metadata for the stake-pool token in the metaplex-token program
   ///
-  /// @param payerKey Payer for the creation of the token metadata account
+  /// @param stakePoolKey Stake pool
+  /// @param managerKey Manager
+  /// @param stakePoolWithdrawAuthorityKey Stake pool withdraw authority
+  /// @param poolMintKey Pool token mint account
+  /// @param payerKey Payer for creation of token metadata account
+  /// @param tokenMetadataKey Token metadata account
+  /// @param mplTokenMetadataKey Metadata program id
   public static List<AccountMeta> createTokenMetadataKeys(final SolanaAccounts solanaAccounts,
                                                           final PublicKey stakePoolKey,
                                                           final PublicKey managerKey,
@@ -1924,11 +2162,17 @@ public final class StakePoolProgram {
     );
   }
 
-  /// Create token metadata for the stake-pool token in the metaplex-token program.
+  /// Create token metadata for the stake-pool token in the metaplex-token program
   ///
-  /// @param payerKey Payer for the creation of the token metadata account
+  /// @param stakePoolKey Stake pool
+  /// @param managerKey Manager
+  /// @param stakePoolWithdrawAuthorityKey Stake pool withdraw authority
+  /// @param poolMintKey Pool token mint account
+  /// @param payerKey Payer for creation of token metadata account
+  /// @param tokenMetadataKey Token metadata account
+  /// @param mplTokenMetadataKey Metadata program id
   /// @param name Token name
-  /// @param symbol Token symbol, e.g. stkSOL
+  /// @param symbol Token symbol e.g. `stkSOL`
   /// @param uri URI of the uploaded metadata of the spl-token
   public static Instruction createTokenMetadata(final AccountMeta invokedStakePoolProgramMeta,
                                                 final SolanaAccounts solanaAccounts,
@@ -1961,10 +2205,10 @@ public final class StakePoolProgram {
     );
   }
 
-  /// Create token metadata for the stake-pool token in the metaplex-token program.
+  /// Create token metadata for the stake-pool token in the metaplex-token program
   ///
   /// @param name Token name
-  /// @param symbol Token symbol, e.g. stkSOL
+  /// @param symbol Token symbol e.g. `stkSOL`
   /// @param uri URI of the uploaded metadata of the spl-token
   public static Instruction createTokenMetadata(final AccountMeta invokedStakePoolProgramMeta,
                                                 final List<AccountMeta> keys,
@@ -1991,10 +2235,10 @@ public final class StakePoolProgram {
     return Instruction.createInstruction(invokedStakePoolProgramMeta, keys, _data);
   }
 
-  /// Create token metadata for the stake-pool token in the metaplex-token program.
+  /// Create token metadata for the stake-pool token in the metaplex-token program
   ///
   /// @param name Token name
-  /// @param symbol Token symbol, e.g. stkSOL
+  /// @param symbol Token symbol e.g. `stkSOL`
   /// @param uri URI of the uploaded metadata of the spl-token
   public record CreateTokenMetadataIxData(int discriminator,
                                           String name, byte[] _name,
@@ -2068,8 +2312,13 @@ public final class StakePoolProgram {
 
   public static final Discriminator UPDATE_TOKEN_METADATA_DISCRIMINATOR = toDiscriminator(18);
 
-  /// Update token metadata for the stake-pool token in the metaplex-token program.
+  /// Update token metadata for the stake-pool token in the metaplex-token program
   ///
+  /// @param stakePoolKey Stake pool
+  /// @param managerKey Manager
+  /// @param stakePoolWithdrawAuthorityKey Stake pool withdraw authority
+  /// @param tokenMetadataKey Token metadata account
+  /// @param mplTokenMetadataKey Metadata program id
   public static List<AccountMeta> updateTokenMetadataKeys(final PublicKey stakePoolKey,
                                                           final PublicKey managerKey,
                                                           final PublicKey stakePoolWithdrawAuthorityKey,
@@ -2084,10 +2333,15 @@ public final class StakePoolProgram {
     );
   }
 
-  /// Update token metadata for the stake-pool token in the metaplex-token program.
+  /// Update token metadata for the stake-pool token in the metaplex-token program
   ///
+  /// @param stakePoolKey Stake pool
+  /// @param managerKey Manager
+  /// @param stakePoolWithdrawAuthorityKey Stake pool withdraw authority
+  /// @param tokenMetadataKey Token metadata account
+  /// @param mplTokenMetadataKey Metadata program id
   /// @param name Token name
-  /// @param symbol Token symbol, e.g. stkSOL
+  /// @param symbol Token symbol e.g. `stkSOL`
   /// @param uri URI of the uploaded metadata of the spl-token
   public static Instruction updateTokenMetadata(final AccountMeta invokedStakePoolProgramMeta,
                                                 final PublicKey stakePoolKey,
@@ -2114,10 +2368,10 @@ public final class StakePoolProgram {
     );
   }
 
-  /// Update token metadata for the stake-pool token in the metaplex-token program.
+  /// Update token metadata for the stake-pool token in the metaplex-token program
   ///
   /// @param name Token name
-  /// @param symbol Token symbol, e.g. stkSOL
+  /// @param symbol Token symbol e.g. `stkSOL`
   /// @param uri URI of the uploaded metadata of the spl-token
   public static Instruction updateTokenMetadata(final AccountMeta invokedStakePoolProgramMeta,
                                                 final List<AccountMeta> keys,
@@ -2144,10 +2398,10 @@ public final class StakePoolProgram {
     return Instruction.createInstruction(invokedStakePoolProgramMeta, keys, _data);
   }
 
-  /// Update token metadata for the stake-pool token in the metaplex-token program.
+  /// Update token metadata for the stake-pool token in the metaplex-token program
   ///
   /// @param name Token name
-  /// @param symbol Token symbol, e.g. stkSOL
+  /// @param symbol Token symbol e.g. `stkSOL`
   /// @param uri URI of the uploaded metadata of the spl-token
   public record UpdateTokenMetadataIxData(int discriminator,
                                           String name, byte[] _name,
@@ -2222,29 +2476,42 @@ public final class StakePoolProgram {
   public static final Discriminator INCREASE_ADDITIONAL_VALIDATOR_STAKE_DISCRIMINATOR = toDiscriminator(19);
 
   /// (Staker only) Increase stake on a validator again in an epoch.
+  /// Works regardless if the transient stake account exists.
+  /// Internally, this instruction splits reserve stake into an ephemeral stake account, activates it, then merges or splits it into the transient stake account delegated to the appropriate validator. `UpdateValidatorListBalance` will do the work of merging once it's ready.
+  /// The minimum amount to move is rent-exemption plus `max(crate::MINIMUM_ACTIVE_STAKE, solana_stake_interface::tools::get_minimum_delegation())`.
+  /// User data: amount of lamports to increase on the given validator.
+  /// The actual amount split into the transient stake account is: `lamports + stake_rent_exemption`.
+  /// The rent-exemption of the stake account is withdrawn back to the reserve after it is merged.
   ///
-  /// @param ephemeralStakeAccountKey Uninitialized ephemeral stake account to receive stake
-  /// @param validatorVoteAccountKey Validator vote account to delegate to
+  /// @param stakePoolKey Stake pool
+  /// @param stakerKey Stake pool staker
+  /// @param stakePoolWithdrawAuthorityKey Stake pool withdraw authority
+  /// @param validatorListKey Validator list
+  /// @param reserveStakeKey Stake pool reserve stake
+  /// @param ephemeralStakeKey Uninitialized ephemeral stake account to receive stake
+  /// @param transientStakeKey Transient stake account
+  /// @param validatorStakeKey Validator stake account
+  /// @param validatorKey Validator vote account to delegate to
   public static List<AccountMeta> increaseAdditionalValidatorStakeKeys(final SolanaAccounts solanaAccounts,
                                                                        final PublicKey stakePoolKey,
                                                                        final PublicKey stakerKey,
                                                                        final PublicKey stakePoolWithdrawAuthorityKey,
                                                                        final PublicKey validatorListKey,
                                                                        final PublicKey reserveStakeKey,
-                                                                       final PublicKey ephemeralStakeAccountKey,
-                                                                       final PublicKey transientStakeAccountKey,
-                                                                       final PublicKey validatorStakeAccountKey,
-                                                                       final PublicKey validatorVoteAccountKey) {
+                                                                       final PublicKey ephemeralStakeKey,
+                                                                       final PublicKey transientStakeKey,
+                                                                       final PublicKey validatorStakeKey,
+                                                                       final PublicKey validatorKey) {
     return List.of(
       createRead(stakePoolKey),
       createReadOnlySigner(stakerKey),
       createRead(stakePoolWithdrawAuthorityKey),
       createWrite(validatorListKey),
       createWrite(reserveStakeKey),
-      createWrite(ephemeralStakeAccountKey),
-      createWrite(transientStakeAccountKey),
-      createRead(validatorStakeAccountKey),
-      createRead(validatorVoteAccountKey),
+      createWrite(ephemeralStakeKey),
+      createWrite(transientStakeKey),
+      createRead(validatorStakeKey),
+      createRead(validatorKey),
       createRead(solanaAccounts.clockSysVar()),
       createRead(solanaAccounts.stakeHistorySysVar()),
       createRead(solanaAccounts.stakeConfig()),
@@ -2254,12 +2521,25 @@ public final class StakePoolProgram {
   }
 
   /// (Staker only) Increase stake on a validator again in an epoch.
+  /// Works regardless if the transient stake account exists.
+  /// Internally, this instruction splits reserve stake into an ephemeral stake account, activates it, then merges or splits it into the transient stake account delegated to the appropriate validator. `UpdateValidatorListBalance` will do the work of merging once it's ready.
+  /// The minimum amount to move is rent-exemption plus `max(crate::MINIMUM_ACTIVE_STAKE, solana_stake_interface::tools::get_minimum_delegation())`.
+  /// User data: amount of lamports to increase on the given validator.
+  /// The actual amount split into the transient stake account is: `lamports + stake_rent_exemption`.
+  /// The rent-exemption of the stake account is withdrawn back to the reserve after it is merged.
   ///
-  /// @param ephemeralStakeAccountKey Uninitialized ephemeral stake account to receive stake
-  /// @param validatorVoteAccountKey Validator vote account to delegate to
-  /// @param lamports: u64 Amount of lamports to increase on the given validator
-  /// @param transientStakeSeed: u64 Seed used to create the transient stake account
-  /// @param ephemeralStakeSeed: u64 Seed used to create the ephemeral account
+  /// @param stakePoolKey Stake pool
+  /// @param stakerKey Stake pool staker
+  /// @param stakePoolWithdrawAuthorityKey Stake pool withdraw authority
+  /// @param validatorListKey Validator list
+  /// @param reserveStakeKey Stake pool reserve stake
+  /// @param ephemeralStakeKey Uninitialized ephemeral stake account to receive stake
+  /// @param transientStakeKey Transient stake account
+  /// @param validatorStakeKey Validator stake account
+  /// @param validatorKey Validator vote account to delegate to
+  /// @param lamports: u64 amount of lamports to increase on the given validator
+  /// @param transientStakeSeed: u64 seed used to create transient stake account
+  /// @param ephemeralStakeSeed: u64 seed used to create ephemeral account.
   public static Instruction increaseAdditionalValidatorStake(final AccountMeta invokedStakePoolProgramMeta,
                                                              final SolanaAccounts solanaAccounts,
                                                              final PublicKey stakePoolKey,
@@ -2267,10 +2547,10 @@ public final class StakePoolProgram {
                                                              final PublicKey stakePoolWithdrawAuthorityKey,
                                                              final PublicKey validatorListKey,
                                                              final PublicKey reserveStakeKey,
-                                                             final PublicKey ephemeralStakeAccountKey,
-                                                             final PublicKey transientStakeAccountKey,
-                                                             final PublicKey validatorStakeAccountKey,
-                                                             final PublicKey validatorVoteAccountKey,
+                                                             final PublicKey ephemeralStakeKey,
+                                                             final PublicKey transientStakeKey,
+                                                             final PublicKey validatorStakeKey,
+                                                             final PublicKey validatorKey,
                                                              final long lamports,
                                                              final long transientStakeSeed,
                                                              final long ephemeralStakeSeed) {
@@ -2281,10 +2561,10 @@ public final class StakePoolProgram {
       stakePoolWithdrawAuthorityKey,
       validatorListKey,
       reserveStakeKey,
-      ephemeralStakeAccountKey,
-      transientStakeAccountKey,
-      validatorStakeAccountKey,
-      validatorVoteAccountKey
+      ephemeralStakeKey,
+      transientStakeKey,
+      validatorStakeKey,
+      validatorKey
     );
     return increaseAdditionalValidatorStake(
       invokedStakePoolProgramMeta,
@@ -2296,10 +2576,16 @@ public final class StakePoolProgram {
   }
 
   /// (Staker only) Increase stake on a validator again in an epoch.
+  /// Works regardless if the transient stake account exists.
+  /// Internally, this instruction splits reserve stake into an ephemeral stake account, activates it, then merges or splits it into the transient stake account delegated to the appropriate validator. `UpdateValidatorListBalance` will do the work of merging once it's ready.
+  /// The minimum amount to move is rent-exemption plus `max(crate::MINIMUM_ACTIVE_STAKE, solana_stake_interface::tools::get_minimum_delegation())`.
+  /// User data: amount of lamports to increase on the given validator.
+  /// The actual amount split into the transient stake account is: `lamports + stake_rent_exemption`.
+  /// The rent-exemption of the stake account is withdrawn back to the reserve after it is merged.
   ///
-  /// @param lamports: u64 Amount of lamports to increase on the given validator
-  /// @param transientStakeSeed: u64 Seed used to create the transient stake account
-  /// @param ephemeralStakeSeed: u64 Seed used to create the ephemeral account
+  /// @param lamports: u64 amount of lamports to increase on the given validator
+  /// @param transientStakeSeed: u64 seed used to create transient stake account
+  /// @param ephemeralStakeSeed: u64 seed used to create ephemeral account.
   public static Instruction increaseAdditionalValidatorStake(final AccountMeta invokedStakePoolProgramMeta,
                                                              final List<AccountMeta> keys,
                                                              final long lamports,
@@ -2317,10 +2603,16 @@ public final class StakePoolProgram {
   }
 
   /// (Staker only) Increase stake on a validator again in an epoch.
+  /// Works regardless if the transient stake account exists.
+  /// Internally, this instruction splits reserve stake into an ephemeral stake account, activates it, then merges or splits it into the transient stake account delegated to the appropriate validator. `UpdateValidatorListBalance` will do the work of merging once it's ready.
+  /// The minimum amount to move is rent-exemption plus `max(crate::MINIMUM_ACTIVE_STAKE, solana_stake_interface::tools::get_minimum_delegation())`.
+  /// User data: amount of lamports to increase on the given validator.
+  /// The actual amount split into the transient stake account is: `lamports + stake_rent_exemption`.
+  /// The rent-exemption of the stake account is withdrawn back to the reserve after it is merged.
   ///
-  /// @param lamports: u64 Amount of lamports to increase on the given validator
-  /// @param transientStakeSeed: u64 Seed used to create the transient stake account
-  /// @param ephemeralStakeSeed: u64 Seed used to create the ephemeral account
+  /// @param lamports: u64 amount of lamports to increase on the given validator
+  /// @param transientStakeSeed: u64 seed used to create transient stake account
+  /// @param ephemeralStakeSeed: u64 seed used to create ephemeral account.
   public record IncreaseAdditionalValidatorStakeIxData(int discriminator,
                                                        long lamports,
                                                        long transientStakeSeed,
@@ -2378,29 +2670,37 @@ public final class StakePoolProgram {
 
   public static final Discriminator DECREASE_ADDITIONAL_VALIDATOR_STAKE_DISCRIMINATOR = toDiscriminator(20);
 
-  /// (Staker only) Decrease active stake again from a validator, eventually moving it to the reserve.
+  /// (Staker only) Decrease active stake again from a validator, eventually moving it to the reserve
+  /// Works regardless if the transient stake account already exists.
+  /// Internally, this instruction: * withdraws rent-exempt reserve lamports from the reserve into the ephemeral stake * splits a validator stake account into an ephemeral stake account * deactivates the ephemeral account * merges or splits the ephemeral account into the transient stake account delegated to the appropriate validator
+  /// The amount of lamports to move must be at least `max(crate::MINIMUM_ACTIVE_STAKE, solana_stake_interface::tools::get_minimum_delegation())`.
   ///
-  /// @param reserveStakeKey Reserve stake account, to fund the rent exempt reserve
-  /// @param validatorStakeAccountKey Canonical stake account to split from
-  /// @param ephemeralStakeAccountKey Uninitialized ephemeral stake account to receive stake
+  /// @param stakePoolKey Stake pool
+  /// @param stakerKey Stake pool staker
+  /// @param stakePoolWithdrawAuthorityKey Stake pool withdraw authority
+  /// @param validatorListKey Validator list
+  /// @param reserveStakeKey Reserve stake account, to fund rent exempt reserve
+  /// @param validatorStakeKey Canonical stake account to split from
+  /// @param ephemeralStakeKey Uninitialized ephemeral stake account to receive stake
+  /// @param transientStakeKey Transient stake account
   public static List<AccountMeta> decreaseAdditionalValidatorStakeKeys(final SolanaAccounts solanaAccounts,
                                                                        final PublicKey stakePoolKey,
                                                                        final PublicKey stakerKey,
                                                                        final PublicKey stakePoolWithdrawAuthorityKey,
                                                                        final PublicKey validatorListKey,
                                                                        final PublicKey reserveStakeKey,
-                                                                       final PublicKey validatorStakeAccountKey,
-                                                                       final PublicKey ephemeralStakeAccountKey,
-                                                                       final PublicKey transientStakeAccountKey) {
+                                                                       final PublicKey validatorStakeKey,
+                                                                       final PublicKey ephemeralStakeKey,
+                                                                       final PublicKey transientStakeKey) {
     return List.of(
       createRead(stakePoolKey),
       createReadOnlySigner(stakerKey),
       createRead(stakePoolWithdrawAuthorityKey),
       createWrite(validatorListKey),
       createWrite(reserveStakeKey),
-      createWrite(validatorStakeAccountKey),
-      createWrite(ephemeralStakeAccountKey),
-      createWrite(transientStakeAccountKey),
+      createWrite(validatorStakeKey),
+      createWrite(ephemeralStakeKey),
+      createWrite(transientStakeKey),
       createRead(solanaAccounts.clockSysVar()),
       createRead(solanaAccounts.stakeHistorySysVar()),
       createRead(solanaAccounts.systemProgram()),
@@ -2408,14 +2708,22 @@ public final class StakePoolProgram {
     );
   }
 
-  /// (Staker only) Decrease active stake again from a validator, eventually moving it to the reserve.
+  /// (Staker only) Decrease active stake again from a validator, eventually moving it to the reserve
+  /// Works regardless if the transient stake account already exists.
+  /// Internally, this instruction: * withdraws rent-exempt reserve lamports from the reserve into the ephemeral stake * splits a validator stake account into an ephemeral stake account * deactivates the ephemeral account * merges or splits the ephemeral account into the transient stake account delegated to the appropriate validator
+  /// The amount of lamports to move must be at least `max(crate::MINIMUM_ACTIVE_STAKE, solana_stake_interface::tools::get_minimum_delegation())`.
   ///
-  /// @param reserveStakeKey Reserve stake account, to fund the rent exempt reserve
-  /// @param validatorStakeAccountKey Canonical stake account to split from
-  /// @param ephemeralStakeAccountKey Uninitialized ephemeral stake account to receive stake
-  /// @param lamports: u64 Amount of lamports to split into the transient stake account
-  /// @param transientStakeSeed: u64 Seed used to create the transient stake account
-  /// @param ephemeralStakeSeed: u64 Seed used to create the ephemeral account
+  /// @param stakePoolKey Stake pool
+  /// @param stakerKey Stake pool staker
+  /// @param stakePoolWithdrawAuthorityKey Stake pool withdraw authority
+  /// @param validatorListKey Validator list
+  /// @param reserveStakeKey Reserve stake account, to fund rent exempt reserve
+  /// @param validatorStakeKey Canonical stake account to split from
+  /// @param ephemeralStakeKey Uninitialized ephemeral stake account to receive stake
+  /// @param transientStakeKey Transient stake account
+  /// @param lamports: u64 amount of lamports to split into the transient stake account
+  /// @param transientStakeSeed: u64 seed used to create transient stake account
+  /// @param ephemeralStakeSeed: u64 seed used to create ephemeral account.
   public static Instruction decreaseAdditionalValidatorStake(final AccountMeta invokedStakePoolProgramMeta,
                                                              final SolanaAccounts solanaAccounts,
                                                              final PublicKey stakePoolKey,
@@ -2423,9 +2731,9 @@ public final class StakePoolProgram {
                                                              final PublicKey stakePoolWithdrawAuthorityKey,
                                                              final PublicKey validatorListKey,
                                                              final PublicKey reserveStakeKey,
-                                                             final PublicKey validatorStakeAccountKey,
-                                                             final PublicKey ephemeralStakeAccountKey,
-                                                             final PublicKey transientStakeAccountKey,
+                                                             final PublicKey validatorStakeKey,
+                                                             final PublicKey ephemeralStakeKey,
+                                                             final PublicKey transientStakeKey,
                                                              final long lamports,
                                                              final long transientStakeSeed,
                                                              final long ephemeralStakeSeed) {
@@ -2436,9 +2744,9 @@ public final class StakePoolProgram {
       stakePoolWithdrawAuthorityKey,
       validatorListKey,
       reserveStakeKey,
-      validatorStakeAccountKey,
-      ephemeralStakeAccountKey,
-      transientStakeAccountKey
+      validatorStakeKey,
+      ephemeralStakeKey,
+      transientStakeKey
     );
     return decreaseAdditionalValidatorStake(
       invokedStakePoolProgramMeta,
@@ -2449,11 +2757,14 @@ public final class StakePoolProgram {
     );
   }
 
-  /// (Staker only) Decrease active stake again from a validator, eventually moving it to the reserve.
+  /// (Staker only) Decrease active stake again from a validator, eventually moving it to the reserve
+  /// Works regardless if the transient stake account already exists.
+  /// Internally, this instruction: * withdraws rent-exempt reserve lamports from the reserve into the ephemeral stake * splits a validator stake account into an ephemeral stake account * deactivates the ephemeral account * merges or splits the ephemeral account into the transient stake account delegated to the appropriate validator
+  /// The amount of lamports to move must be at least `max(crate::MINIMUM_ACTIVE_STAKE, solana_stake_interface::tools::get_minimum_delegation())`.
   ///
-  /// @param lamports: u64 Amount of lamports to split into the transient stake account
-  /// @param transientStakeSeed: u64 Seed used to create the transient stake account
-  /// @param ephemeralStakeSeed: u64 Seed used to create the ephemeral account
+  /// @param lamports: u64 amount of lamports to split into the transient stake account
+  /// @param transientStakeSeed: u64 seed used to create transient stake account
+  /// @param ephemeralStakeSeed: u64 seed used to create ephemeral account.
   public static Instruction decreaseAdditionalValidatorStake(final AccountMeta invokedStakePoolProgramMeta,
                                                              final List<AccountMeta> keys,
                                                              final long lamports,
@@ -2470,11 +2781,14 @@ public final class StakePoolProgram {
     return Instruction.createInstruction(invokedStakePoolProgramMeta, keys, _data);
   }
 
-  /// (Staker only) Decrease active stake again from a validator, eventually moving it to the reserve.
+  /// (Staker only) Decrease active stake again from a validator, eventually moving it to the reserve
+  /// Works regardless if the transient stake account already exists.
+  /// Internally, this instruction: * withdraws rent-exempt reserve lamports from the reserve into the ephemeral stake * splits a validator stake account into an ephemeral stake account * deactivates the ephemeral account * merges or splits the ephemeral account into the transient stake account delegated to the appropriate validator
+  /// The amount of lamports to move must be at least `max(crate::MINIMUM_ACTIVE_STAKE, solana_stake_interface::tools::get_minimum_delegation())`.
   ///
-  /// @param lamports: u64 Amount of lamports to split into the transient stake account
-  /// @param transientStakeSeed: u64 Seed used to create the transient stake account
-  /// @param ephemeralStakeSeed: u64 Seed used to create the ephemeral account
+  /// @param lamports: u64 amount of lamports to split into the transient stake account
+  /// @param transientStakeSeed: u64 seed used to create transient stake account
+  /// @param ephemeralStakeSeed: u64 seed used to create ephemeral account.
   public record DecreaseAdditionalValidatorStakeIxData(int discriminator,
                                                        long lamports,
                                                        long transientStakeSeed,
@@ -2532,27 +2846,34 @@ public final class StakePoolProgram {
 
   public static final Discriminator DECREASE_VALIDATOR_STAKE_WITH_RESERVE_DISCRIMINATOR = toDiscriminator(21);
 
-  /// (Staker only) Decrease active stake on a validator, eventually moving it to the reserve.
+  /// (Staker only) Decrease active stake on a validator, eventually moving it to the reserve
+  /// Internally, this instruction: * withdraws enough lamports to make the transient account rent-exempt * splits from a validator stake account into a transient stake account * deactivates the transient stake account
+  /// In order to rebalance the pool without taking custody, the staker needs a way of reducing the stake on a stake account. This instruction splits some amount of stake, up to the total activated stake, from the canonical validator stake account, into its "transient" stake account.
+  /// The instruction only succeeds if the transient stake account does not exist. The amount of lamports to move must be at least rent-exemption plus `max(crate::MINIMUM_ACTIVE_STAKE, solana_stake_interface::tools::get_minimum_delegation())`.
   ///
-  /// @param reserveStakeKey Reserve stake account, to fund the rent exempt reserve
-  /// @param validatorStakeAccountKey Canonical stake account to split from
-  /// @param transientStakeAccountKey Transient stake account to receive the split
+  /// @param stakePoolKey Stake pool
+  /// @param stakerKey Stake pool staker
+  /// @param stakePoolWithdrawAuthorityKey Stake pool withdraw authority
+  /// @param validatorListKey Validator list
+  /// @param reserveStakeKey Reserve stake account, to fund rent exempt reserve
+  /// @param validatorStakeKey Canonical stake account to split from
+  /// @param transientStakeKey Transient stake account to receive split
   public static List<AccountMeta> decreaseValidatorStakeWithReserveKeys(final SolanaAccounts solanaAccounts,
                                                                         final PublicKey stakePoolKey,
                                                                         final PublicKey stakerKey,
                                                                         final PublicKey stakePoolWithdrawAuthorityKey,
                                                                         final PublicKey validatorListKey,
                                                                         final PublicKey reserveStakeKey,
-                                                                        final PublicKey validatorStakeAccountKey,
-                                                                        final PublicKey transientStakeAccountKey) {
+                                                                        final PublicKey validatorStakeKey,
+                                                                        final PublicKey transientStakeKey) {
     return List.of(
       createRead(stakePoolKey),
       createReadOnlySigner(stakerKey),
       createRead(stakePoolWithdrawAuthorityKey),
       createWrite(validatorListKey),
       createWrite(reserveStakeKey),
-      createWrite(validatorStakeAccountKey),
-      createWrite(transientStakeAccountKey),
+      createWrite(validatorStakeKey),
+      createWrite(transientStakeKey),
       createRead(solanaAccounts.clockSysVar()),
       createRead(solanaAccounts.stakeHistorySysVar()),
       createRead(solanaAccounts.systemProgram()),
@@ -2560,13 +2881,20 @@ public final class StakePoolProgram {
     );
   }
 
-  /// (Staker only) Decrease active stake on a validator, eventually moving it to the reserve.
+  /// (Staker only) Decrease active stake on a validator, eventually moving it to the reserve
+  /// Internally, this instruction: * withdraws enough lamports to make the transient account rent-exempt * splits from a validator stake account into a transient stake account * deactivates the transient stake account
+  /// In order to rebalance the pool without taking custody, the staker needs a way of reducing the stake on a stake account. This instruction splits some amount of stake, up to the total activated stake, from the canonical validator stake account, into its "transient" stake account.
+  /// The instruction only succeeds if the transient stake account does not exist. The amount of lamports to move must be at least rent-exemption plus `max(crate::MINIMUM_ACTIVE_STAKE, solana_stake_interface::tools::get_minimum_delegation())`.
   ///
-  /// @param reserveStakeKey Reserve stake account, to fund the rent exempt reserve
-  /// @param validatorStakeAccountKey Canonical stake account to split from
-  /// @param transientStakeAccountKey Transient stake account to receive the split
-  /// @param lamports: u64 Amount of lamports to split into the transient stake account
-  /// @param transientStakeSeed: u64 Seed used to create the transient stake account
+  /// @param stakePoolKey Stake pool
+  /// @param stakerKey Stake pool staker
+  /// @param stakePoolWithdrawAuthorityKey Stake pool withdraw authority
+  /// @param validatorListKey Validator list
+  /// @param reserveStakeKey Reserve stake account, to fund rent exempt reserve
+  /// @param validatorStakeKey Canonical stake account to split from
+  /// @param transientStakeKey Transient stake account to receive split
+  /// @param lamports: u64 amount of lamports to split into the transient stake account
+  /// @param transientStakeSeed: u64 seed used to create transient stake account
   public static Instruction decreaseValidatorStakeWithReserve(final AccountMeta invokedStakePoolProgramMeta,
                                                               final SolanaAccounts solanaAccounts,
                                                               final PublicKey stakePoolKey,
@@ -2574,8 +2902,8 @@ public final class StakePoolProgram {
                                                               final PublicKey stakePoolWithdrawAuthorityKey,
                                                               final PublicKey validatorListKey,
                                                               final PublicKey reserveStakeKey,
-                                                              final PublicKey validatorStakeAccountKey,
-                                                              final PublicKey transientStakeAccountKey,
+                                                              final PublicKey validatorStakeKey,
+                                                              final PublicKey transientStakeKey,
                                                               final long lamports,
                                                               final long transientStakeSeed) {
     final var keys = decreaseValidatorStakeWithReserveKeys(
@@ -2585,8 +2913,8 @@ public final class StakePoolProgram {
       stakePoolWithdrawAuthorityKey,
       validatorListKey,
       reserveStakeKey,
-      validatorStakeAccountKey,
-      transientStakeAccountKey
+      validatorStakeKey,
+      transientStakeKey
     );
     return decreaseValidatorStakeWithReserve(
       invokedStakePoolProgramMeta,
@@ -2596,10 +2924,13 @@ public final class StakePoolProgram {
     );
   }
 
-  /// (Staker only) Decrease active stake on a validator, eventually moving it to the reserve.
+  /// (Staker only) Decrease active stake on a validator, eventually moving it to the reserve
+  /// Internally, this instruction: * withdraws enough lamports to make the transient account rent-exempt * splits from a validator stake account into a transient stake account * deactivates the transient stake account
+  /// In order to rebalance the pool without taking custody, the staker needs a way of reducing the stake on a stake account. This instruction splits some amount of stake, up to the total activated stake, from the canonical validator stake account, into its "transient" stake account.
+  /// The instruction only succeeds if the transient stake account does not exist. The amount of lamports to move must be at least rent-exemption plus `max(crate::MINIMUM_ACTIVE_STAKE, solana_stake_interface::tools::get_minimum_delegation())`.
   ///
-  /// @param lamports: u64 Amount of lamports to split into the transient stake account
-  /// @param transientStakeSeed: u64 Seed used to create the transient stake account
+  /// @param lamports: u64 amount of lamports to split into the transient stake account
+  /// @param transientStakeSeed: u64 seed used to create transient stake account
   public static Instruction decreaseValidatorStakeWithReserve(final AccountMeta invokedStakePoolProgramMeta,
                                                               final List<AccountMeta> keys,
                                                               final long lamports,
@@ -2613,10 +2944,13 @@ public final class StakePoolProgram {
     return Instruction.createInstruction(invokedStakePoolProgramMeta, keys, _data);
   }
 
-  /// (Staker only) Decrease active stake on a validator, eventually moving it to the reserve.
+  /// (Staker only) Decrease active stake on a validator, eventually moving it to the reserve
+  /// Internally, this instruction: * withdraws enough lamports to make the transient account rent-exempt * splits from a validator stake account into a transient stake account * deactivates the transient stake account
+  /// In order to rebalance the pool without taking custody, the staker needs a way of reducing the stake on a stake account. This instruction splits some amount of stake, up to the total activated stake, from the canonical validator stake account, into its "transient" stake account.
+  /// The instruction only succeeds if the transient stake account does not exist. The amount of lamports to move must be at least rent-exemption plus `max(crate::MINIMUM_ACTIVE_STAKE, solana_stake_interface::tools::get_minimum_delegation())`.
   ///
-  /// @param lamports: u64 Amount of lamports to split into the transient stake account
-  /// @param transientStakeSeed: u64 Seed used to create the transient stake account
+  /// @param lamports: u64 amount of lamports to split into the transient stake account
+  /// @param transientStakeSeed: u64 seed used to create transient stake account
   public record DecreaseValidatorStakeWithReserveIxData(int discriminator,
                                                         long lamports,
                                                         long transientStakeSeed) implements SerDe {
@@ -2665,39 +2999,50 @@ public final class StakePoolProgram {
 
   public static final Discriminator REDELEGATE_DISCRIMINATOR = toDiscriminator(22);
 
-  /// Deprecated since 2.0.0. (Staker only) Redelegate active stake on a validator, eventually moving it to another.
+  /// Deprecated since 2.0.0: The stake redelegate instruction used in this will not be enabled.
+  /// (Staker only) Redelegate active stake on a validator, eventually moving it to another
+  /// Internally, this instruction splits a validator stake account into its corresponding transient stake account, redelegates it to an ephemeral stake account, then merges that stake into the destination transient stake account.
+  /// In order to rebalance the pool without taking custody, the staker needs a way of reducing the stake on a stake account. This instruction splits some amount of stake, up to the total activated stake, from the canonical validator stake account, into its "transient" stake account.
+  /// The instruction only succeeds if the source transient stake account and ephemeral stake account do not exist.
+  /// The amount of lamports to move must be at least rent-exemption plus the minimum delegation amount. Rent-exemption plus minimum delegation is required for the destination ephemeral stake account.
+  /// The rent-exemption for the source transient account comes from the stake pool reserve, if needed.
+  /// The amount that arrives at the destination validator in the end is `redelegate_lamports - rent_exemption` if the destination transient account does *not* exist, and `redelegate_lamports` if the destination transient account already exists. The `rent_exemption` is not activated when creating the destination transient stake account, but if it already exists, then the full amount is delegated.
   ///
-  /// @param reserveStakeKey Reserve stake account, to withdraw the rent exempt reserve
-  /// @param sourceValidatorStakeAccountKey Source canonical stake account to split from
-  /// @param sourceTransientStakeAccountKey Source transient stake account to receive the split and be redelegated
-  /// @param ephemeralStakeAccountKey Uninitialized ephemeral stake account to receive the redelegation
-  /// @param destinationTransientStakeAccountKey Destination transient stake account to receive the ephemeral stake by merge
-  /// @param destinationValidatorStakeAccountKey Destination stake account to receive the transient stake after activation
-  /// @param validatorVoteAccountKey Destination validator vote account
+  /// @param stakePoolKey Stake pool
+  /// @param stakerKey Stake pool staker
+  /// @param stakePoolWithdrawAuthorityKey Stake pool withdraw authority
+  /// @param validatorListKey Validator list
+  /// @param reserveStakeKey Reserve stake account, to withdraw rent exempt reserve
+  /// @param sourceValidatorStakeKey Source canonical stake account to split from
+  /// @param sourceTransientStakeKey Source transient stake account to receive split and be redelegated
+  /// @param ephemeralStakeKey Uninitialized ephemeral stake account to receive redelegation
+  /// @param destinationTransientStakeKey Destination transient stake account to receive ephemeral stake by merge
+  /// @param destinationValidatorStakeKey Destination stake account to receive transient stake after activation
+  /// @param validatorKey Destination validator vote account
   public static List<AccountMeta> redelegateKeys(final SolanaAccounts solanaAccounts,
                                                  final PublicKey stakePoolKey,
                                                  final PublicKey stakerKey,
                                                  final PublicKey stakePoolWithdrawAuthorityKey,
                                                  final PublicKey validatorListKey,
                                                  final PublicKey reserveStakeKey,
-                                                 final PublicKey sourceValidatorStakeAccountKey,
-                                                 final PublicKey sourceTransientStakeAccountKey,
-                                                 final PublicKey ephemeralStakeAccountKey,
-                                                 final PublicKey destinationTransientStakeAccountKey,
-                                                 final PublicKey destinationValidatorStakeAccountKey,
-                                                 final PublicKey validatorVoteAccountKey) {
+                                                 final PublicKey sourceValidatorStakeKey,
+                                                 final PublicKey sourceTransientStakeKey,
+                                                 final PublicKey ephemeralStakeKey,
+                                                 final PublicKey destinationTransientStakeKey,
+                                                 final PublicKey destinationValidatorStakeKey,
+                                                 final PublicKey validatorKey) {
     return List.of(
       createRead(stakePoolKey),
       createReadOnlySigner(stakerKey),
       createRead(stakePoolWithdrawAuthorityKey),
       createWrite(validatorListKey),
       createWrite(reserveStakeKey),
-      createWrite(sourceValidatorStakeAccountKey),
-      createWrite(sourceTransientStakeAccountKey),
-      createWrite(ephemeralStakeAccountKey),
-      createWrite(destinationTransientStakeAccountKey),
-      createRead(destinationValidatorStakeAccountKey),
-      createRead(validatorVoteAccountKey),
+      createWrite(sourceValidatorStakeKey),
+      createWrite(sourceTransientStakeKey),
+      createWrite(ephemeralStakeKey),
+      createWrite(destinationTransientStakeKey),
+      createRead(destinationValidatorStakeKey),
+      createRead(validatorKey),
       createRead(solanaAccounts.clockSysVar()),
       createRead(solanaAccounts.stakeHistorySysVar()),
       createRead(solanaAccounts.stakeConfig()),
@@ -2706,19 +3051,30 @@ public final class StakePoolProgram {
     );
   }
 
-  /// Deprecated since 2.0.0. (Staker only) Redelegate active stake on a validator, eventually moving it to another.
+  /// Deprecated since 2.0.0: The stake redelegate instruction used in this will not be enabled.
+  /// (Staker only) Redelegate active stake on a validator, eventually moving it to another
+  /// Internally, this instruction splits a validator stake account into its corresponding transient stake account, redelegates it to an ephemeral stake account, then merges that stake into the destination transient stake account.
+  /// In order to rebalance the pool without taking custody, the staker needs a way of reducing the stake on a stake account. This instruction splits some amount of stake, up to the total activated stake, from the canonical validator stake account, into its "transient" stake account.
+  /// The instruction only succeeds if the source transient stake account and ephemeral stake account do not exist.
+  /// The amount of lamports to move must be at least rent-exemption plus the minimum delegation amount. Rent-exemption plus minimum delegation is required for the destination ephemeral stake account.
+  /// The rent-exemption for the source transient account comes from the stake pool reserve, if needed.
+  /// The amount that arrives at the destination validator in the end is `redelegate_lamports - rent_exemption` if the destination transient account does *not* exist, and `redelegate_lamports` if the destination transient account already exists. The `rent_exemption` is not activated when creating the destination transient stake account, but if it already exists, then the full amount is delegated.
   ///
-  /// @param reserveStakeKey Reserve stake account, to withdraw the rent exempt reserve
-  /// @param sourceValidatorStakeAccountKey Source canonical stake account to split from
-  /// @param sourceTransientStakeAccountKey Source transient stake account to receive the split and be redelegated
-  /// @param ephemeralStakeAccountKey Uninitialized ephemeral stake account to receive the redelegation
-  /// @param destinationTransientStakeAccountKey Destination transient stake account to receive the ephemeral stake by merge
-  /// @param destinationValidatorStakeAccountKey Destination stake account to receive the transient stake after activation
-  /// @param validatorVoteAccountKey Destination validator vote account
+  /// @param stakePoolKey Stake pool
+  /// @param stakerKey Stake pool staker
+  /// @param stakePoolWithdrawAuthorityKey Stake pool withdraw authority
+  /// @param validatorListKey Validator list
+  /// @param reserveStakeKey Reserve stake account, to withdraw rent exempt reserve
+  /// @param sourceValidatorStakeKey Source canonical stake account to split from
+  /// @param sourceTransientStakeKey Source transient stake account to receive split and be redelegated
+  /// @param ephemeralStakeKey Uninitialized ephemeral stake account to receive redelegation
+  /// @param destinationTransientStakeKey Destination transient stake account to receive ephemeral stake by merge
+  /// @param destinationValidatorStakeKey Destination stake account to receive transient stake after activation
+  /// @param validatorKey Destination validator vote account
   /// @param lamports: u64 Amount of lamports to redelegate
-  /// @param sourceTransientStakeSeed: u64 Seed used to create the source transient stake account
-  /// @param ephemeralStakeSeed: u64 Seed used to create the destination ephemeral account
-  /// @param destinationTransientStakeSeed: u64 Seed used to create the destination transient stake account; must match the current seed if transient stake already exists
+  /// @param sourceTransientStakeSeed: u64 Seed used to create source transient stake account
+  /// @param ephemeralStakeSeed: u64 Seed used to create destination ephemeral account.
+  /// @param destinationTransientStakeSeed: u64 Seed used to create destination transient stake account. If there is already transient stake, this must match the current seed, otherwise it can be anything
   public static Instruction redelegate(final AccountMeta invokedStakePoolProgramMeta,
                                        final SolanaAccounts solanaAccounts,
                                        final PublicKey stakePoolKey,
@@ -2726,12 +3082,12 @@ public final class StakePoolProgram {
                                        final PublicKey stakePoolWithdrawAuthorityKey,
                                        final PublicKey validatorListKey,
                                        final PublicKey reserveStakeKey,
-                                       final PublicKey sourceValidatorStakeAccountKey,
-                                       final PublicKey sourceTransientStakeAccountKey,
-                                       final PublicKey ephemeralStakeAccountKey,
-                                       final PublicKey destinationTransientStakeAccountKey,
-                                       final PublicKey destinationValidatorStakeAccountKey,
-                                       final PublicKey validatorVoteAccountKey,
+                                       final PublicKey sourceValidatorStakeKey,
+                                       final PublicKey sourceTransientStakeKey,
+                                       final PublicKey ephemeralStakeKey,
+                                       final PublicKey destinationTransientStakeKey,
+                                       final PublicKey destinationValidatorStakeKey,
+                                       final PublicKey validatorKey,
                                        final long lamports,
                                        final long sourceTransientStakeSeed,
                                        final long ephemeralStakeSeed,
@@ -2743,12 +3099,12 @@ public final class StakePoolProgram {
       stakePoolWithdrawAuthorityKey,
       validatorListKey,
       reserveStakeKey,
-      sourceValidatorStakeAccountKey,
-      sourceTransientStakeAccountKey,
-      ephemeralStakeAccountKey,
-      destinationTransientStakeAccountKey,
-      destinationValidatorStakeAccountKey,
-      validatorVoteAccountKey
+      sourceValidatorStakeKey,
+      sourceTransientStakeKey,
+      ephemeralStakeKey,
+      destinationTransientStakeKey,
+      destinationValidatorStakeKey,
+      validatorKey
     );
     return redelegate(
       invokedStakePoolProgramMeta,
@@ -2760,12 +3116,19 @@ public final class StakePoolProgram {
     );
   }
 
-  /// Deprecated since 2.0.0. (Staker only) Redelegate active stake on a validator, eventually moving it to another.
+  /// Deprecated since 2.0.0: The stake redelegate instruction used in this will not be enabled.
+  /// (Staker only) Redelegate active stake on a validator, eventually moving it to another
+  /// Internally, this instruction splits a validator stake account into its corresponding transient stake account, redelegates it to an ephemeral stake account, then merges that stake into the destination transient stake account.
+  /// In order to rebalance the pool without taking custody, the staker needs a way of reducing the stake on a stake account. This instruction splits some amount of stake, up to the total activated stake, from the canonical validator stake account, into its "transient" stake account.
+  /// The instruction only succeeds if the source transient stake account and ephemeral stake account do not exist.
+  /// The amount of lamports to move must be at least rent-exemption plus the minimum delegation amount. Rent-exemption plus minimum delegation is required for the destination ephemeral stake account.
+  /// The rent-exemption for the source transient account comes from the stake pool reserve, if needed.
+  /// The amount that arrives at the destination validator in the end is `redelegate_lamports - rent_exemption` if the destination transient account does *not* exist, and `redelegate_lamports` if the destination transient account already exists. The `rent_exemption` is not activated when creating the destination transient stake account, but if it already exists, then the full amount is delegated.
   ///
   /// @param lamports: u64 Amount of lamports to redelegate
-  /// @param sourceTransientStakeSeed: u64 Seed used to create the source transient stake account
-  /// @param ephemeralStakeSeed: u64 Seed used to create the destination ephemeral account
-  /// @param destinationTransientStakeSeed: u64 Seed used to create the destination transient stake account; must match the current seed if transient stake already exists
+  /// @param sourceTransientStakeSeed: u64 Seed used to create source transient stake account
+  /// @param ephemeralStakeSeed: u64 Seed used to create destination ephemeral account.
+  /// @param destinationTransientStakeSeed: u64 Seed used to create destination transient stake account. If there is already transient stake, this must match the current seed, otherwise it can be anything
   public static Instruction redelegate(final AccountMeta invokedStakePoolProgramMeta,
                                        final List<AccountMeta> keys,
                                        final long lamports,
@@ -2785,12 +3148,19 @@ public final class StakePoolProgram {
     return Instruction.createInstruction(invokedStakePoolProgramMeta, keys, _data);
   }
 
-  /// Deprecated since 2.0.0. (Staker only) Redelegate active stake on a validator, eventually moving it to another.
+  /// Deprecated since 2.0.0: The stake redelegate instruction used in this will not be enabled.
+  /// (Staker only) Redelegate active stake on a validator, eventually moving it to another
+  /// Internally, this instruction splits a validator stake account into its corresponding transient stake account, redelegates it to an ephemeral stake account, then merges that stake into the destination transient stake account.
+  /// In order to rebalance the pool without taking custody, the staker needs a way of reducing the stake on a stake account. This instruction splits some amount of stake, up to the total activated stake, from the canonical validator stake account, into its "transient" stake account.
+  /// The instruction only succeeds if the source transient stake account and ephemeral stake account do not exist.
+  /// The amount of lamports to move must be at least rent-exemption plus the minimum delegation amount. Rent-exemption plus minimum delegation is required for the destination ephemeral stake account.
+  /// The rent-exemption for the source transient account comes from the stake pool reserve, if needed.
+  /// The amount that arrives at the destination validator in the end is `redelegate_lamports - rent_exemption` if the destination transient account does *not* exist, and `redelegate_lamports` if the destination transient account already exists. The `rent_exemption` is not activated when creating the destination transient stake account, but if it already exists, then the full amount is delegated.
   ///
   /// @param lamports: u64 Amount of lamports to redelegate
-  /// @param sourceTransientStakeSeed: u64 Seed used to create the source transient stake account
-  /// @param ephemeralStakeSeed: u64 Seed used to create the destination ephemeral account
-  /// @param destinationTransientStakeSeed: u64 Seed used to create the destination transient stake account; must match the current seed if transient stake already exists
+  /// @param sourceTransientStakeSeed: u64 Seed used to create source transient stake account
+  /// @param ephemeralStakeSeed: u64 Seed used to create destination ephemeral account.
+  /// @param destinationTransientStakeSeed: u64 Seed used to create destination transient stake account. If there is already transient stake, this must match the current seed, otherwise it can be anything
   public record RedelegateIxData(int discriminator,
                                  long lamports,
                                  long sourceTransientStakeSeed,
@@ -2855,94 +3225,106 @@ public final class StakePoolProgram {
 
   public static final Discriminator DEPOSIT_STAKE_WITH_SLIPPAGE_DISCRIMINATOR = toDiscriminator(23);
 
-  /// Deposit some stake into the pool, with a specified slippage constraint.
+  /// Deposit some stake into the pool, with a specified slippage constraint. The output is a "pool" token representing ownership into the pool. Inputs are converted at the current ratio.
   ///
-  /// @param depositAuthorityKey Stake pool deposit authority; must sign when the pool uses a custom deposit authority
-  /// @param depositAuthorityIsSigner whether the `depositAuthority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
-  /// @param depositStakeAccountKey Stake account to join the pool; its withdraw authority must first be set to the stake pool deposit authority
-  /// @param validatorStakeAccountKey Validator stake account to merge the deposited stake into
-  /// @param reserveStakeKey Reserve stake account, to withdraw the rent exempt reserve
-  /// @param destinationPoolAccountKey User account to receive pool tokens
-  /// @param referralPoolAccountKey Account to receive a portion of pool fee tokens as referral fees
+  /// @param stakePoolKey Stake pool
+  /// @param validatorListStorageKey Validator stake list storage account
+  /// @param stakePoolDepositAuthorityKey Stake pool deposit authority
+  /// @param stakePoolDepositAuthorityIsSigner whether the `stakePoolDepositAuthority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
+  /// @param stakePoolWithdrawAuthorityKey Stake pool withdraw authority
+  /// @param depositStakeAddressKey Stake account to join the pool (withdraw authority for the stake account should be first set to the stake pool deposit authority)
+  /// @param validatorStakeAccountKey Validator stake account for the stake account to be merged with
+  /// @param reserveStakeAccountKey Reserve stake account, to withdraw rent exempt reserve
+  /// @param poolTokensToKey User account to receive pool tokens
+  /// @param managerFeeAccountKey Account to receive pool fee tokens
+  /// @param referrerPoolTokensAccountKey Account to receive a portion of pool fee tokens as referral fees
+  /// @param poolMintKey Pool token mint account
+  /// @param tokenProgramIdKey Pool token program id,
   public static List<AccountMeta> depositStakeWithSlippageKeys(final SolanaAccounts solanaAccounts,
                                                                final PublicKey stakePoolKey,
-                                                               final PublicKey validatorListKey,
-                                                               final PublicKey depositAuthorityKey,
-                                                               final boolean depositAuthorityIsSigner,
+                                                               final PublicKey validatorListStorageKey,
+                                                               final PublicKey stakePoolDepositAuthorityKey,
+                                                               final boolean stakePoolDepositAuthorityIsSigner,
                                                                final PublicKey stakePoolWithdrawAuthorityKey,
-                                                               final PublicKey depositStakeAccountKey,
+                                                               final PublicKey depositStakeAddressKey,
                                                                final PublicKey validatorStakeAccountKey,
-                                                               final PublicKey reserveStakeKey,
-                                                               final PublicKey destinationPoolAccountKey,
+                                                               final PublicKey reserveStakeAccountKey,
+                                                               final PublicKey poolTokensToKey,
                                                                final PublicKey managerFeeAccountKey,
-                                                               final PublicKey referralPoolAccountKey,
+                                                               final PublicKey referrerPoolTokensAccountKey,
                                                                final PublicKey poolMintKey,
-                                                               final PublicKey tokenProgramKey) {
+                                                               final PublicKey tokenProgramIdKey) {
     return List.of(
       createWrite(stakePoolKey),
-      createWrite(validatorListKey),
-      depositAuthorityIsSigner ? createReadOnlySigner(depositAuthorityKey) : createRead(depositAuthorityKey),
+      createWrite(validatorListStorageKey),
+      stakePoolDepositAuthorityIsSigner ? createReadOnlySigner(stakePoolDepositAuthorityKey) : createRead(stakePoolDepositAuthorityKey),
       createRead(stakePoolWithdrawAuthorityKey),
-      createWrite(depositStakeAccountKey),
+      createWrite(depositStakeAddressKey),
       createWrite(validatorStakeAccountKey),
-      createWrite(reserveStakeKey),
-      createWrite(destinationPoolAccountKey),
+      createWrite(reserveStakeAccountKey),
+      createWrite(poolTokensToKey),
       createWrite(managerFeeAccountKey),
-      createWrite(referralPoolAccountKey),
+      createWrite(referrerPoolTokensAccountKey),
       createWrite(poolMintKey),
       createRead(solanaAccounts.clockSysVar()),
       createRead(solanaAccounts.stakeHistorySysVar()),
-      createRead(tokenProgramKey),
+      createRead(tokenProgramIdKey),
       createRead(solanaAccounts.stakeProgram())
     );
   }
 
-  /// Deposit some stake into the pool, with a specified slippage constraint.
+  /// Deposit some stake into the pool, with a specified slippage constraint. The output is a "pool" token representing ownership into the pool. Inputs are converted at the current ratio.
   ///
-  /// @param depositAuthorityKey Stake pool deposit authority; must sign when the pool uses a custom deposit authority
-  /// @param depositAuthorityIsSigner whether the `depositAuthority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
-  /// @param depositStakeAccountKey Stake account to join the pool; its withdraw authority must first be set to the stake pool deposit authority
-  /// @param validatorStakeAccountKey Validator stake account to merge the deposited stake into
-  /// @param reserveStakeKey Reserve stake account, to withdraw the rent exempt reserve
-  /// @param destinationPoolAccountKey User account to receive pool tokens
-  /// @param referralPoolAccountKey Account to receive a portion of pool fee tokens as referral fees
+  /// @param stakePoolKey Stake pool
+  /// @param validatorListStorageKey Validator stake list storage account
+  /// @param stakePoolDepositAuthorityKey Stake pool deposit authority
+  /// @param stakePoolDepositAuthorityIsSigner whether the `stakePoolDepositAuthority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
+  /// @param stakePoolWithdrawAuthorityKey Stake pool withdraw authority
+  /// @param depositStakeAddressKey Stake account to join the pool (withdraw authority for the stake account should be first set to the stake pool deposit authority)
+  /// @param validatorStakeAccountKey Validator stake account for the stake account to be merged with
+  /// @param reserveStakeAccountKey Reserve stake account, to withdraw rent exempt reserve
+  /// @param poolTokensToKey User account to receive pool tokens
+  /// @param managerFeeAccountKey Account to receive pool fee tokens
+  /// @param referrerPoolTokensAccountKey Account to receive a portion of pool fee tokens as referral fees
+  /// @param poolMintKey Pool token mint account
+  /// @param tokenProgramIdKey Pool token program id,
   /// @param minimumPoolTokensOut: u64 Minimum amount of pool tokens that must be received
   public static Instruction depositStakeWithSlippage(final AccountMeta invokedStakePoolProgramMeta,
                                                      final SolanaAccounts solanaAccounts,
                                                      final PublicKey stakePoolKey,
-                                                     final PublicKey validatorListKey,
-                                                     final PublicKey depositAuthorityKey,
-                                                     final boolean depositAuthorityIsSigner,
+                                                     final PublicKey validatorListStorageKey,
+                                                     final PublicKey stakePoolDepositAuthorityKey,
+                                                     final boolean stakePoolDepositAuthorityIsSigner,
                                                      final PublicKey stakePoolWithdrawAuthorityKey,
-                                                     final PublicKey depositStakeAccountKey,
+                                                     final PublicKey depositStakeAddressKey,
                                                      final PublicKey validatorStakeAccountKey,
-                                                     final PublicKey reserveStakeKey,
-                                                     final PublicKey destinationPoolAccountKey,
+                                                     final PublicKey reserveStakeAccountKey,
+                                                     final PublicKey poolTokensToKey,
                                                      final PublicKey managerFeeAccountKey,
-                                                     final PublicKey referralPoolAccountKey,
+                                                     final PublicKey referrerPoolTokensAccountKey,
                                                      final PublicKey poolMintKey,
-                                                     final PublicKey tokenProgramKey,
+                                                     final PublicKey tokenProgramIdKey,
                                                      final long minimumPoolTokensOut) {
     final var keys = depositStakeWithSlippageKeys(
       solanaAccounts,
       stakePoolKey,
-      validatorListKey,
-      depositAuthorityKey,
-      depositAuthorityIsSigner,
+      validatorListStorageKey,
+      stakePoolDepositAuthorityKey,
+      stakePoolDepositAuthorityIsSigner,
       stakePoolWithdrawAuthorityKey,
-      depositStakeAccountKey,
+      depositStakeAddressKey,
       validatorStakeAccountKey,
-      reserveStakeKey,
-      destinationPoolAccountKey,
+      reserveStakeAccountKey,
+      poolTokensToKey,
       managerFeeAccountKey,
-      referralPoolAccountKey,
+      referrerPoolTokensAccountKey,
       poolMintKey,
-      tokenProgramKey
+      tokenProgramIdKey
     );
     return depositStakeWithSlippage(invokedStakePoolProgramMeta, keys, minimumPoolTokensOut);
   }
 
-  /// Deposit some stake into the pool, with a specified slippage constraint.
+  /// Deposit some stake into the pool, with a specified slippage constraint. The output is a "pool" token representing ownership into the pool. Inputs are converted at the current ratio.
   ///
   /// @param minimumPoolTokensOut: u64 Minimum amount of pool tokens that must be received
   public static Instruction depositStakeWithSlippage(final AccountMeta invokedStakePoolProgramMeta,
@@ -2955,7 +3337,7 @@ public final class StakePoolProgram {
     return Instruction.createInstruction(invokedStakePoolProgramMeta, keys, _data);
   }
 
-  /// Deposit some stake into the pool, with a specified slippage constraint.
+  /// Deposit some stake into the pool, with a specified slippage constraint. The output is a "pool" token representing ownership into the pool. Inputs are converted at the current ratio.
   ///
   /// @param minimumPoolTokensOut: u64 Minimum amount of pool tokens that must be received
   public record DepositStakeWithSlippageIxData(int discriminator, long minimumPoolTokensOut) implements SerDe {
@@ -3000,78 +3382,94 @@ public final class StakePoolProgram {
   public static final Discriminator WITHDRAW_STAKE_WITH_SLIPPAGE_DISCRIMINATOR = toDiscriminator(24);
 
   /// Withdraw the token from the pool at the current ratio, specifying a minimum expected output lamport amount.
+  /// Succeeds if the stake account has enough SOL to cover the desired amount of pool tokens, and if the withdrawal keeps the total staked amount above the minimum of rent-exempt amount plus `max( crate::MINIMUM_ACTIVE_STAKE, solana_stake_interface::tools::get_minimum_delegation() )`.
+  /// User data: amount of pool tokens to withdraw
   ///
-  /// @param splitStakeSourceKey Validator or reserve stake account to split
-  /// @param destinationStakeAccountKey Uninitialized stake account to receive the withdrawal
-  /// @param destinationStakeAuthorityKey User account to set as the new withdraw authority
-  /// @param transferAuthorityKey Transfer authority for the pool token account
-  /// @param sourcePoolAccountKey User account with pool tokens to burn from
+  /// @param stakePoolKey Stake pool
+  /// @param validatorListStorageKey Validator stake list storage account
+  /// @param stakePoolWithdrawKey Stake pool withdraw authority
+  /// @param stakeToSplitKey Validator or reserve stake account to split
+  /// @param stakeToReceiveKey Uninitialized stake account to receive withdrawal
+  /// @param userStakeAuthorityKey User account to set as a new withdraw authority
+  /// @param userTransferAuthorityKey User transfer authority, for pool token account
+  /// @param userPoolTokenAccountKey User account with pool tokens to burn from
+  /// @param managerFeeAccountKey Account to receive pool fee tokens
+  /// @param poolMintKey Pool token mint account
+  /// @param tokenProgramIdKey Pool token program id
   public static List<AccountMeta> withdrawStakeWithSlippageKeys(final SolanaAccounts solanaAccounts,
                                                                 final PublicKey stakePoolKey,
-                                                                final PublicKey validatorListKey,
-                                                                final PublicKey stakePoolWithdrawAuthorityKey,
-                                                                final PublicKey splitStakeSourceKey,
-                                                                final PublicKey destinationStakeAccountKey,
-                                                                final PublicKey destinationStakeAuthorityKey,
-                                                                final PublicKey transferAuthorityKey,
-                                                                final PublicKey sourcePoolAccountKey,
+                                                                final PublicKey validatorListStorageKey,
+                                                                final PublicKey stakePoolWithdrawKey,
+                                                                final PublicKey stakeToSplitKey,
+                                                                final PublicKey stakeToReceiveKey,
+                                                                final PublicKey userStakeAuthorityKey,
+                                                                final PublicKey userTransferAuthorityKey,
+                                                                final PublicKey userPoolTokenAccountKey,
                                                                 final PublicKey managerFeeAccountKey,
                                                                 final PublicKey poolMintKey,
-                                                                final PublicKey tokenProgramKey) {
+                                                                final PublicKey tokenProgramIdKey) {
     return List.of(
       createWrite(stakePoolKey),
-      createWrite(validatorListKey),
-      createRead(stakePoolWithdrawAuthorityKey),
-      createWrite(splitStakeSourceKey),
-      createWrite(destinationStakeAccountKey),
-      createRead(destinationStakeAuthorityKey),
-      createReadOnlySigner(transferAuthorityKey),
-      createWrite(sourcePoolAccountKey),
+      createWrite(validatorListStorageKey),
+      createRead(stakePoolWithdrawKey),
+      createWrite(stakeToSplitKey),
+      createWrite(stakeToReceiveKey),
+      createRead(userStakeAuthorityKey),
+      createReadOnlySigner(userTransferAuthorityKey),
+      createWrite(userPoolTokenAccountKey),
       createWrite(managerFeeAccountKey),
       createWrite(poolMintKey),
       createRead(solanaAccounts.clockSysVar()),
-      createRead(tokenProgramKey),
+      createRead(tokenProgramIdKey),
       createRead(solanaAccounts.stakeProgram())
     );
   }
 
   /// Withdraw the token from the pool at the current ratio, specifying a minimum expected output lamport amount.
+  /// Succeeds if the stake account has enough SOL to cover the desired amount of pool tokens, and if the withdrawal keeps the total staked amount above the minimum of rent-exempt amount plus `max( crate::MINIMUM_ACTIVE_STAKE, solana_stake_interface::tools::get_minimum_delegation() )`.
+  /// User data: amount of pool tokens to withdraw
   ///
-  /// @param splitStakeSourceKey Validator or reserve stake account to split
-  /// @param destinationStakeAccountKey Uninitialized stake account to receive the withdrawal
-  /// @param destinationStakeAuthorityKey User account to set as the new withdraw authority
-  /// @param transferAuthorityKey Transfer authority for the pool token account
-  /// @param sourcePoolAccountKey User account with pool tokens to burn from
+  /// @param stakePoolKey Stake pool
+  /// @param validatorListStorageKey Validator stake list storage account
+  /// @param stakePoolWithdrawKey Stake pool withdraw authority
+  /// @param stakeToSplitKey Validator or reserve stake account to split
+  /// @param stakeToReceiveKey Uninitialized stake account to receive withdrawal
+  /// @param userStakeAuthorityKey User account to set as a new withdraw authority
+  /// @param userTransferAuthorityKey User transfer authority, for pool token account
+  /// @param userPoolTokenAccountKey User account with pool tokens to burn from
+  /// @param managerFeeAccountKey Account to receive pool fee tokens
+  /// @param poolMintKey Pool token mint account
+  /// @param tokenProgramIdKey Pool token program id
   /// @param poolTokensIn: u64 Pool tokens to burn in exchange for lamports
   /// @param minimumLamportsOut: u64 Minimum amount of lamports that must be received
   public static Instruction withdrawStakeWithSlippage(final AccountMeta invokedStakePoolProgramMeta,
                                                       final SolanaAccounts solanaAccounts,
                                                       final PublicKey stakePoolKey,
-                                                      final PublicKey validatorListKey,
-                                                      final PublicKey stakePoolWithdrawAuthorityKey,
-                                                      final PublicKey splitStakeSourceKey,
-                                                      final PublicKey destinationStakeAccountKey,
-                                                      final PublicKey destinationStakeAuthorityKey,
-                                                      final PublicKey transferAuthorityKey,
-                                                      final PublicKey sourcePoolAccountKey,
+                                                      final PublicKey validatorListStorageKey,
+                                                      final PublicKey stakePoolWithdrawKey,
+                                                      final PublicKey stakeToSplitKey,
+                                                      final PublicKey stakeToReceiveKey,
+                                                      final PublicKey userStakeAuthorityKey,
+                                                      final PublicKey userTransferAuthorityKey,
+                                                      final PublicKey userPoolTokenAccountKey,
                                                       final PublicKey managerFeeAccountKey,
                                                       final PublicKey poolMintKey,
-                                                      final PublicKey tokenProgramKey,
+                                                      final PublicKey tokenProgramIdKey,
                                                       final long poolTokensIn,
                                                       final long minimumLamportsOut) {
     final var keys = withdrawStakeWithSlippageKeys(
       solanaAccounts,
       stakePoolKey,
-      validatorListKey,
-      stakePoolWithdrawAuthorityKey,
-      splitStakeSourceKey,
-      destinationStakeAccountKey,
-      destinationStakeAuthorityKey,
-      transferAuthorityKey,
-      sourcePoolAccountKey,
+      validatorListStorageKey,
+      stakePoolWithdrawKey,
+      stakeToSplitKey,
+      stakeToReceiveKey,
+      userStakeAuthorityKey,
+      userTransferAuthorityKey,
+      userPoolTokenAccountKey,
       managerFeeAccountKey,
       poolMintKey,
-      tokenProgramKey
+      tokenProgramIdKey
     );
     return withdrawStakeWithSlippage(
       invokedStakePoolProgramMeta,
@@ -3082,6 +3480,8 @@ public final class StakePoolProgram {
   }
 
   /// Withdraw the token from the pool at the current ratio, specifying a minimum expected output lamport amount.
+  /// Succeeds if the stake account has enough SOL to cover the desired amount of pool tokens, and if the withdrawal keeps the total staked amount above the minimum of rent-exempt amount plus `max( crate::MINIMUM_ACTIVE_STAKE, solana_stake_interface::tools::get_minimum_delegation() )`.
+  /// User data: amount of pool tokens to withdraw
   ///
   /// @param poolTokensIn: u64 Pool tokens to burn in exchange for lamports
   /// @param minimumLamportsOut: u64 Minimum amount of lamports that must be received
@@ -3099,6 +3499,8 @@ public final class StakePoolProgram {
   }
 
   /// Withdraw the token from the pool at the current ratio, specifying a minimum expected output lamport amount.
+  /// Succeeds if the stake account has enough SOL to cover the desired amount of pool tokens, and if the withdrawal keeps the total staked amount above the minimum of rent-exempt amount plus `max( crate::MINIMUM_ACTIVE_STAKE, solana_stake_interface::tools::get_minimum_delegation() )`.
+  /// User data: amount of pool tokens to withdraw
   ///
   /// @param poolTokensIn: u64 Pool tokens to burn in exchange for lamports
   /// @param minimumLamportsOut: u64 Minimum amount of lamports that must be received
@@ -3150,61 +3552,71 @@ public final class StakePoolProgram {
 
   public static final Discriminator DEPOSIT_SOL_WITH_SLIPPAGE_DISCRIMINATOR = toDiscriminator(25);
 
-  /// Deposit SOL directly into the pool's reserve account, with a specified slippage constraint.
+  /// Deposit SOL directly into the pool's reserve account, with a specified slippage constraint. The output is a "pool" token representing ownership into the pool. Inputs are converted at the current ratio.
   ///
-  /// @param reserveStakeKey Reserve stake account, to deposit SOL into
-  /// @param fundingAccountKey Account providing the lamports to be deposited into the pool
-  /// @param destinationPoolAccountKey User account to receive pool tokens
-  /// @param referralPoolAccountKey Account to receive a portion of the fee as referral fees
-  /// @param solDepositAuthorityKey Stake pool SOL deposit authority, required when the pool restricts SOL deposits
+  /// @param stakePoolKey Stake pool
+  /// @param stakePoolWithdrawAuthorityKey Stake pool withdraw authority
+  /// @param reserveStakeAccountKey Reserve stake account, to deposit SOL
+  /// @param lamportsFromKey Account providing the lamports to be deposited into the pool
+  /// @param poolTokensToKey User account to receive pool tokens
+  /// @param managerFeeAccountKey Account to receive fee tokens
+  /// @param referrerPoolTokensAccountKey Account to receive a portion of fee as referral fees
+  /// @param poolMintKey Pool token mint account
+  /// @param tokenProgramIdKey Token program id
+  /// @param solDepositAuthorityKey (Optional) Stake pool sol deposit authority.
   public static List<AccountMeta> depositSolWithSlippageKeys(final SolanaAccounts solanaAccounts,
                                                              final PublicKey stakePoolKey,
                                                              final PublicKey stakePoolWithdrawAuthorityKey,
-                                                             final PublicKey reserveStakeKey,
-                                                             final PublicKey fundingAccountKey,
-                                                             final PublicKey destinationPoolAccountKey,
+                                                             final PublicKey reserveStakeAccountKey,
+                                                             final PublicKey lamportsFromKey,
+                                                             final PublicKey poolTokensToKey,
                                                              final PublicKey managerFeeAccountKey,
-                                                             final PublicKey referralPoolAccountKey,
+                                                             final PublicKey referrerPoolTokensAccountKey,
                                                              final PublicKey poolMintKey,
-                                                             final PublicKey tokenProgramKey,
+                                                             final PublicKey tokenProgramIdKey,
                                                              final PublicKey solDepositAuthorityKey) {
     final var keys = new ArrayList<AccountMeta>(11);
     keys.add(createWrite(stakePoolKey));
     keys.add(createRead(stakePoolWithdrawAuthorityKey));
-    keys.add(createWrite(reserveStakeKey));
-    keys.add(createWritableSigner(fundingAccountKey));
-    keys.add(createWrite(destinationPoolAccountKey));
+    keys.add(createWrite(reserveStakeAccountKey));
+    keys.add(createWritableSigner(lamportsFromKey));
+    keys.add(createWrite(poolTokensToKey));
     keys.add(createWrite(managerFeeAccountKey));
-    keys.add(createWrite(referralPoolAccountKey));
+    keys.add(createWrite(referrerPoolTokensAccountKey));
     keys.add(createWrite(poolMintKey));
     keys.add(createRead(solanaAccounts.systemProgram()));
-    keys.add(createRead(tokenProgramKey));
+    keys.add(createRead(tokenProgramIdKey));
     if (solDepositAuthorityKey != null) {
       keys.add(createReadOnlySigner(solDepositAuthorityKey));
     }
     return keys;
   }
 
-  /// Deposit SOL directly into the pool's reserve account, with a specified slippage constraint.
+  /// Deposit SOL directly into the pool's reserve account, with a specified slippage constraint. The output is a "pool" token representing ownership into the pool. Inputs are converted at the current ratio.
   ///
-  /// @param reserveStakeKey Reserve stake account, to deposit SOL into
-  /// @param fundingAccountKey Account providing the lamports to be deposited into the pool
-  /// @param destinationPoolAccountKey User account to receive pool tokens
-  /// @param referralPoolAccountKey Account to receive a portion of the fee as referral fees
-  /// @param solDepositAuthorityKey Stake pool SOL deposit authority, required when the pool restricts SOL deposits
+  /// @param stakePoolKey Stake pool
+  /// @param stakePoolWithdrawAuthorityKey Stake pool withdraw authority
+  /// @param reserveStakeAccountKey Reserve stake account, to deposit SOL
+  /// @param lamportsFromKey Account providing the lamports to be deposited into the pool
+  /// @param poolTokensToKey User account to receive pool tokens
+  /// @param managerFeeAccountKey Account to receive fee tokens
+  /// @param referrerPoolTokensAccountKey Account to receive a portion of fee as referral fees
+  /// @param poolMintKey Pool token mint account
+  /// @param tokenProgramIdKey Token program id
+  /// @param solDepositAuthorityKey (Optional) Stake pool sol deposit authority.
   /// @param lamportsIn: u64 Amount of lamports to deposit into the reserve
   /// @param minimumPoolTokensOut: u64 Minimum amount of pool tokens that must be received
   public static Instruction depositSolWithSlippage(final AccountMeta invokedStakePoolProgramMeta,
                                                    final SolanaAccounts solanaAccounts,
                                                    final PublicKey stakePoolKey,
                                                    final PublicKey stakePoolWithdrawAuthorityKey,
-                                                   final PublicKey reserveStakeKey,
-                                                   final PublicKey fundingAccountKey,
-                                                   final PublicKey destinationPoolAccountKey,
+                                                   final PublicKey reserveStakeAccountKey,
+                                                   final PublicKey lamportsFromKey,
+                                                   final PublicKey poolTokensToKey,
                                                    final PublicKey managerFeeAccountKey,
-                                                   final PublicKey referralPoolAccountKey,
+                                                   final PublicKey referrerPoolTokensAccountKey,
                                                    final PublicKey poolMintKey,
-                                                   final PublicKey tokenProgramKey,
+                                                   final PublicKey tokenProgramIdKey,
                                                    final PublicKey solDepositAuthorityKey,
                                                    final long lamportsIn,
                                                    final long minimumPoolTokensOut) {
@@ -3212,13 +3624,13 @@ public final class StakePoolProgram {
       solanaAccounts,
       stakePoolKey,
       stakePoolWithdrawAuthorityKey,
-      reserveStakeKey,
-      fundingAccountKey,
-      destinationPoolAccountKey,
+      reserveStakeAccountKey,
+      lamportsFromKey,
+      poolTokensToKey,
       managerFeeAccountKey,
-      referralPoolAccountKey,
+      referrerPoolTokensAccountKey,
       poolMintKey,
-      tokenProgramKey,
+      tokenProgramIdKey,
       solDepositAuthorityKey
     );
     return depositSolWithSlippage(
@@ -3229,7 +3641,7 @@ public final class StakePoolProgram {
     );
   }
 
-  /// Deposit SOL directly into the pool's reserve account, with a specified slippage constraint.
+  /// Deposit SOL directly into the pool's reserve account, with a specified slippage constraint. The output is a "pool" token representing ownership into the pool. Inputs are converted at the current ratio.
   ///
   /// @param lamportsIn: u64 Amount of lamports to deposit into the reserve
   /// @param minimumPoolTokensOut: u64 Minimum amount of pool tokens that must be received
@@ -3246,7 +3658,7 @@ public final class StakePoolProgram {
     return Instruction.createInstruction(invokedStakePoolProgramMeta, keys, _data);
   }
 
-  /// Deposit SOL directly into the pool's reserve account, with a specified slippage constraint.
+  /// Deposit SOL directly into the pool's reserve account, with a specified slippage constraint. The output is a "pool" token representing ownership into the pool. Inputs are converted at the current ratio.
   ///
   /// @param lamportsIn: u64 Amount of lamports to deposit into the reserve
   /// @param minimumPoolTokensOut: u64 Minimum amount of pool tokens that must be received
@@ -3298,63 +3710,73 @@ public final class StakePoolProgram {
 
   public static final Discriminator WITHDRAW_SOL_WITH_SLIPPAGE_DISCRIMINATOR = toDiscriminator(26);
 
-  /// Withdraw SOL directly from the pool's reserve account, with a specified slippage constraint.
+  /// Withdraw SOL directly from the pool's reserve account. Fails if the reserve does not have enough SOL or if the slippage constraint is not met.
   ///
-  /// @param transferAuthorityKey Transfer authority for the pool token account
-  /// @param sourcePoolAccountKey User account to burn pool tokens from
-  /// @param reserveStakeKey Reserve stake account, to withdraw SOL from
-  /// @param destinationSystemAccountKey System account receiving the lamports from the reserve
-  /// @param solWithdrawAuthorityKey Stake pool SOL withdraw authority, required when the pool restricts SOL withdrawals
+  /// @param stakePoolKey Stake pool
+  /// @param stakePoolWithdrawAuthorityKey Stake pool withdraw authority
+  /// @param userTransferAuthorityKey User transfer authority, for pool token account
+  /// @param poolTokensFromKey User account to burn pool tokens
+  /// @param reserveStakeAccountKey Reserve stake account, to withdraw SOL
+  /// @param lamportsToKey Account receiving the lamports from the reserve, must be a system account
+  /// @param managerFeeAccountKey Account to receive pool fee tokens
+  /// @param poolMintKey Pool token mint account
+  /// @param tokenProgramIdKey Token program id
+  /// @param solWithdrawAuthorityKey (Optional) Stake pool sol withdraw authority
   public static List<AccountMeta> withdrawSolWithSlippageKeys(final SolanaAccounts solanaAccounts,
                                                               final PublicKey stakePoolKey,
                                                               final PublicKey stakePoolWithdrawAuthorityKey,
-                                                              final PublicKey transferAuthorityKey,
-                                                              final PublicKey sourcePoolAccountKey,
-                                                              final PublicKey reserveStakeKey,
-                                                              final PublicKey destinationSystemAccountKey,
+                                                              final PublicKey userTransferAuthorityKey,
+                                                              final PublicKey poolTokensFromKey,
+                                                              final PublicKey reserveStakeAccountKey,
+                                                              final PublicKey lamportsToKey,
                                                               final PublicKey managerFeeAccountKey,
                                                               final PublicKey poolMintKey,
-                                                              final PublicKey tokenProgramKey,
+                                                              final PublicKey tokenProgramIdKey,
                                                               final PublicKey solWithdrawAuthorityKey) {
     final var keys = new ArrayList<AccountMeta>(13);
     keys.add(createWrite(stakePoolKey));
     keys.add(createRead(stakePoolWithdrawAuthorityKey));
-    keys.add(createReadOnlySigner(transferAuthorityKey));
-    keys.add(createWrite(sourcePoolAccountKey));
-    keys.add(createWrite(reserveStakeKey));
-    keys.add(createWrite(destinationSystemAccountKey));
+    keys.add(createReadOnlySigner(userTransferAuthorityKey));
+    keys.add(createWrite(poolTokensFromKey));
+    keys.add(createWrite(reserveStakeAccountKey));
+    keys.add(createWrite(lamportsToKey));
     keys.add(createWrite(managerFeeAccountKey));
     keys.add(createWrite(poolMintKey));
     keys.add(createRead(solanaAccounts.clockSysVar()));
     keys.add(createRead(solanaAccounts.stakeHistorySysVar()));
     keys.add(createRead(solanaAccounts.stakeProgram()));
-    keys.add(createRead(tokenProgramKey));
+    keys.add(createRead(tokenProgramIdKey));
     if (solWithdrawAuthorityKey != null) {
       keys.add(createReadOnlySigner(solWithdrawAuthorityKey));
     }
     return keys;
   }
 
-  /// Withdraw SOL directly from the pool's reserve account, with a specified slippage constraint.
+  /// Withdraw SOL directly from the pool's reserve account. Fails if the reserve does not have enough SOL or if the slippage constraint is not met.
   ///
-  /// @param transferAuthorityKey Transfer authority for the pool token account
-  /// @param sourcePoolAccountKey User account to burn pool tokens from
-  /// @param reserveStakeKey Reserve stake account, to withdraw SOL from
-  /// @param destinationSystemAccountKey System account receiving the lamports from the reserve
-  /// @param solWithdrawAuthorityKey Stake pool SOL withdraw authority, required when the pool restricts SOL withdrawals
+  /// @param stakePoolKey Stake pool
+  /// @param stakePoolWithdrawAuthorityKey Stake pool withdraw authority
+  /// @param userTransferAuthorityKey User transfer authority, for pool token account
+  /// @param poolTokensFromKey User account to burn pool tokens
+  /// @param reserveStakeAccountKey Reserve stake account, to withdraw SOL
+  /// @param lamportsToKey Account receiving the lamports from the reserve, must be a system account
+  /// @param managerFeeAccountKey Account to receive pool fee tokens
+  /// @param poolMintKey Pool token mint account
+  /// @param tokenProgramIdKey Token program id
+  /// @param solWithdrawAuthorityKey (Optional) Stake pool sol withdraw authority
   /// @param poolTokensIn: u64 Pool tokens to burn in exchange for lamports
   /// @param minimumLamportsOut: u64 Minimum amount of lamports that must be received
   public static Instruction withdrawSolWithSlippage(final AccountMeta invokedStakePoolProgramMeta,
                                                     final SolanaAccounts solanaAccounts,
                                                     final PublicKey stakePoolKey,
                                                     final PublicKey stakePoolWithdrawAuthorityKey,
-                                                    final PublicKey transferAuthorityKey,
-                                                    final PublicKey sourcePoolAccountKey,
-                                                    final PublicKey reserveStakeKey,
-                                                    final PublicKey destinationSystemAccountKey,
+                                                    final PublicKey userTransferAuthorityKey,
+                                                    final PublicKey poolTokensFromKey,
+                                                    final PublicKey reserveStakeAccountKey,
+                                                    final PublicKey lamportsToKey,
                                                     final PublicKey managerFeeAccountKey,
                                                     final PublicKey poolMintKey,
-                                                    final PublicKey tokenProgramKey,
+                                                    final PublicKey tokenProgramIdKey,
                                                     final PublicKey solWithdrawAuthorityKey,
                                                     final long poolTokensIn,
                                                     final long minimumLamportsOut) {
@@ -3362,13 +3784,13 @@ public final class StakePoolProgram {
       solanaAccounts,
       stakePoolKey,
       stakePoolWithdrawAuthorityKey,
-      transferAuthorityKey,
-      sourcePoolAccountKey,
-      reserveStakeKey,
-      destinationSystemAccountKey,
+      userTransferAuthorityKey,
+      poolTokensFromKey,
+      reserveStakeAccountKey,
+      lamportsToKey,
       managerFeeAccountKey,
       poolMintKey,
-      tokenProgramKey,
+      tokenProgramIdKey,
       solWithdrawAuthorityKey
     );
     return withdrawSolWithSlippage(
@@ -3379,7 +3801,7 @@ public final class StakePoolProgram {
     );
   }
 
-  /// Withdraw SOL directly from the pool's reserve account, with a specified slippage constraint.
+  /// Withdraw SOL directly from the pool's reserve account. Fails if the reserve does not have enough SOL or if the slippage constraint is not met.
   ///
   /// @param poolTokensIn: u64 Pool tokens to burn in exchange for lamports
   /// @param minimumLamportsOut: u64 Minimum amount of lamports that must be received
@@ -3396,7 +3818,7 @@ public final class StakePoolProgram {
     return Instruction.createInstruction(invokedStakePoolProgramMeta, keys, _data);
   }
 
-  /// Withdraw SOL directly from the pool's reserve account, with a specified slippage constraint.
+  /// Withdraw SOL directly from the pool's reserve account. Fails if the reserve does not have enough SOL or if the slippage constraint is not met.
   ///
   /// @param poolTokensIn: u64 Pool tokens to burn in exchange for lamports
   /// @param minimumLamportsOut: u64 Minimum amount of lamports that must be received

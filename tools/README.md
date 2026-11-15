@@ -1,14 +1,17 @@
 # tools/
 
-Standalone verification scripts. Nothing wired into Gradle, nothing run by CI.
-They exist because the checks they automate were otherwise re-derived by hand each
-time, and each re-derivation reintroduced the same false positives.
+Standalone scripts, all but one of them verification. Nothing wired into Gradle,
+nothing run by CI. The verification scripts exist because the checks they automate
+were otherwise re-derived by hand each time, and each re-derivation reintroduced the
+same false positives. The one that is not a check, `stake-pool-idl`, writes the IDL
+the Stake Pool client is generated from.
 
 **Everything here needs something outside the repository.** That is the rule for what
 belongs in `tools/` rather than in a test: `GroundTruth.java` needs a checkout of the
-program's Rust, and `stake-vectors.mjs`, `token2022-vectors.mjs` and
+program's Rust, `stake-vectors.mjs`, `token2022-vectors.mjs` and
 `token2022-account-vectors.mjs` each need the matching `solana-program/*` checkout to
-resolve against. A check that needs nothing
+resolve against, and `stake-pool-idl` needs the `spl-stake-pool` crate from crates.io.
+A check that needs nothing
 outside the repo is a test, and lives with
 the code it reasons about — `tick_margin_sweep.py` was here until 2026-08-15 and is
 now `OrcaTickMarginSweepTests` in `idl-clients-bundle`'s test sources, beside the
@@ -66,6 +69,7 @@ from, so they can see a list that *moved* and never one that moved *wrongly*.
 | `stake-vectors.mjs` | Does our Stake encoder agree with upstream's generated JS client? | seconds, needs their checkout |
 | `token2022-vectors.mjs` | Do our Token 2022 encoder **and account lists** agree with upstream's generated JS client? | seconds, needs their checkout |
 | `token2022-account-vectors.mjs` | Does our generated Token 2022 **account** decoding agree with upstream's JS client, on real accounts and on malformed buffers? | seconds, needs their checkout |
+| `stake-pool-idl/` | What is the Stake Pool IDL, going by the program's own instruction builders? It **writes** `idls/spl_stake_pool.json`. | a cargo build, needs crates.io |
 
 
 ## `GroundTruth.java`
@@ -292,6 +296,107 @@ reads — sits beside the bytes and is not consulted here.
 Not ground truth, for the reason the other two vector scripts give: both sides descend
 from one IDL. Do not regenerate on a schedule; run it when a comparison has failed or
 the corpus grows, and review the diff.
+
+## `stake-pool-idl/`
+
+```shell
+# derive the IDL, then regenerate the client from it with idl-src-gen as usual
+cargo run --manifest-path tools/stake-pool-idl/Cargo.toml -- idls/spl_stake_pool.json
+# derive it and fail if the committed file differs
+cargo run --manifest-path tools/stake-pool-idl/Cargo.toml -- --check idls/spl_stake_pool.json
+```
+
+Not a check: this is where `idls/spl_stake_pool.json` comes from, and **that file is
+never edited by hand**. It is the one program here generated from a local IDL, because
+there is nothing to point `idlURL` at. `solana-program/stake-pool` publishes no IDL in
+its repository or on chain, its one pull request adding one (#270) was closed unmerged
+in 2025, the program carries no Shank or Codama annotations, and its `generate:clients`
+script is `exit 0`. The IDLs third parties host are stale (0.7.0 to 2.0.1 on
+2026-11-15) and each carries the kind of error this tool exists to prevent.
+
+What upstream does publish is the crate, at the release that is deployed, with a
+builder function for every instruction. The tool links it and takes each part of the
+IDL from the strongest source the crate offers:
+
+| Part | Source | What breaks if upstream changes it |
+|---|---|---|
+| account order, writable, signer, optional | the `AccountMeta`s upstream's builders return, called with sentinel keys | the derived file changes |
+| account names | the builders' parameter names, read from each signature in the crate's source and matched to the keys in the order they are passed; three addresses a builder derives by itself, and the well-known programs and sysvars, are named in the tool | the derived file changes; a builder that gains or loses a key parameter stops the tool |
+| argument names | the enum's field names, used to construct the real variant; a tuple variant's field takes the name of the one builder parameter of its type | the tool stops compiling, or panics |
+| argument types and order | the same construction, then bytes: the values encoded by the tool in the order it lists them must be the enum serialized directly, which must be every builder's data | the tool panics |
+| defined types | the crate's Borsh schema | the derived file changes |
+| errors | enumerated from the crate, code by code | the derived file changes |
+| docs, error messages | upstream's doc comments, read as text from the crate's source, with a variant's `#[deprecated]` note in front | the derived file changes |
+
+**No flag comes from a doc comment.** The enum's `[w]`/`[s]` markers disagree with the
+builders in places, and the markers are dropped from the text that is carried. Where the
+two disagree the builder is never the weaker, so what it sends is what the program
+accepts: on every writable flag measured below the program needs what the builder sends.
+Signing is the one place a builder asks for more than the program checks, described
+below. There is also no override table: a flag this tool cannot derive correctly is a
+reason to change how it derives, not to list exceptions, which would be hand-editing
+with an extra step.
+
+The file declares `"origin": "shank"` although upstream uses no Shank. That is the
+switch idl-src-gen reads to dispatch on a one-byte ordinal and to synthesize no account
+discriminator (AGENTS.md, "Shank dispatch ordinals").
+
+The crate is pinned by exact version in `Cargo.toml` and by registry checksum in the
+tracked `Cargo.lock`, and both are stamped into the file's program docs. **To follow a
+deploy**: move the version to the deployed release, `cargo update -p spl-stake-pool`,
+derive, regenerate, and review the diff like any regeneration. Cargo writes its build
+output to `tools/stake-pool-idl/target/` unless `CARGO_TARGET_DIR` says otherwise; that
+directory is ignored.
+
+Measured **2026-11-15**, when this replaced the hand-maintained file, with crate 2.2.0
+(source identical to the `program@v2.2.0` tag, `diff -r`):
+
+- Against the hand-maintained file as it stood until that morning (`7e6791ba`), the
+  derived account lists were equal in order, writable, signer and optional for all 27
+  instructions but for three flags that were wrong in it and one deliberate
+  difference. The three: `initialize`'s pool mint and manager fee account read-only,
+  and `cleanupRemovedValidatorEntries`'s stake pool read-only, each a `[]` copied from
+  the doc comment where the builder sends `AccountMeta::new`. The first two had been
+  corrected by hand earlier that day, in the fix that let a pool initialize with a
+  reserve surplus; the third is corrected by the derivation.
+- The deliberate difference is `initialize`'s custom deposit authority. Upstream's
+  builder asks it to sign; `process_initialize` only stores the key. The generated
+  client now asks for the signature, and the hand-written `StakePoolProgram.initialize`
+  still does not, so that an authority that cannot sign a transaction can be set at
+  initialization. `StakePoolProgramEquivalenceTests.initialize` pins both.
+- Arguments, discriminators and defined types were identical. So were all 45 error
+  codes and names, and every message but 26, whose doc comment 2.2.0 rewrote.
+- 34 account names changed to upstream's parameter names, and the generated parameter
+  names with them. Upstream is not consistent across builders (`stake_pool_withdraw`,
+  `withdraw_authority`), and some of its names say less than the ones they replace:
+  `validator` is the validator's vote account, `stake` and `stakeAccount` are the
+  validator stake account, and `newSolDepositAuthority` is `setFundingAuthority`'s new
+  authority whichever of the three it sets.
+- The Metaplex metadata program became a default value on the two metadata
+  instructions, since upstream's builders fill it in. idl-src-gen still takes it as a
+  parameter.
+
+One thing an IDL cannot say, and this one does not: `UpdateValidatorListBalance` is
+followed by a pair of accounts per validator in its range. The tool asks both of its
+builders for an empty range and describes the seven fixed accounts; upstream's line
+about the pairs is carried into the instruction's docs.
+
+**The prose is upstream's, errors included.** It becomes the generated javadoc, and the
+tool cannot tell a true sentence from a false one. Read against the 2.2.0 handlers on
+2026-11-15, these carried statements are not what the program does, and the
+hand-written `StakePoolProgram` is where the checked version of each belongs:
+
+- `initialize`: the reserve need not "have zero balance" (it must hold at least its
+  rent-exempt minimum, and the rest is minted to the manager's fee account); the pool
+  mint is not "owned by" the withdraw authority (that is its mint authority); and the
+  deposit authority "defaults to the program address generated using
+  `find_deposit_authority_program_address`" only when the account is left out, not
+  when that address is passed.
+- `removeValidatorFromPool` has no minimum-balance precondition.
+- `withdrawSol` and `withdrawSolWithSlippage` do not require the lamports to go to a
+  system account.
+- Error 20 says the list size "does match" where it means does not, and error 25
+  describes the withdraw check in the words of the deposit one.
 
 ## Adding to these
 
