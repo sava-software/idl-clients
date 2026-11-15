@@ -155,6 +155,67 @@ final class StakePoolProgramTests {
     assertAccount(accounts.get(9), tokenProgram, false, false);
   }
 
+  /// A pool with a SOL deposit authority reads an eleventh account, which must be that key
+  /// and a signer (`check_sol_deposit_authority`); the Rust builders append it as
+  /// `AccountMeta::new_readonly(.., true)`. The ten accounts before it are the list a pool
+  /// without one is sent, which `depositSol` and `depositSolWithSlippage` above pin one by one.
+  @Test
+  void depositSolAppendsTheSolDepositAuthorityAsASigner() {
+    final var solDepositAuthority = key(9);
+
+    final var withoutAuthority = StakePoolProgram.depositSol(
+        SOLANA_ACCOUNTS, INVOKED_PROGRAM, STAKE_POOL,
+        key(2), key(3), key(4), key(5), key(6), key(7), key(8),
+        0x1122334455667788L
+    );
+    final var ix = StakePoolProgram.depositSol(
+        SOLANA_ACCOUNTS, INVOKED_PROGRAM, STAKE_POOL,
+        key(2), key(3), key(4), key(5), key(6), key(7), key(8),
+        solDepositAuthority,
+        0x1122334455667788L
+    );
+    assertEquals(INVOKED_PROGRAM, ix.programId());
+    assertArrayEquals(withoutAuthority.data(), ix.data());
+    assertEquals(11, ix.accounts().size());
+    assertEquals(withoutAuthority.accounts(), ix.accounts().subList(0, 10));
+    assertAccount(ix.accounts().get(10), solDepositAuthority, false, true);
+
+    final var slippageWithoutAuthority = StakePoolProgram.depositSolWithSlippage(
+        SOLANA_ACCOUNTS, INVOKED_PROGRAM, STAKE_POOL,
+        key(2), key(3), key(4), key(5), key(6), key(7), key(8),
+        0x1122334455667788L, 0x0102030405060708L
+    );
+    final var slippage = StakePoolProgram.depositSolWithSlippage(
+        SOLANA_ACCOUNTS, INVOKED_PROGRAM, STAKE_POOL,
+        key(2), key(3), key(4), key(5), key(6), key(7), key(8),
+        solDepositAuthority,
+        0x1122334455667788L, 0x0102030405060708L
+    );
+    assertEquals(INVOKED_PROGRAM, slippage.programId());
+    assertArrayEquals(slippageWithoutAuthority.data(), slippage.data());
+    assertEquals(11, slippage.accounts().size());
+    assertEquals(slippageWithoutAuthority.accounts(), slippage.accounts().subList(0, 10));
+    assertAccount(slippage.accounts().get(10), solDepositAuthority, false, true);
+
+    // a null authority is the pool without one
+    final var explicitNull = StakePoolProgram.depositSol(
+        SOLANA_ACCOUNTS, INVOKED_PROGRAM, STAKE_POOL,
+        key(2), key(3), key(4), key(5), key(6), key(7), key(8),
+        null,
+        0x1122334455667788L
+    );
+    assertEquals(withoutAuthority.accounts(), explicitNull.accounts());
+    assertArrayEquals(withoutAuthority.data(), explicitNull.data());
+    final var slippageExplicitNull = StakePoolProgram.depositSolWithSlippage(
+        SOLANA_ACCOUNTS, INVOKED_PROGRAM, STAKE_POOL,
+        key(2), key(3), key(4), key(5), key(6), key(7), key(8),
+        null,
+        0x1122334455667788L, 0x0102030405060708L
+    );
+    assertEquals(slippageWithoutAuthority.accounts(), slippageExplicitNull.accounts());
+    assertArrayEquals(slippageWithoutAuthority.data(), slippageExplicitNull.data());
+  }
+
   @Test
   void withdrawSol() {
     final var transferAuthority = key(2);
@@ -253,6 +314,68 @@ final class StakePoolProgramTests {
     assertAccount(accounts.get(9), STAKE_HISTORY_SYSVAR, false, false);
     assertAccount(accounts.get(10), STAKE_PROGRAM, false, false);
     assertAccount(accounts.get(11), tokenProgram, false, false);
+  }
+
+  /// A pool with a SOL withdraw authority reads a thirteenth account, which must be that key
+  /// and a signer (`check_sol_withdraw_authority`); the Rust builders append it as
+  /// `AccountMeta::new_readonly(.., true)`. The twelve accounts before it are the list a pool
+  /// without one is sent, which `withdrawSol` and `withdrawSolWithSlippage` above pin one by
+  /// one.
+  @Test
+  void withdrawSolAppendsTheSolWithdrawAuthorityAsASigner() {
+    final var solWithdrawAuthority = key(9);
+
+    final var withoutAuthority = StakePoolProgram.withdrawSol(
+        SOLANA_ACCOUNTS, INVOKED_PROGRAM, STAKE_POOL,
+        key(2), key(3), key(4), key(5), key(6), key(7), key(8),
+        0x1122334455667788L
+    );
+    final var ix = StakePoolProgram.withdrawSol(
+        SOLANA_ACCOUNTS, INVOKED_PROGRAM, STAKE_POOL,
+        key(2), key(3), key(4), key(5), key(6), key(7), key(8),
+        solWithdrawAuthority,
+        0x1122334455667788L
+    );
+    assertEquals(INVOKED_PROGRAM, ix.programId());
+    assertArrayEquals(withoutAuthority.data(), ix.data());
+    assertEquals(13, ix.accounts().size());
+    assertEquals(withoutAuthority.accounts(), ix.accounts().subList(0, 12));
+    assertAccount(ix.accounts().get(12), solWithdrawAuthority, false, true);
+
+    final var slippageWithoutAuthority = StakePoolProgram.withdrawSolWithSlippage(
+        SOLANA_ACCOUNTS, INVOKED_PROGRAM, STAKE_POOL,
+        key(2), key(3), key(4), key(5), key(6), key(7), key(8),
+        0x1122334455667788L, 0x0102030405060708L
+    );
+    final var slippage = StakePoolProgram.withdrawSolWithSlippage(
+        SOLANA_ACCOUNTS, INVOKED_PROGRAM, STAKE_POOL,
+        key(2), key(3), key(4), key(5), key(6), key(7), key(8),
+        solWithdrawAuthority,
+        0x1122334455667788L, 0x0102030405060708L
+    );
+    assertEquals(INVOKED_PROGRAM, slippage.programId());
+    assertArrayEquals(slippageWithoutAuthority.data(), slippage.data());
+    assertEquals(13, slippage.accounts().size());
+    assertEquals(slippageWithoutAuthority.accounts(), slippage.accounts().subList(0, 12));
+    assertAccount(slippage.accounts().get(12), solWithdrawAuthority, false, true);
+
+    // a null authority is the pool without one
+    final var explicitNull = StakePoolProgram.withdrawSol(
+        SOLANA_ACCOUNTS, INVOKED_PROGRAM, STAKE_POOL,
+        key(2), key(3), key(4), key(5), key(6), key(7), key(8),
+        null,
+        0x1122334455667788L
+    );
+    assertEquals(withoutAuthority.accounts(), explicitNull.accounts());
+    assertArrayEquals(withoutAuthority.data(), explicitNull.data());
+    final var slippageExplicitNull = StakePoolProgram.withdrawSolWithSlippage(
+        SOLANA_ACCOUNTS, INVOKED_PROGRAM, STAKE_POOL,
+        key(2), key(3), key(4), key(5), key(6), key(7), key(8),
+        null,
+        0x1122334455667788L, 0x0102030405060708L
+    );
+    assertEquals(slippageWithoutAuthority.accounts(), slippageExplicitNull.accounts());
+    assertArrayEquals(slippageWithoutAuthority.data(), slippageExplicitNull.data());
   }
 
   /// A pool that keeps the default `[pool, "deposit"]` deposit authority cannot sign for

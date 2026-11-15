@@ -1186,26 +1186,31 @@ public final class StakePoolProgram {
                                                         final PublicKey poolTokenFeeATA,
                                                         final PublicKey poolTokenReferralFeeATA,
                                                         final PublicKey poolTokenMint,
-                                                        final PublicKey stakePoolTokenProgramId) {
+                                                        final PublicKey stakePoolTokenProgramId,
+                                                        final PublicKey solDepositAuthority) {
     final var stakePoolWithdrawAuthority = findStakePoolWithdrawAuthority(
         stakePool,
         invokedStakePoolProgram.publicKey()
     );
-    return List.of(
-        createWrite(stakePool),
-        createRead(stakePoolWithdrawAuthority.publicKey()),
-        createWrite(reserveStakeAccount),
-        // the account funding the deposit: lamports are debited from it
-        createWritableSigner(lamportsFrom),
-        createWrite(poolTokenATA),
-        createWrite(poolTokenFeeATA),
-        createWrite(poolTokenReferralFeeATA),
-        createWrite(poolTokenMint),
-        solanaAccounts.readSystemProgram(),
-        createRead(stakePoolTokenProgramId)
-    );
+    final var keys = new ArrayList<AccountMeta>(11);
+    keys.add(createWrite(stakePool));
+    keys.add(createRead(stakePoolWithdrawAuthority.publicKey()));
+    keys.add(createWrite(reserveStakeAccount));
+    // the account funding the deposit: lamports are debited from it
+    keys.add(createWritableSigner(lamportsFrom));
+    keys.add(createWrite(poolTokenATA));
+    keys.add(createWrite(poolTokenFeeATA));
+    keys.add(createWrite(poolTokenReferralFeeATA));
+    keys.add(createWrite(poolTokenMint));
+    keys.add(solanaAccounts.readSystemProgram());
+    keys.add(createRead(stakePoolTokenProgramId));
+    if (solDepositAuthority != null) {
+      keys.add(createReadOnlySigner(solDepositAuthority));
+    }
+    return keys;
   }
 
+  /// Deposits SOL into a pool that has no SOL deposit authority.
   public static Instruction depositSolWithSlippage(final SolanaAccounts solanaAccounts,
                                                    final AccountMeta invokedStakePoolProgram,
                                                    final PublicKey stakePool,
@@ -1218,6 +1223,42 @@ public final class StakePoolProgram {
                                                    final PublicKey stakePoolTokenProgramId,
                                                    final long lamportsIn,
                                                    final long minimumPoolTokensOut) {
+    return depositSolWithSlippage(
+        solanaAccounts,
+        invokedStakePoolProgram,
+        stakePool,
+        reserveStakeAccount,
+        lamportsFrom,
+        poolTokenATA,
+        poolTokenFeeATA,
+        poolTokenReferralFeeATA,
+        poolTokenMint,
+        stakePoolTokenProgramId,
+        null,
+        lamportsIn,
+        minimumPoolTokensOut
+    );
+  }
+
+  /// Deposits SOL into the pool's reserve for pool tokens, failing below a minimum of pool
+  /// tokens out.
+  ///
+  /// @param solDepositAuthority the pool's SOL deposit authority, which must sign the
+  ///                            transaction, or `null` for a pool that has none. A pool that
+  ///                            has one rejects a deposit sent without it.
+  public static Instruction depositSolWithSlippage(final SolanaAccounts solanaAccounts,
+                                                   final AccountMeta invokedStakePoolProgram,
+                                                   final PublicKey stakePool,
+                                                   final PublicKey reserveStakeAccount,
+                                                   final PublicKey lamportsFrom,
+                                                   final PublicKey poolTokenATA,
+                                                   final PublicKey poolTokenFeeATA,
+                                                   final PublicKey poolTokenReferralFeeATA,
+                                                   final PublicKey poolTokenMint,
+                                                   final PublicKey stakePoolTokenProgramId,
+                                                   final PublicKey solDepositAuthority,
+                                                   final long lamportsIn,
+                                                   final long minimumPoolTokensOut) {
     final var keys = createDepositSolKeys(
         solanaAccounts,
         invokedStakePoolProgram,
@@ -1228,7 +1269,8 @@ public final class StakePoolProgram {
         poolTokenFeeATA,
         poolTokenReferralFeeATA,
         poolTokenMint,
-        stakePoolTokenProgramId
+        stakePoolTokenProgramId,
+        solDepositAuthority
     );
 
     final byte[] data = new byte[1 + Long.BYTES + Long.BYTES];
@@ -1239,6 +1281,7 @@ public final class StakePoolProgram {
     return Instruction.createInstruction(invokedStakePoolProgram, keys, data);
   }
 
+  /// Deposits SOL into a pool that has no SOL deposit authority.
   public static Instruction depositSol(final SolanaAccounts solanaAccounts,
                                        final AccountMeta invokedStakePoolProgram,
                                        final PublicKey stakePool,
@@ -1250,6 +1293,39 @@ public final class StakePoolProgram {
                                        final PublicKey poolTokenMint,
                                        final PublicKey stakePoolTokenProgramId,
                                        final long lamportsIn) {
+    return depositSol(
+        solanaAccounts,
+        invokedStakePoolProgram,
+        stakePool,
+        reserveStakeAccount,
+        lamportsFrom,
+        poolTokenATA,
+        poolTokenFeeATA,
+        poolTokenReferralFeeATA,
+        poolTokenMint,
+        stakePoolTokenProgramId,
+        null,
+        lamportsIn
+    );
+  }
+
+  /// Deposits SOL into the pool's reserve for pool tokens.
+  ///
+  /// @param solDepositAuthority the pool's SOL deposit authority, which must sign the
+  ///                            transaction, or `null` for a pool that has none. A pool that
+  ///                            has one rejects a deposit sent without it.
+  public static Instruction depositSol(final SolanaAccounts solanaAccounts,
+                                       final AccountMeta invokedStakePoolProgram,
+                                       final PublicKey stakePool,
+                                       final PublicKey reserveStakeAccount,
+                                       final PublicKey lamportsFrom,
+                                       final PublicKey poolTokenATA,
+                                       final PublicKey poolTokenFeeATA,
+                                       final PublicKey poolTokenReferralFeeATA,
+                                       final PublicKey poolTokenMint,
+                                       final PublicKey stakePoolTokenProgramId,
+                                       final PublicKey solDepositAuthority,
+                                       final long lamportsIn) {
     final var keys = createDepositSolKeys(
         solanaAccounts,
         invokedStakePoolProgram,
@@ -1260,7 +1336,8 @@ public final class StakePoolProgram {
         poolTokenFeeATA,
         poolTokenReferralFeeATA,
         poolTokenMint,
-        stakePoolTokenProgramId
+        stakePoolTokenProgramId,
+        solDepositAuthority
     );
 
     final byte[] data = new byte[1 + Long.BYTES];
@@ -1396,27 +1473,32 @@ public final class StakePoolProgram {
                                                          final PublicKey receivingAccount,
                                                          final PublicKey poolTokenFeeATA,
                                                          final PublicKey poolTokenMint,
-                                                         final PublicKey stakePoolTokenProgramId) {
+                                                         final PublicKey stakePoolTokenProgramId,
+                                                         final PublicKey solWithdrawAuthority) {
     final var stakePoolWithdrawAuthority = findStakePoolWithdrawAuthority(
         stakePool,
         invokedStakePoolProgram.publicKey()
     );
-    return List.of(
-        createWrite(stakePool),
-        createRead(stakePoolWithdrawAuthority.publicKey()),
-        createReadOnlySigner(transferAuthority),
-        createWrite(poolTokenATA),
-        createWrite(reserveStakeAccount),
-        createWrite(receivingAccount),
-        createWrite(poolTokenFeeATA),
-        createWrite(poolTokenMint),
-        solanaAccounts.readClockSysVar(),
-        solanaAccounts.readStakeHistorySysVar(),
-        solanaAccounts.readStakeProgram(),
-        createRead(stakePoolTokenProgramId)
-    );
+    final var keys = new ArrayList<AccountMeta>(13);
+    keys.add(createWrite(stakePool));
+    keys.add(createRead(stakePoolWithdrawAuthority.publicKey()));
+    keys.add(createReadOnlySigner(transferAuthority));
+    keys.add(createWrite(poolTokenATA));
+    keys.add(createWrite(reserveStakeAccount));
+    keys.add(createWrite(receivingAccount));
+    keys.add(createWrite(poolTokenFeeATA));
+    keys.add(createWrite(poolTokenMint));
+    keys.add(solanaAccounts.readClockSysVar());
+    keys.add(solanaAccounts.readStakeHistorySysVar());
+    keys.add(solanaAccounts.readStakeProgram());
+    keys.add(createRead(stakePoolTokenProgramId));
+    if (solWithdrawAuthority != null) {
+      keys.add(createReadOnlySigner(solWithdrawAuthority));
+    }
+    return keys;
   }
 
+  /// Withdraws SOL from a pool that has no SOL withdraw authority.
   public static Instruction withdrawSolWithSlippage(final SolanaAccounts solanaAccounts,
                                                     final AccountMeta invokedStakePoolProgram,
                                                     final PublicKey stakePool,
@@ -1429,6 +1511,42 @@ public final class StakePoolProgram {
                                                     final PublicKey stakePoolTokenProgramId,
                                                     final long poolTokenAmount,
                                                     final long lamportsOut) {
+    return withdrawSolWithSlippage(
+        solanaAccounts,
+        invokedStakePoolProgram,
+        stakePool,
+        transferAuthority,
+        poolTokenATA,
+        reserveStakeAccount,
+        receivingAccount,
+        poolTokenFeeATA,
+        poolTokenMint,
+        stakePoolTokenProgramId,
+        null,
+        poolTokenAmount,
+        lamportsOut
+    );
+  }
+
+  /// Burns pool tokens for SOL from the pool's reserve, failing below a minimum of lamports
+  /// out.
+  ///
+  /// @param solWithdrawAuthority the pool's SOL withdraw authority, which must sign the
+  ///                             transaction, or `null` for a pool that has none. A pool that
+  ///                             has one rejects a withdrawal sent without it.
+  public static Instruction withdrawSolWithSlippage(final SolanaAccounts solanaAccounts,
+                                                    final AccountMeta invokedStakePoolProgram,
+                                                    final PublicKey stakePool,
+                                                    final PublicKey transferAuthority,
+                                                    final PublicKey poolTokenATA,
+                                                    final PublicKey reserveStakeAccount,
+                                                    final PublicKey receivingAccount,
+                                                    final PublicKey poolTokenFeeATA,
+                                                    final PublicKey poolTokenMint,
+                                                    final PublicKey stakePoolTokenProgramId,
+                                                    final PublicKey solWithdrawAuthority,
+                                                    final long poolTokenAmount,
+                                                    final long lamportsOut) {
     final var keys = createWithdrawSolKeys(
         solanaAccounts,
         invokedStakePoolProgram,
@@ -1439,7 +1557,8 @@ public final class StakePoolProgram {
         receivingAccount,
         poolTokenFeeATA,
         poolTokenMint,
-        stakePoolTokenProgramId
+        stakePoolTokenProgramId,
+        solWithdrawAuthority
     );
 
     final byte[] data = new byte[1 + Long.BYTES + Long.BYTES];
@@ -1450,6 +1569,7 @@ public final class StakePoolProgram {
     return Instruction.createInstruction(invokedStakePoolProgram, keys, data);
   }
 
+  /// Withdraws SOL from a pool that has no SOL withdraw authority.
   public static Instruction withdrawSol(final SolanaAccounts solanaAccounts,
                                         final AccountMeta invokedStakePoolProgram,
                                         final PublicKey stakePool,
@@ -1461,6 +1581,39 @@ public final class StakePoolProgram {
                                         final PublicKey poolTokenMint,
                                         final PublicKey stakePoolTokenProgramId,
                                         final long poolTokenAmount) {
+    return withdrawSol(
+        solanaAccounts,
+        invokedStakePoolProgram,
+        stakePool,
+        transferAuthority,
+        poolTokenATA,
+        reserveStakeAccount,
+        receivingAccount,
+        poolTokenFeeATA,
+        poolTokenMint,
+        stakePoolTokenProgramId,
+        null,
+        poolTokenAmount
+    );
+  }
+
+  /// Burns pool tokens for SOL from the pool's reserve.
+  ///
+  /// @param solWithdrawAuthority the pool's SOL withdraw authority, which must sign the
+  ///                             transaction, or `null` for a pool that has none. A pool that
+  ///                             has one rejects a withdrawal sent without it.
+  public static Instruction withdrawSol(final SolanaAccounts solanaAccounts,
+                                        final AccountMeta invokedStakePoolProgram,
+                                        final PublicKey stakePool,
+                                        final PublicKey transferAuthority,
+                                        final PublicKey poolTokenATA,
+                                        final PublicKey reserveStakeAccount,
+                                        final PublicKey receivingAccount,
+                                        final PublicKey poolTokenFeeATA,
+                                        final PublicKey poolTokenMint,
+                                        final PublicKey stakePoolTokenProgramId,
+                                        final PublicKey solWithdrawAuthority,
+                                        final long poolTokenAmount) {
     final var keys = createWithdrawSolKeys(
         solanaAccounts,
         invokedStakePoolProgram,
@@ -1471,7 +1624,8 @@ public final class StakePoolProgram {
         receivingAccount,
         poolTokenFeeATA,
         poolTokenMint,
-        stakePoolTokenProgramId
+        stakePoolTokenProgramId,
+        solWithdrawAuthority
     );
 
     final byte[] data = new byte[1 + Long.BYTES];

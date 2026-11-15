@@ -45,6 +45,8 @@ public interface StakePoolProgramClient {
 
   PublicKey ownerPublicKey();
 
+  /// Deposits SOL from the owner. A pool that has a SOL deposit authority gets it appended as
+  /// a signer, so the transaction needs that authority's signature beside the owner's.
   Instruction depositSol(final PublicKey stakePoolProgram,
                          final StakePoolState stakePoolState,
                          final PublicKey poolTokenATA,
@@ -61,6 +63,8 @@ public interface StakePoolProgramClient {
     );
   }
 
+  /// As [#depositSol(PublicKey, StakePoolState, PublicKey, long)], failing below a minimum of
+  /// pool tokens out.
   Instruction depositSolWithSlippage(final PublicKey stakePoolProgram,
                                      final StakePoolState stakePoolState,
                                      final PublicKey poolTokenATA,
@@ -121,6 +125,9 @@ public interface StakePoolProgramClient {
     );
   }
 
+  /// Burns the owner's pool tokens for SOL. A pool that has a SOL withdraw authority gets it
+  /// appended as a signer, so the transaction needs that authority's signature beside the
+  /// owner's.
   Instruction withdrawSol(final PublicKey stakePoolProgram,
                           final StakePoolState stakePoolState,
                           final PublicKey poolTokenATA,
@@ -137,6 +144,8 @@ public interface StakePoolProgramClient {
     );
   }
 
+  /// As [#withdrawSol(PublicKey, StakePoolState, PublicKey, long)], failing below a minimum
+  /// of lamports out.
   Instruction withdrawSolWithSlippage(final PublicKey stakePoolProgram,
                                       final StakePoolState stakePoolState,
                                       final PublicKey poolTokenATA,

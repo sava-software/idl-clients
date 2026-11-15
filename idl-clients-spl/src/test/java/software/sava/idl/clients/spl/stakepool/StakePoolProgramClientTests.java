@@ -62,10 +62,19 @@ final class StakePoolProgramClientTests {
   private static final Fee FEE = new Fee(1000L, 25L);
 
   private static final PublicKey CUSTOM_DEPOSIT_AUTHORITY = key(0x63);
+  private static final PublicKey SOL_DEPOSIT_AUTHORITY = key(0x64);
+  private static final PublicKey SOL_WITHDRAW_AUTHORITY = key(0x65);
 
+  /// A pool with a custom stake deposit authority and neither SOL authority.
   private static final StakePoolState STATE = state(CUSTOM_DEPOSIT_AUTHORITY);
 
   private static StakePoolState state(final PublicKey stakeDepositAuthority) {
+    return state(stakeDepositAuthority, null, null);
+  }
+
+  private static StakePoolState state(final PublicKey stakeDepositAuthority,
+                                      final PublicKey solDepositAuthority,
+                                      final PublicKey solWithdrawAuthority) {
     return new StakePoolState(
         POOL,
         AccountType.StakePool,
@@ -86,10 +95,10 @@ final class StakePoolProgramClientTests {
         null, null,
         FEE, FEE, null,
         0,
-        null,
+        solDepositAuthority,
         FEE,
         0,
-        null,
+        solWithdrawAuthority,
         FEE, null,
         0L, 0L
     );
@@ -146,6 +155,28 @@ final class StakePoolProgramClientTests {
     assertNotEquals(plain.data()[0], slippage.data()[0], "a different discriminator");
     assertEquals(plain.data().length + Long.BYTES, slippage.data().length);
     assertEquals(4_900L, software.sava.core.encoding.ByteUtil.getInt64LE(slippage.data(), 9));
+  }
+
+  /// The SOL deposit authority is read off the pool state. A pool that has one checks an
+  /// eleventh account for that key and its signature, so the client appends it as a signer;
+  /// a pool that has none is sent ten accounts.
+  @Test
+  void depositSolSignsWithThePoolsSolDepositAuthority() {
+    final var permissioned = state(CUSTOM_DEPOSIT_AUTHORITY, SOL_DEPOSIT_AUTHORITY, SOL_WITHDRAW_AUTHORITY);
+    final var open = CLIENT.depositSol(POOL_PROGRAM, STATE, POOL_TOKEN_ATA, 5_000L);
+    assertEquals(10, open.accounts().size());
+
+    final var ix = CLIENT.depositSol(POOL_PROGRAM, permissioned, POOL_TOKEN_ATA, 5_000L);
+    assertEquals(11, ix.accounts().size());
+    assertEquals(open.accounts(), ix.accounts().subList(0, 10));
+    assertEquals(AccountMeta.createReadOnlySigner(SOL_DEPOSIT_AUTHORITY), ix.accounts().get(10));
+    assertArrayEquals(open.data(), ix.data());
+
+    final var openWithSlippage = CLIENT.depositSolWithSlippage(POOL_PROGRAM, STATE, POOL_TOKEN_ATA, 5_000L, 4_900L);
+    assertEquals(10, openWithSlippage.accounts().size());
+    final var withSlippage = CLIENT.depositSolWithSlippage(POOL_PROGRAM, permissioned, POOL_TOKEN_ATA, 5_000L, 4_900L);
+    assertEquals(ix.accounts(), withSlippage.accounts());
+    assertArrayEquals(openWithSlippage.data(), withSlippage.data());
   }
 
   @Test
@@ -223,6 +254,28 @@ final class StakePoolProgramClientTests {
     assertEquals(keys(plain), keys(slippage));
     assertNotEquals(plain.data()[0], slippage.data()[0]);
     assertEquals(900L, software.sava.core.encoding.ByteUtil.getInt64LE(slippage.data(), 9));
+  }
+
+  /// The SOL withdraw authority is read off the pool state. A pool that has one checks a
+  /// thirteenth account for that key and its signature, so the client appends it as a signer;
+  /// a pool that has none is sent twelve accounts.
+  @Test
+  void withdrawSolSignsWithThePoolsSolWithdrawAuthority() {
+    final var permissioned = state(CUSTOM_DEPOSIT_AUTHORITY, SOL_DEPOSIT_AUTHORITY, SOL_WITHDRAW_AUTHORITY);
+    final var open = CLIENT.withdrawSol(POOL_PROGRAM, STATE, POOL_TOKEN_ATA, 1_000L);
+    assertEquals(12, open.accounts().size());
+
+    final var ix = CLIENT.withdrawSol(POOL_PROGRAM, permissioned, POOL_TOKEN_ATA, 1_000L);
+    assertEquals(13, ix.accounts().size());
+    assertEquals(open.accounts(), ix.accounts().subList(0, 12));
+    assertEquals(AccountMeta.createReadOnlySigner(SOL_WITHDRAW_AUTHORITY), ix.accounts().get(12));
+    assertArrayEquals(open.data(), ix.data());
+
+    final var openWithSlippage = CLIENT.withdrawSolWithSlippage(POOL_PROGRAM, STATE, POOL_TOKEN_ATA, 1_000L, 900L);
+    assertEquals(12, openWithSlippage.accounts().size());
+    final var withSlippage = CLIENT.withdrawSolWithSlippage(POOL_PROGRAM, permissioned, POOL_TOKEN_ATA, 1_000L, 900L);
+    assertEquals(ix.accounts(), withSlippage.accounts());
+    assertArrayEquals(openWithSlippage.data(), withSlippage.data());
   }
 
   @Test

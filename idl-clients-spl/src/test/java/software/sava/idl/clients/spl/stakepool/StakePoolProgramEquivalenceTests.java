@@ -42,6 +42,8 @@ final class StakePoolProgramEquivalenceTests {
   private static final PublicKey REFERRAL_POOL_ACCOUNT = key(13);
   private static final PublicKey TRANSFER_AUTHORITY = key(14);
   private static final PublicKey CUSTOM_DEPOSIT_AUTHORITY = key(15);
+  private static final PublicKey SOL_DEPOSIT_AUTHORITY = key(20);
+  private static final PublicKey SOL_WITHDRAW_AUTHORITY = key(21);
   private static final PublicKey WITHDRAW_AUTHORITY = StakePoolProgram
       .findStakePoolWithdrawAuthority(STAKE_POOL, PROGRAM).publicKey();
   private static final PublicKey DEFAULT_DEPOSIT_AUTHORITY = StakePoolProgram
@@ -386,6 +388,38 @@ final class StakePoolProgramEquivalenceTests {
     );
   }
 
+  /// The SOL deposit authority is an optional trailing signer in the IDL. Both clients append
+  /// it when given one, at index 10.
+  @Test
+  void depositSolWithASolDepositAuthority() {
+    final var handWritten = StakePoolProgram.depositSol(
+        SOLANA_ACCOUNTS, INVOKED, STAKE_POOL, RESERVE_STAKE, TRANSFER_AUTHORITY,
+        USER_POOL_ACCOUNT, MANAGER_FEE_ACCOUNT, REFERRAL_POOL_ACCOUNT, POOL_MINT,
+        TOKEN_PROGRAM, SOL_DEPOSIT_AUTHORITY, 777_777
+    );
+    assertEquals(AccountMeta.createReadOnlySigner(SOL_DEPOSIT_AUTHORITY), handWritten.accounts().get(10));
+    assertEquivalent(
+        handWritten,
+        software.sava.idl.clients.spl.stakepool.gen.StakePoolProgram.depositSol(
+            INVOKED, SOLANA_ACCOUNTS, STAKE_POOL, WITHDRAW_AUTHORITY, RESERVE_STAKE,
+            TRANSFER_AUTHORITY, USER_POOL_ACCOUNT, MANAGER_FEE_ACCOUNT, REFERRAL_POOL_ACCOUNT,
+            POOL_MINT, TOKEN_PROGRAM, SOL_DEPOSIT_AUTHORITY, 777_777
+        )
+    );
+    assertEquivalent(
+        StakePoolProgram.depositSolWithSlippage(
+            SOLANA_ACCOUNTS, INVOKED, STAKE_POOL, RESERVE_STAKE, TRANSFER_AUTHORITY,
+            USER_POOL_ACCOUNT, MANAGER_FEE_ACCOUNT, REFERRAL_POOL_ACCOUNT, POOL_MINT,
+            TOKEN_PROGRAM, SOL_DEPOSIT_AUTHORITY, 777_777, 700_000
+        ),
+        software.sava.idl.clients.spl.stakepool.gen.StakePoolProgram.depositSolWithSlippage(
+            INVOKED, SOLANA_ACCOUNTS, STAKE_POOL, WITHDRAW_AUTHORITY, RESERVE_STAKE,
+            TRANSFER_AUTHORITY, USER_POOL_ACCOUNT, MANAGER_FEE_ACCOUNT, REFERRAL_POOL_ACCOUNT,
+            POOL_MINT, TOKEN_PROGRAM, SOL_DEPOSIT_AUTHORITY, 777_777, 700_000
+        )
+    );
+  }
+
   @Test
   void setFundingAuthority() {
     assertEquivalent(
@@ -410,6 +444,38 @@ final class StakePoolProgramEquivalenceTests {
         handWritten,
         software.sava.idl.clients.spl.stakepool.gen.StakePoolProgram.setFundingAuthority(
             INVOKED, STAKE_POOL, MANAGER, null, FundingType.solDeposit
+        )
+    );
+  }
+
+  /// The SOL withdraw authority is an optional trailing signer in the IDL. Both clients append
+  /// it when given one, at index 12.
+  @Test
+  void withdrawSolWithASolWithdrawAuthority() {
+    final var handWritten = StakePoolProgram.withdrawSol(
+        SOLANA_ACCOUNTS, INVOKED, STAKE_POOL, TRANSFER_AUTHORITY, USER_POOL_ACCOUNT,
+        RESERVE_STAKE, EPHEMERAL_STAKE, MANAGER_FEE_ACCOUNT, POOL_MINT, TOKEN_PROGRAM,
+        SOL_WITHDRAW_AUTHORITY, 55_555
+    );
+    assertEquals(AccountMeta.createReadOnlySigner(SOL_WITHDRAW_AUTHORITY), handWritten.accounts().get(12));
+    assertEquivalent(
+        handWritten,
+        software.sava.idl.clients.spl.stakepool.gen.StakePoolProgram.withdrawSol(
+            INVOKED, SOLANA_ACCOUNTS, STAKE_POOL, WITHDRAW_AUTHORITY, TRANSFER_AUTHORITY,
+            USER_POOL_ACCOUNT, RESERVE_STAKE, EPHEMERAL_STAKE, MANAGER_FEE_ACCOUNT, POOL_MINT,
+            TOKEN_PROGRAM, SOL_WITHDRAW_AUTHORITY, 55_555
+        )
+    );
+    assertEquivalent(
+        StakePoolProgram.withdrawSolWithSlippage(
+            SOLANA_ACCOUNTS, INVOKED, STAKE_POOL, TRANSFER_AUTHORITY, USER_POOL_ACCOUNT,
+            RESERVE_STAKE, EPHEMERAL_STAKE, MANAGER_FEE_ACCOUNT, POOL_MINT, TOKEN_PROGRAM,
+            SOL_WITHDRAW_AUTHORITY, 55_555, 54_000
+        ),
+        software.sava.idl.clients.spl.stakepool.gen.StakePoolProgram.withdrawSolWithSlippage(
+            INVOKED, SOLANA_ACCOUNTS, STAKE_POOL, WITHDRAW_AUTHORITY, TRANSFER_AUTHORITY,
+            USER_POOL_ACCOUNT, RESERVE_STAKE, EPHEMERAL_STAKE, MANAGER_FEE_ACCOUNT, POOL_MINT,
+            TOKEN_PROGRAM, SOL_WITHDRAW_AUTHORITY, 55_555, 54_000
         )
     );
   }

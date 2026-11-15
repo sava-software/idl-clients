@@ -57,6 +57,7 @@ final class StakePoolProgramClientImpl implements StakePoolProgramClient {
         poolTokenATA,
         stakePoolState.poolMint(),
         stakePoolState.tokenProgramId(),
+        stakePoolState.solDepositAuthority(),
         lamportsIn
     );
   }
@@ -78,6 +79,7 @@ final class StakePoolProgramClientImpl implements StakePoolProgramClient {
         poolTokenATA,
         stakePoolState.poolMint(),
         stakePoolState.tokenProgramId(),
+        stakePoolState.solDepositAuthority(),
         lamportsIn,
         minimumPoolTokensOut
     );
@@ -149,6 +151,7 @@ final class StakePoolProgramClientImpl implements StakePoolProgramClient {
         stakePoolState.managerFeeAccount(),
         stakePoolState.poolMint(),
         stakePoolState.tokenProgramId(),
+        stakePoolState.solWithdrawAuthority(),
         poolTokenAmount,
         lamportsOut
     );
@@ -171,6 +174,7 @@ final class StakePoolProgramClientImpl implements StakePoolProgramClient {
         stakePoolState.managerFeeAccount(),
         stakePoolState.poolMint(),
         stakePoolState.tokenProgramId(),
+        stakePoolState.solWithdrawAuthority(),
         poolTokenAmount
     );
   }
