@@ -83,6 +83,29 @@ final class StakePoolProgramEquivalenceTests {
     );
   }
 
+  /// The deposit authority is optional, and omitting it is what makes a pool permissionless:
+  /// the hand-written overload without one and the generated builder given `null` must both
+  /// stop after the token program, at nine accounts.
+  @Test
+  void initializeWithoutADepositAuthority() {
+    final var handWritten = StakePoolProgram.initialize(
+        INVOKED, STAKE_POOL, MANAGER, STAKER, VALIDATOR_LIST, RESERVE_STAKE, POOL_MINT,
+        MANAGER_FEE_ACCOUNT, TOKEN_PROGRAM,
+        new StakePoolState.Fee(1_000, 25), new StakePoolState.Fee(1_000, 5), new StakePoolState.Fee(1_000, 3),
+        50, 2_950
+    );
+    assertEquals(9, handWritten.accounts().size());
+    assertEquals(AccountMeta.createRead(TOKEN_PROGRAM), handWritten.accounts().getLast());
+    assertEquivalent(
+        handWritten,
+        software.sava.idl.clients.spl.stakepool.gen.StakePoolProgram.initialize(
+            INVOKED, STAKE_POOL, MANAGER, STAKER, WITHDRAW_AUTHORITY, VALIDATOR_LIST, RESERVE_STAKE,
+            POOL_MINT, MANAGER_FEE_ACCOUNT, TOKEN_PROGRAM, null,
+            new Fee(1_000, 25), new Fee(1_000, 5), new Fee(1_000, 3), 50, 2_950
+        )
+    );
+  }
+
   @Test
   void addValidatorToPool() {
     assertEquivalent(

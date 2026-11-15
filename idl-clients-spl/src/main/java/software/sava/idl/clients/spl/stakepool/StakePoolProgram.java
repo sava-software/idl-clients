@@ -10,6 +10,7 @@ import software.sava.core.encoding.ByteUtil;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.tx.Instruction;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -755,6 +756,18 @@ public final class StakePoolProgram {
   /// The pool token mint and the manager's fee account are writable because the program mints
   /// to them: any lamports the reserve holds above its rent-exempt minimum become the pool's
   /// first pool tokens, paid to the fee account.
+  ///
+  /// @param depositAuthority a key that must then sign every stake deposit and every SOL deposit
+  ///                         into the pool, or `null` to leave both permissionless. Never pass
+  ///                         the address from
+  ///                         [#findStakePoolDepositAuthority(PublicKey, PublicKey)]: the program
+  ///                         already uses it for stake deposits when no authority is given, and
+  ///                         given explicitly it also becomes the SOL deposit authority, which
+  ///                         nothing can sign for, so no SOL deposit can succeed until the manager
+  ///                         clears it: `SetFundingAuthority` for SOL deposits, sent without a
+  ///                         new authority account, which the generated
+  ///                         `gen.StakePoolProgram.setFundingAuthority` builds when given a
+  ///                         `null` authority.
   public static Instruction initialize(final AccountMeta invokedStakePoolProgram,
                                        final PublicKey newStakePool,
                                        final PublicKey manager,
@@ -774,18 +787,22 @@ public final class StakePoolProgram {
         newStakePool,
         invokedStakePoolProgram.publicKey()
     );
-    final var keys = List.of(
-        createWrite(newStakePool),
-        createReadOnlySigner(manager),
-        createRead(staker),
-        createRead(stakePoolWithdrawAuthority.publicKey()),
-        createWrite(uninitializedValidatorStakeList),
-        createRead(reserveStakeAccount),
-        createWrite(poolTokenMint),
-        createWrite(feeAccount),
-        createRead(tokenProgram),
-        createRead(depositAuthority)
-    );
+    final var keys = new ArrayList<AccountMeta>(10);
+    keys.add(createWrite(newStakePool));
+    keys.add(createReadOnlySigner(manager));
+    keys.add(createRead(staker));
+    keys.add(createRead(stakePoolWithdrawAuthority.publicKey()));
+    keys.add(createWrite(uninitializedValidatorStakeList));
+    keys.add(createRead(reserveStakeAccount));
+    keys.add(createWrite(poolTokenMint));
+    keys.add(createWrite(feeAccount));
+    keys.add(createRead(tokenProgram));
+    if (depositAuthority != null) {
+      // The program decides by this account's presence and never compares its key with the
+      // derived address: any tenth account becomes both the stake deposit authority and the
+      // SOL deposit authority.
+      keys.add(createRead(depositAuthority));
+    }
 
     final byte[] data = new byte[1
         + StakePoolState.Fee.BYTES
@@ -805,6 +822,9 @@ public final class StakePoolProgram {
     return Instruction.createInstruction(invokedStakePoolProgram, keys, data);
   }
 
+  /// Initializes a new stake pool with permissionless deposits: no deposit authority account is
+  /// sent, so the program keeps its own derived address for stake deposits and requires no
+  /// signature for SOL deposits.
   public static Instruction initialize(final AccountMeta invokedStakePoolProgram,
                                        final PublicKey newStakePool,
                                        final PublicKey manager,
@@ -819,10 +839,6 @@ public final class StakePoolProgram {
                                        final StakePoolState.Fee depositFee,
                                        final int referralFee,
                                        final int maxValidators) {
-    final var stakePoolDepositAuthority = findStakePoolDepositAuthority(
-        newStakePool,
-        invokedStakePoolProgram.publicKey()
-    );
     return initialize(
         invokedStakePoolProgram,
         newStakePool,
@@ -833,7 +849,7 @@ public final class StakePoolProgram {
         poolTokenMint,
         feeAccount,
         tokenProgram,
-        stakePoolDepositAuthority.publicKey(),
+        null,
         fee,
         withdrawalFee,
         depositFee,

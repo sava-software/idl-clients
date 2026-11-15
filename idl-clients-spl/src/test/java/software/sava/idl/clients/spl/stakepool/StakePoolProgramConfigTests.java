@@ -10,6 +10,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 // Verified against the SPL stake-pool program Rust source:
 // https://github.com/solana-program/stake-pool/blob/main/program/src/instruction.rs
@@ -131,8 +132,14 @@ final class StakePoolProgramConfigTests {
     assertAccount(accounts.get(9), depositAuthority, false, false);
   }
 
+  /// With no deposit authority the instruction carries nine accounts. `process_initialize`
+  /// decides by the tenth account's presence alone: absent, it stores its own derived
+  /// `[pool, "deposit"]` address for stake deposits and `None` for SOL deposits; present, it
+  /// stores that key for both, and `check_sol_deposit_authority` then demands its signature
+  /// on every SOL deposit. Sending the derived address itself therefore asks for a signature
+  /// no transaction can carry, so it must not appear in the list.
   @Test
-  void initializeWithDerivedDepositAuthority() {
+  void initializeWithoutADepositAuthoritySendsNone() {
     final var manager = key(2);
     final var staker = key(3);
     final var validatorList = key(4);
@@ -174,7 +181,7 @@ final class StakePoolProgramConfigTests {
     assertArrayEquals(expectedData, ix.data());
 
     final var accounts = ix.accounts();
-    assertEquals(10, accounts.size());
+    assertEquals(9, accounts.size());
     assertAccount(accounts.get(0), STAKE_POOL, true, false);
     assertAccount(accounts.get(1), manager, false, true);
     assertAccount(accounts.get(2), staker, false, false);
@@ -184,8 +191,59 @@ final class StakePoolProgramConfigTests {
     assertAccount(accounts.get(6), poolTokenMint, true, false);
     assertAccount(accounts.get(7), feeAccount, true, false);
     assertAccount(accounts.get(8), tokenProgram, false, false);
-    // find_deposit_authority_program_address([STAKE_POOL, "deposit"]).
-    assertAccount(accounts.get(9), DEPOSIT_AUTHORITY, false, false);
+    for (final var account : accounts) {
+      assertNotEquals(DEPOSIT_AUTHORITY, account.publicKey());
+    }
+
+    // a null authority on the explicit overload is the same instruction
+    final var explicitNull = StakePoolProgram.initialize(
+        INVOKED_PROGRAM,
+        STAKE_POOL,
+        manager,
+        staker,
+        validatorList,
+        reserveStakeAccount,
+        poolTokenMint,
+        feeAccount,
+        tokenProgram,
+        null,
+        new StakePoolState.Fee(0x1112131415161718L, 0x2122232425262728L),
+        new StakePoolState.Fee(0x3132333435363738L, 0x4142434445464748L),
+        new StakePoolState.Fee(0x5152535455565758L, 0x6162636465666768L),
+        0x7F,
+        0x0A0B0C0D
+    );
+    assertEquals(accounts, explicitNull.accounts());
+    assertArrayEquals(expectedData, explicitNull.data());
+  }
+
+  /// The address a pool initialized without a deposit authority stores for stake deposits.
+  /// `initialize` no longer sends it, and the stake deposit builders take the authority from
+  /// the caller and only compare it with this address, so the helper is pinned here directly:
+  /// against a value computed outside this library, and against the program's own derivation,
+  /// read from the `stake_deposit_authority` field of three mainnet pools at slot 469681456.
+  @Test
+  void findStakePoolDepositAuthority() {
+    assertEquals(
+        DEPOSIT_AUTHORITY,
+        StakePoolProgram.findStakePoolDepositAuthority(STAKE_POOL, STAKE_POOL_PROGRAM).publicKey()
+    );
+    assertStoredDepositAuthority(
+        "stk9ApL5HeVAwPLr3TLhDXdZS8ptVu7zp6ov8HFDuMi", "CbnZJt3kzAobmKFsrVEDxa2ujUFY2N5gEtDs278i41HY");
+    assertStoredDepositAuthority(
+        "CtMyWsrUtAwXWiGr9WjHT5fC3p3fgV8cyGpLTo2LJzG1", "GCjhUMwq9TxMDG6omiWq2qmjikSDE6jEqU7M6HQA16nT");
+    assertStoredDepositAuthority(
+        "2qyEeSAWKfU18AFthrF7JA8z8ZCi1yt76Tqs917vwQTV", "G2XpKEdgSz7HWgWyDo9oTLGBHyRfQEUBnHGsFKV2H7PB");
+  }
+
+  private static void assertStoredDepositAuthority(final String stakePool, final String stored) {
+    assertEquals(
+        PublicKey.fromBase58Encoded(stored),
+        StakePoolProgram
+            .findStakePoolDepositAuthority(PublicKey.fromBase58Encoded(stakePool), STAKE_POOL_PROGRAM)
+            .publicKey(),
+        stakePool
+    );
   }
 
   @Test

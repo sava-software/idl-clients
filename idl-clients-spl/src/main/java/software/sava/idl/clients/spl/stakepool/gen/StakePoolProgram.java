@@ -38,7 +38,7 @@ public final class StakePoolProgram {
   /// @param reserveStakeKey Reserve stake account; must be initialized, with no lockup and both authorities set to the pool withdraw authority. Lamports it holds above its rent-exempt minimum are minted as pool tokens to the manager fee account
   /// @param poolMintKey Pool token mint; must have zero supply and be owned by the withdraw authority
   /// @param managerFeeAccountKey Pool account to deposit the generated fee for the manager
-  /// @param depositAuthorityKey Deposit authority that must sign all deposits; defaults to the derived deposit authority, making deposits permissionless
+  /// @param depositAuthorityKey Custom deposit authority, which must then sign every stake deposit and every SOL deposit; omit it for permissionless deposits. Never the derived deposit authority, which the program already uses for stake deposits when this is omitted: sent here it also becomes the SOL deposit authority, which nothing can sign for
   public static List<AccountMeta> initializeKeys(final PublicKey stakePoolKey,
                                                  final PublicKey managerKey,
                                                  final PublicKey stakerKey,
@@ -72,7 +72,7 @@ public final class StakePoolProgram {
   /// @param reserveStakeKey Reserve stake account; must be initialized, with no lockup and both authorities set to the pool withdraw authority. Lamports it holds above its rent-exempt minimum are minted as pool tokens to the manager fee account
   /// @param poolMintKey Pool token mint; must have zero supply and be owned by the withdraw authority
   /// @param managerFeeAccountKey Pool account to deposit the generated fee for the manager
-  /// @param depositAuthorityKey Deposit authority that must sign all deposits; defaults to the derived deposit authority, making deposits permissionless
+  /// @param depositAuthorityKey Custom deposit authority, which must then sign every stake deposit and every SOL deposit; omit it for permissionless deposits. Never the derived deposit authority, which the program already uses for stake deposits when this is omitted: sent here it also becomes the SOL deposit authority, which nothing can sign for
   /// @param fee Fee assessed as percentage of perceived rewards
   /// @param withdrawalFee Fee charged per withdrawal as percentage of withdrawal
   /// @param depositFee Fee charged per deposit as percentage of deposit

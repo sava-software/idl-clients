@@ -108,7 +108,7 @@
             "isSigner": false,
             "isOptional": true,
             "docs": [
-              "Deposit authority that must sign all deposits; defaults to the derived deposit authority, making deposits permissionless"
+              "Custom deposit authority, which must then sign every stake deposit and every SOL deposit; omit it for permissionless deposits. Never the derived deposit authority, which the program already uses for stake deposits when this is omitted: sent here it also becomes the SOL deposit authority, which nothing can sign for"
             ]
           }
         ],
