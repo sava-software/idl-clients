@@ -1,10 +1,10 @@
 {
   "program": "BUNDDh4P5XviMm1f3gCvnq2qKx6TGosAGnoUK12e7cXU",
   "deployed": "vcs",
-  "lastDeploySlot": 467587947,
+  "lastDeploySlot": 470342646,
   "programDataState": "upgradeable",
   "programDataStateSlot": 440077852,
-  "programDataPayloadSha256": "27fb52648ea8d2f5e304db55d88702d382a7cb19ca844c920386d143b7b05690",
+  "programDataPayloadSha256": "fb9e0d7223064d5acf2ac8ffb6127f90b26edc08c30727f464d4b4cf9422e282",
   "programDataPayloadLength": 1350928,
   "channels": {
     "metadata": {
@@ -15,14 +15,14 @@
       "verbatim": "metadata.json"
     },
     "vcs": {
-      "origin": "github:neutral-trade/sdk@main#7d8b41044e757c378d9a20eddfafa507ee2ec15c/src/idl/ntbundle.json",
-      "hash": "f93ddf3d1217b45377df84b0b1ddc066d3167a5d67ee66fe33bdb7736a14cb7c",
+      "origin": "github:neutral-trade/sdk@main#280c4e51ddc1328e10de28b8a597bf5e029d2e31/src/idl/ntbundle.json",
+      "hash": "8740719959a6c05c53951cedc998675bf4262ef20ac3f4d4cbf6a4bfdb70d40c",
       "matchesDeployed": true,
       "verbatim": "idl.json"
     },
     "vcsHead": {
       "origin": "github:neutral-trade/sdk@main/src/idl/ntbundle.json",
-      "hash": "f93ddf3d1217b45377df84b0b1ddc066d3167a5d67ee66fe33bdb7736a14cb7c",
+      "hash": "8740719959a6c05c53951cedc998675bf4262ef20ac3f4d4cbf6a4bfdb70d40c",
       "matchesDeployed": true,
       "verbatim": "idl.json"
     }

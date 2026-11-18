@@ -60,6 +60,17 @@ public final class NtbundlePDAs {
     ), program);
   }
 
+  /// @param tokenMetadataProgram the program the address is derived under, metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s
+  public static ProgramDerivedAddress metadataPDA(final PublicKey tokenMetadataProgram,
+                                                  final PublicKey metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s,
+                                                  final PublicKey mintAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      "metadata".getBytes(US_ASCII),
+      metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s.toByteArray(),
+      mintAccount.toByteArray()
+    ), tokenMetadataProgram);
+  }
+
   public static ProgramDerivedAddress mintPDA(final PublicKey program,
                                               final PublicKey bundleAccountAccount) {
     return PublicKey.findProgramAddress(List.of(

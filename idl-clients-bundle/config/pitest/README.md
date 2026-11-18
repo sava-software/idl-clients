@@ -1032,11 +1032,19 @@ Age alone is not a reason to switch, so each was confirmed against chain:
   build that was not deployed (`c0118a1`, bundle-sc@8e9e1c6), and the six
   tokenized-depositor builders it brought failed 101 InstructionFallbackNotFound.
   The image deployed at 462411030 dispatches all 56 instructions that IDL
-  declares, so since 2026-10-29 the pin is v2.3.0 (`02ff266`), whose
-  `ntbundle.json` is byte-identical to `c0118a1`'s. When `vcsHead` diverges
-  again, advance the pin only after a review of the deploy shows the program
-  runs what the branch declares: dispatch alone cannot see a field carved out
-  of padding, so live arguments and account layouts are part of the check.
+  declares, which admitted v2.3.0 (`02ff266`), whose `ntbundle.json` is
+  byte-identical to `c0118a1`'s. The 467587947 deploy then admitted v2.4.0's
+  `request_token_switch`. The current pin is `280c4e5`, reviewed against deploy
+  470342646 on 2026-11-17: its only additions are `set_share_token_metadata`
+  and errors 6106–6108. A successful transaction creates metadata through the
+  new instruction; unsigned simulations update it and enforce its UTF-8 byte
+  limits. Existing instruction and account definitions are unchanged, and the
+  generated Java round-trips the sampled calls, events and all program-owned
+  accounts. `main_net_programs.json` records the evidence and its limits.
+  When `vcsHead` diverges again, advance the pin only after a review of the
+  deploy shows the program runs what the branch declares: dispatch alone cannot
+  see a field carved out of padding, so live arguments and account layouts are
+  part of the check.
 - **`jupiter.order_engine` → `"deployed": "vcs"`.** Instruction, account, type and
   error sets are identical, so nothing behavioural rides on it; the repository copy
   carries the real program address (the on-chain document declares the placeholder
@@ -1050,10 +1058,11 @@ Age alone is not a reason to switch, so each was confirmed against chain:
   IDL, so the stale metadata account is the only published description. This is why
   the Ember fixes live in the hand-written layer.
 
-The four Kamino programs, `jupiter.swap` and `orca.whirlpools` publish their IDL
-in the same deploy, so the on-chain copy stays authoritative for them. Kamino
-Vaults stopped being one on 2026-10-01, when the document published with a deploy
-described a later build; see "Kamino Vaults: `"deployed": "vcs"`" below.
+The on-chain IDL remains the default unless a replacement is independently
+verified. Kamino Vaults moved off it on 2026-10-01, when the document published
+with a deploy described a later build; see "Kamino Vaults: `"deployed": "vcs"`"
+below. Jupiter Swap remains on chain with an uncovered executable addition,
+described below.
 
 **Switching `squads.v4` drops four generated types**, three of which were
 duplicates the on-chain IDL carried alongside the names the program actually uses:
@@ -1064,6 +1073,29 @@ already generated before the switch. Only `Permission` — the `Initiate`/`Vote`
 `Execute` enum — goes without replacement; `Permissions` survives as the `u8` mask
 it has always been, so a caller composing one now needs the bit values rather than
 the names. Nothing in either IDL referenced any of the four structurally.
+
+#### Jupiter Swap: unpublished Swap variants (2026-11-17)
+
+The executable deployed at slot 470226883 accepts three `Swap` encodings absent
+from its unchanged on-chain IDL: tags 211 and 212 carry no fields, and tag 213
+carries one boolean byte. Exact one-step and two-step `route_v2` payloads reach
+account validation in unsigned simulations; their one-byte-short counterparts
+fail argument deserialization, as do boolean values 2 and 255 for tag 213.
+The published IDL ends at tag 210, and the public SDK IDL is older still.
+Other checked official artifacts supply no replacement: `jupiter-amm-interface`
+at `70f56e0` defines an integration API with different variant ordering, and
+`rfq-v2-sdk` at `f3f30ff` carries a Borsh `Swap` ending at tag 125.
+
+All eight accepted test payloads fail in the generated Java reader:
+`Swap.read` returns null for the unknown tag and `RoutePlanStepV2.read` then
+throws `NullPointerException`. `RouteV2Data.readData` propagates it, so typed
+route decoding and construction do not cover these encodings. None occurs in
+the 100-transaction sample; their names, account conventions and successful
+execution remain unverified. Parser acceptance alone does not prove execution
+support. The client stays on the published IDL until an authoritative
+replacement or sufficient independent evidence establishes the missing
+definitions. `main_net_programs.json` records this unresolved gap against the
+deploy; a matching channel hash does not clear it.
 
 #### Phoenix Ember: upstream IDL corrections adopted (2026-11-10)
 

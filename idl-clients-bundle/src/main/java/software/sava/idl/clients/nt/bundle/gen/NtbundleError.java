@@ -109,7 +109,10 @@ public sealed interface NtbundleError extends ProgramError permits
     NtbundleError.MinimumTokensOutNotMet,
     NtbundleError.ExcessiveIssuanceFee,
     NtbundleError.MinimumSharesOutNotMet,
-    NtbundleError.InstantMintCapExceeded {
+    NtbundleError.InstantMintCapExceeded,
+    NtbundleError.MetadataNameTooLong,
+    NtbundleError.MetadataSymbolTooLong,
+    NtbundleError.MetadataUriTooLong {
 
   static NtbundleError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -219,6 +222,9 @@ public sealed interface NtbundleError extends ProgramError permits
       case 6103 -> ExcessiveIssuanceFee.INSTANCE;
       case 6104 -> MinimumSharesOutNotMet.INSTANCE;
       case 6105 -> InstantMintCapExceeded.INSTANCE;
+      case 6106 -> MetadataNameTooLong.INSTANCE;
+      case 6107 -> MetadataSymbolTooLong.INSTANCE;
+      case 6108 -> MetadataUriTooLong.INSTANCE;
       default -> null;
     };
   }
@@ -962,6 +968,27 @@ public sealed interface NtbundleError extends ProgramError permits
 
     public static final InstantMintCapExceeded INSTANCE = new InstantMintCapExceeded(
         6105, "Instant mint cap per cycle exceeded"
+    );
+  }
+
+  record MetadataNameTooLong(int code, String msg) implements NtbundleError {
+
+    public static final MetadataNameTooLong INSTANCE = new MetadataNameTooLong(
+        6106, "Share token metadata name exceeds 32 UTF-8 bytes"
+    );
+  }
+
+  record MetadataSymbolTooLong(int code, String msg) implements NtbundleError {
+
+    public static final MetadataSymbolTooLong INSTANCE = new MetadataSymbolTooLong(
+        6107, "Share token metadata symbol exceeds 10 UTF-8 bytes"
+    );
+  }
+
+  record MetadataUriTooLong(int code, String msg) implements NtbundleError {
+
+    public static final MetadataUriTooLong INSTANCE = new MetadataUriTooLong(
+        6108, "Share token metadata URI exceeds 200 UTF-8 bytes"
     );
   }
 }

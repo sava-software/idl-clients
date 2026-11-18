@@ -3842,6 +3842,128 @@ public final class NtbundleProgram {
     }
   }
 
+  public static final Discriminator SET_SHARE_TOKEN_METADATA_DISCRIMINATOR = toDiscriminator(127, 52, 71, 225, 94, 140, 203, 246);
+
+  /// @param metadataKey Existing accounts must belong to Metaplex, whose CPI validates their contents and authority.
+  public static List<AccountMeta> setShareTokenMetadataKeys(final SolanaAccounts solanaAccounts,
+                                                            final PublicKey managerKey,
+                                                            final PublicKey bundleAccountKey,
+                                                            final PublicKey tokenizedBundleDepositorKey,
+                                                            final PublicKey mintKey,
+                                                            final PublicKey tokenAuthorityKey,
+                                                            final PublicKey metadataKey,
+                                                            final PublicKey tokenMetadataProgramKey) {
+    return List.of(
+      createWritableSigner(managerKey),
+      createRead(bundleAccountKey),
+      createRead(tokenizedBundleDepositorKey),
+      createRead(mintKey),
+      createRead(tokenAuthorityKey),
+      createWrite(metadataKey),
+      createRead(tokenMetadataProgramKey),
+      createRead(solanaAccounts.systemProgram())
+    );
+  }
+
+  /// @param metadataKey Existing accounts must belong to Metaplex, whose CPI validates their contents and authority.
+  public static Instruction setShareTokenMetadata(final AccountMeta invokedNtbundleProgramMeta,
+                                                  final SolanaAccounts solanaAccounts,
+                                                  final PublicKey managerKey,
+                                                  final PublicKey bundleAccountKey,
+                                                  final PublicKey tokenizedBundleDepositorKey,
+                                                  final PublicKey mintKey,
+                                                  final PublicKey tokenAuthorityKey,
+                                                  final PublicKey metadataKey,
+                                                  final PublicKey tokenMetadataProgramKey,
+                                                  final String name,
+                                                  final String symbol,
+                                                  final String uri) {
+    final var keys = setShareTokenMetadataKeys(
+      solanaAccounts,
+      managerKey,
+      bundleAccountKey,
+      tokenizedBundleDepositorKey,
+      mintKey,
+      tokenAuthorityKey,
+      metadataKey,
+      tokenMetadataProgramKey
+    );
+    return setShareTokenMetadata(
+      invokedNtbundleProgramMeta,
+      keys,
+      name,
+      symbol,
+      uri
+    );
+  }
+
+  public static Instruction setShareTokenMetadata(final AccountMeta invokedNtbundleProgramMeta,
+                                                  final List<AccountMeta> keys,
+                                                  final String name,
+                                                  final String symbol,
+                                                  final String uri) {
+    final byte[] _name = SerDeUtil.encodeString(name);
+    final byte[] _symbol = SerDeUtil.encodeString(symbol);
+    final byte[] _uri = SerDeUtil.encodeString(uri);
+    final byte[] _data = new byte[20 + _name.length + _symbol.length + _uri.length];
+    int i = SET_SHARE_TOKEN_METADATA_DISCRIMINATOR.write(_data, 0);
+    i += SerDeUtil.writeVector(4, _name, _data, i);
+    i += SerDeUtil.writeVector(4, _symbol, _data, i);
+    SerDeUtil.writeVector(4, _uri, _data, i);
+
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
+  }
+
+  public record SetShareTokenMetadataIxData(Discriminator discriminator,
+                                            String name, byte[] _name,
+                                            String symbol, byte[] _symbol,
+                                            String uri, byte[] _uri) implements SerDe {
+
+    public static SetShareTokenMetadataIxData read(final Instruction instruction) {
+      return read(instruction.copyData(), 0);
+    }
+
+    public static final int NAME_OFFSET = 8;
+
+    public static SetShareTokenMetadataIxData createRecord(final Discriminator discriminator,
+                                                           final String name,
+                                                           final String symbol,
+                                                           final String uri) {
+      return new SetShareTokenMetadataIxData(discriminator, name, name == null ? null : SerDeUtil.encodeString(name), symbol, symbol == null ? null : SerDeUtil.encodeString(symbol), uri, uri == null ? null : SerDeUtil.encodeString(uri));
+    }
+
+    public static SetShareTokenMetadataIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final byte[] _name = SerDeUtil.readbyteVector(4, _data, i);
+      final var name = SerDeUtil.decodeString(_name);
+      i += 4 + _name.length;
+      final byte[] _symbol = SerDeUtil.readbyteVector(4, _data, i);
+      final var symbol = SerDeUtil.decodeString(_symbol);
+      i += 4 + _symbol.length;
+      final byte[] _uri = SerDeUtil.readbyteVector(4, _data, i);
+      final var uri = SerDeUtil.decodeString(_uri);
+      return new SetShareTokenMetadataIxData(discriminator, name, name == null ? null : SerDeUtil.encodeString(name), symbol, symbol == null ? null : SerDeUtil.encodeString(symbol), uri, uri == null ? null : SerDeUtil.encodeString(uri));
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      i += SerDeUtil.writeVector(4, _name, _data, i);
+      i += SerDeUtil.writeVector(4, _symbol, _data, i);
+      i += SerDeUtil.writeVector(4, _uri, _data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 8 + 4 + _name.length + 4 + _symbol.length + 4 + _uri.length;
+    }
+  }
+
   public static final Discriminator SET_USER_FEE_OVERRIDE_DISCRIMINATOR = toDiscriminator(207, 40, 210, 198, 66, 33, 153, 209);
 
   public static List<AccountMeta> setUserFeeOverrideKeys(final PublicKey managerKey,
