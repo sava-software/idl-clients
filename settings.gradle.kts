@@ -61,13 +61,13 @@ pluginManagement {
 // ('dependency-analysis-gradle-plugin' in its gradle/libs.versions.toml).
 buildscript {
   if (providers.gradleProperty("dependencyAudit").isPresent) {
-    dependencies { classpath("com.autonomousapps:dependency-analysis-gradle-plugin:3.19.2") }
+    dependencies { classpath("com.autonomousapps:dependency-analysis-gradle-plugin:3.20.4") }
   }
 }
 
 plugins {
-  id("software.sava.build") version "21.8.8"
-  id("software.sava.build.feature.jdk-provisioning") version "21.8.8"
+  id("software.sava.build") version "21.8.9"
+  id("software.sava.build.feature.jdk-provisioning") version "21.8.9"
 }
 
 if (providers.gradleProperty("dependencyAudit").isPresent) {

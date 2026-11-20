@@ -757,9 +757,9 @@ The generated operator rules follow verbatim; the repo-specific facts are in
   the test body. Exclusions must cover the test source set, not a naming convention.
 - Git-ignored scratch sources (`Integ.java` drivers) never sit in a hardened project's
   `main` or `test` source set; keep them in a git-ignored `scratch` source set instead.
-- Verify by the absence of failures: trust the exit code and the `.running`
-  sentinel, not a summary. `MINION_DIED` and `RUN_ERROR` are not results; re-run once
-  on a quiet machine. A suite that got faster without getting narrower is a bug report.
+- Verify by the absence of failures: trust the exit code and the `.running` sentinel,
+  not a summary. `MINION_DIED` and `RUN_ERROR` are not results: re-run once, unless the
+  plugin says it did. A suite that got faster without getting narrower is a bug report.
 - Fuzz findings become a committed seed input and a named regression test. Run
   `fuzzAll` locally with an explicit `-PmaxFuzzTime` and `-PmaxParallelFuzzTargets`
   before a release. Where one thing has two representations, fuzz the differential.
