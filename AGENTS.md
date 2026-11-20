@@ -598,17 +598,23 @@ savaGithubPackagesPassword=GITHUB_TOKEN
   configuration-cache entry resolves nothing and so verifies nothing. Follow it with
   `./gradlew --no-daemon --no-configuration-cache -PdependencyAudit checkModuleDirectivesScope`:
   since sava-build 21.8.8 the dependency-analysis plugin loads only under that property
-  (`settings.gradle.kts`), so this is the run that resolves and verifies its chain. The run
-  that writes or trims the policy needs `-PdependencyAudit` too: without the property it sees
-  none of the chain, so a new or trimmed policy can omit the rules the audit needs (sava-build's
-  README, "Dependency analysis"). A policy edit also runs
+  (`settings.gradle.kts`), so this is the run that resolves and verifies its chain. A write of
+  the policy also takes two runs, each with `--no-daemon --no-configuration-cache
+  --write-verification-metadata pgp,sha256 --export-keys`: `build resolveVerificationTools`,
+  then `-PdependencyAudit checkModuleDirectivesScope`. A write without the second drafts
+  nothing for the chain, so a new or trimmed policy can omit the rules the audit needs
+  (sava-build's README, "Dependency analysis"). The README's step 3 holds the write's
+  conditions and what to keep of its draft, and "The policy and what it trusts" holds a trim's
+  own form and proof. A policy edit also runs
   `./gradlew --no-daemon verificationKeyStatus` from the root, which asks the key servers
   whether a key the policy trusts was revoked or has expired and so sits outside `check`. It
   fails on a revoked key still trusted without a version, which the README's "Key status"
   answers by the revocation's reason, and on a key whose status a server left undecided, which
-  only a repeated run, once the servers answer, settles. A new BOM or parent POM
-  is validated once more from an empty `GRADLE_USER_HOME`, since a warm cache hides metadata a
-  cold one fetches (README step 4). No IDE sync is owed after a policy change, and a session
+  only a repeated run, once the servers answer, settles. A new BOM or parent POM, and every
+  trim, is validated once more from an empty `GRADLE_USER_HOME` with the two check runs above,
+  `check resolveVerificationTools` and then the audit, since a warm cache hides metadata a
+  cold one fetches (README step 4, which says what such a home needs, and step 1 for the audit
+  run). No IDE sync is owed after a policy change, and a session
   never asks for one. IntelliJ's sync is the only run that resolves the Gradle sources zip,
   the embedded Kotlin libraries' sources and an unsigned module's sources jar, through the
   same policy, so a trim keeps the rules and pins that admit them; a refusal shows in the
