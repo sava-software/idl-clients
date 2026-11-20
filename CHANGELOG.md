@@ -1,5 +1,12 @@
 # Changelog
 
+## [25.20.2](https://github.com/sava-software/idl-clients/compare/25.20.1...25.20.2) (2026-11-20)
+
+
+### Features
+
+* support Neutral Trade share token metadata ([08c3402](https://github.com/sava-software/idl-clients/commit/08c3402967ebf9d074a1cad97b348a34060fb9b1))
+
 ## [25.20.1](https://github.com/sava-software/idl-clients/compare/25.20.0...25.20.1) (2026-11-15)
 
 
