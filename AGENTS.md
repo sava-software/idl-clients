@@ -782,8 +782,11 @@ those tests exercise. Doc and comment changes owe no suite. A
 build-script change owes one only when it changes what PIT is given: here, a
 `hardening {}` block, a dependency or the Java version (`gradle/sava.properties`
 pins the BOM and the Java version), or a sava-build bump whose changed files
-touch the PIT task or what PIT is given, as the compare's file list and its
-build-file patches show (HARDENING.md, "Lifecycle").
+touch the PIT task or what PIT is given, as the compare's file list and the
+patches of its build files (`build.gradle.kts`, `gradle/libs.versions.toml`)
+and of the plugin's source (`src/main/`) show. How a source hunk is read is
+HARDENING.md's to say ("Lifecycle"), not this file's, and a bump that reading
+does not clear owes every suite once, at the range's gate.
 
 **Suite totals are the build's to print**, not this file's: every
 `pitest<Suite>` run ends by printing what the suite detected and what survived,
