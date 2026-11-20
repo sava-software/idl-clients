@@ -104,9 +104,10 @@ Central only by dispatch.
    ./gradlew -PdependencyAudit checkModuleDirectivesScope
    ```
 
-   It fails on a `requires` that should be `requires transitive` or that the
-   module never uses. The property puts the plugin on the settings classpath for
-   that invocation alone, so the release build itself never loads it. GitHub
+   It fails on a `requires` that should be `requires transitive` or on a library
+   a module requires and never uses; an unused JDK module is outside its reach.
+   The property puts the plugin on the settings classpath for that invocation
+   alone, so the release build itself never loads it. GitHub
    Packages already has the tag by this step, so a failure found here is fixed
    in a later release.
 2. In **Actions → Upload Maven Central Release → Run workflow**, use `main`
