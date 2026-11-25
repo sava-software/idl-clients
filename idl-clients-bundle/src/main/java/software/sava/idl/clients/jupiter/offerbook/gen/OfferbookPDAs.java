@@ -96,6 +96,17 @@ public final class OfferbookPDAs {
     ), associatedTokenAccountProgram);
   }
 
+  /// @param offerFillCounter u64 seed value encoding is program-specific — commonly its little-endian bytes (`SerDeUtil` `*LESeed` helpers) or its decimal string (`SerDeUtil.asciiSeed`); verify against the program source.
+  public static ProgramDerivedAddress loanPDA(final PublicKey program,
+                                              final PublicKey offerAccount,
+                                              final byte[] offerFillCounter) {
+    return PublicKey.findProgramAddress(List.of(
+      "loan".getBytes(US_ASCII),
+      offerAccount.toByteArray(),
+      offerFillCounter
+    ), program);
+  }
+
   public static ProgramDerivedAddress loanVaultPDA(final PublicKey program,
                                                    final PublicKey loanAccount) {
     return PublicKey.findProgramAddress(List.of(
@@ -104,11 +115,30 @@ public final class OfferbookPDAs {
     ), program);
   }
 
+  /// @param signerUserOfferCount u64 seed value encoding is program-specific — commonly its little-endian bytes (`SerDeUtil` `*LESeed` helpers) or its decimal string (`SerDeUtil.asciiSeed`); verify against the program source.
+  public static ProgramDerivedAddress offerPDA(final PublicKey program,
+                                               final PublicKey signerAccount,
+                                               final byte[] signerUserOfferCount) {
+    return PublicKey.findProgramAddress(List.of(
+      "offer".getBytes(US_ASCII),
+      signerAccount.toByteArray(),
+      signerUserOfferCount
+    ), program);
+  }
+
   public static ProgramDerivedAddress signerUserPDA(final PublicKey program,
                                                     final PublicKey signerAccount) {
     return PublicKey.findProgramAddress(List.of(
       "user".getBytes(US_ASCII),
       signerAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress userPDA(final PublicKey program,
+                                              final PublicKey userOwnerAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      "user".getBytes(US_ASCII),
+      userOwnerAccount.toByteArray()
     ), program);
   }
 
@@ -177,6 +207,14 @@ public final class OfferbookPDAs {
     return PublicKey.findProgramAddress(List.of(
       "yield_market".getBytes(US_ASCII),
       mintAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress yieldMarket1PDA(final PublicKey program,
+                                                      final PublicKey yieldMarketMintAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      "yield_market".getBytes(US_ASCII),
+      yieldMarketMintAccount.toByteArray()
     ), program);
   }
 

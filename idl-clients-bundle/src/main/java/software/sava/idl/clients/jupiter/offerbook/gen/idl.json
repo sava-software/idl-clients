@@ -496,7 +496,8 @@
               },
               {
                 "kind": "account",
-                "path": "signer_user"
+                "path": "signer_user.offer_count",
+                "account": "User"
               }
             ]
           }
@@ -640,7 +641,8 @@
               },
               {
                 "kind": "account",
-                "path": "signer_user"
+                "path": "signer_user.offer_count",
+                "account": "User"
               }
             ]
           }
@@ -781,7 +783,8 @@
               },
               {
                 "kind": "account",
-                "path": "signer_user"
+                "path": "signer_user.offer_count",
+                "account": "User"
               }
             ]
           }
@@ -919,7 +922,8 @@
               },
               {
                 "kind": "account",
-                "path": "signer_user"
+                "path": "signer_user.offer_count",
+                "account": "User"
               }
             ]
           }
@@ -2101,7 +2105,8 @@
               },
               {
                 "kind": "account",
-                "path": "user"
+                "path": "user.owner",
+                "account": "User"
               }
             ]
           }
@@ -2392,7 +2397,8 @@
               },
               {
                 "kind": "account",
-                "path": "user"
+                "path": "user.owner",
+                "account": "User"
               }
             ]
           }
@@ -3280,7 +3286,8 @@
               },
               {
                 "kind": "account",
-                "path": "offer"
+                "path": "offer.fill_counter",
+                "account": "Offer"
               }
             ]
           }
@@ -3550,7 +3557,8 @@
               },
               {
                 "kind": "account",
-                "path": "offer"
+                "path": "offer.fill_counter",
+                "account": "Offer"
               }
             ]
           }
@@ -3820,7 +3828,8 @@
               },
               {
                 "kind": "account",
-                "path": "offer"
+                "path": "offer.fill_counter",
+                "account": "Offer"
               }
             ]
           }
@@ -4144,7 +4153,8 @@
               },
               {
                 "kind": "account",
-                "path": "offer"
+                "path": "offer.fill_counter",
+                "account": "Offer"
               }
             ]
           }
@@ -5121,7 +5131,8 @@
               },
               {
                 "kind": "account",
-                "path": "user"
+                "path": "user.owner",
+                "account": "User"
               }
             ]
           }
@@ -5428,7 +5439,8 @@
               },
               {
                 "kind": "account",
-                "path": "yield_market"
+                "path": "yield_market.mint",
+                "account": "YieldMarket"
               }
             ]
           }

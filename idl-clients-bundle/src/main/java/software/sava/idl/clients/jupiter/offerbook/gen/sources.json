@@ -6,11 +6,11 @@
   "programDataStateSlot": 440077852,
   "programDataPayloadSha256": "4ce4b667b9ac0f38c47be8cb23fcd36ac61b415e3c9767b7f0e77159993ed84b",
   "programDataPayloadLength": 1889256,
-  "ignorePdas": ["loan","offer","protocol_fee_token_account"],
+  "ignorePdas": ["protocol_fee_token_account"],
   "channels": {
     "metadata": {
       "origin": "FS2xtZ5qzmFc5xB24uXVhu67EiWeDegaeAeRk68xNBRF",
-      "hash": "bf8573ce1209e02263105bde7ca89e48ad20a17704c7f77362da94b557d0abd1",
+      "hash": "c110a693add7000b6d9aec05f0d66aea68e47a2dac89a067ff4240df4b2b1031",
       "matchesDeployed": true,
       "verbatim": "idl.json"
     }

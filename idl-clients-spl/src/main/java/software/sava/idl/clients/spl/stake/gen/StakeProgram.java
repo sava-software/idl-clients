@@ -1288,7 +1288,7 @@ public final class StakeProgram {
 
   /// @param stakeKey Delegated stake account
   /// @param delinquentVoteKey Delinquent vote account for the delegated stake account
-  /// @param referenceVoteKey Reference vote account that has voted at least once in the last `MINIMUM_DELINQUENT_EPOCHS_FOR_DEACTIVATION` epochs
+  /// @param referenceVoteKey Reference vote account that has voted in each of the last `MINIMUM_DELINQUENT_EPOCHS_FOR_DEACTIVATION` epochs
   public static List<AccountMeta> deactivateDelinquentKeys(final PublicKey stakeKey,
                                                            final PublicKey delinquentVoteKey,
                                                            final PublicKey referenceVoteKey) {
@@ -1301,7 +1301,7 @@ public final class StakeProgram {
 
   /// @param stakeKey Delegated stake account
   /// @param delinquentVoteKey Delinquent vote account for the delegated stake account
-  /// @param referenceVoteKey Reference vote account that has voted at least once in the last `MINIMUM_DELINQUENT_EPOCHS_FOR_DEACTIVATION` epochs
+  /// @param referenceVoteKey Reference vote account that has voted in each of the last `MINIMUM_DELINQUENT_EPOCHS_FOR_DEACTIVATION` epochs
   public static Instruction deactivateDelinquent(final AccountMeta invokedStakeProgramMeta,
                                                  final PublicKey stakeKey,
                                                  final PublicKey delinquentVoteKey,
