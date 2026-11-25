@@ -108,14 +108,16 @@ final class JupiterOfferbookPDAsTests {
     assertEquals(key("4sZptGwLvk2ywxa2E8UosgogwrjTxjPfFAK7o2rcKHb9"), OfferbookPDAs.eventAuthorityPDA(PROGRAM).publicKey(), "event_authority");
   }
 
-  /// `escrow_yield_deposit` publishes `user` and `update_yield_market` publishes `yield_market` as
-  /// derived from their own addresses, so neither declaration gets a helper. These are the
-  /// derivations the program uses for both accounts: a user from its owner, and a yield market from
-  /// its mint.
+  /// A user is derived from its owner and a yield market from its mint, by each of the two
+  /// helpers generated for either account. `userPDA` and `yieldMarket1PDA` come from the
+  /// declarations in `escrow_yield_deposit` and `update_yield_market`, which named the account's
+  /// own address as its seed until the IDL was republished at slot 473709366.
   @Test
   void aUserIsKeyedByItsOwnerAndAYieldMarketByItsMint() {
-    assertPda("GH68QbfaZqdda6JpGmpZGdf7JhiKTa9qWNFAw1jioPsV", 255,
-        OfferbookPDAs.signerUserPDA(PROGRAM, key("7mQUz7d7wqBAu9Sm2putzX3zFVi1AAsGd4QmgnS6T1JP")));
+    final var owner = key("7mQUz7d7wqBAu9Sm2putzX3zFVi1AAsGd4QmgnS6T1JP");
+    assertPda("GH68QbfaZqdda6JpGmpZGdf7JhiKTa9qWNFAw1jioPsV", 255, OfferbookPDAs.signerUserPDA(PROGRAM, owner));
+    assertPda("GH68QbfaZqdda6JpGmpZGdf7JhiKTa9qWNFAw1jioPsV", 255, OfferbookPDAs.userPDA(PROGRAM, owner));
     assertPda("GSYR6JQ9YmwP35SaDbzxQnWJJ6heCCkteaUAQtSKasYV", 254, OfferbookPDAs.yieldMarketPDA(PROGRAM, USDC));
+    assertPda("GSYR6JQ9YmwP35SaDbzxQnWJJ6heCCkteaUAQtSKasYV", 254, OfferbookPDAs.yieldMarket1PDA(PROGRAM, USDC));
   }
 }

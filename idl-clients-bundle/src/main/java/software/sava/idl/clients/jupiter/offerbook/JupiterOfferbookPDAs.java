@@ -3,16 +3,12 @@ package software.sava.idl.clients.jupiter.offerbook;
 import software.sava.core.accounts.ProgramDerivedAddress;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.SolanaAccounts;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.jupiter.offerbook.gen.OfferbookPDAs;
 import software.sava.idl.clients.spl.associated_token.gen.AssociatedTokenPDAs;
 
-import java.util.List;
-
-import static java.nio.charset.StandardCharsets.US_ASCII;
-import static software.sava.core.encoding.ByteUtil.putInt64LE;
-
-/// Jupiter Offerbook addresses whose published seeds do not derive them, so the generated
-/// [OfferbookPDAs] has no helper for them.
+/// Jupiter Offerbook addresses the generated [OfferbookPDAs] cannot derive by itself: two whose
+/// published seeds leave an encoding open, and one whose published seeds are wrong.
 ///
 /// Offerbook is closed source. Its repository, `jup-ag/offerbook-program`, is private (the
 /// Guardian and Cantina audits that docs.jup.ag links name it), and no Jupiter SDK derives these
@@ -22,18 +18,13 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// 187 decoded instructions that name one. `JupiterOfferbookPDAsTests` pins each derivation to
 /// such accounts.
 ///
-/// Where a seed reads a field of a zero-copy account, the IDL keeps only the account's name.
-/// `offer` declares `["offer", signer, signer_user]` where the program reads the signer's
-/// `offer_count`. `loan` declares `["loan", offer, offer]` where it reads the offer's
-/// `fill_counter`. `protocol_fee_token_account` declares the associated token account of
-/// `config` where the program uses that of `config.fee_authority`.
+/// The IDL has named an offer's and a loan's last seed, `signer_user.offer_count` and
+/// `offer.fill_counter`, since Jupiter republished it at slot 473709366, and a published seed
+/// does not say how a number is hashed. Both are little-endian `u64`s, which is what
+/// [#offerPDA] and [#loanPDA] add to the generated helpers of the same names.
 ///
-/// The same loss leaves `user` and `yield_market` declared, in one instruction each, as derived
-/// from their own addresses, so those declarations get no helper either. Derive a user with
-/// `signerUserPDA` from its owner, and a yield market with `yieldMarketPDA` from its mint. The
-/// other generated helpers reproduce live accounts. Those deriving an associated token account
-/// (the escrows and the JL token accounts) take the associated token program as
-/// `associatedTokenAccountProgram`, not Offerbook's id.
+/// `protocol_fee_token_account` is still declared as the associated token account of `config`,
+/// where the program uses that of `config.fee_authority`, so it has no generated helper.
 public final class JupiterOfferbookPDAs {
 
   /// The offer a creator's `create_*_offer` initializes: `["offer", creator, offerIndex]`, with
@@ -44,10 +35,7 @@ public final class JupiterOfferbookPDAs {
   public static ProgramDerivedAddress offerPDA(final PublicKey program,
                                                final PublicKey creator,
                                                final long offerIndex) {
-    return PublicKey.findProgramAddress(
-        List.of("offer".getBytes(US_ASCII), creator.toByteArray(), u64(offerIndex)),
-        program
-    );
+    return OfferbookPDAs.offerPDA(program, creator, SerDeUtil.int64LESeed(offerIndex));
   }
 
   /// The loan a `fill_*` creates: `["loan", offer, fillIndex]`, with the index as a
@@ -56,10 +44,7 @@ public final class JupiterOfferbookPDAs {
   public static ProgramDerivedAddress loanPDA(final PublicKey program,
                                               final PublicKey offer,
                                               final long fillIndex) {
-    return PublicKey.findProgramAddress(
-        List.of("loan".getBytes(US_ASCII), offer.toByteArray(), u64(fillIndex)),
-        program
-    );
+    return OfferbookPDAs.loanPDA(program, offer, SerDeUtil.int64LESeed(fillIndex));
   }
 
   /// The protocol fee token account for a mint: the associated token account of the fee
@@ -76,12 +61,6 @@ public final class JupiterOfferbookPDAs {
         tokenProgram,
         mint
     );
-  }
-
-  private static byte[] u64(final long value) {
-    final byte[] bytes = new byte[Long.BYTES];
-    putInt64LE(bytes, 0, value);
-    return bytes;
   }
 
   private JupiterOfferbookPDAs() {
