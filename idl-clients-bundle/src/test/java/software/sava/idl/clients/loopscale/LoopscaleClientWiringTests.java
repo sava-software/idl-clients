@@ -82,7 +82,22 @@ final class LoopscaleClientWiringTests {
       assertEquals(e.write(), a.write(), "writable at slot " + i);
       assertEquals(e.signer(), a.signer(), "signer at slot " + i);
     }
-    assertArrayEquals(expected.data(), actual.data(), "instruction data");
+    assertArrayEquals(expected.copyData(), actual.copyData(), "instruction data");
+  }
+
+  /// The generated builder's account list ends with the event authority and the program, as the
+  /// IDL declares. The program stopped taking both when it was redeployed at slot 473418297, so
+  /// the client leaves exactly those two out and keeps every other slot of the generated call.
+  private static void assertIxWithoutEventAccounts(final Instruction generated, final Instruction actual) {
+    final var declared = generated.accounts();
+    final int kept = declared.size() - 2;
+    assertEquals(LOOPSCALE_ACCOUNTS.eventAuthority(), declared.get(kept).publicKey());
+    assertEquals(LOOPSCALE_ACCOUNTS.loopscaleProgram(), declared.get(kept + 1).publicKey());
+    assertEquals(kept, actual.accounts().size());
+    assertIx(
+        Instruction.createInstruction(generated.programId(), declared.subList(0, kept), generated.copyData()),
+        actual
+    );
   }
 
   /// The client is built inside the test body — factory and accessor coverage
@@ -137,7 +152,7 @@ final class LoopscaleClientWiringTests {
   void createLoanBindsTheGeneratedBuilder() {
     final var client = client();
     final var loan = LoopscalePDAs.loan(BORROWER, 7L, LOOPSCALE_ACCOUNTS.loopscaleProgram()).publicKey();
-    assertIx(
+    assertIxWithoutEventAccounts(
         LoopscaleProgram.createLoan(
             LOOPSCALE_ACCOUNTS.invokedLoopscaleProgram(),
             LOOPSCALE_ACCOUNTS.protocolAdmin(),
@@ -159,7 +174,7 @@ final class LoopscaleClientWiringTests {
   @Test
   void depositCollateralBindsTheGeneratedBuilder() {
     final var client = client();
-    assertIx(
+    assertIxWithoutEventAccounts(
         LoopscaleProgram.depositCollateral(
             LOOPSCALE_ACCOUNTS.invokedLoopscaleProgram(),
             LOOPSCALE_ACCOUNTS.protocolAdmin(),
@@ -224,7 +239,7 @@ final class LoopscaleClientWiringTests {
   @Test
   void borrowPrincipalBindsTheGeneratedBuilder() {
     final var client = client();
-    assertIx(
+    assertIxWithoutEventAccounts(
         LoopscaleProgram.borrowPrincipal(
             LOOPSCALE_ACCOUNTS.invokedLoopscaleProgram(),
             LOOPSCALE_ACCOUNTS.protocolAdmin(),
@@ -295,10 +310,12 @@ final class LoopscaleClientWiringTests {
     assertEquals(fromKeys.eventAuthority(), fromStrings.eventAuthority());
     assertEquals(fromKeys.protocolAdminState(), fromStrings.protocolAdminState());
 
-    // loanPda binds the instance's own program
+    // loanPda binds the instance's own program, which another deployment's address shows
+    final var elsewhere = LoopscaleAccounts.createAccounts(key(0x41), admin);
     assertEquals(
-        LoopscalePDAs.loan(BORROWER, 7L, program).publicKey(),
-        fromKeys.loanPda(BORROWER, 7L).publicKey()
+        LoopscalePDAs.loan(BORROWER, 7L, key(0x41)).publicKey(),
+        elsewhere.loanPda(BORROWER, 7L).publicKey()
     );
+    assertNotEquals(elsewhere.loanPda(BORROWER, 7L).publicKey(), fromKeys.loanPda(BORROWER, 7L).publicKey());
   }
 }

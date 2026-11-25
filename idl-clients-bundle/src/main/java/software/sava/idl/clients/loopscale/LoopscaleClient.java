@@ -31,6 +31,13 @@ import software.sava.idl.clients.spl.SPLClient;
 /// index, and `LoopscaleProgram.unlockLoan`. `update_weight_matrix` has a tail of its own,
 /// described on [#updateWeightMatrix].
 ///
+/// The program, redeployed at slot 473418297, no longer takes the event authority and its own id,
+/// which its IDL still lists last, and reads its remaining accounts from where they stood. So
+/// `createLoan`, `depositCollateral` and `borrowPrincipal` here end at `protocol_admin_state`,
+/// and what a caller appends follows directly. The generated `LoopscaleProgram` builders still
+/// end with the two accounts: a health check appended after them to a deposit or a borrow fails
+/// `6010 InvalidRemainingAccount`.
+///
 /// The health check, as measured on loans with one active ledger (no loan on chain had more):
 ///
 /// - accounts: the ledger's `marketInformation` (read-only is enough), the principal's oracle
@@ -51,8 +58,7 @@ import software.sava.idl.clients.spl.SPLClient;
 /// A wrong account in any position fails `6010 InvalidRemainingAccount`. Extra trailing accounts
 /// and guidance bytes are ignored. Other oracle types and quoted types 6 and 9 were not measured,
 /// and some of the layouts involved were inferred from single accounts, so this client has no
-/// derivation helper. `LoopscaleRemainingAccountsTests` pins one live call. The calls measured used
-/// 220,000 to 495,000 compute units, so set a compute-unit limit.
+/// derivation helper. `LoopscaleRemainingAccountsTests` pins one live call.
 public interface LoopscaleClient {
 
   static LoopscaleClient create(final SPLAccountClient splAccountClient, final LoopscaleAccounts accounts) {

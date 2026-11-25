@@ -2,6 +2,7 @@ package software.sava.idl.clients.loopscale;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.SolanaAccounts;
+import software.sava.core.accounts.meta.AccountMeta;
 import software.sava.core.tx.Instruction;
 import software.sava.idl.clients.loopscale.gen.LoopscaleProgram;
 import software.sava.idl.clients.loopscale.gen.types.BorrowPrincipalParams;
@@ -10,6 +11,8 @@ import software.sava.idl.clients.loopscale.gen.types.DepositCollateralParams;
 import software.sava.idl.clients.loopscale.gen.types.UpdateWeightMatrixParams;
 import software.sava.idl.clients.spl.SPLAccountClient;
 import software.sava.idl.clients.spl.SPLClient;
+
+import java.util.List;
 
 final class LoopscaleClientImpl implements LoopscaleClient {
 
@@ -75,8 +78,7 @@ final class LoopscaleClientImpl implements LoopscaleClient {
   @Override
   public Instruction createLoan(final PublicKey borrower, final long nonce) {
     final var loan = LoopscalePDAs.loan(borrower, nonce, accounts.loopscaleProgram()).publicKey();
-    return LoopscaleProgram.createLoan(
-        accounts.invokedLoopscaleProgram(),
+    final var keys = LoopscaleProgram.createLoanKeys(
         accounts.protocolAdmin(),
         feePayer,
         borrower,
@@ -84,9 +86,20 @@ final class LoopscaleClientImpl implements LoopscaleClient {
         solanaAccounts.systemProgram(),
         accounts.protocolAdminState(),
         accounts.eventAuthority(),
-        accounts.loopscaleProgram(),
+        accounts.loopscaleProgram()
+    );
+    return LoopscaleProgram.createLoan(
+        accounts.invokedLoopscaleProgram(),
+        withoutEventAccounts(keys),
         new CreateLoanParams(nonce)
     );
+  }
+
+  /// The program stopped taking the event authority and its own id when it was redeployed at slot
+  /// 473418297, and its IDL still lists both last. Left in, they are read as the first of the
+  /// accounts a caller appends, so a health check after them fails `6010 InvalidRemainingAccount`.
+  private static List<AccountMeta> withoutEventAccounts(final List<AccountMeta> keys) {
+    return keys.subList(0, keys.size() - 2);
   }
 
   @Override
@@ -103,8 +116,7 @@ final class LoopscaleClientImpl implements LoopscaleClient {
                                        final PublicKey assetIdentifier,
                                        final PublicKey tokenProgram,
                                        final DepositCollateralParams params) {
-    return LoopscaleProgram.depositCollateral(
-        accounts.invokedLoopscaleProgram(),
+    final var keys = LoopscaleProgram.depositCollateralKeys(
         accounts.protocolAdmin(),
         feePayer,
         borrower,
@@ -118,7 +130,11 @@ final class LoopscaleClientImpl implements LoopscaleClient {
         solanaAccounts.associatedTokenAccountProgram(),
         accounts.protocolAdminState(),
         accounts.eventAuthority(),
-        accounts.loopscaleProgram(),
+        accounts.loopscaleProgram()
+    );
+    return LoopscaleProgram.depositCollateral(
+        accounts.invokedLoopscaleProgram(),
+        withoutEventAccounts(keys),
         params
     );
   }
@@ -171,8 +187,7 @@ final class LoopscaleClientImpl implements LoopscaleClient {
                                      final PublicKey strategyTa,
                                      final PublicKey tokenProgram,
                                      final BorrowPrincipalParams params) {
-    return LoopscaleProgram.borrowPrincipal(
-        accounts.invokedLoopscaleProgram(),
+    final var keys = LoopscaleProgram.borrowPrincipalKeys(
         accounts.protocolAdmin(),
         feePayer,
         borrower,
@@ -187,7 +202,11 @@ final class LoopscaleClientImpl implements LoopscaleClient {
         solanaAccounts.systemProgram(),
         accounts.protocolAdminState(),
         accounts.eventAuthority(),
-        accounts.loopscaleProgram(),
+        accounts.loopscaleProgram()
+    );
+    return LoopscaleProgram.borrowPrincipal(
+        accounts.invokedLoopscaleProgram(),
+        withoutEventAccounts(keys),
         params
     );
   }
