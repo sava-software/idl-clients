@@ -225,7 +225,17 @@ public sealed interface Swap extends RustEnum permits
   Swap.ScorchV2,
   Swap.TesseraVV3,
   Swap.QuantumV3,
-  Swap.MeteoraDlmmPro {
+  Swap.MeteoraDlmmPro,
+  Swap.HyloRouterV2,
+  Swap.BinaryFiV3,
+  Swap.HadronV2,
+  Swap.ObsidianV2,
+  Swap.RiptideV2,
+  Swap.BinaryFiV4,
+  Swap.LendReferralDepositUnderlying,
+  Swap.LendReferralRedeemToUnderlying,
+  Swap.LendReferralDepositFToken,
+  Swap.LendReferralRedeemToFToken {
 
   static Swap read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -442,6 +452,16 @@ public sealed interface Swap extends RustEnum permits
       case 208 -> TesseraVV3.read(_data, i);
       case 209 -> QuantumV3.read(_data, i);
       case 210 -> MeteoraDlmmPro.read(_data, i);
+      case 211 -> HyloRouterV2.INSTANCE;
+      case 212 -> BinaryFiV3.INSTANCE;
+      case 213 -> HadronV2.read(_data, i);
+      case 214 -> ObsidianV2.INSTANCE;
+      case 215 -> RiptideV2.read(_data, i);
+      case 216 -> BinaryFiV4.INSTANCE;
+      case 217 -> LendReferralDepositUnderlying.INSTANCE;
+      case 218 -> LendReferralRedeemToUnderlying.INSTANCE;
+      case 219 -> LendReferralDepositFToken.INSTANCE;
+      case 220 -> LendReferralRedeemToFToken.INSTANCE;
       default -> null;
     };
   }
@@ -3775,6 +3795,116 @@ public sealed interface Swap extends RustEnum permits
     @Override
     public int ordinal() {
       return 210;
+    }
+  }
+
+  record HyloRouterV2() implements EnumNone, Swap {
+
+    public static final HyloRouterV2 INSTANCE = new HyloRouterV2();
+
+    @Override
+    public int ordinal() {
+      return 211;
+    }
+  }
+
+  record BinaryFiV3() implements EnumNone, Swap {
+
+    public static final BinaryFiV3 INSTANCE = new BinaryFiV3();
+
+    @Override
+    public int ordinal() {
+      return 212;
+    }
+  }
+
+  record HadronV2(boolean val) implements EnumBool, Swap {
+
+    public static final HadronV2 TRUE = new HadronV2(true);
+    public static final HadronV2 FALSE = new HadronV2(false);
+
+    public static HadronV2 read(final byte[] _data, int i) {
+      return _data[i] == 1 ? HadronV2.TRUE : HadronV2.FALSE;
+    }
+
+    @Override
+    public int ordinal() {
+      return 213;
+    }
+  }
+
+  record ObsidianV2() implements EnumNone, Swap {
+
+    public static final ObsidianV2 INSTANCE = new ObsidianV2();
+
+    @Override
+    public int ordinal() {
+      return 214;
+    }
+  }
+
+  record RiptideV2(boolean val) implements EnumBool, Swap {
+
+    public static final RiptideV2 TRUE = new RiptideV2(true);
+    public static final RiptideV2 FALSE = new RiptideV2(false);
+
+    public static RiptideV2 read(final byte[] _data, int i) {
+      return _data[i] == 1 ? RiptideV2.TRUE : RiptideV2.FALSE;
+    }
+
+    @Override
+    public int ordinal() {
+      return 215;
+    }
+  }
+
+  record BinaryFiV4() implements EnumNone, Swap {
+
+    public static final BinaryFiV4 INSTANCE = new BinaryFiV4();
+
+    @Override
+    public int ordinal() {
+      return 216;
+    }
+  }
+
+  record LendReferralDepositUnderlying() implements EnumNone, Swap {
+
+    public static final LendReferralDepositUnderlying INSTANCE = new LendReferralDepositUnderlying();
+
+    @Override
+    public int ordinal() {
+      return 217;
+    }
+  }
+
+  record LendReferralRedeemToUnderlying() implements EnumNone, Swap {
+
+    public static final LendReferralRedeemToUnderlying INSTANCE = new LendReferralRedeemToUnderlying();
+
+    @Override
+    public int ordinal() {
+      return 218;
+    }
+  }
+
+  record LendReferralDepositFToken() implements EnumNone, Swap {
+
+    public static final LendReferralDepositFToken INSTANCE = new LendReferralDepositFToken();
+
+    @Override
+    public int ordinal() {
+      return 219;
+    }
+  }
+
+  record LendReferralRedeemToFToken() implements EnumNone, Swap {
+
+    public static final LendReferralRedeemToFToken INSTANCE = new LendReferralRedeemToFToken();
+
+    @Override
+    public int ordinal() {
+      return 220;
     }
   }
 }

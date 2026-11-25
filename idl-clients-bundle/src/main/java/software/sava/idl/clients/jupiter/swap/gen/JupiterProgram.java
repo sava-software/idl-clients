@@ -1965,6 +1965,7 @@ public final class JupiterProgram {
 
   public static final Discriminator SHARED_ACCOUNTS_EXACT_OUT_ROUTE_V_2_DISCRIMINATOR = toDiscriminator(53, 96, 229, 202, 216, 187, 250, 24);
 
+  /// @param eventAuthorityKey Can be `program_authority` instead, to save a transaction account. Requires an `id` below 16.
   public static List<AccountMeta> sharedAccountsExactOutRouteV2Keys(final PublicKey programAuthorityKey,
                                                                     final PublicKey userTransferAuthorityKey,
                                                                     final PublicKey sourceTokenAccountKey,
@@ -1993,6 +1994,7 @@ public final class JupiterProgram {
     );
   }
 
+  /// @param eventAuthorityKey Can be `program_authority` instead, to save a transaction account. Requires an `id` below 16.
   /// @param id: u8
   /// @param outAmount: u64
   /// @param quotedInAmount: u64
@@ -2169,6 +2171,7 @@ public final class JupiterProgram {
 
   public static final Discriminator SHARED_ACCOUNTS_ROUTE_V_2_DISCRIMINATOR = toDiscriminator(209, 152, 83, 147, 124, 254, 216, 233);
 
+  /// @param eventAuthorityKey Can be `program_authority` instead, to save a transaction account. Requires an `id` below 16.
   public static List<AccountMeta> sharedAccountsRouteV2Keys(final PublicKey programAuthorityKey,
                                                             final PublicKey userTransferAuthorityKey,
                                                             final PublicKey sourceTokenAccountKey,
@@ -2197,6 +2200,7 @@ public final class JupiterProgram {
     );
   }
 
+  /// @param eventAuthorityKey Can be `program_authority` instead, to save a transaction account. Requires an `id` below 16.
   /// @param id: u8
   /// @param inAmount: u64
   /// @param quotedOutAmount: u64
@@ -2567,6 +2571,7 @@ public final class JupiterProgram {
 
   public static final Discriminator SHARED_ACCOUNTS_ROUTE_WITH_ATTESTATION_DISCRIMINATOR = toDiscriminator(37, 46, 249, 126, 201, 162, 56, 202);
 
+  /// @param eventAuthorityKey Can be `program_authority` instead, to save a transaction account. Requires an `id` below 16.
   public static List<AccountMeta> sharedAccountsRouteWithAttestationKeys(final PublicKey programAuthorityKey,
                                                                          final PublicKey userTransferAuthorityKey,
                                                                          final PublicKey sourceTokenAccountKey,
@@ -2595,6 +2600,7 @@ public final class JupiterProgram {
     );
   }
 
+  /// @param eventAuthorityKey Can be `program_authority` instead, to save a transaction account. Requires an `id` below 16.
   /// @param id: u8
   /// @param inAmount: u64
   /// @param quotedOutAmount: u64

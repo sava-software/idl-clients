@@ -1061,7 +1061,7 @@ Age alone is not a reason to switch, so each was confirmed against chain:
 The on-chain IDL remains the default unless a replacement is independently
 verified. Kamino Vaults moved off it on 2026-10-01, when the document published
 with a deploy described a later build; see "Kamino Vaults: `"deployed": "vcs"`"
-below. Jupiter Swap remains on chain with an uncovered executable addition,
+below. Jupiter Swap remains on chain with a document ahead of its executable,
 described below.
 
 **Switching `squads.v4` drops four generated types**, three of which were
@@ -1074,28 +1074,27 @@ already generated before the switch. Only `Permission` — the `Initiate`/`Vote`
 it has always been, so a caller composing one now needs the bit values rather than
 the names. Nothing in either IDL referenced any of the four structurally.
 
-#### Jupiter Swap: unpublished Swap variants (2026-11-17)
+#### Jupiter Swap: Swap variants published ahead of the deploy (2026-11-25)
 
-The executable deployed at slot 470226883 accepts three `Swap` encodings absent
-from its unchanged on-chain IDL: tags 211 and 212 carry no fields, and tag 213
-carries one boolean byte. Exact one-step and two-step `route_v2` payloads reach
-account validation in unsigned simulations; their one-byte-short counterparts
-fail argument deserialization, as do boolean values 2 and 255 for tag 213.
-The published IDL ends at tag 210, and the public SDK IDL is older still.
-Other checked official artifacts supply no replacement: `jupiter-amm-interface`
-at `70f56e0` defines an integration API with different variant ordering, and
-`rfq-v2-sdk` at `f3f30ff` carries a Borsh `Swap` ending at tag 125.
+Jupiter republished the on-chain IDL at slot 473900336 with no redeploy. It
+names the three `Swap` encodings the executable deployed at slot 470226883
+already accepted and the earlier document lacked: tags 211 `HyloRouterV2` and
+212 `BinaryFiV3`, which carry no fields, and 213 `HadronV2`, which carries one
+boolean byte. The generated reader, which returned null for them, now decodes
+them.
 
-All eight accepted test payloads fail in the generated Java reader:
-`Swap.read` returns null for the unknown tag and `RoutePlanStepV2.read` then
-throws `NullPointerException`. `RouteV2Data.readData` propagates it, so typed
-route decoding and construction do not cover these encodings. None occurs in
-the 100-transaction sample; their names, account conventions and successful
-execution remain unverified. Parser acceptance alone does not prove execution
-support. The client stays on the published IDL until an authoritative
-replacement or sufficient independent evidence establishes the missing
-definitions. `main_net_programs.json` records this unresolved gap against the
-deploy; a matching channel hash does not clear it.
+The same document declares seven encodings the executable does not accept,
+tags 214 `ObsidianV2` to 220 `LendReferralRedeemToFToken`. The image holds the
+names of 211 to 213 and none of those seven, and in unsigned simulations at
+slots 473908114 to 473908170 a one-step `route_v2` built by the generated
+client reaches account counting for 211 to 213 and fails argument
+deserialization (102) for 214 to 220, as it does for the undeclared 221. The
+client follows the published IDL, so it builds routes through those seven that
+the program refuses until Jupiter deploys them.
+
+For 211 to 213, account conventions and successful execution remain
+unverified: parser acceptance alone does not prove execution support.
+`main_net_programs.json` records both against the deploy.
 
 #### Phoenix Ember: upstream IDL corrections adopted (2026-11-10)
 
