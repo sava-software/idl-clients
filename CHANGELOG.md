@@ -1,5 +1,19 @@
 # Changelog
 
+## [25.20.2](https://github.com/sava-software/idl-clients/compare/25.20.1...25.20.2) (2026-11-27)
+
+
+### Features
+
+* **jupiter-offerbook:** generate the offer, loan, user and yield market address helpers again ([b736f8d](https://github.com/sava-software/idl-clients/commit/b736f8d5ab696b4ed5ee7e647b430d006249a290))
+* **jupiter-swap:** add the ten swap routes Jupiter's republished IDL declares ([1fd4812](https://github.com/sava-software/idl-clients/commit/1fd4812a9c78e538fed7373d452c56e8c6f33579))
+* support Neutral Trade share token metadata ([08c3402](https://github.com/sava-software/idl-clients/commit/08c3402967ebf9d074a1cad97b348a34060fb9b1))
+
+
+### Bug Fixes
+
+* **loopscale:** build loans, deposits and borrows without the event accounts the program stopped taking ([eb8a402](https://github.com/sava-software/idl-clients/commit/eb8a4020af8ab4327ac70242d3f1bffb826ed0a8))
+
 ## [25.20.1](https://github.com/sava-software/idl-clients/compare/25.20.0...25.20.1) (2026-11-15)
 
 
